@@ -22,6 +22,7 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
         public double RentedSpace { get; set; }
         public double ReservedSpace { get; set; }
         public bool isUsed { get; set; }
+        public DateTime SiteVisiteDate { get; set; }
         public ItemsOnSite ItemsOnSite { get; set; }
     }
 }

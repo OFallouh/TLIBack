@@ -58,7 +58,26 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public  IActionResult GetCivilWithLegLibrary(int id)
         {
-            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithLegsLibraryById(id, Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilWithLegsLibraryById(id, Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(),userId,false);
             return Ok(response);
 
         }
@@ -92,7 +111,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(new Response<AddCivilWithoutLegsLibraryObject>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
 
-            var response = _unitOfWorkService.CivilLibraryService.AddCivilWithLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibraryViewModel, ConnectionString,userId);
+            var response = _unitOfWorkService.CivilLibraryService.AddCivilWithLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibraryViewModel, ConnectionString,userId,false);
             return Ok(response);
         }
         [HttpPost("EditCivilWithLegLibrary")]
@@ -121,7 +140,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.CivilLibraryService.EditCivilWithLegsLibrary(editCivilWithLegLibraryViewModel, Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), userId, ConnectionString);
+                var response = await _unitOfWorkService.CivilLibraryService.EditCivilWithLegsLibrary(editCivilWithLegLibraryViewModel, Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), userId, ConnectionString,false);
                 return Ok(response);
             }
             else
@@ -187,7 +206,26 @@ namespace TLIS_API.Controllers
         [HttpGet("GetForAddCivilWithLegsLibrary")]
         public IActionResult GetForAddCivilWithLegsLibrary()
         {
-            var response = _unitOfWorkService.CivilLibraryService.GetForAdd(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilLibraryService.GetForAdd(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(),userId,false);
             return Ok(response);
         }
     }

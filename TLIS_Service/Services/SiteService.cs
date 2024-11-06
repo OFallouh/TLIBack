@@ -743,113 +743,109 @@ namespace TLIS_Service.Services
                     SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
                 }
 
+                // التحقق من الفلاتر
+                // التحقق من الفلاتر
                 if (filterRequest != null && filterRequest.Filters != null && filterRequest.Filters.Count > 0)
                 {
                     foreach (var filter in filterRequest.Filters)
                     {
-                        PropertyInfo property = typeof(SiteViewModelForGetAll).GetProperty(filter.Key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-
-                        if (property != null)
+                        // التحقق من أن قيمة الفلتر ليست null أو فارغة
+                        if (filter.Value?.Value != null && !string.IsNullOrEmpty(filter.Value.Value.ToString()))
                         {
-                            var filterValue = filter.Value.Value.ToLower();
-                            var matchMode = filter.Value.MatchMode;
+                            PropertyInfo property = typeof(SiteViewModelForGetAll).GetProperty(filter.Key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
-                            switch (matchMode)
+                            if (property != null)
                             {
-                                case FilterMatchMode.STARTS_WITH:
-                                    SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().StartsWith(filterValue) ?? false);
-                                    break;
+                                var filterValue = filter.Value.Value.ToLower();
+                                var matchMode = filter.Value.MatchMode;
 
-                                case FilterMatchMode.CONTAINS:
-                                    SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().Contains(filterValue) ?? false);
-                                    break;
-
-                                case FilterMatchMode.NOT_CONTAINS:
-                                    SitesViewModels = SitesViewModels.Where(x => !property.GetValue(x)?.ToString().ToLower().Contains(filterValue) ?? true);
-                                    break;
-
-                                case FilterMatchMode.ENDS_WITH:
-                                    SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().EndsWith(filterValue) ?? false);
-                                    break;
-
-                                case FilterMatchMode.EQUALS:
-                                    SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower() == filterValue);
-                                    break;
-
-                                case FilterMatchMode.NOT_EQUALS:
-                                    SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower() != filterValue);
-                                    break;
-
-                                case FilterMatchMode.LESS_THAN:
-                                    if (decimal.TryParse(filterValue, out var lessThanValue))
-                                    {
-                                        SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out var propValue) && propValue < lessThanValue);
-                                    }
-                                    break;
-
-                                case FilterMatchMode.LESS_THAN_OR_EQUAL_TO:
-                                    if (decimal.TryParse(filterValue, out var lessOrEqualValue))
-                                    {
-                                        SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out var propValue) && propValue <= lessOrEqualValue);
-                                    }
-                                    break;
-
-                                case FilterMatchMode.GREATER_THAN:
-                                    if (decimal.TryParse(filterValue, out var greaterThanValue))
-                                    {
-                                        SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out var propValue) && propValue > greaterThanValue);
-                                    }
-                                    break;
-
-                                case FilterMatchMode.GREATER_THAN_OR_EQUAL_TO:
-                                    if (decimal.TryParse(filterValue, out var greaterOrEqualValue))
-                                    {
-                                        SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out var propValue) && propValue >= greaterOrEqualValue);
-                                    }
-                                    break;
-
-                                case FilterMatchMode.DATE_IS:
-                                    if (DateTime.TryParse(filterValue, out var dateIsValue))
-                                    {
-                                        SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out var propDate) && propDate.Date == dateIsValue.Date);
-                                    }
-                                    break;
-
-                                case FilterMatchMode.DATE_IS_NOT:
-                                    if (DateTime.TryParse(filterValue, out var dateIsNotValue))
-                                    {
-                                        SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out var propDate) && propDate.Date != dateIsNotValue.Date);
-                                    }
-                                    break;
-
-                                case FilterMatchMode.DATE_BEFORE:
-                                    if (DateTime.TryParse(filterValue, out var dateBeforeValue))
-                                    {
-                                        SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out var propDate) && propDate.Date < dateBeforeValue.Date);
-                                    }
-                                    break;
-
-                                case FilterMatchMode.DATE_AFTER:
-                                    if (DateTime.TryParse(filterValue, out var dateAfterValue))
-                                    {
-                                        SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out var propDate) && propDate.Date > dateAfterValue.Date);
-                                    }
-                                    break;
-
-                                default:
-                                    throw new InvalidOperationException($"Filter match mode '{matchMode}' is not supported.");
+                                switch (matchMode)
+                                {
+                                    case FilterMatchMode.STARTS_WITH:
+                                        SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().StartsWith(filterValue) ?? false);
+                                        break;
+                                    case FilterMatchMode.CONTAINS:
+                                        SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().Contains(filterValue) ?? false);
+                                        break;
+                                    case FilterMatchMode.NOT_CONTAINS:
+                                        SitesViewModels = SitesViewModels.Where(x => !property.GetValue(x)?.ToString().ToLower().Contains(filterValue) ?? true);
+                                        break;
+                                    case FilterMatchMode.ENDS_WITH:
+                                        SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().EndsWith(filterValue) ?? false);
+                                        break;
+                                    case FilterMatchMode.EQUALS:
+                                        SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower() == filterValue);
+                                        break;
+                                    case FilterMatchMode.NOT_EQUALS:
+                                        SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower() != filterValue);
+                                        break;
+                                    case FilterMatchMode.LESS_THAN:
+                                        if (decimal.TryParse(filterValue, out var lessThanValue))
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out var propValue) && propValue < lessThanValue);
+                                        }
+                                        break;
+                                    case FilterMatchMode.LESS_THAN_OR_EQUAL_TO:
+                                        if (decimal.TryParse(filterValue, out var lessOrEqualValue))
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out var propValue) && propValue <= lessOrEqualValue);
+                                        }
+                                        break;
+                                    case FilterMatchMode.GREATER_THAN:
+                                        if (decimal.TryParse(filterValue, out var greaterThanValue))
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out var propValue) && propValue > greaterThanValue);
+                                        }
+                                        break;
+                                    case FilterMatchMode.GREATER_THAN_OR_EQUAL_TO:
+                                        if (decimal.TryParse(filterValue, out var greaterOrEqualValue))
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out var propValue) && propValue >= greaterOrEqualValue);
+                                        }
+                                        break;
+                                    case FilterMatchMode.DATE_IS:
+                                        if (DateTime.TryParse(filterValue, out var dateIsValue))
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out var propDate) && propDate.Date == dateIsValue.Date);
+                                        }
+                                        break;
+                                    case FilterMatchMode.DATE_IS_NOT:
+                                        if (DateTime.TryParse(filterValue, out var dateIsNotValue))
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out var propDate) && propDate.Date != dateIsNotValue.Date);
+                                        }
+                                        break;
+                                    case FilterMatchMode.DATE_BEFORE:
+                                        if (DateTime.TryParse(filterValue, out var dateBeforeValue))
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out var propDate) && propDate.Date < dateBeforeValue.Date);
+                                        }
+                                        break;
+                                    case FilterMatchMode.DATE_AFTER:
+                                        if (DateTime.TryParse(filterValue, out var dateAfterValue))
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out var propDate) && propDate.Date > dateAfterValue.Date);
+                                        }
+                                        break;
+                                    default:
+                                        throw new InvalidOperationException($"Filter match mode '{matchMode}' is not supported.");
+                                }
                             }
                         }
                     }
                 }
+                else
+                {
+                    // في حالة عدم وجود فلاتر، نعيد فقط عدد محدود من النتائج لتجنب إرجاع كل البيانات
+                    SitesViewModels = SitesViewModels.Take(filterRequest?.Rows ?? 10); // قم بتحديد العدد المناسب بدلًا من 10
+                }
 
 
                 int count = SitesViewModels.Count();
-                // بعد التحقق من الفلاتر
-                // التحقق من وجود MultiSortMeta
+
+                // التحقق من MultiSortMeta إذا كانت موجودة
                 if (filterRequest.MultiSortMeta != null && filterRequest.MultiSortMeta.Count > 0)
                 {
-                    // بدء الفرز
                     IOrderedEnumerable<SiteViewModelForGetAll> orderedSites = null;
 
                     foreach (var sortMeta in filterRequest.MultiSortMeta)
@@ -858,29 +854,17 @@ namespace TLIS_Service.Services
 
                         if (sortProperty != null)
                         {
-                            if (orderedSites == null)
-                            {
-                                // إذا كانت هذه هي أول خاصية فرز
-                                orderedSites = sortMeta.Order == 1 ?
-                                    SitesViewModels.OrderBy(x => sortProperty.GetValue(x)) :
-                                    SitesViewModels.OrderByDescending(x => sortProperty.GetValue(x));
-                            }
-                            else
-                            {
-                                // إذا كانت هناك خصائص فرز سابقة، نستخدم ThenBy أو ThenByDescending
-                                orderedSites = sortMeta.Order == 1 ?
-                                    orderedSites.ThenBy(x => sortProperty.GetValue(x)) :
-                                    orderedSites.ThenByDescending(x => sortProperty.GetValue(x));
-                            }
+                            orderedSites = sortMeta.Order == 1 ?
+                                SitesViewModels.OrderBy(x => sortProperty.GetValue(x)) :
+                                SitesViewModels.OrderByDescending(x => sortProperty.GetValue(x));
                         }
                     }
 
-                    // تحويل النتيجة إلى قائمة
-                    SitesViewModels = orderedSites.ToList();
+                    SitesViewModels = orderedSites?.ToList() ?? SitesViewModels.ToList();
                 }
-                else if (filterRequest.SortOrder != 0) // إذا لم تكن هناك MultiSortMeta، نستخدم SortOrder (الفرز الوحيد)
+                else if (filterRequest.SortOrder != 0)
                 {
-                    PropertyInfo sortProperty = typeof(SiteViewModelForGetAll).GetProperty("SomeDefaultSortField", BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance); // استبدل "SomeDefaultSortField" بالخاصية الافتراضية
+                    PropertyInfo sortProperty = typeof(SiteViewModelForGetAll).GetProperty("SomeDefaultSortField", BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
                     if (sortProperty != null)
                     {
@@ -889,6 +873,8 @@ namespace TLIS_Service.Services
                             SitesViewModels.OrderByDescending(x => sortProperty.GetValue(x)).ToList();
                     }
                 }
+
+                // تابع الكود لبناء النتيجة النهائية كما هو موضح سابقًا
 
 
 
@@ -917,6 +903,7 @@ namespace TLIS_Service.Services
                             RentedSpace = SitesViewModel.RentedSpace,
                             ReservedSpace = SitesViewModel.ReservedSpace,
                             Status = SitesViewModel.Status,
+                            SiteVisiteDate= SitesViewModel.SiteVisiteDate,
                             isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
                             ItemsOnSite = GetItemsCountOnEachSite != null ?
                                 (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
@@ -938,6 +925,7 @@ namespace TLIS_Service.Services
                             RentedSpace = SitesViewModel.RentedSpace,
                             ReservedSpace = SitesViewModel.ReservedSpace,
                             Status = SitesViewModel.Status,
+                            SiteVisiteDate = SitesViewModel.SiteVisiteDate,
                             isUsed = AllUsedSites.Any(x => x.ToLower() == SitesViewModel.SiteCode.ToLower()),
                             ItemsOnSite = GetItemsCountOnEachSite != null ?
                                 (GetItemsCountOnEachSite.Value ? GetItemsOnSite(SitesViewModel.SiteCode).Data : null) : null
@@ -947,19 +935,19 @@ namespace TLIS_Service.Services
 
                 return new Response<IEnumerable<SiteViewModelForGetAll>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, count);
             }
-            catch (Exception)
+            catch (Exception er)
             {
                 isRefresh = true;
                 if (ErrorMessagesWhenReturning == null)
                 {
                     ErrorMessagesWhenReturning = new string[]
                     {
-                "After Caching"
+                     "After Caching"
                     };
                     goto StartAgainWithRefresh;
                 }
 
-                return new Response<IEnumerable<SiteViewModelForGetAll>>(true, null, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, _MySites.Count());
+                return new Response<IEnumerable<SiteViewModelForGetAll>>(false, null, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.NeedUpdate);
             }
         }
 
@@ -1490,6 +1478,7 @@ namespace TLIS_Service.Services
                         ReservedSpace = siteInfo.ReservedSpace,
                         RentedSpace = siteInfo.RentedSpace,
                         SubArea = siteInfo.SubArea,
+                        SiteVisiteDate= siteInfo.SiteVisiteDate
                     };
                 }
 

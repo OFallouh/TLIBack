@@ -185,7 +185,7 @@ namespace TLIS_Service.Services
                     else
                     {
                         Group = _mapper.Map<TLIgroup>(model);
-                        _unitOfWork.GroupRepository.AddWithH(UserId,null,Group);
+                        _unitOfWork.GroupRepository.AddWithH(UserId,null,Group, false);
                         _unitOfWork.SaveChanges();
 
 
@@ -515,7 +515,7 @@ namespace TLIS_Service.Services
             try
             {
                 TLIgroup groupEntity = _mapper.Map<TLIgroup>(model);
-                _unitOfWork.GroupRepository.UpdateWithH(UserId,null, OldGroup,groupEntity);
+                _unitOfWork.GroupRepository.UpdateWithH(UserId,null, OldGroup,groupEntity, false);
 
                 List<int> AllChildsIds = new List<int>();
                 LoopForChilds(groupEntity.Id, AllChildsIds);

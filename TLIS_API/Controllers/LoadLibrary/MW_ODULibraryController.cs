@@ -57,7 +57,26 @@ namespace TLIS_API.Controllers.LoadLibrary
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public IActionResult GetODULibrary(int id)
         {
-            var response = _unitOfWorkService.MWLibraryService.GetById(id, Helpers.Constants.LoadSubType.TLImwODULibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetById(id, Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), userId,false);
             return Ok(response);
         }
         [HttpPost("AddMWODULibrary")]
@@ -85,7 +104,7 @@ namespace TLIS_API.Controllers.LoadLibrary
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = _unitOfWorkService.MWLibraryService.AddMWODULibrary(userId,Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), addMW_ODULibraryViewModel, ConnectionString);
+                var response = _unitOfWorkService.MWLibraryService.AddMWODULibrary(userId,Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), addMW_ODULibraryViewModel, ConnectionString,false);
                 return Ok(response);
             }
             else
@@ -121,7 +140,7 @@ namespace TLIS_API.Controllers.LoadLibrary
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = await _unitOfWorkService.MWLibraryService.EditMWODULibrary(userId, editMW_RFULibraryViewModel, Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), ConnectionString);
+                var response = await _unitOfWorkService.MWLibraryService.EditMWODULibrary(userId, editMW_RFULibraryViewModel, Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), ConnectionString,false);
                 return Ok(response);
             }
             else
@@ -164,7 +183,26 @@ namespace TLIS_API.Controllers.LoadLibrary
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
         public IActionResult GetForAddMWODULibrary()
         {
-            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwODULibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), userId, false);
             return Ok(response);
         }
         [HttpPost("DeleteMW_ODULibrary/{Id}")]

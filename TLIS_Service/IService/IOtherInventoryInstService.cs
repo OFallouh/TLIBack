@@ -23,31 +23,31 @@ namespace TLIS_Service.IService
     public interface IOtherInventoryInstService
     {
         Response<ObjectInstAtts> GetAttForAdd(string TableName, string OtherInventoryLibraryType, int OtherInventoryId, string SiteCode);
-        Response<bool> DismantleOtherInventory(int UserId, string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId, string ConnectionString);
+        Response<bool> DismantleOtherInventory(int UserId, string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId, string ConnectionString,bool ExternalSys);
         Response<GetForAddOtherInventoryInstallationObject> GetCabinetPowerInstallationById(int CabinetPowerId, string TableName);
         Response<GetForAddOtherInventoryInstallationObject> GetCabinetTelecomInstallationById(int CabinetTelecomId, string TableName);
-        Task<Response<GetForAddOtherInventoryInstallationObject>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId, int UserId, string connectionString);
-        Response<GetForAddOtherInventoryInstallationObject> GetGenertorInstallationById(int CivilInsId, string TableName);
-       // Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int? TaskId, int UserId);
+        Task<Response<GetForAddOtherInventoryInstallationObject>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId, int UserId, string connectionString, bool ExternalSys);
+        Response<GetForAddOtherInventoryInstallationObject> GetGenertorInstallationById(int CivilInsId, string TableName,int UserId, bool ExternalSys);
+        // Response<ObjectInstAtts> AddOtherInventoryInstallation(object model, string TableName, string SiteCode, string ConnectionString, int? TaskId, int UserId);
         Response<GetEnableAttribute> GetGeneratorWithEnableAtt(string? SiteCode, string ConnectionString);
-        Response<GetForAddOtherInventoryInstallationObject> GetAttForAddGeneratorInstallation(string TableName, int LibraryID, string SiteCode);
-        Response<AddGeneratorInstallationObject> AddGeneratorInstallation(AddGeneratorInstallationObject addGeneratorInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId);
+        Response<GetForAddOtherInventoryInstallationObject> GetAttForAddGeneratorInstallation(string TableName, int LibraryID, string SiteCode, int UserId, bool ExternalSys);
+        Response<AddGeneratorInstallationObject> AddGeneratorInstallation(AddGeneratorInstallationObject addGeneratorInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId, bool ExternalSys);
         Response<ObjectInstAtts> GetById(int OtherInventoryInsId, string TableName);
         Response<GetEnableAttribute> GetSolarWithEnableAtt(string? SiteCode, string ConnectionString);
-        Response<GetForAddOtherInventoryInstallationObject> GetAttForAddSolarInstallation(string TableName, int LibraryID, string SiteCode);
-        Response<GetForAddOtherInventoryInstallationObject> GetSolarInstallationById(int SolarId, string TableName);
-        Response<AddSolarInstallationObject> AddSolarInstallation(AddSolarInstallationObject addSolarInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId);
+        Response<GetForAddOtherInventoryInstallationObject> GetAttForAddSolarInstallation(string TableName, int LibraryID, string SiteCode, int UserId, bool ExternalSys);
+        Response<GetForAddOtherInventoryInstallationObject> GetSolarInstallationById(int SolarId, string TableName, int UserId, bool ExternalSys);
+        Response<AddSolarInstallationObject> AddSolarInstallation(AddSolarInstallationObject addSolarInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId, bool ExternalSys);
       
         Response<ReturnWithFilters<object>> GetCabinetBySiteWithEnabledAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, string LibraryType);
         Response<ReturnWithFilters<object>> GetSolarBySiteWithEnabledAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination);
         Response<ReturnWithFilters<object>> GetGeneratorBySiteWithEnabledAtt(SiteBaseFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination);
-        Response<AddCabinetPowerInstallation> AddCabinetPowerInstallation(AddCabinetPowerInstallation addCabinetPowerInstallation, string SiteCode, string ConnectionString, int? TaskId, int UserId);
+        Response<AddCabinetPowerInstallation> AddCabinetPowerInstallation(AddCabinetPowerInstallation addCabinetPowerInstallation, string SiteCode, string ConnectionString, int? TaskId, int UserId, bool ExternalSys);
         Response<GetForAddOtherInventoryInstallationObject> GetAttForAddCabinetTelecomInstallation(string TableName, int LibraryID, string SiteCode);
         Response<GetForAddOtherInventoryInstallationObject> GetAttForAddCabinetPowerInstallation(string TableName, int LibraryID, string SiteCode);
         Response<GetEnableAttribute> GetCabinetTelecomWithEnableAtt(string? SiteCode, string ConnectionString);
         Response<GetEnableAttribute> GetCabinetPowerWithEnableAtt(string? SiteCode, string ConnectionString);
-        Task<Response<GetForAddOtherInventoryInstallationObject>> EditCabinetPowerInstallation(EditCabinetPowerInstallationObject editCabinetPowerInstallationObject, string TableName, int? TaskId, int UserId, string connectionString);
-        Task<Response<GetForAddOtherInventoryInstallationObject>> EditCabinetTelecomInstallation(EditCabinetTelecomInstallationObject editCabinetTelecomInstallationObject, string TableName, int? TaskId, int UserId, string connectionString);
-        Response<AddCabinetTelecomInstallationObject> AddCabinetTelecomInstallation(AddCabinetTelecomInstallationObject addCabinetTelecomInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId);
+        Task<Response<GetForAddOtherInventoryInstallationObject>> EditCabinetPowerInstallation(EditCabinetPowerInstallationObject editCabinetPowerInstallationObject, string TableName, int? TaskId, int UserId, string connectionString, bool ExternalSys);
+        Task<Response<GetForAddOtherInventoryInstallationObject>> EditCabinetTelecomInstallation(EditCabinetTelecomInstallationObject editCabinetTelecomInstallationObject, string TableName, int? TaskId, int UserId, string connectionStringg, bool ExternalSys);
+        Response<AddCabinetTelecomInstallationObject> AddCabinetTelecomInstallation(AddCabinetTelecomInstallationObject addCabinetTelecomInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserIdg, bool ExternalSys);
     }
 }

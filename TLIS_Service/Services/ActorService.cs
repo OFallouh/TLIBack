@@ -53,7 +53,7 @@ namespace TLIS_Service.Services
                     {
                         TLIactor ActorEntity = _mapper.Map<TLIactor>(Actor);
                         //transaction.Complete();
-                        _unitOfWork.ActorRepository.AddWithH(UserId,null,ActorEntity);
+                        _unitOfWork.ActorRepository.AddWithH(UserId,null,ActorEntity, false);
                         await _unitOfWork.SaveChangesAsync();
                         transaction.Complete();
                         return new Response<ActorViewModel>();
@@ -203,7 +203,7 @@ namespace TLIS_Service.Services
                     else if (await CheckNameForUpdate(ActorModel.Name, ActorModel.Id))
                     {
                         var Actor = _mapper.Map<TLIactor>(ActorModel);
-                        _unitOfWork.ActorRepository.UpdateWithH(UserId,null, OldActor, Actor);
+                        _unitOfWork.ActorRepository.UpdateWithH(UserId,null, OldActor, Actor, false);
                         await _unitOfWork.SaveChangesAsync();
                         transaction.Complete();
                         return new Response<ActorViewModel>();

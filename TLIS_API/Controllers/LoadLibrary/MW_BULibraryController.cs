@@ -72,7 +72,26 @@ namespace TLIS_API.Controllers.LoadLibrary
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public IActionResult GetPowerLibrary(int id)
         {
-            var response = _unitOfWorkService.MWLibraryService.GetById(id,Helpers.Constants.LoadSubType.TLImwBULibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetById(id,Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), userId,false);
             return Ok(response);
         }
 
@@ -80,7 +99,26 @@ namespace TLIS_API.Controllers.LoadLibrary
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
         public IActionResult GetForAddMWBUibrary()
         {
-            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwBULibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), userId,false);
             return Ok(response);
         }
         [HttpPost("AddMW_BULibrary")]
@@ -108,7 +146,7 @@ namespace TLIS_API.Controllers.LoadLibrary
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWLibraryService.AddMWBULibrary(userId, Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), addMW_BULibraryViewModel, ConnectionString);
+                var response = _unitOfWorkService.MWLibraryService.AddMWBULibrary(userId, Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), addMW_BULibraryViewModel, ConnectionString,false);
                 return Ok(response);
             }
             else
@@ -145,7 +183,7 @@ namespace TLIS_API.Controllers.LoadLibrary
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.MWLibraryService.EditMWBULibrary(userId, editMWBULibraryObject, Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), ConnectionString);
+                var response = await _unitOfWorkService.MWLibraryService.EditMWBULibrary(userId, editMWBULibraryObject, Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), ConnectionString,false);
                 return Ok(response);
             }
             else

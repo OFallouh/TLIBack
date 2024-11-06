@@ -44,6 +44,7 @@ using Nancy.Extensions;
 using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 using TLIS_DAL.ViewModels.PowerLibraryDTOs;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace TLIS_Service.Services
 {
@@ -1955,7 +1956,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public Response<AddRadioAntennaLibraryObject> AddRadioAntennaLibrary(string TableName, AddRadioAntennaLibraryObject RadioLibraryViewModel, string connectionString, int UserId)
+        public Response<AddRadioAntennaLibraryObject> AddRadioAntennaLibrary(string TableName, AddRadioAntennaLibraryObject RadioLibraryViewModel, string connectionString, int UserId, bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -1990,7 +1991,7 @@ namespace TLIS_Service.Services
                             if (CheckModel != null)
                                 return new Response<AddRadioAntennaLibraryObject>(true, null, null, $"This model {radioAntennaLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                           var HistoryId= _unitOfWork.RadioAntennaLibraryRepository.AddWithH(UserId,null, radioAntennaLibrary);
+                           var HistoryId= _unitOfWork.RadioAntennaLibraryRepository.AddWithH(UserId,null, radioAntennaLibrary, ExternalSys);
                             _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
 
@@ -2201,7 +2202,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<AddRadioOtherLibraryObject> AddRadioOtherLibrary(string TableName, AddRadioOtherLibraryObject addRadioOtherLibraryObject, string connectionString, int UserId)
+        public Response<AddRadioOtherLibraryObject> AddRadioOtherLibrary(string TableName, AddRadioOtherLibraryObject addRadioOtherLibraryObject, string connectionString, int UserId,bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -2236,7 +2237,7 @@ namespace TLIS_Service.Services
                             if (CheckModel != null)
                                 return new Response<AddRadioOtherLibraryObject>(true, null, null, $"This model {radioOtherLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                           var HistoryId= _unitOfWork.RadioOtherLibraryRepository.AddWithH(UserId,null, radioOtherLibrary);
+                           var HistoryId= _unitOfWork.RadioOtherLibraryRepository.AddWithH(UserId,null, radioOtherLibrary, ExternalSys);
                             _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
 
@@ -2327,7 +2328,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public Response<AddRadioRRULibraryObject> AddRadioRRULibrary(string TableName, AddRadioRRULibraryObject RadioLibraryViewModel, string connectionString, int UserId)
+        public Response<AddRadioRRULibraryObject> AddRadioRRULibrary(string TableName, AddRadioRRULibraryObject RadioLibraryViewModel, string connectionString, int UserId, bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -2363,7 +2364,7 @@ namespace TLIS_Service.Services
                             if (CheckModel != null)
                                 return new Response<AddRadioRRULibraryObject>(true, null, null, $"This model {radioRRULibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                           var HistoryId= _unitOfWork.RadioRRULibraryRepository.AddWithH(UserId,null, radioRRULibrary);
+                           var HistoryId= _unitOfWork.RadioRRULibraryRepository.AddWithH(UserId,null, radioRRULibrary, ExternalSys);
                             _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
 
@@ -3740,8 +3741,8 @@ namespace TLIS_Service.Services
                          return new Response<EditRadioAntennaLibraryObject>(true, null, null, $"This model {radioAntennaLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                         radioAntennaLibrary.Active = OldRadioAntenna.Active;
                         radioAntennaLibrary.Deleted = OldRadioAntenna.Deleted;
-                        var HistoryId= _unitOfWork.RadioAntennaLibraryRepository.UpdateWithH(UserId,null, OldRadioAntenna, radioAntennaLibrary);
-                        await _unitOfWork.SaveChangesAsync();
+                        var HistoryId= _unitOfWork.RadioAntennaLibraryRepository.UpdateWithH(UserId,null, OldRadioAntenna, radioAntennaLibrary, false);
+                    await _unitOfWork.SaveChangesAsync();
                     List<int?> sortedIds = new List<int?>();
 
 
@@ -4274,7 +4275,7 @@ namespace TLIS_Service.Services
 
                     radioOtherLibrary.Active = OldRadioOther.Active;
                     radioOtherLibrary.Deleted = OldRadioOther.Deleted;
-                   var HistoryId= _unitOfWork.RadioOtherLibraryRepository.UpdateWithH(UserId,null, OldRadioOther, radioOtherLibrary);
+                   var HistoryId= _unitOfWork.RadioOtherLibraryRepository.UpdateWithH(UserId,null, OldRadioOther, radioOtherLibrary,false);
                     await _unitOfWork.SaveChangesAsync();
                     List<int?> sortedIds = new List<int?>();
 
@@ -5175,7 +5176,7 @@ namespace TLIS_Service.Services
 
                     radioRRULibrary.Active = OldRadioRRU.Active;
                     radioRRULibrary.Deleted = OldRadioRRU.Deleted;
-                    var HistoryId= _unitOfWork.RadioRRULibraryRepository.UpdateWithH(UserId,null, OldRadioRRU, radioRRULibrary);
+                    var HistoryId= _unitOfWork.RadioRRULibraryRepository.UpdateWithH(UserId,null, OldRadioRRU, radioRRULibrary,false);
                     await _unitOfWork.SaveChangesAsync();
                     List<int?> sortedIds = new List<int?>();
 
@@ -6405,7 +6406,7 @@ namespace TLIS_Service.Services
                             return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         var NewRadioAntennaEntity = _unitOfWork.RadioAntennaLibraryRepository.GetByID(Id);
                         NewRadioAntennaEntity.Active = !(NewRadioAntennaEntity.Active);
-                        _unitOfWork.RadioAntennaLibraryRepository.UpdateWithH(UserId,null, OldRadioAntennaLibrary, NewRadioAntennaEntity);
+                        _unitOfWork.RadioAntennaLibraryRepository.UpdateWithH(UserId,null, OldRadioAntennaLibrary, NewRadioAntennaEntity,false);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString() == TableName)
@@ -6419,7 +6420,7 @@ namespace TLIS_Service.Services
                         TLIradioOtherLibrary NewRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository.GetByID(Id);
                       
                         NewRadioOtherLibrary.Active = !(NewRadioOtherLibrary.Active);
-                        _unitOfWork.RadioOtherLibraryRepository.UpdateWithH(UserId, null, OldRadioOtherLibrary, NewRadioOtherLibrary);
+                        _unitOfWork.RadioOtherLibraryRepository.UpdateWithH(UserId, null, OldRadioOtherLibrary, NewRadioOtherLibrary, false);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     else if (Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString() == TableName)
@@ -6432,7 +6433,7 @@ namespace TLIS_Service.Services
                         TLIradioRRULibrary NewRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetByID(Id);
                  
                         NewRadioRRULibrary.Active = !(NewRadioRRULibrary.Active);
-                        _unitOfWork.RadioRRULibraryRepository.UpdateWithH(UserId, null, OldRadioRRULibrary, NewRadioRRULibrary);
+                        _unitOfWork.RadioRRULibraryRepository.UpdateWithH(UserId, null, OldRadioRRULibrary, NewRadioRRULibrary, false);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     transaction.Complete();
@@ -6451,7 +6452,7 @@ namespace TLIS_Service.Services
         //specify the table i deal with
         //get activated attributes
         //get dynamic attributes
-        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName )
+        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName,int UserId, bool ExternalSys)
         {
             try
             {
@@ -6582,7 +6583,20 @@ namespace TLIS_Service.Services
                    });
 
                     attributes.DynamicAttributes = DynamicAttributesWithoutValue;
-                   
+
+                }
+                var TabelNameId = db.TLItablesNames.FirstOrDefault(x => x.TableName == TableName).Id;
+                
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
                 }
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
@@ -6617,7 +6631,7 @@ namespace TLIS_Service.Services
                         var NewRadioAntennaEntity = _unitOfWork.RadioAntennaLibraryRepository.GetByID(Id);
                         NewRadioAntennaEntity.Deleted = true;
                         NewRadioAntennaEntity.Model = NewRadioAntennaEntity.Model + "_" + DateTime.Now.ToString();
-                        var HistoryId = _unitOfWork.RadioAntennaLibraryRepository.UpdateWithH(UserId,null, OldRadioAntennaLibrary, NewRadioAntennaEntity);
+                        var HistoryId = _unitOfWork.RadioAntennaLibraryRepository.UpdateWithH(UserId,null, OldRadioAntennaLibrary, NewRadioAntennaEntity, false);
                         DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId,HistoryId);
                         await _unitOfWork.SaveChangesAsync();
                         AddHistory(NewRadioAntennaEntity.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString());
@@ -6633,7 +6647,7 @@ namespace TLIS_Service.Services
                         TLIradioOtherLibrary NewRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository.GetByID(Id);
                         NewRadioOtherLibrary.Deleted = true;
                         NewRadioOtherLibrary.Model = NewRadioOtherLibrary.Model + "_" + DateTime.Now.ToString();
-                        var HistoryId = _unitOfWork.RadioOtherLibraryRepository.UpdateWithH(UserId, null, OldRadioOtherLibrary, NewRadioOtherLibrary);
+                        var HistoryId = _unitOfWork.RadioOtherLibraryRepository.UpdateWithH(UserId, null, OldRadioOtherLibrary, NewRadioOtherLibrary, false);
                         DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId,HistoryId);
                         await _unitOfWork.SaveChangesAsync();
                         AddHistory(NewRadioOtherLibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString());
@@ -6648,7 +6662,7 @@ namespace TLIS_Service.Services
                         TLIradioRRULibrary NewRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetByID(Id);
                         NewRadioRRULibrary.Deleted = true;
                         NewRadioRRULibrary.Model = NewRadioRRULibrary.Model + "_" + DateTime.Now.ToString();
-                        var HistoryId = _unitOfWork.RadioRRULibraryRepository.UpdateWithH(UserId,null, OldRadioRRULibrary, NewRadioRRULibrary);
+                        var HistoryId = _unitOfWork.RadioRRULibraryRepository.UpdateWithH(UserId,null, OldRadioRRULibrary, NewRadioRRULibrary, false);
                         DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId, HistoryId);
                         await _unitOfWork.SaveChangesAsync();
                         AddHistory(NewRadioRRULibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString());

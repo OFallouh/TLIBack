@@ -57,7 +57,26 @@ namespace TLIS_API.Controllers.Load
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public IActionResult GetRFULibrary(int id)
         {
-            var response = _unitOfWorkService.MWLibraryService.GetById(id, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetById(id, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), userId, false);
             return Ok(response);
         }
         [HttpPost("AddMW_RFULibrary")]
@@ -86,7 +105,7 @@ namespace TLIS_API.Controllers.Load
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = _unitOfWorkService.MWLibraryService.AddMWRFULibrary(userId,Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, ConnectionString);
+                var response = _unitOfWorkService.MWLibraryService.AddMWRFULibrary(userId,Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, ConnectionString,false);
                 return Ok(response);
             }
             else
@@ -124,7 +143,7 @@ namespace TLIS_API.Controllers.Load
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = await _unitOfWorkService.MWLibraryService.EditMWRFULibrary(userId, editMW_RFULibraryViewModel, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), ConnectionString);
+                var response = await _unitOfWorkService.MWLibraryService.EditMWRFULibrary(userId, editMW_RFULibraryViewModel, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), ConnectionString, false);
                 return Ok(response);
             }
             else
@@ -167,7 +186,26 @@ namespace TLIS_API.Controllers.Load
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
         public IActionResult GetForAddMWRFULibrary()
         {
-            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), userId,false);
             return Ok(response);
         }
 

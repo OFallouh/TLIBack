@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
+using Org.BouncyCastle.Bcpg;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -58,8 +60,10 @@ using TLIS_DAL.ViewModels.SiteDTOs;
 using TLIS_DAL.ViewModels.SolarDTOs;
 using TLIS_DAL.ViewModels.SolarLibraryDTOs;
 using TLIS_DAL.ViewModels.TablesNamesDTOs;
+using TLIS_Repository.Base;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
+using TLIS_Service.Services;
 using static TLIS_API.Helpers.Constants;
 
 namespace TLIS_API.Controllers
@@ -72,10 +76,12 @@ namespace TLIS_API.Controllers
     {
         private IUnitOfWorkService _unitOfWorkService;
         private readonly IConfiguration _configuration;
-        public InternalApiController(IUnitOfWorkService unitOfWorkService, IConfiguration configuration)
+        IUnitOfWork _unitOfWork;
+        public InternalApiController(IUnitOfWorkService unitOfWorkService, IConfiguration configuration ,IUnitOfWork unitOfWork)
         {
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
+             _unitOfWork = unitOfWork;
         }
         [HttpPost("GetCivilsInstalledonSite")]
         [ProducesResponseType(200, Type = typeof(AllCivilInstallationViewModel))]
@@ -482,8 +488,9 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.AddDynamicInternal(addDynamicObject, connectionString, TabelName, userId, CategoryId, null);
-                    return Ok(response);
+                    
+                    var responceResult = _unitOfWorkService.DynamicAttService.AddDynamic(addDynamicObject, connectionString, TabelName, userId, CategoryId, true);
+                    return Ok(responceResult);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
                 {
@@ -493,8 +500,9 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.AddDynamicInternal(addDynamicObject, connectionString, TabelName, null, CategoryId, username);
-                    return Ok(response);
+                    var UserId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var responceResult = _unitOfWorkService.DynamicAttService.AddDynamic(addDynamicObject, connectionString, TabelName, UserId, CategoryId, true);
+                    return Ok(responceResult);
                 }
                 else
                 {
@@ -533,8 +541,8 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.AddDynamicInternal(addDynamicObject, connectionString, TabelName, userId, CategoryId, null);
-                    return Ok(response);
+                    var responceResult = _unitOfWorkService.DynamicAttService.AddDynamic(addDynamicObject, connectionString, TabelName, userId, CategoryId, true);
+                    return Ok(responceResult);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
                 {
@@ -544,8 +552,9 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.AddDynamicInternal(addDynamicObject, connectionString, TabelName, null, CategoryId, username);
-                    return Ok(response);
+                    var UserId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var responceResult = _unitOfWorkService.DynamicAttService.AddDynamic(addDynamicObject, connectionString, TabelName, UserId, CategoryId, true);
+                    return Ok(responceResult);
                 }
                 else
                 {
@@ -562,7 +571,7 @@ namespace TLIS_API.Controllers
             }
         }
         [HttpPost("EditDynamicAttLibraryAndInstallation")]
-        public async Task<IActionResult> EditDynamicAttLibraryAndInstallation(int DynamicAttributeId, [FromBody] AddDynamicObject dynamicAttViewModel)
+        public async Task<IActionResult> EditDynamicAttLibraryAndInstallation(int DynamicAttributeId, [FromBody] AddDynamicObject addDynamicObject)
         {
             if (ModelState.IsValid)
             {
@@ -584,8 +593,8 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response =await _unitOfWorkService.InternalApiService.EditDynamicAttribute(DynamicAttributeId, dynamicAttViewModel, userId, connectionString, null);
-                    return Ok(response);
+                    var responceResult = await _unitOfWorkService.DynamicAttService.EditDynamicAttribute(DynamicAttributeId, addDynamicObject, userId, connectionString, true);
+                    return Ok(responceResult);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
                 {
@@ -595,8 +604,9 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response =await _unitOfWorkService.InternalApiService.EditDynamicAttribute(DynamicAttributeId, dynamicAttViewModel, null, connectionString, username);
-                    return Ok(response);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var responceResult = await _unitOfWorkService.DynamicAttService.EditDynamicAttribute(DynamicAttributeId, addDynamicObject, userId, connectionString, true);
+                    return Ok(responceResult);
                 }
                 else
                 {
@@ -637,7 +647,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.AddRadioRRULibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioRRU, connectionString, userId, null);
+                    var response = _unitOfWorkService.RadioLibraryService.AddRadioRRULibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioRRU, connectionString, userId, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -648,7 +658,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.AddRadioRRULibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioRRU, connectionString, null, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.RadioLibraryService.AddRadioRRULibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioRRU, connectionString, userId, true);
                     return Ok(response);
                 }
                 else
@@ -687,7 +698,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.AddRadioOtherLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioOther, connectionString, userId, null);
+                    var response = _unitOfWorkService.RadioLibraryService.AddRadioOtherLibrary(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString(), addRadioOther, connectionString, userId, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -698,7 +709,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.AddRadioOtherLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioOther, connectionString, null, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.RadioLibraryService.AddRadioOtherLibrary(Helpers.Constants.LoadSubType.TLIradioOtherLibrary.ToString(), addRadioOther, connectionString, userId, true);
                     return Ok(response);
                 }
                 else
@@ -737,7 +749,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.AddRadioAntennaLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioAntenna, connectionString, userId, null);
+                    var response = _unitOfWorkService.RadioLibraryService.AddRadioAntennaLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), addRadioAntenna, connectionString, userId, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -748,7 +760,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.AddRadioAntennaLibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioAntenna, connectionString, null, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.RadioLibraryService.AddRadioAntennaLibrary(Helpers.Constants.LoadSubType.TLIradioAntennaLibrary.ToString(), addRadioAntenna, connectionString, userId, true);
                     return Ok(response);
                 }
                 else
@@ -786,7 +799,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddRadioLibrary(TableName, userId, null);
+                var response = _unitOfWorkService.RadioLibraryService.GetForAdd(TableName, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -797,7 +810,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddRadioLibrary(TableName, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.RadioLibraryService.GetForAdd(TableName, userId, true);
                 return Ok(response);
             }
             else
@@ -827,7 +841,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddRadioAntennaInstallation(LibId, SiteCode, userId, null);
+                var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioAntennaInstallation(LibId, SiteCode, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -838,7 +852,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddRadioAntennaInstallation(LibId, SiteCode, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioAntennaInstallation(LibId, SiteCode, userId, true);
                 return Ok(response);
             }
             else
@@ -870,7 +885,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddRadioRRUInstallation(LibId, SiteCode, userId, null);
+                var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioRRUInstallation(LibId, SiteCode, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -881,7 +896,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddRadioRRUInstallation(LibId, SiteCode, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioRRUInstallation(LibId, SiteCode, userId, true);
                 return Ok(response);
             }
             else
@@ -913,8 +929,8 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddRadioOtherInstallation(LibId, SiteCode, userId, null);
-                return Ok(response);
+                var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioOtherInstallation(LibId, SiteCode, userId, true);
+                return Ok(response); ;
             }
             else if (authHeader.ToLower().StartsWith("basic "))
             {
@@ -924,8 +940,9 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddRadioOtherInstallation(LibId, SiteCode, null, username);
-                return Ok(response);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioOtherInstallation(LibId, SiteCode, userId, true);
+                return Ok(response); ;
             }
             else
             {
@@ -958,7 +975,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -969,7 +986,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else
@@ -1017,7 +1035,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1028,7 +1046,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else
@@ -1077,7 +1096,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioOther, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioOther, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1088,7 +1107,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddRadioInstallationInternal(addRadioOther, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioOther, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else
@@ -1136,7 +1156,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, userId, null);
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, userId, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -1147,7 +1167,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, null, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, userId, true);
                     return Ok(response);
                 }
                 else
@@ -1188,7 +1209,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, userId, null);
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, userId, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -1199,7 +1220,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, null, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, userId, true);
                     return Ok(response);
                 }
                 else
@@ -1242,7 +1264,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, userId, null);
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, userId, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -1253,7 +1275,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, null, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, userId, true);
                     return Ok(response);
                 }
                 else
@@ -1294,7 +1317,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, userId, null);
+                var response = _unitOfWorkService.MWInstService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -1305,7 +1328,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.MWInstService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, userId, true);
                 return Ok(response);
             }
             else
@@ -1339,7 +1363,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, userId, null);
+                var response = _unitOfWorkService.MWInstService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -1350,7 +1374,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.MWInstService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, userId, true);
                 return Ok(response);
             }
             else
@@ -1388,7 +1413,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId, AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, null);
+                        var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1399,7 +1424,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null, AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId,true);
                         return Ok(response);
                     }
                     else
@@ -1447,7 +1473,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId, AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, null);
+                        var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1458,7 +1484,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null, AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, connectionString, TaskId, true);
                         return Ok(response);
                     }
                     else
@@ -1506,7 +1533,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId, AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, null);
+                        var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1517,7 +1544,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null, AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, connectionString, TaskId, true);
                         return Ok(response);
                     }
                     else
@@ -1565,7 +1593,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWRFUInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.MWInstService.AddMWRFUInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1576,7 +1604,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWRFUInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWInstService.AddMWRFUInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else
@@ -1625,7 +1654,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(userId, AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, null);
+                        var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1636,7 +1665,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWInstallationInternal(null, AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, connectionString, TaskId, true);
                         return Ok(response);
                     }
                     else
@@ -1684,7 +1714,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditMWBUInstallation(userId, MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, connectionString, null);
+                        var response = _unitOfWorkService.MWInstService.EditMWBUInstallation(userId, MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1695,7 +1725,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditMWBUInstallation(null, MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWInstService.EditMWBUInstallation(userId, MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -1743,7 +1774,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditMWDishInstallation(userId, MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, connectionString, null);
+                        var response = _unitOfWorkService.MWInstService.EditMWDishInstallation(userId, MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1754,7 +1785,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditMWDishInstallation(null, MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWInstService.EditMWDishInstallation(userId, MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -1802,7 +1834,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditMWODUInstallation(userId, MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, connectionString, null);
+                        var response = _unitOfWorkService.MWInstService.EditMWODUInstallation(userId, MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1813,7 +1845,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditMWODUInstallation(null, MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWInstService.EditMWODUInstallation(userId, MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -1861,7 +1894,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditMWRFUInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.MWInstService.EditMWRFUInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1872,7 +1905,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditMWRFUInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), connectionString, TaskId, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWInstService.EditMWRFUInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else
@@ -1920,7 +1954,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditMWOtherInstallation(userId, Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, connectionString, null);
+                        var response = _unitOfWorkService.MWInstService.EditMWOtherInstallation(userId, Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -1931,7 +1965,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditMWOtherInstallation(null, Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWInstService.EditMWOtherInstallation(userId, Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -1978,7 +2013,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, userId, connectionString, null);
+                    var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, userId, connectionString, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -1989,7 +2024,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, null, connectionString, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, userId, connectionString, true);
                     return Ok(response);
                 }
                 else
@@ -2029,7 +2065,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, userId, connectionString, null);
+                    var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, userId, connectionString, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -2040,7 +2076,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, null, connectionString, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, userId, connectionString, true);
                     return Ok(response);
                 }
                 else
@@ -2081,7 +2118,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId, userId, connectionString, null);
+                    var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId, userId, connectionString, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -2092,7 +2129,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId, null, connectionString, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId, userId, connectionString, true);
                     return Ok(response);
                 }
                 else
@@ -2132,7 +2170,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, userId, connectionString, null);
+                    var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, userId, connectionString, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -2143,7 +2181,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, null, connectionString, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, userId, connectionString, true);
                     return Ok(response);
                 }
                 else
@@ -2183,7 +2222,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, userId, connectionString, null);
+                    var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, userId, connectionString, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -2194,7 +2233,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleLoadsInternal(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, null, connectionString, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, LoadId, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, userId, connectionString, true);
                     return Ok(response);
                 }
                 else
@@ -2233,7 +2273,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleSideArmInternal(SiteCode, sideArmId, TaskId, connectionString, userId, null);
+                    var response = _unitOfWorkService.SideArmService.DismantleSideArm(SiteCode, sideArmId, TaskId, connectionString, userId, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -2244,7 +2284,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleSideArmInternal(SiteCode, sideArmId, TaskId, connectionString, null, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.SideArmService.DismantleSideArm(SiteCode, sideArmId, TaskId, connectionString, userId, true);
                     return Ok(response);
                 }
                 else
@@ -2281,7 +2322,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2292,7 +2333,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -2326,7 +2368,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2337,7 +2379,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -2369,7 +2412,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2380,7 +2423,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -2412,7 +2456,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2423,7 +2467,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -2455,7 +2500,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), userId, null);
+                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2466,7 +2511,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -2499,7 +2545,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddSolarInstallation(Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SolarLibraryId, SiteCode, userId, null);
+                var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddSolarInstallation(Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SolarLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2510,7 +2556,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddSolarInstallation(Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SolarLibraryId, SiteCode, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddSolarInstallation(Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SolarLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else
@@ -2542,7 +2589,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddGeneratorInstallation(Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), GeneratorIdLibraryId, SiteCode, userId, null);
+                var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddGeneratorInstallation(Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), GeneratorIdLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2553,7 +2600,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddGeneratorInstallation(Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), GeneratorIdLibraryId, SiteCode, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddGeneratorInstallation(Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), GeneratorIdLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else
@@ -2589,7 +2637,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddSolarInstallation(addSolarViewModel, SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.OtherInventoryInstService.AddSolarInstallation(addSolarViewModel, SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -2600,7 +2648,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddSolarInstallation(addSolarViewModel, SiteCode, connectionString, TaskId, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.OtherInventoryInstService.AddSolarInstallation(addSolarViewModel, SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else
@@ -2649,7 +2698,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddGeneratorInstallation(addGeneratorViewModel, SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.OtherInventoryInstService.AddGeneratorInstallation(addGeneratorViewModel, SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -2660,7 +2709,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddGeneratorInstallation(addGeneratorViewModel, SiteCode, connectionString, TaskId, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.OtherInventoryInstService.AddGeneratorInstallation(addGeneratorViewModel, SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else
@@ -2706,7 +2756,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetSolarInstallationById(SolarId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), userId, null);
+                var response = _unitOfWorkService.OtherInventoryInstService.GetSolarInstallationById(SolarId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2717,7 +2767,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetSolarInstallationById(SolarId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.OtherInventoryInstService.GetSolarInstallationById(SolarId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -2750,7 +2801,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetGenertorInstallationById(GeneratorId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), userId, null);
+                var response = _unitOfWorkService.OtherInventoryInstService.GetGenertorInstallationById(GeneratorId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -2761,7 +2812,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetGenertorInstallationById(GeneratorId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.OtherInventoryInstService.GetGenertorInstallationById(GeneratorId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -2796,7 +2848,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditOtherInventoryInstallationInternal(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId, userId, connectionString, null);
+                        var response = _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -2807,7 +2859,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditOtherInventoryInstallationInternal(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId, null, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -2856,7 +2909,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditOtherInventoryInstallationInternal(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), TaskId, userId, connectionString, null);
+                        var response = _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -2867,7 +2920,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditOtherInventoryInstallationInternal(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), TaskId, null, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -2915,7 +2969,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleOtherInventoryInternal(userId, SiteCode, OtherInventoryId, OtherInventoryName, TaskId, connectionString, null);
+                    var response = _unitOfWorkService.OtherInventoryInstService.DismantleOtherInventory(userId, SiteCode, OtherInventoryId, OtherInventoryName, TaskId, connectionString, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -2926,7 +2980,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleOtherInventoryInternal(null, SiteCode, OtherInventoryId, OtherInventoryName, TaskId, connectionString, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.OtherInventoryInstService.DismantleOtherInventory(userId, SiteCode, OtherInventoryId, OtherInventoryName, TaskId, connectionString, true);
                     return Ok(response);
                 }
                 else
@@ -3267,7 +3322,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetSideArmByInternalId(SideId, Helpers.Constants.TablesNames.TLIsideArm.ToString(), userId, null);
+                var response = _unitOfWorkService.SideArmService.GetById(SideId, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -3278,7 +3333,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetSideArmByInternalId(SideId, Helpers.Constants.TablesNames.TLIsideArm.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.SideArmService.GetById(SideId, userId, true);
                 return Ok(response);
             }
             else
@@ -3314,7 +3370,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddSideArmInternal(sideArmViewDto, SiteCode, TaskId, userId, connectionString, null);
+                        var response = _unitOfWorkService.SideArmService.AddSideArm(sideArmViewDto, SiteCode, TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -3325,7 +3381,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddSideArmInternal(sideArmViewDto, SiteCode, TaskId, null, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.SideArmService.AddSideArm(sideArmViewDto, SiteCode, TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -3373,7 +3430,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.UpdateSideArmInternal(SideArmViewModel, TaskId, userId, connectionString, null);
+                        var response = _unitOfWorkService.SideArmService.UpdateSideArm(SideArmViewModel, TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -3384,7 +3441,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.UpdateSideArmInternal(SideArmViewModel, TaskId, null, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.SideArmService.UpdateSideArm(SideArmViewModel, TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -3427,7 +3485,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddSideArm(LibId, userId, null);
+                var response = _unitOfWorkService.SideArmService.GetAttForAdd(LibId, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -3438,7 +3496,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetAttForAddSideArm(LibId, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.SideArmService.GetAttForAdd(LibId, userId, true);
                 return Ok(response);
             }
             else
@@ -3558,7 +3617,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.AddCivilNonSteelLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, connectionString, userId, null);
+                    var response = _unitOfWorkService.CivilLibraryService.AddCivilNonSteelLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, connectionString, userId, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -3569,7 +3628,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.AddCivilNonSteelLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, connectionString, null, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.CivilLibraryService.AddCivilNonSteelLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, connectionString, userId, true);
                     return Ok(response);
                 }
                 else
@@ -3864,7 +3924,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddSolarLibrary(userId, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), addSolarLibrary, connectionString, null);
+                        var response = _unitOfWorkService.OtherInventoryLibraryService.AddSolarLibrary(userId, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), addSolarLibrary, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -3875,7 +3935,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddSolarLibrary(null, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), addSolarLibrary, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.OtherInventoryLibraryService.AddSolarLibrary(userId, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), addSolarLibrary, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -3966,7 +4027,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddGenertatoLibrary(userId, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), addGeneratorLibrary, connectionString, null);
+                        var response = _unitOfWorkService.OtherInventoryLibraryService.AddGenertatoLibrary(userId, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), addGeneratorLibrary, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -3977,7 +4038,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddGenertatoLibrary(null, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), addGeneratorLibrary, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.OtherInventoryLibraryService.AddGenertatoLibrary(userId, Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), addGeneratorLibrary, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -4026,7 +4088,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWRFULibrary(userId, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, connectionString, null);
+                        var response = _unitOfWorkService.MWLibraryService.AddMWRFULibrary(userId, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -4037,7 +4099,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWRFULibrary(null, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWLibraryService.AddMWRFULibrary(userId, Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), addMW_RFULibraryViewModel, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -4129,7 +4192,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWOtherLibrary(userId, Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), addMW_OtherLibraryViewModel, connectionString, null);
+                        var response = _unitOfWorkService.MWLibraryService.AddMWOtherLibrary(userId, Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), addMW_OtherLibraryViewModel, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -4140,7 +4203,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWOtherLibrary(null, Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), addMW_OtherLibraryViewModel, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWLibraryService.AddMWOtherLibrary(userId, Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), addMW_OtherLibraryViewModel, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -4188,7 +4252,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWBULibrary(userId, Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), addMW_BULibraryViewModel, connectionString, null);
+                        var response = _unitOfWorkService.MWLibraryService.AddMWBULibrary(userId, Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), addMW_BULibraryViewModel, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -4199,7 +4263,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWBULibrary(null, Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), addMW_BULibraryViewModel, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWLibraryService.AddMWBULibrary(userId, Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), addMW_BULibraryViewModel, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -4247,7 +4312,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWDishLibrary(userId, Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), addMW_BULibraryViewModel, connectionString, null);
+                        var response = _unitOfWorkService.MWLibraryService.AddMWDishLibrary(userId, Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), addMW_BULibraryViewModel, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -4258,7 +4323,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWDishLibrary(null, Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), addMW_BULibraryViewModel, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWLibraryService.AddMWDishLibrary(userId, Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), addMW_BULibraryViewModel, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -4346,7 +4412,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddMWLibrary(Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4357,7 +4423,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddMWLibrary(Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwDishLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -4389,7 +4456,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddMWLibrary(Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4400,7 +4467,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddMWLibrary(Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwBULibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -4431,7 +4499,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddMWLibrary(Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4442,7 +4510,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddMWLibrary(Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -4473,7 +4542,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddMWLibrary(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4484,7 +4553,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddMWLibrary(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -4515,7 +4585,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddMWLibrary(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4526,7 +4596,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddMWLibrary(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwRFULibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -4557,7 +4628,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.CivilLibraryService.GetForAdd(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4568,7 +4639,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilLibraryService.GetForAdd(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -4599,7 +4671,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.CivilLibraryService.GetForAdd(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4610,7 +4682,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilLibraryService.GetForAdd(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -4641,7 +4714,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithoutMastLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.CivilLibraryService.GetForAddCivilWithoutMastLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4652,7 +4725,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithoutMastLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilLibraryService.GetForAddCivilWithoutMastLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -4683,7 +4757,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithoutCapsuleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.CivilLibraryService.GetForAddCivilWithoutCapsuleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4694,7 +4768,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithoutCapsuleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilLibraryService.GetForAddCivilWithoutCapsuleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -4725,7 +4800,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithoutMonopleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.CivilLibraryService.GetForAddCivilWithoutMonopleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4736,7 +4811,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithoutMonopleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilLibraryService.GetForAddCivilWithoutMonopleLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -4770,7 +4846,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWODULibrary(userId, Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), addMW_ODULibraryViewModel, connectionString, null);
+                        var response = _unitOfWorkService.MWLibraryService.AddMWODULibrary(userId, Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), addMW_ODULibraryViewModel, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -4781,7 +4857,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddMWODULibrary(null, Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), addMW_ODULibraryViewModel, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.MWLibraryService.AddMWODULibrary(userId, Helpers.Constants.LoadSubType.TLImwODULibrary.ToString(), addMW_ODULibraryViewModel, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -4829,7 +4906,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, userId, null);
+                        var response = _unitOfWorkService.CivilLibraryService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -4840,7 +4917,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilLibraryService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, userId, true);
                         return Ok(response);
                     }
                     else
@@ -4888,7 +4966,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, userId, null);
+                        var response = _unitOfWorkService.CivilLibraryService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -4899,7 +4977,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilLibraryService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, userId, true);
                         return Ok(response);
                     }
                     else
@@ -4947,7 +5026,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, userId, null);
+                        var response = _unitOfWorkService.CivilLibraryService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -4958,7 +5037,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilLibraryService.AddCivilWithoutLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithoutLegLibrary.ToString(), addCivilWithoutLegLibraryViewModel, connectionString, userId, true);
                         return Ok(response);
                     }
                     else
@@ -5006,7 +5086,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibraryViewModel, connectionString, userId, null);
+                        var response = _unitOfWorkService.CivilLibraryService.AddCivilWithLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibraryViewModel, connectionString, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -5017,7 +5097,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibraryViewModel, connectionString, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilLibraryService.AddCivilWithLegsLibrary(Helpers.Constants.CivilType.TLIcivilWithLegLibrary.ToString(), CivilWithLegLibraryViewModel, connectionString, userId, true);
                         return Ok(response);
                     }
                     else
@@ -5148,7 +5229,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithLegInstallation(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode, userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithLegInstallation(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -5159,7 +5240,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithLegInstallation(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithLegInstallation(Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), CivilLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else
@@ -5404,7 +5486,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithOutLegInstallation_Capsule(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, SiteCode, userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithOutLegInstallation_Capsule(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -5415,7 +5497,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithOutLegInstallation_Capsule(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, SiteCode, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithOutLegInstallation_Capsule(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else
@@ -5446,7 +5529,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithOutLegInstallation_Mast(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, SiteCode, userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithOutLegInstallation_Mast(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -5457,7 +5540,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithOutLegInstallation_Mast(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, SiteCode, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithOutLegInstallation_Mast(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else
@@ -5488,7 +5572,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithOutLegInstallation_Monople(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, SiteCode, userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithOutLegInstallation_Monople(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -5499,7 +5583,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCivilWithOutLegInstallation_Monople(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, SiteCode, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilInstService.GetForAddCivilWithOutLegInstallation_Monople(Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), CivilLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else
@@ -5529,7 +5614,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCiviNonSteelInstallation(Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), CivilLibraryId, SiteCode, userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetForAddCiviNonSteelInstallation(Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), CivilLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -5540,7 +5625,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddCiviNonSteelInstallation(Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), CivilLibraryId, SiteCode, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilInstService.GetForAddCiviNonSteelInstallation(Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), CivilLibraryId, SiteCode, userId, true);
                 return Ok(response);
             }
             else
@@ -5574,7 +5660,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithLegsInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.CivilInstService.AddCivilWithLegsInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -5585,7 +5671,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithLegsInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilInstService.AddCivilWithLegsInstallation(addCivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else
@@ -5635,7 +5722,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.CivilInstService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -5646,7 +5733,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilInstService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else
@@ -5695,7 +5783,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.CivilInstService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -5706,7 +5794,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilInstService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else
@@ -5755,7 +5844,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.CivilInstService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -5766,7 +5855,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilInstService.AddCivilWithoutLegsInstallation(addCivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else
@@ -5816,7 +5906,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilNonSteelInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, connectionString, TaskId, userId, null);
+                        var response = _unitOfWorkService.CivilInstService.AddCivilNonSteelInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -5827,7 +5917,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.AddCivilNonSteelInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, connectionString, TaskId, null, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilInstService.AddCivilNonSteelInstallation(addCivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), SiteCode, connectionString, TaskId, userId, true);
                         return Ok(response);
                     }
                     else
@@ -5849,7 +5940,7 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetForAddCivilWithLegIntsallation")]
+        [HttpGet("GetCivilWithLegsInstallationByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithLegObject>))]
         public IActionResult GetForAddCivilWithLegIntsallation(int CivilId)
         {
@@ -5871,7 +5962,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilWithLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -5882,7 +5973,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilWithLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -5913,7 +6005,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 1, userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 1, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -5924,7 +6016,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 1, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 1, userId, true);
                 return Ok(response);
             }
             else
@@ -5954,7 +6047,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 3, userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 3, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -5965,7 +6058,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 3, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 3, userId, true);
                 return Ok(response);
             }
             else
@@ -5995,7 +6089,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 2, userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 2, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -6006,7 +6100,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 2, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilInstService.GetCivilWithoutLegsInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), 2, userId, true);
                 return Ok(response);
             }
             else
@@ -6014,6 +6109,7 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
+      
         [HttpGet("GetCivilNonSteelByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithOutLegInstallationcs>))]
         public IActionResult GetCivilNonSteelByIdInstallation(int CivilId)
@@ -6036,7 +6132,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilNonSteelInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), userId, null);
+                var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -6047,7 +6143,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetCivilNonSteelInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilInstService.GetCivilNonSteelInstallationById(CivilId, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -6083,7 +6180,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditCivilWithLegsInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), TaskId, userId, connectionString, null);
+                        var response = _unitOfWorkService.CivilInstService.EditCivilWithLegsInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -6094,7 +6191,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditCivilWithLegsInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), TaskId, null, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilInstService.EditCivilWithLegsInstallation(CivilWithLeg, Helpers.Constants.CivilType.TLIcivilWithLegs.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -6143,7 +6241,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId, connectionString, null);
+                        var response = _unitOfWorkService.CivilInstService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -6154,7 +6252,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, null, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilInstService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -6203,7 +6302,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId, connectionString, null);
+                        var response = _unitOfWorkService.CivilInstService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -6214,7 +6313,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, null, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilInstService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -6263,7 +6363,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId, connectionString, null);
+                        var response = _unitOfWorkService.CivilInstService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -6274,7 +6374,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, null, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilInstService.EditCivilWithoutLegsInstallation(CivilWithoutLeg, Helpers.Constants.CivilType.TLIcivilWithoutLeg.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -6323,7 +6424,7 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditCivilNonSteelInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId, userId, connectionString, null);
+                        var response = _unitOfWorkService.CivilInstService.EditCivilNonSteelInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else if (authHeader.ToLower().StartsWith("basic "))
@@ -6334,7 +6435,8 @@ namespace TLIS_API.Controllers
                         var username = decodedUsernamePassword.Split(':')[0];
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.InternalApiService.EditCivilNonSteelInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId, null, connectionString, username);
+                        var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                        var response = _unitOfWorkService.CivilInstService.EditCivilNonSteelInstallation(CivilNonSteel, Helpers.Constants.CivilType.TLIcivilNonSteel.ToString(), TaskId, userId, connectionString, true);
                         return Ok(response);
                     }
                     else
@@ -6378,7 +6480,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.DismantleCivilWithLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, null);
+                var response = _unitOfWorkService.CivilInstService.DismantleCivilWithLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -6389,7 +6491,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.DismantleCivilWithLegsInstallation(null, SiteCode, CivilId, TaskId, connectionString, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilInstService.DismantleCivilWithLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, true);
                 return Ok(response);
             }
             else
@@ -6423,7 +6526,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, null);
+                    var response = _unitOfWorkService.CivilInstService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -6434,7 +6537,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(null, SiteCode, CivilId, TaskId, connectionString, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.CivilInstService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, true);
                     return Ok(response);
                 }
                 else
@@ -6476,7 +6580,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, null);
+                    var response = _unitOfWorkService.CivilInstService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -6487,7 +6591,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(null, SiteCode, CivilId, TaskId, connectionString, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.CivilInstService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, true);
                     return Ok(response);
                 }
                 else
@@ -6529,7 +6634,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, null);
+                    var response = _unitOfWorkService.CivilInstService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, true);
                     return Ok(response);
                 }
                 else if (authHeader.ToLower().StartsWith("basic "))
@@ -6540,7 +6645,8 @@ namespace TLIS_API.Controllers
                     var username = decodedUsernamePassword.Split(':')[0];
                     var password = decodedUsernamePassword.Split(':')[1];
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.InternalApiService.DismantleCivilWithoutLegsInstallation(null, SiteCode, CivilId, TaskId, connectionString, username);
+                    var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.CivilInstService.DismantleCivilWithoutLegsInstallation(userId, SiteCode, CivilId, TaskId, connectionString, true);
                     return Ok(response);
                 }
                 else
@@ -6579,7 +6685,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.DismantleCivilNonSteelInstallation(userId, SiteCode, CivilId, TaskId, connectionString, null);
+                var response = _unitOfWorkService.CivilInstService.DismantleCivilNonSteelInstallation(userId, SiteCode, CivilId, TaskId, connectionString, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -6590,7 +6696,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.DismantleCivilNonSteelInstallation(null, SiteCode, CivilId, TaskId, connectionString, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.CivilInstService.DismantleCivilNonSteelInstallation(userId, SiteCode, CivilId, TaskId, connectionString, true);
                 return Ok(response);
             }
             else
@@ -6830,7 +6937,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddOtherInventoryLibrary(Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.OtherInventoryLibraryService.GetForAdd(Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -6841,7 +6948,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddOtherInventoryLibrary(Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.OtherInventoryLibraryService.GetForAdd(Helpers.Constants.OtherInventoryType.TLIgeneratorLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -6872,7 +6980,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddOtherInventoryLibrary(Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), userId, null);
+                var response = _unitOfWorkService.OtherInventoryLibraryService.GetForAdd(Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -6883,7 +6991,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetForAddOtherInventoryLibrary(Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.OtherInventoryLibraryService.GetForAdd(Helpers.Constants.OtherInventoryType.TLIsolarLibrary.ToString(), userId, true);
                 return Ok(response);
             }
             else
@@ -6954,7 +7063,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetDynamicLibraryById(DynamicAttributeId, userId, null);
+                var response = _unitOfWorkService.DynamicAttService.GetDynamicLibraryById(DynamicAttributeId, userId, true);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -6965,7 +7074,8 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetDynamicLibraryById(DynamicAttributeId, null, username);
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.DynamicAttService.GetDynamicLibraryById(DynamicAttributeId, userId, true);
                 return Ok(response);
             }
             else

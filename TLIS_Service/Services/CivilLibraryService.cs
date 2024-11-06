@@ -68,6 +68,8 @@ using System.Diagnostics.Contracts;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static TLIS_DAL.ViewModels.SideArmLibraryDTOs.EditSideArmLibraryObject;
 using System.Runtime.CompilerServices;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace TLIS_Service.Services
 {
@@ -87,7 +89,7 @@ namespace TLIS_Service.Services
         //Function accept 2 parameters
         //First TableName to specify the table i deal with
         //Second CivilLibraryViewModel object have data to add
-        public Response<AddCivilWithLegsLibraryObject> AddCivilWithLegsLibrary(string TableName, AddCivilWithLegsLibraryObject AddCivilWithLegsLibraryObject, string connectionString, int UserId)
+        public Response<AddCivilWithLegsLibraryObject> AddCivilWithLegsLibrary(string TableName, AddCivilWithLegsLibraryObject AddCivilWithLegsLibraryObject, string connectionString, int UserId,bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -132,11 +134,12 @@ namespace TLIS_Service.Services
                                 }
                                 var model = $"{vendor} {CivilWithLegEntites.Prefix} {structureTypeName} {Math.Round(CivilWithLegEntites.Height_Designed, 1, MidpointRounding.ToEven)}HE".Trim();
 
-                                // تحقق من وجود السجل
+                              
                                 var CheckModel = db.MV_CIVIL_WITHLEG_LIBRARY_VIEW
-                                    .FirstOrDefault(x => x.Model != null &&
-                                        string.Equals(x.Model.Trim(), model, StringComparison.OrdinalIgnoreCase) &&
-                                        !x.Deleted);
+                                    .FirstOrDefault(x => x.Model != null &&  
+                                                         x.Model.Trim().ToLower() == model.ToLower() && // تعديل هنا
+                                                         !x.Deleted);
+
 
 
 
@@ -151,7 +154,7 @@ namespace TLIS_Service.Services
                                     CivilWithLegEntites.NumberOfLegs = 4;
 
                                 CivilWithLegEntites.Model = model;
-                                var HistoryId = _unitOfWork.CivilWithLegLibraryRepository.AddWithH(UserId, null, CivilWithLegEntites);
+                                var HistoryId = _unitOfWork.CivilWithLegLibraryRepository.AddWithH(UserId, null, CivilWithLegEntites, ExternalSys);
 
                                 _unitOfWork.SaveChanges();
 
@@ -196,7 +199,7 @@ namespace TLIS_Service.Services
             }
         }
         #region Helper Methods
-        public Response<AddCivilWithoutLegsLibraryObject> AddCivilWithoutLegsLibrary(string TableName, AddCivilWithoutLegsLibraryObject AddCivilWithoutLegsLibraryObject, string connectionString, int UserId)
+        public Response<AddCivilWithoutLegsLibraryObject> AddCivilWithoutLegsLibrary(string TableName, AddCivilWithoutLegsLibraryObject AddCivilWithoutLegsLibraryObject, string connectionString, int UserId,bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -238,12 +241,11 @@ namespace TLIS_Service.Services
                             var model = $"{CivilCategoryName} {vendor} {CivilWithoutLegEntites.Prefix} {structureTypeName} {Math.Round(CivilWithoutLegEntites.Height_Designed, 1, MidpointRounding.ToEven)}HE".Trim();
 
                            
+                        
                             var CheckModel = db.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW
-                                .FirstOrDefault(x => x.Model != null &&
-                                    string.Equals(x.Model.Trim(), model, StringComparison.OrdinalIgnoreCase) &&
-                                    !x.Deleted);
-
-
+                                .FirstOrDefault(x => x.Model != null &&        
+                                                    x.Model.Trim().ToLower() == model.ToLower() && 
+                                                     !x.Deleted);
 
 
                             if (CheckModel != null)
@@ -251,7 +253,7 @@ namespace TLIS_Service.Services
 
                           
                             CivilWithoutLegEntites.Model = model;
-                            var HistoryId= _unitOfWork.CivilWithoutLegLibraryRepository.AddWithH(UserId,null, CivilWithoutLegEntites);
+                            var HistoryId= _unitOfWork.CivilWithoutLegLibraryRepository.AddWithH(UserId,null, CivilWithoutLegEntites, ExternalSys);
 
                             _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
@@ -339,7 +341,7 @@ namespace TLIS_Service.Services
                     }   }
             }
         }
-        public Response<AddCivilNonSteelLibraryObject> AddCivilNonSteelLibrary(string TableName, AddCivilNonSteelLibraryObject AddCivilNonSteelLibraryObject, string connectionString, int UserId)
+        public Response<AddCivilNonSteelLibraryObject> AddCivilNonSteelLibrary(string TableName, AddCivilNonSteelLibraryObject AddCivilNonSteelLibraryObject, string connectionString, int UserId,bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -369,7 +371,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddCivilNonSteelLibraryObject>(true, null, null, $"This model {CivilNonSteelEntites.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             
                             
-                           var HistoryId= _unitOfWork.CivilNonSteelLibraryRepository.AddWithH(UserId,null, CivilNonSteelEntites);
+                           var HistoryId= _unitOfWork.CivilNonSteelLibraryRepository.AddWithH(UserId,null, CivilNonSteelEntites, ExternalSys);
 
                             _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
@@ -1741,8 +1743,8 @@ namespace TLIS_Service.Services
 
                             NewCivilWithLeg.Active = !(NewCivilWithLeg.Active);
 
-                            _unitOfWork.CivilWithLegLibraryRepository.UpdateWithH(UserId,null, OldCivilWithLeg, NewCivilWithLeg);
-                            await _unitOfWork.SaveChangesAsync();
+                            _unitOfWork.CivilWithLegLibraryRepository.UpdateWithH(UserId,null, OldCivilWithLeg, NewCivilWithLeg, false);
+                        await _unitOfWork.SaveChangesAsync();
                           
                         
                     }
@@ -1757,8 +1759,8 @@ namespace TLIS_Service.Services
                        
                             TLIcivilWithoutLegLibrary OldCivilWithoutLeg = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                             NewCivilWithoutLeg.Active = !(NewCivilWithoutLeg.Active);
-                            _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithH(UserId,null, OldCivilWithoutLeg, NewCivilWithoutLeg);
-                            await _unitOfWork.SaveChangesAsync();
+                            _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithH(UserId,null, OldCivilWithoutLeg, NewCivilWithoutLeg, false);
+                        await _unitOfWork.SaveChangesAsync();
                           
                         
                     }
@@ -1773,8 +1775,8 @@ namespace TLIS_Service.Services
 
                             TLIcivilNonSteelLibrary OldCivilNonSteel = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                             NewCivilNonSteel.Active = !(NewCivilNonSteel.Active);
-                            _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithH(UserId,null, OldCivilNonSteel, NewCivilNonSteel);
-                            await _unitOfWork.SaveChangesAsync();
+                            _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithH(UserId,null, OldCivilNonSteel, NewCivilNonSteel, false);
+                        await _unitOfWork.SaveChangesAsync();
                  
                         
                     }
@@ -1794,7 +1796,7 @@ namespace TLIS_Service.Services
         //Function take 2 parameters 
         //First CivilLibraryViewModel object contain data to update
         //Second TableName to specify the table i deal with
-        public async Task<Response<EditCivilWithLegsLibraryObject>> EditCivilWithLegsLibrary(EditCivilWithLegsLibraryObject editCivilWithLegsLibrary, string TableName,int userId,string connectionString)
+        public async Task<Response<EditCivilWithLegsLibraryObject>> EditCivilWithLegsLibrary(EditCivilWithLegsLibraryObject editCivilWithLegsLibrary, string TableName,int userId,string connectionString,bool ExternalSys)
         {
             int resultId = 0;
 ;
@@ -1860,8 +1862,9 @@ namespace TLIS_Service.Services
                     var CheckModel = db.MV_CIVIL_WITHLEG_LIBRARY_VIEW
                         .FirstOrDefault(x => x.Model != null &&
                                              x.Id != CivilWithLegLibraryEntites.Id &&
-                                             string.Equals(x.Model.Trim(), model, StringComparison.OrdinalIgnoreCase) &&
+                                             x.Model.Trim().ToLower() == model.ToLower() && // تعديل هنا
                                              !x.Deleted);
+
 
 
                     if (CheckModel != null)
@@ -1878,7 +1881,7 @@ namespace TLIS_Service.Services
                     CivilWithLegLibraryEntites.Active = CivilWithLegLib.Active;
                     CivilWithLegLibraryEntites.Deleted = CivilWithLegLib.Deleted;
                     
-                   var HistoryId=_unitOfWork.CivilWithLegLibraryRepository.UpdateWithH(userId,null, CivilWithLegLib, CivilWithLegLibraryEntites);
+                   var HistoryId=_unitOfWork.CivilWithLegLibraryRepository.UpdateWithH(userId,null, CivilWithLegLib, CivilWithLegLibraryEntites, ExternalSys);
                     _unitOfWork.SaveChanges();
                    
                     List<int?> sortedIds = new List<int?>();
@@ -2017,7 +2020,7 @@ namespace TLIS_Service.Services
             }
         }
         #region Helper Methods..
-        public async Task<Response<EditCivilWithoutLegsLibraryObject>> EditCivilWithoutlegsLibrary(EditCivilWithoutLegsLibraryObject editCivilWithoutLegsLibraryObject, string TableName, int userId,string connectionString)
+        public async Task<Response<EditCivilWithoutLegsLibraryObject>> EditCivilWithoutlegsLibrary(EditCivilWithoutLegsLibraryObject editCivilWithoutLegsLibraryObject, string TableName, int userId,string connectionString,bool ExternalSys)
         {
             int resultId = 0;
             int civilLibId = 0;
@@ -2079,10 +2082,10 @@ namespace TLIS_Service.Services
                     var CheckModel = db.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW
                         .FirstOrDefault(x => x.Model != null &&
                                              x.Id != CivilWithoutLegLibraryEntites.Id &&
-                                             string.Equals(x.Model.Trim(), model, StringComparison.OrdinalIgnoreCase) &&
-                                             !x.Deleted);
+                                                 x.Model.Trim().ToLower() == model.ToLower() && // تعديل هنا
+                                                 !x.Deleted);
 
-
+               
 
 
                     if (CheckModel != null)
@@ -2093,7 +2096,7 @@ namespace TLIS_Service.Services
 
                     CivilWithoutLegLibraryEntites.Active = CivilWithoutLegLib.Active;
                     CivilWithoutLegLibraryEntites.Deleted = CivilWithoutLegLib.Deleted;
-                    var HistoryId=_unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithH(userId,null, CivilWithoutLegLib, CivilWithoutLegLibraryEntites);
+                    var HistoryId=_unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithH(userId,null, CivilWithoutLegLib, CivilWithoutLegLibraryEntites, ExternalSys);
                     _unitOfWork.SaveChanges();
 
                     List<int?> sortedIds = new List<int?>();
@@ -2238,7 +2241,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<EditCivilNonSteelLibraryObject>> EditCivilNonSteelLibrary(EditCivilNonSteelLibraryObject editCivilNonSteelLibraryObject, string TableName, int userId,string connectionString)
+        public async Task<Response<EditCivilNonSteelLibraryObject>> EditCivilNonSteelLibrary(EditCivilNonSteelLibraryObject editCivilNonSteelLibraryObject, string TableName, int userId,string connectionString,bool ExternalSys)
         {
             int resultId = 0;
             int civilLibId = 0;
@@ -2268,7 +2271,7 @@ namespace TLIS_Service.Services
                     }
                     CivilNonSteelibraryEntites.Active = CivilNonSteelLib.Active;
                     CivilNonSteelibraryEntites.Deleted = CivilNonSteelLib.Deleted;
-                    var  HistoryId=_unitOfWork.CivilNonSteelLibraryRepository.UpdateWithH(userId,null, CivilNonSteelLib, CivilNonSteelibraryEntites);
+                    var  HistoryId=_unitOfWork.CivilNonSteelLibraryRepository.UpdateWithH(userId,null, CivilNonSteelLib, CivilNonSteelibraryEntites, ExternalSys);
                     await _unitOfWork.SaveChangesAsync();
 
                     List<int?> sortedIds = new List<int?>();
@@ -4931,7 +4934,7 @@ namespace TLIS_Service.Services
         //First Id to get record by Id
         //Second TableName to specify table i deal with
         //Function return list of activated attributes with value, list  dynamic attributes
-        public Response<GetForAddCivilLibrarybject> GetCivilWithLegsLibraryById(int Id, string TableName)
+        public Response<GetForAddCivilLibrarybject> GetCivilWithLegsLibraryById(int Id, string TableName,int UserId,bool ExternalSys)
         {
             try
             {
@@ -4990,6 +4993,18 @@ namespace TLIS_Service.Services
                 {
                     return new Response<GetForAddCivilLibrarybject>(false, null, null, "this civil is not found", (int)Helpers.Constants.ApiReturnCode.success);
                 }
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        RecordId=Id.ToString()
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
+                }
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -5001,7 +5016,7 @@ namespace TLIS_Service.Services
         //First TableName to specify the table i deal with
         //Second CivilWithoutLegCategoryId to specify the category of civil Without Leg Library 
         //Function return all records depened on TableName
-        public Response<GetForAddCivilLibrarybject> GetCivilWithoutLegsLibraryById(int Id, string TableName,int CategoryId)
+        public Response<GetForAddCivilLibrarybject> GetCivilWithoutLegsLibraryById(int Id, string TableName,int CategoryId, int UserId, bool ExternalSys)
         {
             int CatId = 0;
             try
@@ -5062,7 +5077,18 @@ namespace TLIS_Service.Services
                 {
                     return new Response<GetForAddCivilLibrarybject>(false, null, null, "this civil is not found", (int)Helpers.Constants.ApiReturnCode.success);
                 }
-
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        RecordId = Id.ToString()
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
+                }
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -5070,7 +5096,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddCivilLibrarybject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddCivilLibrarybject> GetCivilNonSteelLibraryById(int Id, string TableName)
+        public Response<GetForAddCivilLibrarybject> GetCivilNonSteelLibraryById(int Id, string TableName,int UserId,bool ExternalSys)
         {
             int CatId = 0;
             try
@@ -5120,7 +5146,18 @@ namespace TLIS_Service.Services
                 {
                     return new Response<GetForAddCivilLibrarybject>(false, null, null, "this civil is not found", (int)Helpers.Constants.ApiReturnCode.success);
                 }
-
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        RecordId = Id.ToString()
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
+                }
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -5249,7 +5286,7 @@ namespace TLIS_Service.Services
         //First CivilType to specify table i deal with
         //Second CategoryId to specify the category of civilWithoutLegLibrary
         //Function return activated attributes and dynamic attributes
-        public Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutMastLibrary (string TableName)
+        public Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutMastLibrary (string TableName,int UserId,bool ExternalSys)
         {
             try
             {
@@ -5321,7 +5358,18 @@ namespace TLIS_Service.Services
                     Test[0] = NameAttribute;
                     Attributes.AttributesActivatedLibrary = Test;
                 }
-
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                     
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
+                }
                 return new Response<GetForAddCivilLibrarybject>(true, Attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -5330,7 +5378,7 @@ namespace TLIS_Service.Services
             }
         
         }
-        public Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutMonopleLibrary(string TableName)
+        public Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutMonopleLibrary(string TableName,int UserId,bool ExternalSys)
         {
             try
             {
@@ -5403,7 +5451,18 @@ namespace TLIS_Service.Services
                     Test[0] = NameAttribute;
                     Attributes.AttributesActivatedLibrary = Test;
                 }
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
 
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
+                }
                 return new Response<GetForAddCivilLibrarybject>(true, Attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -5412,7 +5471,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutCapsuleLibrary(string TableName)
+        public Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutCapsuleLibrary(string TableName, int UserId, bool ExternalSys)
         {
             try
             {
@@ -5485,7 +5544,18 @@ namespace TLIS_Service.Services
                     Test[0] = NameAttribute;
                     Attributes.AttributesActivatedLibrary = Test;
                 }
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
 
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
+                }
                 return new Response<GetForAddCivilLibrarybject>(true, Attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -5494,7 +5564,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName)
+        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName, int UserId, bool ExternalSys)
         {
             try
            {
@@ -5592,691 +5662,7 @@ namespace TLIS_Service.Services
 
                 }
 
-                //// Microwave Load Libraries
-                //else if (Helpers.Constants.TablesNames.TLImwRFULibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttViews> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository
-                //    .GetAttributeActivatedGetForAdd(TableName, null, null, "Model")
-                //    .Select(FKitem =>
-                //    {
-                //        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                //        {
-                //            switch (FKitem.Desc.ToLower())
-                //            {
-                //                case "tlidiversitytype":
-                //                    FKitem.Value = _mapper.Map<List<DiversityTypeViewModel>>(
-                //                        _unitOfWork.DiversityTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                //                    break;
-                //                case "tliboardtype":
-                //                    FKitem.Value = _mapper.Map<List<BoardTypeViewModel>>(
-                //                        _unitOfWork.BoardTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                //                    break;
-                //            }
-                //        }
-                //        return FKitem;
-                //    })
-                //    .ToList();
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogisticals(Helpers.Constants.TablePartName.MW.ToString()));
-                //    Attributes.AttributesActivatedLibrary = listofAttributesActivated;
-
-                //    IEnumerable<BaseInstAttViewDynamic> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //    .GetDynamicLibAtt(TableNameEntity.Id, null)
-                //    .Select(DynamicAttribute =>
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-                //        DynamicAttribute.Value = !string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue) ?
-                //            DynamicAttribute.DataType.ToLower() switch
-                //            {
-                //                "string" => DynamicAttributeEntity.DefaultValue,
-                //                "int" => int.Parse(DynamicAttributeEntity.DefaultValue),
-                //                "double" => double.Parse(DynamicAttributeEntity.DefaultValue),
-                //                "boolean" => bool.Parse(DynamicAttributeEntity.DefaultValue),
-                //                "datetime" => DateTime.Parse(DynamicAttributeEntity.DefaultValue),
-                //                _ => DynamicAttribute.Value
-                //            } :
-                //            " ".Split(' ')[0];
-                //        return DynamicAttribute;
-                //    });
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue.ToList();
-
-                //}
-                //else if (Helpers.Constants.TablesNames.TLImwBULibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-                //    foreach (BaseAttView FKitem in listofAttributesActivated)
-                //    {
-                //        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                //        {
-                //            if (FKitem.Desc.ToLower() == "tlidiversitytype")
-                //                FKitem.Value = _mapper.Map<List<DiversityTypeViewModel>>(_unitOfWork.DiversityTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
-                //        }
-                //    }
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.MW.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
-                //else if (Helpers.Constants.TablesNames.TLImwDishLibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-
-                //    foreach (BaseAttView FKitem in listofAttributesActivated)
-                //    {
-                //        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                //        {
-                //            if (FKitem.Desc.ToLower() == "tlipolaritytype")
-                //                FKitem.Value = _mapper.Map<List<PolarityTypeViewModel>>(_unitOfWork.PolarityTypeRepository.GetAllWithoutCount().ToList());
-
-                //            else if (FKitem.Desc.ToLower() == "tliastype")
-                //                FKitem.Value = _mapper.Map<List<AsTypeViewModel>>(_unitOfWork.AsTypeRepository.GetAllWithoutCount().ToList());
-                //        }
-                //    }
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.MW.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
-                //else if (Helpers.Constants.TablesNames.TLImwODULibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-
-                //    foreach (BaseAttView FKitem in listofAttributesActivated)
-                //    {
-                //        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                //        {
-                //            if (FKitem.Desc.ToLower() == "tliparity")
-                //                FKitem.Value = _mapper.Map<List<ParityViewModel>>(_unitOfWork.ParityRepository.GetAllWithoutCount().ToList());
-                //        }
-                //    }
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.MW.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
-                //else if (Helpers.Constants.TablesNames.TLImwOtherLibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.MW.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
-
-                //// Radio Load Libraries
-                //else if (Helpers.Constants.TablesNames.TLIradioAntennaLibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.Radio.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
-                //else if (Helpers.Constants.TablesNames.TLIradioRRULibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.Radio.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
-                //else if (Helpers.Constants.TablesNames.TLIradioOtherLibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.Radio.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
-
-                //// Power Load Library
-                //else if (Helpers.Constants.TablesNames.TLIpowerLibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.Power.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
-
-                //// Load Other Library
-                //else if (Helpers.Constants.TablesNames.TLIloadOtherLibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.LoadOther.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
-
-                //// Side Arm Library
-                //else if (Helpers.Constants.TablesNames.TLIsideArmLibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.SideArm.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
-
-                //// Other Inventories Libraries
-                //else if (Helpers.Constants.TablesNames.TLIcabinetPowerLibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-
-                //    foreach (BaseAttView FKitem in listofAttributesActivated)
-                //    {
-                //        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                //        {
-                //            if (FKitem.Desc.ToLower() == "tlicabinetpowertype")
-                //                FKitem.Value = _mapper.Map<List<CabinetPowerTypeViewModel>>(_unitOfWork.CabinetPowerTypeRepository.GetAllWithoutCount().ToList());
-                //        }
-                //    }
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.OtherInventory.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
-                //else if (Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-
-                //    foreach (BaseAttView FKitem in listofAttributesActivated)
-                //    {
-                //        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                //        {
-                //            if (FKitem.Desc.ToLower() == "tlitelecomtype")
-                //                FKitem.Value = _mapper.Map<List<TelecomTypeViewModel>>(_unitOfWork.TelecomTypeRepository.GetAllWithoutCount().ToList());
-                //        }
-                //    }
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.OtherInventory.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
-                //else if (Helpers.Constants.TablesNames.TLIsolarLibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-
-                //    foreach (BaseAttView FKitem in listofAttributesActivated)
-                //    {
-                //        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                //        {
-                //            if (FKitem.Desc.ToLower() == "tlicapacity")
-                //                FKitem.Value = _mapper.Map<List<CapacityViewModel>>(_unitOfWork.CapacityRepository.GetAllWithoutCount().ToList());
-                //        }
-                //    }
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.OtherInventory.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
-                //else if (Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString() == TableName)
-                //{
-                //    List<BaseAttView> listofAttributesActivated = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, null).ToList();
-
-                //    foreach (BaseAttView FKitem in listofAttributesActivated)
-                //    {
-                //        if (FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Desc))
-                //        {
-                //            if (FKitem.Desc.ToLower() == "tlicapacity")
-                //                FKitem.Value = _mapper.Map<List<CapacityViewModel>>(_unitOfWork.CapacityRepository.GetAllWithoutCount().ToList());
-                //        }
-                //    }
-
-                //    listofAttributesActivated.AddRange(_unitOfWork.LogistcalRepository.GetLogistical(Helpers.Constants.TablePartName.OtherInventory.ToString()));
-                //    Attributes.AttributesActivated = listofAttributesActivated;
-
-                //    IEnumerable<DynamicAttLibViewModel> DynamicAttributesWithoutValue = _unitOfWork.DynamicAttRepository
-                //        .GetDynamicLibAtts(TableNameEntity.Id, null);
-
-                //    foreach (DynamicAttLibViewModel DynamicAttribute in DynamicAttributesWithoutValue)
-                //    {
-                //        TLIdynamicAtt DynamicAttributeEntity = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttribute.Id);
-
-                //        if (!string.IsNullOrEmpty(DynamicAttributeEntity.DefaultValue))
-                //        {
-                //            if (DynamicAttribute.DataType.ToLower() == "string".ToLower())
-                //                DynamicAttribute.Value = DynamicAttributeEntity.DefaultValue;
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "int".ToLower())
-                //                DynamicAttribute.Value = int.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "double".ToLower())
-                //                DynamicAttribute.Value = double.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "boolean".ToLower())
-                //                DynamicAttribute.Value = bool.Parse(DynamicAttributeEntity.DefaultValue);
-
-                //            else if (DynamicAttribute.DataType.ToLower() == "datetime".ToLower())
-                //                DynamicAttribute.Value = DateTime.Parse(DynamicAttributeEntity.DefaultValue);
-                //        }
-                //        else
-                //        {
-                //            DynamicAttribute.Value = " ".Split(' ')[0];
-                //        }
-                //    }
-
-                //    Attributes.DynamicAtts = DynamicAttributesWithoutValue;
-                //    Attributes.DynamicAttInst = null;
-                //}
+           
 
                 List<BaseInstAttViews> Test = Attributes.AttributesActivatedLibrary.ToList();
                 BaseInstAttViews NameAttribute = Test.FirstOrDefault(x => x.Key.ToLower() == "Model".ToLower());
@@ -6287,7 +5673,19 @@ namespace TLIS_Service.Services
                     Test[0] = NameAttribute;
                     Attributes.AttributesActivatedLibrary = Test;
                 }
+                var TabelNameId = db.TLItablesNames.FirstOrDefault(x => x.TableName == TableName).Id;
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
 
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
+                }
                 return new Response<GetForAddCivilLibrarybject>(true, Attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -6321,7 +5719,7 @@ namespace TLIS_Service.Services
                             TLIcivilWithLegLibrary OldCivilWithLegLibrary = _unitOfWork.CivilWithLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                             NewCivilWithLegLibrary.Deleted = true;
                             NewCivilWithLegLibrary.Model = NewCivilWithLegLibrary.Model + "_" + DateTime.Now.ToString();
-                            var HistoryId= _unitOfWork.CivilWithLegLibraryRepository.UpdateWithH(UserId,null, OldCivilWithLegLibrary, NewCivilWithLegLibrary);
+                            var HistoryId = _unitOfWork.CivilWithLegLibraryRepository.UpdateWithH(UserId, null, OldCivilWithLegLibrary, NewCivilWithLegLibrary, false);
                             DisableDynamicAttLibValuesH(TableNameEntity.Id, Id,UserId, HistoryId);
                             await _unitOfWork.SaveChangesAsync();
                            
@@ -6342,7 +5740,7 @@ namespace TLIS_Service.Services
                             TLIcivilWithoutLegLibrary OldCivilWithoutLegLibrary = _unitOfWork.CivilWithoutLegLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                             NewCivilWithoutLegLibrary.Deleted = true;
                             NewCivilWithoutLegLibrary.Model = NewCivilWithoutLegLibrary.Model + "_" + DateTime.Now.ToString();
-                            var HistoryId = _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithH(UserId,null, OldCivilWithoutLegLibrary, NewCivilWithoutLegLibrary);
+                            var HistoryId = _unitOfWork.CivilWithoutLegLibraryRepository.UpdateWithH(UserId,null, OldCivilWithoutLegLibrary, NewCivilWithoutLegLibrary, false);
                             DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId, HistoryId);
                             await _unitOfWork.SaveChangesAsync();
                         }
@@ -6363,7 +5761,7 @@ namespace TLIS_Service.Services
                             TLIcivilNonSteelLibrary OldCivilNonSteelLibrary = _unitOfWork.CivilNonSteelLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                             NewCivilNonSteelLibrary.Deleted = true;
                             NewCivilNonSteelLibrary.Model = NewCivilNonSteelLibrary.Model + "_" + DateTime.Now.ToString();
-                            var HistoryId = _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithH(UserId,null, OldCivilNonSteelLibrary, NewCivilNonSteelLibrary);
+                            var HistoryId = _unitOfWork.CivilNonSteelLibraryRepository.UpdateWithH(UserId,null, OldCivilNonSteelLibrary, NewCivilNonSteelLibrary, false);
                             DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId, HistoryId);
                             await _unitOfWork.SaveChangesAsync();
                             

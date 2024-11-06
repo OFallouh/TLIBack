@@ -29,12 +29,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.CivilLibraryService.GetCivilLibraryByType(CivilType, CivilWithoutLegCategoryId);
             return Ok(response);
         }
-        [HttpGet("GetForAdd/{CivilType}")]
-        // [ProducesResponseType(200, Type = typeof(List<AllItemAttributes>))]
-        public IActionResult GetForAdd(string CivilType)
-        {
-            var response = _unitOfWorkService.CivilLibraryService.GetForAdd(CivilType);
-            return Ok(response);
-        }
+        //[HttpGet("GetForAdd/{CivilType}")]
+        //// [ProducesResponseType(200, Type = typeof(List<AllItemAttributes>))]
+        //public IActionResult GetForAdd(string CivilType)
+        //{
+        //    var response = _unitOfWorkService.CivilLibraryService.GetForAdd(CivilType);
+        //    return Ok(response);
+        //}
     }
 }

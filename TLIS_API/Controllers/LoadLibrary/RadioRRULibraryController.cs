@@ -64,7 +64,7 @@ namespace TLIS_API.Controllers.LoadLibrary
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.RadioLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString());
+                var response = _unitOfWorkService.RadioLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), userId, false);
                 return Ok(response);
             }
             
@@ -114,7 +114,7 @@ namespace TLIS_API.Controllers.LoadLibrary
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.RadioLibraryService.AddRadioRRULibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioRRU, ConnectionString, userId);
+                var response = _unitOfWorkService.RadioLibraryService.AddRadioRRULibrary(Helpers.Constants.LoadSubType.TLIradioRRULibrary.ToString(), addRadioRRU, ConnectionString, userId, false);
                 return Ok(response);
             }
             else

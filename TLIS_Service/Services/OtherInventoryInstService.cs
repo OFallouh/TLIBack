@@ -64,7 +64,6 @@ using TLIS_DAL.ViewModels.TelecomTypeDTOs;
 using TLIS_DAL.ViewModels.ParityDTOs;
 using TLIS_DAL.ViewModels.InstCivilwithoutLegsTypeDTOs;
 using System.Reflection.Emit;
-using TLIS_DAL.ViewModels.SiteDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -392,7 +391,7 @@ namespace TLIS_Service.Services
                 return new Response<ObjectInstAtts>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddOtherInventoryInstallationObject> GetAttForAddGeneratorInstallation(string TableName, int LibraryID, string SiteCode)
+        public Response<GetForAddOtherInventoryInstallationObject> GetAttForAddGeneratorInstallation(string TableName, int LibraryID, string SiteCode, int UserId, bool ExternalSys)
         {
             try
             {
@@ -480,6 +479,17 @@ namespace TLIS_Service.Services
                     });
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
+                    if (ExternalSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddOtherInventoryInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -493,7 +503,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddOtherInventoryInstallationObject> GetAttForAddSolarInstallation(string TableName, int LibraryID, string SiteCode)
+        public Response<GetForAddOtherInventoryInstallationObject> GetAttForAddSolarInstallation(string TableName, int LibraryID, string SiteCode,int UserId, bool ExternalSys)
         {
             try
             {
@@ -586,6 +596,17 @@ namespace TLIS_Service.Services
                     });
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
+                    if (ExternalSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddOtherInventoryInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -2693,7 +2714,7 @@ namespace TLIS_Service.Services
         //        }
         //    }
         //}
-        public Response<AddGeneratorInstallationObject> AddGeneratorInstallation(AddGeneratorInstallationObject addGeneratorInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId)
+        public Response<AddGeneratorInstallationObject> AddGeneratorInstallation(AddGeneratorInstallationObject addGeneratorInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId,bool ExternalSys)
         {
             int allOtherInventoryInstId = 0;
             using (var con = new OracleConnection(ConnectionString))
@@ -2745,7 +2766,7 @@ namespace TLIS_Service.Services
                             if (CheckSerialNumber != null)
                                 return new Response<AddGeneratorInstallationObject>(true, null, null, $"The serial number {Generator.SerialNumber} is already exists", (int)ApiReturnCode.fail);
                             Generator.GeneratorLibraryId = addGeneratorInstallationObject.GeneratorType.GeneratorLibraryId;
-                           var HistoryId= _unitOfWork.GeneratorRepository.AddWithHInsatallation(UserId,null, Generator,SiteCode);
+                           var HistoryId= _unitOfWork.GeneratorRepository.AddWithHInsatallation(UserId,null, Generator,SiteCode,ExternalSys);
                             _unitOfWork.SaveChanges();
 
                             TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
@@ -2837,7 +2858,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<AddCabinetPowerInstallation> AddCabinetPowerInstallation(AddCabinetPowerInstallation addCabinetPowerInstallation, string SiteCode, string ConnectionString, int? TaskId, int UserId)
+        public Response<AddCabinetPowerInstallation> AddCabinetPowerInstallation(AddCabinetPowerInstallation addCabinetPowerInstallation, string SiteCode, string ConnectionString, int? TaskId, int UserId, bool ExternalSys)
         {
             int allOtherInventoryInstId = 0;
             using (var con = new OracleConnection(ConnectionString))
@@ -2884,7 +2905,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddCabinetPowerInstallation>(true, null, null, $"This name {CabinetPower.Name} is already exists", (int)ApiReturnCode.fail);
 
                             CabinetPower.CabinetPowerLibraryId = addCabinetPowerInstallation.CabinetPowerType.CabinetPowerLibraryId;
-                           var HistoryId= _unitOfWork.CabinetRepository.AddWithHInsatallation(UserId,null, CabinetPower,SiteCode);
+                           var HistoryId= _unitOfWork.CabinetRepository.AddWithHInsatallation(UserId,null, CabinetPower,SiteCode,ExternalSys);
                             _unitOfWork.SaveChanges();
 
                             TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
@@ -2976,7 +2997,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<AddCabinetTelecomInstallationObject> AddCabinetTelecomInstallation(AddCabinetTelecomInstallationObject addCabinetTelecomInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId)
+        public Response<AddCabinetTelecomInstallationObject> AddCabinetTelecomInstallation(AddCabinetTelecomInstallationObject addCabinetTelecomInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId, bool ExternalSys)
         {
             int allOtherInventoryInstId = 0;
             using (var con = new OracleConnection(ConnectionString))
@@ -3023,7 +3044,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddCabinetTelecomInstallationObject>(true, null, null, $"This name {CabinetTelecom.Name} is already exists", (int)ApiReturnCode.fail);
 
                             CabinetTelecom.CabinetTelecomLibraryId = addCabinetTelecomInstallationObject.CabinetTelecomType.CabinetTelecomLibraryId;
-                            var HistoryId=_unitOfWork.CabinetRepository.AddWithHInsatallation(UserId,null, CabinetTelecom,SiteCode);
+                            var HistoryId=_unitOfWork.CabinetRepository.AddWithHInsatallation(UserId,null, CabinetTelecom,SiteCode,ExternalSys);
                             _unitOfWork.SaveChanges();
 
                             TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
@@ -3116,7 +3137,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<AddSolarInstallationObject> AddSolarInstallation(AddSolarInstallationObject addSolarInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId)
+        public Response<AddSolarInstallationObject> AddSolarInstallation(AddSolarInstallationObject addSolarInstallationObject, string SiteCode, string ConnectionString, int? TaskId, int UserId, bool ExternalSys)
         {
             int allOtherInventoryInstId = 0;
             using (var con = new OracleConnection(ConnectionString))
@@ -3163,7 +3184,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddSolarInstallationObject>(true, null, null, $"This name {Solar.Name} is already exists", (int)ApiReturnCode.fail);
 
                             Solar.SolarLibraryId = addSolarInstallationObject.SolarType.SolarLibraryId;
-                            var HistoryId=_unitOfWork.SolarRepository.AddWithHInsatallation(UserId,null, Solar,SiteCode);
+                            var HistoryId=_unitOfWork.SolarRepository.AddWithHInsatallation(UserId,null, Solar,SiteCode,ExternalSys);
                             _unitOfWork.SaveChanges();
 
                             TLIallOtherInventoryInst allOtherInventoryInst = new TLIallOtherInventoryInst();
@@ -3819,7 +3840,7 @@ namespace TLIS_Service.Services
         //Map ViewModel to Entity
         //Update Entity
         #endregion
-        public async Task<Response<GetForAddOtherInventoryInstallationObject>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId, int UserId, string connectionString)
+        public async Task<Response<GetForAddOtherInventoryInstallationObject>> EditOtherInventoryInstallation(object model, string TableName, int? TaskId, int UserId, string connectionString, bool ExternalSys)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -3964,7 +3985,7 @@ namespace TLIS_Service.Services
                             //if (!string.IsNullOrEmpty(CheckDependencyValidation))
                             //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
                             Generator.GeneratorLibraryId = GeneratorModel.GeneratorType.GeneratorLibraryId;
-                            var HistoryId=_unitOfWork.GeneratorRepository.UpdateWithHInstallation(UserId,null, GeneratorInst.allOtherInventoryInst.generator, Generator, GeneratorInst.SiteCode);
+                            var HistoryId=_unitOfWork.GeneratorRepository.UpdateWithHInstallation(UserId,null, GeneratorInst.allOtherInventoryInst.generator, Generator, GeneratorInst.SiteCode,ExternalSys);
                             _unitOfWork.SaveChanges();
                             //----------------------------------------------------------------------------------//
                             //----------------------OtherOnSite-------------------------------------------------//
@@ -4108,7 +4129,7 @@ namespace TLIS_Service.Services
                             //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
                       
                             Solar.SolarLibraryId = SolarModel.SolarType.SolarLibraryId;
-                            var HistoryId=_unitOfWork.SolarRepository.UpdateWithHInstallation(UserId,null, SolarInst.allOtherInventoryInst.solar, Solar, SolarInst.SiteCode);
+                            var HistoryId=_unitOfWork.SolarRepository.UpdateWithHInstallation(UserId,null, SolarInst.allOtherInventoryInst.solar, Solar, SolarInst.SiteCode, ExternalSys);
                             _unitOfWork.SaveChanges();
                             //----------------------------------------------------------------------------------//
                             //----------------------OtherOnSite-------------------------------------------------//
@@ -4212,7 +4233,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<GetForAddOtherInventoryInstallationObject>> EditCabinetPowerInstallation(EditCabinetPowerInstallationObject editCabinetPowerInstallationObject, string TableName, int? TaskId, int UserId, string connectionString)
+        public async Task<Response<GetForAddOtherInventoryInstallationObject>> EditCabinetPowerInstallation(EditCabinetPowerInstallationObject editCabinetPowerInstallationObject, string TableName, int? TaskId, int UserId, string connectionString,bool ExtenalSys)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -4289,7 +4310,7 @@ namespace TLIS_Service.Services
                         //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
                         CabinetPower.CabinetPowerLibraryId = editCabinetPowerInstallationObject.CabinetPowerType.CabinetPowerLibraryId;
-                       var HistoryId= _unitOfWork.CabinetRepository.UpdateWithHInstallation(UserId,null, CabinetPowerInst.allOtherInventoryInst.cabinet, CabinetPower, CabinetPowerInst.SiteCode);
+                       var HistoryId= _unitOfWork.CabinetRepository.UpdateWithHInstallation(UserId,null, CabinetPowerInst.allOtherInventoryInst.cabinet, CabinetPower, CabinetPowerInst.SiteCode,ExtenalSys);
                         _unitOfWork.SaveChanges();
                         //----------------------------------------------------------------------------------//
                         //----------------------OtherOnSite-------------------------------------------------//
@@ -4393,7 +4414,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<GetForAddOtherInventoryInstallationObject>> EditCabinetTelecomInstallation(EditCabinetTelecomInstallationObject editCabinetTelecomInstallationObject, string TableName, int? TaskId, int UserId, string connectionString)
+        public async Task<Response<GetForAddOtherInventoryInstallationObject>> EditCabinetTelecomInstallation(EditCabinetTelecomInstallationObject editCabinetTelecomInstallationObject, string TableName, int? TaskId, int UserId, string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -4471,7 +4492,7 @@ namespace TLIS_Service.Services
                         //    return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
 
                         CabinetTelecom.CabinetTelecomLibraryId = editCabinetTelecomInstallationObject.CabinetTelecomType.CabinetTelecomLibraryId;
-                        var HistoryId=_unitOfWork.CabinetRepository.UpdateWithHInstallation(UserId,null, CabinetPowerInst.allOtherInventoryInst.cabinet, CabinetTelecom, CabinetPowerInst.SiteCode);
+                        var HistoryId=_unitOfWork.CabinetRepository.UpdateWithHInstallation(UserId,null, CabinetPowerInst.allOtherInventoryInst.cabinet, CabinetTelecom, CabinetPowerInst.SiteCode,ExternalSys);
                         _unitOfWork.SaveChanges();
                         //----------------------------------------------------------------------------------//
                         //----------------------OtherOnSite-------------------------------------------------//
@@ -5767,12 +5788,13 @@ namespace TLIS_Service.Services
             }
             return string.Empty;
         }
-        public Response<bool> DismantleOtherInventory(int UserId,string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId,string ConnectionString)
+        public Response<bool> DismantleOtherInventory(int UserId,string SiteCode, int OtherInventoryId, string OtherInventoryName, int? TaskId,string ConnectionString,bool ExternalSys)
         {
             using (TransactionScope scope = new TransactionScope())
             {
                 try
                 {
+                    TLIhistory AddTablesHistory = new TLIhistory();
                     if (OtherInventoryName.ToLower() == OtherInventoryType.TLIsolar.ToString().ToLower())
                     {
                         var Solar = _unitOfWork.OtherInSiteRepository.GetIncludeWhereFirst(x => x.allOtherInventoryInst.solarId == OtherInventoryId && !x.Dismantle
@@ -5790,17 +5812,32 @@ namespace TLIS_Service.Services
                             Solar.Dismantle = true;
                             Solar.allOtherInventoryInst.solar.Name = Solar.allOtherInventoryInst.solar.Name + DateTime.Now;
 
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = OtherInventoryId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsolar").Id,
-                                UserId = UserId,
-                                SiteCode = SiteCode
-                            };
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = OtherInventoryId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsolar").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+ 
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _unitOfWork.SaveChanges();
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _unitOfWork.SaveChanges();
+                            }
+                            if (ExternalSys == true)
+                            {
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = OtherInventoryId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsolar").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _unitOfWork.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
                             
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
@@ -5829,17 +5866,34 @@ namespace TLIS_Service.Services
                                 && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Solar.Dismantle = true;
                             Solar.allOtherInventoryInst.solar.Name = Solar.allOtherInventoryInst.solar.Name + DateTime.Now;
-                            TLIhistory AddTablesHistory = new TLIhistory
-                            {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = OtherInventoryId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsolar").Id,
-                                UserId = UserId,
-                                SiteCode = SiteCode
-                            };
+                            
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _unitOfWork.SaveChanges();
+                            if (ExternalSys == false)
+                            {
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = OtherInventoryId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsolar").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _unitOfWork.SaveChanges();
+                            }
+                            if (ExternalSys == true)
+                            {
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = OtherInventoryId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsolar").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _unitOfWork.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
@@ -5873,17 +5927,32 @@ namespace TLIS_Service.Services
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Generator.Dismantle = true;
                             Generator.allOtherInventoryInst.generator.Name = Generator.allOtherInventoryInst.generator.Name + DateTime.Now;
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = OtherInventoryId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIgenerator").Id,
-                                UserId = UserId,
-                                SiteCode = SiteCode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _unitOfWork.SaveChanges();
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = OtherInventoryId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIgenerator").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _unitOfWork.SaveChanges();
+                            }
+                            if (ExternalSys == true)
+                            {
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = OtherInventoryId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIgenerator").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _unitOfWork.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
@@ -5913,17 +5982,31 @@ namespace TLIS_Service.Services
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Generator.Dismantle = true;
                             Generator.allOtherInventoryInst.generator.Name = Generator.allOtherInventoryInst.generator.Name + DateTime.Now;
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = OtherInventoryId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIgenerator").Id,
-                                UserId = UserId,
-                                SiteCode = SiteCode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _unitOfWork.SaveChanges();
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = OtherInventoryId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIgenerator").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _unitOfWork.SaveChanges();
+                            }
+                            if (ExternalSys == true)
+                            {
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = OtherInventoryId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIgenerator").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _unitOfWork.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
@@ -5961,17 +6044,32 @@ namespace TLIS_Service.Services
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Cabinet.Dismantle = true;
                             Cabinet.allOtherInventoryInst.cabinet.Name = Cabinet.allOtherInventoryInst.cabinet.Name + DateTime.Now;
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = OtherInventoryId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcabinet").Id,
-                                UserId = UserId,
-                                SiteCode = SiteCode
-                            };
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = OtherInventoryId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcabinet").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _unitOfWork.SaveChanges();
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _unitOfWork.SaveChanges();
+                            }
+                            if (ExternalSys == true)
+                            {
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = OtherInventoryId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsolar").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _unitOfWork.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
@@ -6001,17 +6099,32 @@ namespace TLIS_Service.Services
                                  && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower());
                             Cabinet.Dismantle = true;
                             Cabinet.allOtherInventoryInst.cabinet.Name = Cabinet.allOtherInventoryInst.cabinet.Name + DateTime.Now;
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = OtherInventoryId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcabinet").Id,
-                                UserId = UserId,
-                                SiteCode = SiteCode
-                            };
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = OtherInventoryId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcabinet").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _unitOfWork.SaveChanges();
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _unitOfWork.SaveChanges();
+                            }
+                            if (ExternalSys == true)
+                            {
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = OtherInventoryId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsolar").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _unitOfWork.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIotherInSite = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIotherInSite").Id;
@@ -6131,7 +6244,7 @@ namespace TLIS_Service.Services
         //get record by Id
         //get activated attributes and values
         //get dynamic attributes by TableNameId
-        public Response<GetForAddOtherInventoryInstallationObject> GetGenertorInstallationById(int GeneratorId, string TableName)
+        public Response<GetForAddOtherInventoryInstallationObject> GetGenertorInstallationById(int GeneratorId, string TableName, int UserId, bool ExternalSys)
         {
             try
             {
@@ -6388,7 +6501,18 @@ namespace TLIS_Service.Services
                             })
                             .ToList();
                     }
-
+                    if (ExternalSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            RecordId = GeneratorId.ToString(),
+                            HistoryTypeId = 4,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddOtherInventoryInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 else
@@ -6402,7 +6526,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddOtherInventoryInstallationObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddOtherInventoryInstallationObject> GetSolarInstallationById(int SolarId, string TableName)
+        public Response<GetForAddOtherInventoryInstallationObject> GetSolarInstallationById(int SolarId, string TableName,int UserId, bool ExternalSys)
         {
             try
             {
@@ -6649,7 +6773,18 @@ namespace TLIS_Service.Services
                             })
                             .ToList();
                     }
-
+                    if (ExternalSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            RecordId=SolarId.ToString(),
+                            HistoryTypeId = 4,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddOtherInventoryInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 else

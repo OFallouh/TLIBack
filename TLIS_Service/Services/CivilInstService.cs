@@ -17,6 +17,7 @@ using System.Data.Linq;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Numerics;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -2611,7 +2612,7 @@ namespace TLIS_Service.Services
         //    }
         //    //}
         //}
-        public Response<ObjectInstAtts> AddCivilWithLegsInstallation(AddCivilWithLegsViewModel AddCivilWithLegsViewModel, string TableName, string SiteCode, string connectionString,int? TaskId,int UserId)
+        public Response<ObjectInstAtts> AddCivilWithLegsInstallation(AddCivilWithLegsViewModel AddCivilWithLegsViewModel, string TableName, string SiteCode, string connectionString,int? TaskId,int UserId, bool ExternalSys)
         {
             //using (TransactionScope transaction = new TransactionScope())
             //{
@@ -2664,12 +2665,12 @@ namespace TLIS_Service.Services
                         if (civilwithleglibrary.Model != null)
                             Model = civilwithleglibrary.Model;
 
-                        civilWithLegs.Name = sitename + " " + Model + " " + ownername + " " + AddCivilWithLegsViewModel.installationAttributes.HeightImplemented+"HE";
+                        civilWithLegs.Name = $"{sitename} {Model} {ownername} {Math.Round(AddCivilWithLegsViewModel.installationAttributes.HeightImplemented, 1, MidpointRounding.ToEven)}HE";
 
 
                         var CheckName = _dbContext.MV_CIVIL_WITHLEGS_VIEW
                         .Where(x => x.Name != null &&
-                                    x.Name.ToLower() == civilWithLegs.Name.ToLower() &&
+                                    x.Name.Trim().ToLower() == civilWithLegs.Name.ToLower() &&
                                     !x.Dismantle &&
                                     x.SITECODE.ToLower() == SiteCode.ToLower())
                         .ToList();
@@ -2703,7 +2704,7 @@ namespace TLIS_Service.Services
                         }
         
                         civilWithLegs.CivilWithLegsLibId = AddCivilWithLegsViewModel.civilType.civilWithLegsLibId;
-                        var HistoryId=_unitOfWork.CivilWithLegsRepository.AddWithHInsatallation(UserId,null, civilWithLegs,SiteCode);
+                        var HistoryId=_unitOfWork.CivilWithLegsRepository.AddWithHInsatallation(UserId,null, civilWithLegs,SiteCode,ExternalSys);
                         _unitOfWork.SaveChanges();
 
                         TLIallCivilInst allCivilInst = new TLIallCivilInst();
@@ -2884,7 +2885,7 @@ namespace TLIS_Service.Services
             }
             //}
         }
-        public Response<ObjectInstAtts> AddCivilWithoutLegsInstallation(AddCivilWithoutLegViewModel addCivilWithoutLegViewModel, string TableName, string SiteCode, string connectionString, int? TaskId, int UserId)
+        public Response<ObjectInstAtts> AddCivilWithoutLegsInstallation(AddCivilWithoutLegViewModel addCivilWithoutLegViewModel, string TableName, string SiteCode, string connectionString, int? TaskId, int UserId, bool ExternalSys)
         {
             //using (TransactionScope transaction = new TransactionScope())
             //{
@@ -2937,11 +2938,11 @@ namespace TLIS_Service.Services
                         if (CvilWithoutlegsLibrary.Model != null)
                             Model = CvilWithoutlegsLibrary.Model;
 
-                        civilwithoutlegs.Name = sitename + " " + Model + " " + ownername + " " + addCivilWithoutLegViewModel.installationAttributes.HeightImplemented+"HE";
-
+                       
+                        civilwithoutlegs.Name = $"{sitename} {Model} {ownername} {Math.Round(addCivilWithoutLegViewModel.installationAttributes.HeightImplemented, 1, MidpointRounding.ToEven)}HE";
                         var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW
                           .Where(x => x.Name != null &&
-                                      x.Name.ToLower() == civilwithoutlegs.Name.ToLower() &&
+                                      x.Name.Trim().ToLower() == civilwithoutlegs.Name.ToLower() &&
                                       !x.Dismantle &&
                                       x.SITECODE.ToLower() == SiteCode.ToLower())
                           .ToList();
@@ -3018,7 +3019,7 @@ namespace TLIS_Service.Services
                         //}
                        
                         civilwithoutlegs.CivilWithoutlegsLibId = addCivilWithoutLegViewModel.civilType.civilWithOutLegsLibId;
-                        var HistoryId= _unitOfWork.CivilWithoutLegRepository.AddWithHInsatallation(UserId,null, civilwithoutlegs,SiteCode);
+                        var HistoryId= _unitOfWork.CivilWithoutLegRepository.AddWithHInsatallation(UserId,null, civilwithoutlegs,SiteCode, ExternalSys);
                         _unitOfWork.SaveChanges();
 
                         TLIallCivilInst allCivilInst = new TLIallCivilInst();
@@ -3118,7 +3119,7 @@ namespace TLIS_Service.Services
             }
             //}
         }
-        public Response<ObjectInstAtts> AddCivilNonSteelInstallation(AddCivilNonSteelObject addCivilNonSteelObject, string TableName, string SiteCode, string connectionString, int? TaskId, int UserId)
+        public Response<ObjectInstAtts> AddCivilNonSteelInstallation(AddCivilNonSteelObject addCivilNonSteelObject, string TableName, string SiteCode, string connectionString, int? TaskId, int UserId, bool ExternalSys)
         {
            
             int allCivilInstId = 0;
@@ -3166,7 +3167,7 @@ namespace TLIS_Service.Services
 
                        
                         civilNonSteel.CivilNonSteelLibraryId = addCivilNonSteelObject.civilType.CivilNonSteelLibraryId;
-                        var HistorId=_unitOfWork.CivilNonSteelRepository.AddWithHInsatallation(UserId,null, civilNonSteel,SiteCode);
+                        var HistorId=_unitOfWork.CivilNonSteelRepository.AddWithHInsatallation(UserId,null, civilNonSteel,SiteCode, ExternalSys);
                         _unitOfWork.SaveChanges();
 
                         TLIallCivilInst allCivilInst = new TLIallCivilInst();
@@ -3266,7 +3267,7 @@ namespace TLIS_Service.Services
             }
             //}
         }
-        public async Task<Response<ObjectInstAtts>> EditCivilWithLegsInstallation(EditCivilWithLegsInstallationObject editCivilWithLegsInstallationObject, string CivilType, int? TaskId,int userId, string connectionString)
+        public async Task<Response<ObjectInstAtts>> EditCivilWithLegsInstallation(EditCivilWithLegsInstallationObject editCivilWithLegsInstallationObject, string CivilType, int? TaskId,int userId, string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -3319,12 +3320,11 @@ namespace TLIS_Service.Services
                         if (CivilWithLegInst.CivilWithLegsLib.Model != null)
                             Model = CivilWithLegInst.CivilWithLegsLib.Model;
 
-                        civilWithLegsEntity.Name = SiteCode.Site.SiteName + " " + Model + " " + ownername + " " + civilWithLegsEntity.HeightImplemented+"HE";
-
+                        civilWithLegsEntity.Name = $"{SiteCode.Site.SiteName} {Model} {ownername} {Math.Round(civilWithLegsEntity.HeightImplemented, 1, MidpointRounding.ToEven)}HE";
                         var CheckName = _dbContext.MV_CIVIL_WITHLEGS_VIEW
                         .Where(x => x.Id != civilWithLegsEntity.Id &&
                                     x.Name != null &&
-                                    x.Name.ToLower() == civilWithLegsEntity.Name.ToLower() &&
+                                    x.Name.Trim().ToLower() == civilWithLegsEntity.Name.ToLower() &&
                                     !x.Dismantle &&
                                     x.SITECODE.ToLower() == SiteCode.SiteCode.ToLower())
                         .ToList();
@@ -3351,7 +3351,7 @@ namespace TLIS_Service.Services
                                         var OldValueMWBU = _dbContext.TLImwBU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwBUId);
                                         TLImwBU tLImwBU = allloadinst.mwBU;
                                         tLImwBU.EquivalentSpace = tLImwBU.SpaceInstallation * (tLImwBU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.MW_BURepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueMWBU, tLImwBU, SiteCode.SiteCode);
+                                        _unitOfWork.MW_BURepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueMWBU, tLImwBU, SiteCode.SiteCode, ExternalSys);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWBU.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwBU.EquivalentSpace;
@@ -3361,7 +3361,7 @@ namespace TLIS_Service.Services
                                         var OldValueMWDish = _dbContext.TLImwDish.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwDishId);
                                         TLImwDish tLImwDish = allloadinst.mwDish;
                                         tLImwDish.EquivalentSpace = tLImwDish.SpaceInstallation * (tLImwDish.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.MW_DishRepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueMWDish, tLImwDish, SiteCode.SiteCode);
+                                        _unitOfWork.MW_DishRepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueMWDish, tLImwDish, SiteCode.SiteCode, ExternalSys);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWDish.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwDish.EquivalentSpace;
@@ -3377,7 +3377,7 @@ namespace TLIS_Service.Services
                                             var OldValueMWODU = _dbContext.TLImwODU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwODUId);
                                             TLImwODU tLImwODU = allloadinst.mwODU;
                                             tLImwODU.EquivalentSpace = tLImwODU.SpaceInstallation * (tLImwODU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                            _unitOfWork.MW_ODURepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueMWODU, tLImwODU, SiteCode.SiteCode);
+                                            _unitOfWork.MW_ODURepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueMWODU, tLImwODU, SiteCode.SiteCode, ExternalSys);
                                             _dbContext.SaveChanges();
                                             civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWODU.EquivalentSpace;
                                             civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwODU.EquivalentSpace;
@@ -3388,7 +3388,7 @@ namespace TLIS_Service.Services
                                         var OldValueMWOther = _dbContext.TLImwOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.mwOtherId);
                                         TLImwOther tLImwOther = allloadinst.mwOther;
                                         tLImwOther.EquivalentSpace = tLImwOther.Spaceinstallation * (tLImwOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueMWOther, tLImwOther, SiteCode.SiteCode);
+                                        _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueMWOther, tLImwOther, SiteCode.SiteCode, ExternalSys);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueMWOther.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLImwOther.EquivalentSpace;
@@ -3398,7 +3398,7 @@ namespace TLIS_Service.Services
                                         var OldValueRadioAntenna = _dbContext.TLIradioAntenna.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioAntennaId);
                                         TLIradioAntenna tLIradioAntenna = allloadinst.radioAntenna;
                                         tLIradioAntenna.EquivalentSpace = tLIradioAntenna.SpaceInstallation * (tLIradioAntenna.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueRadioAntenna, tLIradioAntenna,SiteCode.SiteCode);
+                                        _unitOfWork.RadioAntennaRepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueRadioAntenna, tLIradioAntenna,SiteCode.SiteCode, ExternalSys);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueRadioAntenna.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIradioAntenna.EquivalentSpace;
@@ -3408,7 +3408,7 @@ namespace TLIS_Service.Services
                                         var OldValueRadioRRU = _dbContext.TLIRadioRRU.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioRRUId);
                                         TLIRadioRRU tLIRadioRRU = allloadinst.radioRRU;
                                         tLIRadioRRU.EquivalentSpace = tLIRadioRRU.SpaceInstallation * (tLIRadioRRU.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.RadioRRURepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueRadioRRU, tLIRadioRRU,SiteCode.SiteCode);
+                                        _unitOfWork.RadioRRURepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueRadioRRU, tLIRadioRRU,SiteCode.SiteCode, ExternalSys);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueRadioRRU.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIRadioRRU.EquivalentSpace;
@@ -3418,7 +3418,7 @@ namespace TLIS_Service.Services
                                         var OldValueRadioOther = _dbContext.TLIradioOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.radioOtherId);
                                         TLIradioOther tLIradioOther = allloadinst.radioOther;
                                         tLIradioOther.EquivalentSpace = tLIradioOther.Spaceinstallation * (tLIradioOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(userId,null, OldValueRadioOther, tLIradioOther, SiteCode.SiteCode);
+                                        _unitOfWork.RadioOtherRepository.UpdateWithHInstallation(userId,null, OldValueRadioOther, tLIradioOther, SiteCode.SiteCode,ExternalSys);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueRadioOther.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIradioOther.EquivalentSpace;
@@ -3428,7 +3428,7 @@ namespace TLIS_Service.Services
                                         var OldValuePower = _dbContext.TLIpower.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.powerId);
                                         TLIpower tLIpower = allloadinst.power;
                                         tLIpower.EquivalentSpace = tLIpower.SpaceInstallation * (tLIpower.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.PowerRepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValuePower, tLIpower,SiteCode.SiteCode);
+                                        _unitOfWork.PowerRepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValuePower, tLIpower,SiteCode.SiteCode, ExternalSys);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValuePower.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIpower.EquivalentSpace;
@@ -3438,7 +3438,7 @@ namespace TLIS_Service.Services
                                         var OldValueloadOther = _dbContext.TLIloadOther.AsNoTracking().FirstOrDefault(x => x.Id == allloadinst.loadOtherId);
                                         TLIloadOther tLIloadOther = allloadinst.loadOther;
                                         tLIloadOther.EquivalentSpace = tLIloadOther.SpaceInstallation * (tLIloadOther.CenterHigh / (float)civilWithLegsEntity.HeightBase);
-                                        _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueloadOther, tLIloadOther, SiteCode.SiteCode);
+                                        _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(userId, civilWithLegsEntity.Id, OldValueloadOther, tLIloadOther, SiteCode.SiteCode, ExternalSys);
                                         _dbContext.SaveChanges();
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads - OldValueloadOther.EquivalentSpace;
                                         civilWithLegsEntity.CurrentLoads = civilWithLegsEntity.CurrentLoads + tLIloadOther.EquivalentSpace;
@@ -3479,7 +3479,7 @@ namespace TLIS_Service.Services
                         }
                        
                         civilWithLegsEntity.CivilWithLegsLibId = editCivilWithLegsInstallationObject.civilType.civilWithLegsLibId;
-                        var HistoryId= _unitOfWork.CivilWithLegsRepository.UpdateWithHInstallation(userId,null, CivilWithLegInst, civilWithLegsEntity, SiteCode.SiteCode);
+                        var HistoryId= _unitOfWork.CivilWithLegsRepository.UpdateWithHInstallation(userId,null, CivilWithLegInst, civilWithLegsEntity, SiteCode.SiteCode, ExternalSys);
                         ////////////////////////UpdateCivilSiteDate=////////////////////////
                         var OldValuecivilsitedate = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInst.civilWithLegsId == civilWithLegsEntity.Id);
                         var civilsitedate = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId == civilWithLegsEntity.Id);
@@ -3669,7 +3669,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<ObjectInstAtts>> EditCivilWithoutLegsInstallation(EditCivilWithoutLegsInstallationObject editCivilWithoutLegsInstallationObject, string CivilType, int? TaskId, int userId, string connectionString)
+        public async Task<Response<ObjectInstAtts>> EditCivilWithoutLegsInstallation(EditCivilWithoutLegsInstallationObject editCivilWithoutLegsInstallationObject, string CivilType, int? TaskId, int userId, string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -3714,12 +3714,12 @@ namespace TLIS_Service.Services
                         if (CivilWithoutLegInst.CivilWithoutlegsLib.Model != null)
                             Model = CivilWithoutLegInst.CivilWithoutlegsLib.Model;
 
-                        civilWithoutLegsEntity.Name = SiteCode.Site.SiteName + " " + Model + " " + ownername + " " + civilWithoutLegsEntity.HeightImplemented+"HE";
-
+                 
+                        civilWithoutLegsEntity.Name = $"{SiteCode.Site.SiteName} {Model} {ownername} {Math.Round(civilWithoutLegsEntity.HeightImplemented, 1, MidpointRounding.ToEven)}HE";
                         var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW
                         .Where(x => x.Id != civilWithoutLegsEntity.Id &&
                                     x.Name != null &&
-                                    x.Name.ToLower() == civilWithoutLegsEntity.Name.ToLower() &&
+                                    x.Name.Trim().ToLower() == civilWithoutLegsEntity.Name.ToLower() &&
                                     !x.Dismantle &&
                                     x.SITECODE.ToLower() == SiteCode.SiteCode.ToLower())
                         .ToList();
@@ -3941,7 +3941,7 @@ namespace TLIS_Service.Services
                         }
 
                        civilWithoutLegsEntity.CivilWithoutlegsLibId = editCivilWithoutLegsInstallationObject.civilType.civilWithOutLegsLibId;
-                       var HistoryId= _unitOfWork.CivilWithoutLegRepository.UpdateWithHInstallation(userId,null, CivilWithoutLegInst, civilWithoutLegsEntity,SiteCode.SiteCode);
+                       var HistoryId= _unitOfWork.CivilWithoutLegRepository.UpdateWithHInstallation(userId,null, CivilWithoutLegInst, civilWithoutLegsEntity,SiteCode.SiteCode, ExternalSys);
                         ////////////////////////UpdateCivilSiteDate=////////////////////////
                         var OldValuecivilsitedate = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInst.civilWithoutLegId == civilWithoutLegsEntity.Id);
                         var civilsitedate = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLegId == civilWithoutLegsEntity.Id);
@@ -4049,7 +4049,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<ObjectInstAtts>> EditCivilNonSteelInstallation(EditCivilNonSteelInstallationObject editCivilNonSteelInstallationObject, string CivilType, int? TaskId, int userId,string connectionString)
+        public async Task<Response<ObjectInstAtts>> EditCivilNonSteelInstallation(EditCivilNonSteelInstallationObject editCivilNonSteelInstallationObject, string CivilType, int? TaskId, int userId,string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -4133,7 +4133,7 @@ namespace TLIS_Service.Services
                         //    return new Response<ObjectInstAtts>(true, null, null, CheckDependencyValidation, (int)Helpers.Constants.ApiReturnCode.fail);
                         //civilNonSteelEntity.CivilNonSteelLibraryId = editCivilNonSteelInstallationObject.civilType.civilNonSteelLegsLibId;
                         civilNonSteelEntity.CivilNonSteelLibraryId = editCivilNonSteelInstallationObject.civilType.civilNonSteelLegsLibId;
-                    var HistoryId=_unitOfWork.CivilNonSteelRepository.UpdateWithHInstallation(userId,null, CivilNonSteelInst, civilNonSteelEntity,SiteCode.SiteCode);
+                    var HistoryId=_unitOfWork.CivilNonSteelRepository.UpdateWithHInstallation(userId,null, CivilNonSteelInst, civilNonSteelEntity,SiteCode.SiteCode, ExternalSys);
                     _unitOfWork.SaveChanges();
                     ////////////////////////UpdateCivilSiteDate=////////////////////////
                     var OldValuecivilsitedate = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInst.civilNonSteelId == civilNonSteelEntity.Id);
@@ -6642,7 +6642,7 @@ namespace TLIS_Service.Services
         //First CivilInsId get record by Id depened on TableName
         //Second TableName get TableName Id from TLItablesNames, get from AttributeAtts by TableName, get DynamicAtts by TableName Id
         //This Function return ObjectInstAtts List of InstActivatedAtts, List of DynamicAtts and List of RelatedTables
-        public Response<GetForAddCivilWithLegObject> GetCivilWithLegsInstallationById(int CivilInsId, string TableName)
+        public Response<GetForAddCivilWithLegObject> GetCivilWithLegsInstallationById(int CivilInsId, string TableName,int UserId,bool ExternalSys)
         {
             try
             {
@@ -7103,7 +7103,18 @@ namespace TLIS_Service.Services
                             })
                             .ToList();
                     }
-
+                    if (ExternalSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                            RecordId=CivilInsId.ToString()
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddCivilWithLegObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 else
@@ -7117,7 +7128,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddCivilWithLegObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddCivilWithOutLegInstallationcs> GetCivilWithoutLegsInstallationById(int CivilInsId, string TableName,int CategoryId)
+        public Response<GetForAddCivilWithOutLegInstallationcs> GetCivilWithoutLegsInstallationById(int CivilInsId, string TableName,int CategoryId,int UserId,bool ExternalSys)
         {
             try
             {
@@ -7426,7 +7437,18 @@ namespace TLIS_Service.Services
                             })
                             .ToList();
                     }
-
+                    if (ExternalSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                            RecordId = CivilInsId.ToString()
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddCivilWithOutLegInstallationcs>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 else
@@ -7439,7 +7461,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddCivilWithOutLegInstallationcs>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddCivilWithOutLegInstallationcs> GetCivilNonSteelInstallationById(int CivilInsId, string TableName)
+        public Response<GetForAddCivilWithOutLegInstallationcs> GetCivilNonSteelInstallationById(int CivilInsId, string TableName, int UserId, bool ExternalSys)
         {
             try
             {
@@ -7722,7 +7744,18 @@ namespace TLIS_Service.Services
                             })
                             .ToList();
                     }
-
+                    if (ExternalSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                            RecordId = CivilInsId.ToString()
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddCivilWithOutLegInstallationcs>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 else
@@ -11880,12 +11913,13 @@ namespace TLIS_Service.Services
 
             }
         }
-        public Response<bool> DismantleCivilWithLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId, string connectionString)
+        public Response<bool> DismantleCivilWithLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId, string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
                 try
                 {
+                    TLIhistory AddTablesHistory = new TLIhistory();
                     var allcivil = _dbContext.TLIallCivilInst.Include(x => x.civilWithLegs).FirstOrDefault(x => x.civilWithLegsId == CivilId);
                     double? Freespace = 0;
                   
@@ -11903,17 +11937,19 @@ namespace TLIS_Service.Services
                             allcivil.civilWithLegs.Name = allcivil.civilWithLegs.Name + DateTime.Now;
                             var OldValueSiteReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                             Freespace += allcivil.civilWithLegs.SpaceInstallation;
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == true)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = CivilId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithLegs").Id,
-                                UserId = UserId,
-                                SiteCode = SiteCode
-                            };
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = CivilId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithLegs").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+ 
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+                               _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
@@ -11950,17 +11986,19 @@ namespace TLIS_Service.Services
                             var OldValueSiteNotReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
                             civilSiteDate1.Dismantle = true;
                             allcivil.civilWithLegs.Name = allcivil.civilWithLegs.Name + DateTime.Now;
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == true)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = CivilId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithLegs").Id,
-                                UserId = UserId,
-                                SiteCode = SiteCode
-                            };
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = CivilId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithLegs").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
@@ -12026,17 +12064,19 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<bool> DismantleCivilWithoutLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId,string connectionString)
+        public Response<bool> DismantleCivilWithoutLegsInstallation(int UserId, string SiteCode, int CivilId, int? TaskId,string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
                 try
                 {
+                    TLIhistory AddTablesHistory = new TLIhistory();
                     var allcivil = _dbContext.TLIallCivilInst.Include(x => x.civilWithoutLeg).FirstOrDefault(x => x.civilWithoutLegId == CivilId);
                     double? Freespace = 0;
 
                     if (allcivil != null)
                     {
+                       
                         var LoadsOnCivil = _unitOfWork.CivilLoadsRepository.GetWhere(x => x.allCivilInstId != null && x.allCivilInstId == allcivil.Id
                         && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower()).ToList();
                         if (LoadsOnCivil != null && LoadsOnCivil.Count() > 0)
@@ -12048,17 +12088,20 @@ namespace TLIS_Service.Services
                             allcivil.civilWithoutLeg.Name = allcivil.civilWithoutLeg.Name + DateTime.Now;
                             var OldValueSiteReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                             Freespace += allcivil.civilWithoutLeg.SpaceInstallation;
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == true)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = CivilId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithLegs").Id,
-                                UserId = UserId,
-                                SiteCode = SiteCode
-                            };
+                                
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = CivilId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithoutLeg").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
@@ -12095,17 +12138,20 @@ namespace TLIS_Service.Services
                             var OldValueSiteNotReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
                             civilSiteDate1.Dismantle = true;
                             allcivil.civilWithoutLeg.Name = allcivil.civilWithoutLeg.Name + DateTime.Now;
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == true)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = CivilId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithLegs").Id,
-                                UserId = UserId,
-                                SiteCode = SiteCode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = CivilId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithoutLeg").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
@@ -12171,12 +12217,13 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<bool> DismantleCivilNonSteelInstallation(int UserId, string SiteCode, int CivilId, int? TaskId,string connectionString)
+        public Response<bool> DismantleCivilNonSteelInstallation(int UserId, string SiteCode, int CivilId, int? TaskId,string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
                 try
                 {
+                    TLIhistory AddTablesHistory = new TLIhistory();
                     var allcivil = _dbContext.TLIallCivilInst.Include(x => x.civilNonSteel).FirstOrDefault(x => x.civilNonSteelId == CivilId);
                     double? Freespace = 0;
 
@@ -12193,17 +12240,20 @@ namespace TLIS_Service.Services
                             var OldValueSiteReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == true && x.Dismantle == false);
                             Freespace += allcivil.civilNonSteel.SpaceInstallation;
                             allcivil.civilNonSteel.Name = allcivil.civilNonSteel.Name + DateTime.Now;
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == true)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x=>x.Name== "Delete").Id,
-                                RecordId = CivilId.ToString(),
-                                TablesNameId =_unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithLegs").Id,
-                                UserId = UserId,
-                                SiteCode = SiteCode
-                            };
-                         
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = CivilId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilNonSteel").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
                        
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
@@ -12238,17 +12288,21 @@ namespace TLIS_Service.Services
                             var OldValueSiteNotReservedSpace = _dbContext.TLIcivilSiteDate.AsNoTracking().FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
                             civilSiteDate1.Dismantle = true;
                             allcivil.civilNonSteel.Name = allcivil.civilNonSteel.Name + DateTime.Now;
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            
+                            if (ExternalSys == true)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = CivilId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithLegs").Id,
-                                UserId = UserId,
-                                SiteCode = SiteCode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = CivilId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilNonSteel").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
                             _unitOfWork.CivilSiteDateRepository.UpdateWithHLogic(UserId,HistroryId, TabelTLIcivilSiteDate, OldValueSiteNotReservedSpace, civilSiteDate1);
@@ -14895,7 +14949,7 @@ namespace TLIS_Service.Services
 
             return new Response<LoadsCountOnSideArm>(true, OutPutData, null, null, (int)Helpers.Constants.ApiReturnCode.success);
         }
-        public Response<GetForAddCivilWithLegObject> GetForAddCivilWithLegInstallation(string TableName, int CivilLibraryId,string SiteCode)
+        public Response<GetForAddCivilWithLegObject> GetForAddCivilWithLegInstallation(string TableName, int CivilLibraryId,string SiteCode,int UserId,bool ExternalSys)
         {
             try
             {
@@ -15099,7 +15153,17 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = DynamicAttributesWithoutValue;
 
-
+                    if (ExternalSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
 
                     return new Response<GetForAddCivilWithLegObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
@@ -15115,7 +15179,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddCivilWithLegObject>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCivilWithOutLegInstallation_Mast(string TableName, int CivilLibraryId, string SiteCode)
+        public Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCivilWithOutLegInstallation_Mast(string TableName, int CivilLibraryId, string SiteCode, int UserId, bool ExternalSys)
         {
             try
             {
@@ -15260,7 +15324,17 @@ namespace TLIS_Service.Services
                     .GetDynamicInstAttInst(TableNameEntity.Id, 1);
 
                     objectInst.DynamicAttribute = DynamicAttributesWithoutValue;
-
+                    if (ExternalSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddCivilWithOutLegInstallationcs>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 else
@@ -15274,7 +15348,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddCivilWithOutLegInstallationcs>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCivilWithOutLegInstallation_Capsule(string TableName, int CivilLibraryId, string SiteCode)
+        public Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCivilWithOutLegInstallation_Capsule(string TableName, int CivilLibraryId, string SiteCode, int UserId, bool ExternalSys)
         {
             try
             {
@@ -15421,7 +15495,17 @@ namespace TLIS_Service.Services
 
 
                     objectInst.DynamicAttribute = DynamicAttributesWithoutValue;
-
+                    if (ExternalSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddCivilWithOutLegInstallationcs>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 else
@@ -15435,7 +15519,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddCivilWithOutLegInstallationcs>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCivilWithOutLegInstallation_Monople(string TableName, int CivilLibraryId, string SiteCode)
+        public Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCivilWithOutLegInstallation_Monople(string TableName, int CivilLibraryId, string SiteCode, int UserId, bool ExternalSys)
         {
             try
             {
@@ -15580,7 +15664,17 @@ namespace TLIS_Service.Services
 
 
                     objectInst.DynamicAttribute = DynamicAttributesWithoutValue;
-
+                    if (ExternalSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddCivilWithOutLegInstallationcs>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 else
@@ -15594,7 +15688,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddCivilWithOutLegInstallationcs>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCiviNonSteelInstallation(string TableName, int CivilLibraryId, string SiteCode)
+        public Response<GetForAddCivilWithOutLegInstallationcs> GetForAddCiviNonSteelInstallation(string TableName, int CivilLibraryId, string SiteCode, int UserId, bool ExternalSys)
         {
             try
             {
@@ -15690,7 +15784,17 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = DynamicAttributesWithoutValue;
 
-
+                    if (ExternalSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
 
                     return new Response<GetForAddCivilWithOutLegInstallationcs>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }

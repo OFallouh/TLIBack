@@ -29,6 +29,7 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
         public string RegionCode { get; set; }
 
         public double RentedSpace { get; set; }
+        public DateTime SiteVisiteDate { get; set; }
 
         public double ReservedSpace { get; set; }
 

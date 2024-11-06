@@ -74,7 +74,7 @@ namespace TLIS_Service.Services
                             Active = true
                         };
 
-                        _unitOfWork.RoleRepository.AddWithH(UserId,null,role);
+                        _unitOfWork.RoleRepository.AddWithH(UserId,null,role,false);
                         _unitOfWork.SaveChanges();
 
                         if (addRole.permissions != null)
@@ -263,7 +263,7 @@ namespace TLIS_Service.Services
                     {
                         RoleEntity.Name = editRole.Name;
 
-                        _unitOfWork.RoleRepository.UpdateWithH(UserId, null, OldRole, RoleEntity);
+                        _unitOfWork.RoleRepository.UpdateWithH(UserId, null, OldRole, RoleEntity,false);
                         await _unitOfWork.SaveChangesAsync();
 
                         List<string> AllRolePermissionsIn = _unitOfWork.RolePermissionsRepository

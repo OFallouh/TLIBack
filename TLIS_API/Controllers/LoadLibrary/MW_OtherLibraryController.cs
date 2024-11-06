@@ -43,7 +43,26 @@ namespace TLIS_API.Controllers.LoadLibrary
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public IActionResult GetODULibrary(int id)
         {
-            var response = _unitOfWorkService.MWLibraryService.GetById(id, Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetById(id, Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), userId, false);
             return Ok(response);
         }
         [HttpPost("AddMW_OtherLibrary")]
@@ -71,7 +90,7 @@ namespace TLIS_API.Controllers.LoadLibrary
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = _unitOfWorkService.MWLibraryService.AddMWOtherLibrary(userId,Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), addMW_OtherLibraryViewModel, ConnectionString);
+                var response = _unitOfWorkService.MWLibraryService.AddMWOtherLibrary(userId,Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), addMW_OtherLibraryViewModel, ConnectionString, false);
                 return Ok(response);
             }
             else
@@ -108,7 +127,7 @@ namespace TLIS_API.Controllers.LoadLibrary
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = await _unitOfWorkService.MWLibraryService.EditMWOtherLibrary(userId, editMW_OtherLibraryViewModel, Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), ConnectionString);
+                var response = await _unitOfWorkService.MWLibraryService.EditMWOtherLibrary(userId, editMW_OtherLibraryViewModel, Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), ConnectionString, false);
                 return Ok(response);
             }
             else
@@ -151,7 +170,26 @@ namespace TLIS_API.Controllers.LoadLibrary
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
         public IActionResult GetForAddMWOtherLibrary()
         {
-            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.MWLibraryService.GetForAdd(Helpers.Constants.LoadSubType.TLImwOtherLibrary.ToString(), userId, false);
             return Ok(response);
         }
         [HttpPost("DeleteMW_OtherLibrary/{Id}")]

@@ -23,12 +23,12 @@ namespace TLIS_API.Controllers
         {
             _unitOfWorkService = unitOfWorkService;
         }
-        [HttpGet("GetForAdd")]
-        [ProducesResponseType(200, Type = typeof(List<AllItemAttributes>))]
-        public IActionResult GetForAddLibrary(string TableName)
-        {
-            var response = _unitOfWorkService.CivilLibraryService.GetForAdd(TableName);
-            return Ok(response);
-        }
+        //[HttpGet("GetForAdd")]
+        //[ProducesResponseType(200, Type = typeof(List<AllItemAttributes>))]
+        //public IActionResult GetForAddLibrary(string TableName)
+        //{
+        //    var response = _unitOfWorkService.CivilLibraryService.GetForAdd(TableName);
+        //    return Ok(response);
+        //}
     }
 }

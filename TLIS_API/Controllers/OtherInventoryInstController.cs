@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -41,6 +42,7 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddCabinetPowerInstallation(int CabinetPowerLibraryId, string SiteCode)
         {
+           
             var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddCabinetPowerInstallation(Helpers.Constants.TablesNames.TLIcabinetPower.ToString(), CabinetPowerLibraryId, SiteCode);
             return Ok(response);
         }
@@ -56,8 +58,28 @@ namespace TLIS_API.Controllers
         [HttpGet("GetAttForAddSolarInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddSolarInstallation( int SolarLibraryId, string SiteCode)
+
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddSolarInstallation(Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SolarLibraryId, SiteCode);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddSolarInstallation(Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), SolarLibraryId, SiteCode,userId,false);
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -65,7 +87,26 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddGeneratorInstallation(int GeneratorIdLibraryId, string SiteCode)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddGeneratorInstallation(Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), GeneratorIdLibraryId, SiteCode);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.OtherInventoryInstService.GetAttForAddGeneratorInstallation(Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), GeneratorIdLibraryId, SiteCode, userId, false);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -95,7 +136,7 @@ namespace TLIS_API.Controllers
 
             if (TryValidateModel(addCabinetViewModel, nameof(AddCabinetPowerInstallation)))
             {
-                var response = _unitOfWorkService.OtherInventoryInstService.AddCabinetPowerInstallation(addCabinetViewModel, SiteCode, ConnectionString, TaskId, userId);
+                var response = _unitOfWorkService.OtherInventoryInstService.AddCabinetPowerInstallation(addCabinetViewModel, SiteCode, ConnectionString, TaskId, userId,false);
                 return Ok(response);
             }
             else
@@ -133,7 +174,7 @@ namespace TLIS_API.Controllers
 
             if (TryValidateModel(addCabinetViewModel, nameof(AddCabinetTelecomInstallationObject)))
             {
-                var response = _unitOfWorkService.OtherInventoryInstService.AddCabinetTelecomInstallation(addCabinetViewModel, SiteCode, ConnectionString, TaskId, userId);
+                var response = _unitOfWorkService.OtherInventoryInstService.AddCabinetTelecomInstallation(addCabinetViewModel, SiteCode, ConnectionString, TaskId, userId,false);
                 return Ok(response);
             }
             else
@@ -174,7 +215,7 @@ namespace TLIS_API.Controllers
 
             if (TryValidateModel(addSolarViewModel, nameof(AddSolarInstallationObject)))
             {
-                var response = _unitOfWorkService.OtherInventoryInstService.AddSolarInstallation(addSolarViewModel, SiteCode, ConnectionString, TaskId, userId);
+                var response = _unitOfWorkService.OtherInventoryInstService.AddSolarInstallation(addSolarViewModel, SiteCode, ConnectionString, TaskId, userId,false);
                 return Ok(response);
             }
             else
@@ -213,7 +254,7 @@ namespace TLIS_API.Controllers
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = _unitOfWorkService.OtherInventoryInstService.AddGeneratorInstallation(addGeneratorViewModel, SiteCode, ConnectionString, TaskId, userId);
+                var response = _unitOfWorkService.OtherInventoryInstService.AddGeneratorInstallation(addGeneratorViewModel, SiteCode, ConnectionString, TaskId, userId, false);
                 return Ok(response);
             }
             else
@@ -248,7 +289,26 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetSolarInstallationById(int SolarId)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetSolarInstallationById(SolarId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString());
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.OtherInventoryInstService.GetSolarInstallationById(SolarId, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), userId,false);
             return Ok(response);
         }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -256,7 +316,26 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetGenertorInstallationById(int GeneratorId)
         {
-            var response = _unitOfWorkService.OtherInventoryInstService.GetGenertorInstallationById(GeneratorId, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString());
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.OtherInventoryInstService.GetGenertorInstallationById(GeneratorId, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), userId, false);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -285,7 +364,7 @@ namespace TLIS_API.Controllers
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = await _unitOfWorkService.OtherInventoryInstService.EditCabinetPowerInstallation(editCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), TaskId, userId, ConnectionString);
+                var response = await _unitOfWorkService.OtherInventoryInstService.EditCabinetPowerInstallation(editCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), TaskId, userId, ConnectionString,false);
                 return Ok(response);
             }
             else
@@ -322,7 +401,7 @@ namespace TLIS_API.Controllers
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = await _unitOfWorkService.OtherInventoryInstService.EditCabinetTelecomInstallation(editCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), TaskId, userId, ConnectionString);
+                var response = await _unitOfWorkService.OtherInventoryInstService.EditCabinetTelecomInstallation(editCabinetViewModel, Helpers.Constants.OtherInventoryType.TLIcabinet.ToString(), TaskId, userId, ConnectionString,false);
                 return Ok(response);
             }
             else
@@ -360,7 +439,7 @@ namespace TLIS_API.Controllers
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId, userId, ConnectionString);
+                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editSolarViewModel, Helpers.Constants.OtherInventoryType.TLIsolar.ToString(), TaskId, userId, ConnectionString,false);
                 return Ok(response);
             }
             else
@@ -397,7 +476,7 @@ namespace TLIS_API.Controllers
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), TaskId, userId, ConnectionString);
+                var response = await _unitOfWorkService.OtherInventoryInstService.EditOtherInventoryInstallation(editGeneratorViewModel, Helpers.Constants.OtherInventoryType.TLIgenerator.ToString(), TaskId, userId, ConnectionString,false);
                 return Ok(response);
             }
             else
@@ -431,7 +510,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = _unitOfWorkService.OtherInventoryInstService.DismantleOtherInventory(userId,SiteCode, OtherInventoryId , OtherInventoryName, TaskId, ConnectionString);
+            var response = _unitOfWorkService.OtherInventoryInstService.DismantleOtherInventory(userId,SiteCode, OtherInventoryId , OtherInventoryName, TaskId, ConnectionString,false);
             return Ok(response);
 
         }

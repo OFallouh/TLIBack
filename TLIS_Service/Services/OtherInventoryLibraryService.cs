@@ -1344,7 +1344,7 @@ namespace TLIS_Service.Services
                         var CabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         var NewCabinetPowerLibrary = _unitOfWork.CabinetPowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewCabinetPowerLibrary.Active = !(NewCabinetPowerLibrary.Active);
-                        _unitOfWork.CabinetPowerLibraryRepository.UpdateWithH(UserId,null, CabinetPowerLibrary, NewCabinetPowerLibrary);
+                        _unitOfWork.CabinetPowerLibraryRepository.UpdateWithH(UserId,null, CabinetPowerLibrary, NewCabinetPowerLibrary,false);
                         //DisableDynamicAttLibValues(OtherInventoryTypeId.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
                     }
@@ -1357,7 +1357,7 @@ namespace TLIS_Service.Services
                         var CabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         TLIcabinetTelecomLibrary NewCabinetTelecomLibrary = _unitOfWork.CabinetTelecomLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewCabinetTelecomLibrary.Active = !(NewCabinetTelecomLibrary.Active);
-                        _unitOfWork.CabinetTelecomLibraryRepository.UpdateWithH(UserId,null, CabinetTelecomLibrary, NewCabinetTelecomLibrary);
+                        _unitOfWork.CabinetTelecomLibraryRepository.UpdateWithH(UserId,null, CabinetTelecomLibrary, NewCabinetTelecomLibrary, false);
                         //DisableDynamicAttLibValues(OtherInventoryTypeId.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
                     }
@@ -1372,7 +1372,7 @@ namespace TLIS_Service.Services
                         TLIgeneratorLibrary NewGeneratorLibrary = _unitOfWork.GeneratorLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
 
                         NewGeneratorLibrary.Active = !(NewGeneratorLibrary.Active);
-                        _unitOfWork.GeneratorLibraryRepository.UpdateWithH( UserId, null, OldGeneratorLibrary, NewGeneratorLibrary);
+                        _unitOfWork.GeneratorLibraryRepository.UpdateWithH( UserId, null, OldGeneratorLibrary, NewGeneratorLibrary, false);
                         //DisableDynamicAttLibValues(OtherInventoryTypeId.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
                     }
@@ -1385,7 +1385,7 @@ namespace TLIS_Service.Services
                         var SolarLibrary = _unitOfWork.SolarLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         TLIsolarLibrary NewSolarLibrary = _unitOfWork.SolarLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         NewSolarLibrary.Active = !(NewSolarLibrary.Active);
-                        _unitOfWork.SolarLibraryRepository.UpdateWithH(UserId,null, SolarLibrary, NewSolarLibrary);
+                        _unitOfWork.SolarLibraryRepository.UpdateWithH(UserId,null, SolarLibrary, NewSolarLibrary, false);
                         //DisableDynamicAttLibValues(OtherInventoryTypeId.Id, Id);
                         await _unitOfWork.SaveChangesAsync();
                     }
@@ -2664,7 +2664,7 @@ namespace TLIS_Service.Services
         //get record by Id
         //get activated attributed with values
         //get dynamic attributes by TableNameId
-        public Response<GetForAddCivilLibrarybject> GetById(int Id, string TableName)
+        public Response<GetForAddCivilLibrarybject> GetById(int Id, string TableName,int UserId, bool ExternalSys)
         {
             try
             {
@@ -2885,7 +2885,19 @@ namespace TLIS_Service.Services
                     }
 
                 }
-
+                var TabelNameId = db.TLItablesNames.FirstOrDefault(x => x.TableName == TableName).Id;
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        RecordId=Id.ToString()
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
+                }
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)ApiReturnCode.success);
             }
             catch (Exception err)
@@ -2894,7 +2906,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        public async Task<Response<EditGeneratorLibraryObject>> EditGeneratorLibrary(int userId, EditGeneratorLibraryObject editGeneratorLibraryObject, string TableName, string connectionString)
+        public async Task<Response<EditGeneratorLibraryObject>> EditGeneratorLibrary(int userId, EditGeneratorLibraryObject editGeneratorLibraryObject, string TableName, string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -2933,7 +2945,7 @@ namespace TLIS_Service.Services
                     GeneratorLibraryEntites.Active = GeneratorLegLib.Active;
                     GeneratorLibraryEntites.Deleted = GeneratorLegLib.Deleted;
 
-                    var HistoryId = _unitOfWork.GeneratorLibraryRepository.UpdateWithH(userId,null, GeneratorLegLib, GeneratorLibraryEntites);
+                    var HistoryId = _unitOfWork.GeneratorLibraryRepository.UpdateWithH(userId,null, GeneratorLegLib, GeneratorLibraryEntites, ExternalSys);
                     _unitOfWork.SaveChanges();
                     List<int?> sortedIds = new List<int?>();
 
@@ -3075,7 +3087,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public async Task<Response<EditSolarLibraryObject>> EditSolarLibrary(int userId, EditSolarLibraryObject editSolarLibraryObject, string TableName, string connectionString)
+        public async Task<Response<EditSolarLibraryObject>> EditSolarLibrary(int userId, EditSolarLibraryObject editSolarLibraryObject, string TableName, string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -3115,7 +3127,7 @@ namespace TLIS_Service.Services
                     SolarLibraryEntites.Active = SolarLegLib.Active;
                     SolarLibraryEntites.Deleted = SolarLegLib.Deleted;
 
-                    var HistoryId = _unitOfWork.SolarLibraryRepository.UpdateWithH(userId,null, SolarLegLib, SolarLibraryEntites);
+                    var HistoryId = _unitOfWork.SolarLibraryRepository.UpdateWithH(userId,null, SolarLegLib, SolarLibraryEntites, ExternalSys);
                     _unitOfWork.SaveChanges();
                     List<int?> sortedIds = new List<int?>();
 
@@ -3622,7 +3634,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<EditCabinetPowerLibraryObject>> EditCabinetPowerLibrary(int userId, EditCabinetPowerLibraryObject editCabinetPowerLibraryObject, string TableName, string connectionString)
+        public async Task<Response<EditCabinetPowerLibraryObject>> EditCabinetPowerLibrary(int userId, EditCabinetPowerLibraryObject editCabinetPowerLibraryObject, string TableName, string connectionString,bool ExternaSys)
         {
             using (TransactionScope transaction =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -3658,7 +3670,7 @@ namespace TLIS_Service.Services
                     CabinetPowerLibraryEntites.Active = CabinetPowerLegLib.Active;
                     CabinetPowerLibraryEntites.Deleted = CabinetPowerLegLib.Deleted;
 
-                    var HistoryId = _unitOfWork.CabinetPowerLibraryRepository.UpdateWithH(userId,null, CabinetPowerLegLib, CabinetPowerLibraryEntites);
+                    var HistoryId = _unitOfWork.CabinetPowerLibraryRepository.UpdateWithH(userId,null, CabinetPowerLegLib, CabinetPowerLibraryEntites, ExternaSys);
                     _unitOfWork.SaveChanges();
 
                     List<int?> sortedIds = new List<int?>();
@@ -4558,7 +4570,7 @@ namespace TLIS_Service.Services
                     CabinetTelecomLibraryEntites.Active = CabinetTelecomLegLib.Active;
                     CabinetTelecomLibraryEntites.Deleted = CabinetTelecomLegLib.Deleted;
 
-                    var HistoryId = _unitOfWork.CabinetTelecomLibraryRepository.UpdateWithH(userId,null, CabinetTelecomLegLib, CabinetTelecomLibraryEntites);
+                    var HistoryId = _unitOfWork.CabinetTelecomLibraryRepository.UpdateWithH(userId,null, CabinetTelecomLegLib, CabinetTelecomLibraryEntites,false);
                     _unitOfWork.SaveChanges();
 
                     List<int?> sortedIds = new List<int?>();
@@ -5543,7 +5555,7 @@ namespace TLIS_Service.Services
         //get table name Entity dpened on TableName
         //return list of activated attributes
         //return list of dynamic attributes
-        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName)
+        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName,int UserId,bool ExternalSys)
         {
             try
             {
@@ -5781,6 +5793,18 @@ namespace TLIS_Service.Services
 
                     attributes.DynamicAttributes = DynamicAttributesWithoutValue;
                 }
+                var TabelNameId = db.TLItablesNames.FirstOrDefault(x => x.TableName == TableName).Id;
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
+                }
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)ApiReturnCode.success);
             }
             catch (Exception err)
@@ -5813,7 +5837,7 @@ namespace TLIS_Service.Services
                             NeweCabinetPowerLibrary.Deleted = true;
                             NeweCabinetPowerLibrary.Model = NeweCabinetPowerLibrary.Model + "_" + DateTime.Now.ToString();
 
-                           var HistoryId = _unitOfWork.CabinetPowerLibraryRepository.UpdateWithH(UserId,null, CabinetPowerLibrary, NeweCabinetPowerLibrary);
+                           var HistoryId = _unitOfWork.CabinetPowerLibraryRepository.UpdateWithH(UserId,null, CabinetPowerLibrary, NeweCabinetPowerLibrary,false);
                            DisableDynamicAttLibValuesH(TableNameEntity.Id, Id,UserId, HistoryId);
                             await _unitOfWork.SaveChangesAsync();
                        
@@ -5830,7 +5854,7 @@ namespace TLIS_Service.Services
                         NewCabinetTelecomLibrary.Deleted = true;
                         NewCabinetTelecomLibrary.Model = NewCabinetTelecomLibrary.Model + "_" + DateTime.Now.ToString();
 
-                        var HistoryId = _unitOfWork.CabinetTelecomLibraryRepository.UpdateWithH(UserId,null, CabinetTelecomLibrary, NewCabinetTelecomLibrary);
+                        var HistoryId = _unitOfWork.CabinetTelecomLibraryRepository.UpdateWithH(UserId,null, CabinetTelecomLibrary, NewCabinetTelecomLibrary, false);
                         DisableDynamicAttLibValuesH(TableNameEntity.Id, Id,UserId, HistoryId);
                         await _unitOfWork.SaveChangesAsync();
                         // AddHistory(CabinetTelecomLibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIcabinetTelecomLibrary.ToString());
@@ -5847,7 +5871,7 @@ namespace TLIS_Service.Services
                         NewGeneratorLibrary.Deleted = true;
                         NewGeneratorLibrary.Model = NewGeneratorLibrary.Model + "_" + DateTime.Now.ToString();
 
-                        var HistoryId = _unitOfWork.GeneratorLibraryRepository.UpdateWithH(UserId,null, OldGeneratorLibrary, NewGeneratorLibrary);
+                        var HistoryId = _unitOfWork.GeneratorLibraryRepository.UpdateWithH(UserId,null, OldGeneratorLibrary, NewGeneratorLibrary, false);
                         DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId, HistoryId);
                         await _unitOfWork.SaveChangesAsync();
                         //AddHistory(GeneratorLibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIgeneratorLibrary.ToString());
@@ -5863,7 +5887,7 @@ namespace TLIS_Service.Services
                         NewSolarLibrary.Deleted = true;
                         NewSolarLibrary.Model = NewSolarLibrary.Model + "_" + DateTime.Now.ToString();
 
-                        var HistoryId = _unitOfWork.SolarLibraryRepository.UpdateWithH(UserId,null, SolarLibrary, NewSolarLibrary);
+                        var HistoryId = _unitOfWork.SolarLibraryRepository.UpdateWithH(UserId,null, SolarLibrary, NewSolarLibrary, false);
                         DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId, HistoryId);
                         await _unitOfWork.SaveChangesAsync();
                         //  AddHistory(SolarLibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.TablesNames.TLIsolarLibrary.ToString());
@@ -8291,7 +8315,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<AddGeneratorLibraryObject> AddGenertatoLibrary(int UserId, string TableName, AddGeneratorLibraryObject addGeneratorLibraryObject, string connectionString)
+        public Response<AddGeneratorLibraryObject> AddGenertatoLibrary(int UserId, string TableName, AddGeneratorLibraryObject addGeneratorLibraryObject, string connectionString,bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -8325,7 +8349,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddGeneratorLibraryObject>(true, null, null, $"This model {GeneratorLibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
 
-                            var HistoryId = _unitOfWork.GeneratorLibraryRepository.AddWithH(UserId,null, GeneratorLibraryEntity);
+                            var HistoryId = _unitOfWork.GeneratorLibraryRepository.AddWithH(UserId,null, GeneratorLibraryEntity, ExternalSys);
                             _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
 
@@ -8411,7 +8435,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<AddSolarLibraryObject> AddSolarLibrary(int UserId, string TableName, AddSolarLibraryObject addSolarLibraryObject, string connectionString)
+        public Response<AddSolarLibraryObject> AddSolarLibrary(int UserId, string TableName, AddSolarLibraryObject addSolarLibraryObject, string connectionString, bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -8444,7 +8468,7 @@ namespace TLIS_Service.Services
                               return new Response<AddSolarLibraryObject>(true, null, null, $"This model {SolarLibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
-                            var HistoryId = _unitOfWork.SolarLibraryRepository.AddWithH(UserId,null, SolarLibraryEntity);
+                            var HistoryId = _unitOfWork.SolarLibraryRepository.AddWithH(UserId,null, SolarLibraryEntity, ExternalSys);
                             _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
 
@@ -8561,7 +8585,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddCabinetPowerLibraryObject>(true, null, null, $"This model {CabinetPowerLibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
 
-                            var HistoryId = _unitOfWork.CabinetPowerLibraryRepository.AddWithH(UserId,null, CabinetPowerLibraryEntity);
+                            var HistoryId = _unitOfWork.CabinetPowerLibraryRepository.AddWithH(UserId,null, CabinetPowerLibraryEntity,false);
                             _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
 
@@ -8801,7 +8825,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddCabinetTelecomLibraryObject>(true, null, null, $"This model {CabinetPowerLibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             }
 
-                            var HistoryId = _unitOfWork.CabinetTelecomLibraryRepository.AddWithH(UserId,null, CabinetPowerLibraryEntity);
+                            var HistoryId = _unitOfWork.CabinetTelecomLibraryRepository.AddWithH(UserId,null, CabinetPowerLibraryEntity,false);
                             _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
 

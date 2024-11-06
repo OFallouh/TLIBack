@@ -164,7 +164,7 @@ namespace TLIS_Service.Services
                             if (CheckModel != null)
                               return new Response<AddSideArmLibraryObject>(false, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             
-                            var HistoryId=_unitOfWork.SideArmLibraryRepository.AddWithH(UserId,null, tLIsideArmLibrary);
+                            var HistoryId=_unitOfWork.SideArmLibraryRepository.AddWithH(UserId,null, tLIsideArmLibrary,false);
                             _unitOfWork.SaveChanges();
 
                             if (addSideArmLibraryViewModel.dynamicAttributes != null ? addSideArmLibraryViewModel.dynamicAttributes.Count > 0 : false)
@@ -919,7 +919,7 @@ namespace TLIS_Service.Services
                     TLIsideArmLibrary OldSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
                     NewSideWithArm.Deleted = true;
                     NewSideWithArm.Model = NewSideWithArm.Model + "_" + DateTime.Now.ToString();
-                   var HistoryId= _unitOfWork.SideArmLibraryRepository.UpdateWithH(UserId,null, OldSideWithArm, NewSideWithArm);
+                   var HistoryId= _unitOfWork.SideArmLibraryRepository.UpdateWithH(UserId,null, OldSideWithArm, NewSideWithArm,false);
                     DisableDynamicAttLibValuesH(TableNameEntity.Id, id, UserId, HistoryId);
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
@@ -979,7 +979,7 @@ namespace TLIS_Service.Services
                     TLIsideArmLibrary OldSideWithArm = _unitOfWork.SideArmLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == id);
                     NewSideWithArm.Active = !(NewSideWithArm.Active);
 
-                    _unitOfWork.SideArmLibraryRepository.UpdateWithH(UserId,null, OldSideWithArm, NewSideWithArm);
+                    _unitOfWork.SideArmLibraryRepository.UpdateWithH(UserId,null, OldSideWithArm, NewSideWithArm,false);
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
@@ -1015,7 +1015,7 @@ namespace TLIS_Service.Services
                  return new Response<EditSideArmLibraryObject>(true, null, null, $"This Model {tLIsideArmLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                 tLIsideArmLibrary.Active = SidArm.Active;
                 tLIsideArmLibrary.Deleted = SidArm.Deleted;
-                var HistoryId=_unitOfWork.SideArmLibraryRepository.UpdateWithH(UserId,null, SidArm, tLIsideArmLibrary);
+                var HistoryId=_unitOfWork.SideArmLibraryRepository.UpdateWithH(UserId,null, SidArm, tLIsideArmLibrary,false);
 
                 if (editSideArmLibraryViewModel.dynamicAttributes != null ? editSideArmLibraryViewModel.dynamicAttributes.Count > 0 : false)
                 {

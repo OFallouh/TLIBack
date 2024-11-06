@@ -1179,7 +1179,7 @@ namespace TLIS_Service.Services
 
                                                         LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                         LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                       var HistoryId= _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId,null, LoadOther,SiteCode);
+                                                       var HistoryId= _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId,null, LoadOther,SiteCode,false);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
                                                         if (LoadOtherViewModel.civilLoads != null && Id != 0)
@@ -1273,7 +1273,7 @@ namespace TLIS_Service.Services
 
                                                         LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                         LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode);
+                                                    var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode,false);
                                                     _unitOfWork.SaveChanges();
                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
                                                     if (LoadOtherViewModel.civilLoads != null && Id != 0)
@@ -1458,7 +1458,7 @@ namespace TLIS_Service.Services
 
                                                                     LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                                     LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                                var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode);
+                                                                var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode, false);
                                                                 _unitOfWork.SaveChanges();
                                                                 int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
                                                                 if (LoadOtherViewModel.civilLoads != null && Id != 0)
@@ -1554,7 +1554,7 @@ namespace TLIS_Service.Services
 
                                                                     LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                                     LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                                var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode);
+                                                                var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode,false);
                                                                 _unitOfWork.SaveChanges();
                                                                 int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
                                                                 if (LoadOtherViewModel.civilLoads != null && Id != 0)
@@ -1737,7 +1737,7 @@ namespace TLIS_Service.Services
 
                                                             LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                             LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode);
+                                                        var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode,false);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
                                                         if (LoadOtherViewModel.civilLoads != null && Id != 0)
@@ -1833,7 +1833,7 @@ namespace TLIS_Service.Services
 
                                                             LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                             LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode);
+                                                        var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode, false);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
                                                         if (LoadOtherViewModel.civilLoads != null && Id != 0)
@@ -1984,7 +1984,7 @@ namespace TLIS_Service.Services
 
                                                         LoadOther.loadOtherLibraryId = LoadOtherViewModel.installationConfig.loadOtherLibraryId;
                                                         LoadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode);
+                                                    var HistoryId = _unitOfWork.LoadOtherRepository.AddWithHInsatallation(UserId, null, LoadOther, SiteCode, false);
                                                     _unitOfWork.SaveChanges();
                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIloadOther.ToString(), LoadOther.Id);
                                                     if (LoadOtherViewModel.civilLoads != null && Id != 0)
@@ -2224,7 +2224,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                 loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                               var HistoryId= _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId,null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                               var HistoryId= _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId,null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode,false);
                                                 _unitOfWork.SaveChanges();
                                                 if (LoadOtherViewModel.civilLoads != null)
                                                 {
@@ -2349,7 +2349,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                 loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                            var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode,false);
                                             _unitOfWork.SaveChanges();
                                             if (LoadOtherViewModel.civilLoads != null)
                                             {
@@ -2489,7 +2489,7 @@ namespace TLIS_Service.Services
 
                                                 loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                 loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                            var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode,false);
                                             _unitOfWork.SaveChanges();
                                             if (LoadOtherViewModel.civilLoads != null)
                                             {
@@ -2606,7 +2606,7 @@ namespace TLIS_Service.Services
 
                                                 loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                 loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                            var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode,false);
                                             _unitOfWork.SaveChanges();
                                             if (LoadOtherViewModel.civilLoads != null)
                                             {
@@ -2813,7 +2813,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                         loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                    var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode,false);
                                                     _unitOfWork.SaveChanges();
                                                     if (LoadOtherViewModel.civilLoads != null)
                                                     {
@@ -2937,7 +2937,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                         loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                    var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode,false);
                                                     _unitOfWork.SaveChanges();
                                                     if (LoadOtherViewModel.civilLoads != null)
                                                     {
@@ -3079,7 +3079,7 @@ namespace TLIS_Service.Services
 
                                                         loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                         loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                    var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode,false);
                                                     _unitOfWork.SaveChanges();
                                                     if (LoadOtherViewModel.civilLoads != null)
                                                     {
@@ -3197,7 +3197,7 @@ namespace TLIS_Service.Services
 
                                                         loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                         loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                    var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode,false);
                                                     _unitOfWork.SaveChanges();
                                                     if (LoadOtherViewModel.civilLoads != null)
                                                     {
@@ -3399,7 +3399,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                     loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode,false);
                                                 _unitOfWork.SaveChanges();
                                                 if (LoadOtherViewModel.civilLoads != null)
                                                 {
@@ -3526,7 +3526,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                     loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode,false);
                                                 _unitOfWork.SaveChanges();
                                                 if (LoadOtherViewModel.civilLoads != null)
                                                 {
@@ -3666,7 +3666,7 @@ namespace TLIS_Service.Services
 
                                                     loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                     loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode,false);
                                                 _unitOfWork.SaveChanges();
                                                 if (LoadOtherViewModel.civilLoads != null)
                                                 {
@@ -3785,7 +3785,7 @@ namespace TLIS_Service.Services
 
                                                     loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                     loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                                var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode,false);
                                                 _unitOfWork.SaveChanges();
                                                 if (LoadOtherViewModel.civilLoads != null)
                                                 {
@@ -3959,7 +3959,7 @@ namespace TLIS_Service.Services
 
                                                 loadOther.loadOtherLibraryId = LoadOtherViewModel.civilType.loadOtherLibraryId;
                                                 loadOther.InstallationPlaceId = LoadOtherViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode);
+                                            var HistoryId = _unitOfWork.LoadOtherRepository.UpdateWithHInstallation(UserId, null, loadOtherInst.allLoadInst.loadOther, loadOther, loadOtherInst.SiteCode,false);
                                             _unitOfWork.SaveChanges();
                                             if (LoadOtherViewModel.civilLoads != null)
                                             {

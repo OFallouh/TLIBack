@@ -3362,7 +3362,7 @@ namespace TLIS_Service.Services
 
                                                     Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                     Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                    var HistoryId= _unitOfWork.PowerRepository.AddWithHInsatallation(UserId,null, Power,SiteCode);
+                                                    var HistoryId= _unitOfWork.PowerRepository.AddWithHInsatallation(UserId,null, Power,SiteCode,false);
                                                     _unitOfWork.SaveChanges();
                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                     if (AddPower.civilLoads != null && Id != 0)
@@ -3462,7 +3462,7 @@ namespace TLIS_Service.Services
 
                                                     Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                     Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode);
+                                                    var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode,false);
                                                     _unitOfWork.SaveChanges();
                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                     if (AddPower.civilLoads != null && Id != 0)
@@ -3653,7 +3653,7 @@ namespace TLIS_Service.Services
 
                                                                 Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                                 Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                                var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode);
+                                                                var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode,false);
                                                                 _unitOfWork.SaveChanges();
                                                                 int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                                 if (AddPower.civilLoads != null && Id != 0)
@@ -3756,7 +3756,7 @@ namespace TLIS_Service.Services
 
                                                                 Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                                 Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                                var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode);
+                                                                var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode,false);
                                                                 _unitOfWork.SaveChanges();
                                                                 int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                                 if (AddPower.civilLoads != null && Id != 0)
@@ -3945,7 +3945,7 @@ namespace TLIS_Service.Services
 
                                                         Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                         Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode);
+                                                        var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode,false);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                         if (AddPower.civilLoads != null && Id != 0)
@@ -4049,7 +4049,7 @@ namespace TLIS_Service.Services
 
                                                         Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                         Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode);
+                                                        var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode,false);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                         if (AddPower.civilLoads != null && Id != 0)
@@ -4207,7 +4207,7 @@ namespace TLIS_Service.Services
 
                                                     Power.powerLibraryId = AddPower.installationConfig.powerLoadLibraryId;
                                                     Power.installationPlaceId = AddPower.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode);
+                                                    var HistoryId = _unitOfWork.PowerRepository.AddWithHInsatallation(UserId, null, Power, SiteCode,false);
                                                     _unitOfWork.SaveChanges();
                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLIpower.ToString(), Power.Id);
                                                     if (AddPower.civilLoads != null && Id != 0)
@@ -4440,7 +4440,7 @@ namespace TLIS_Service.Services
                                             }
                                             power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                             power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode,false);
                                             _unitOfWork.SaveChanges();
                                             if (Editpower.civilLoads != null)
                                             {
@@ -4553,7 +4553,7 @@ namespace TLIS_Service.Services
                                             }
                                             power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                             power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode,false);
                                             _unitOfWork.SaveChanges();
                                             if (Editpower.civilLoads != null)
                                             {
@@ -4683,7 +4683,7 @@ namespace TLIS_Service.Services
 
                                             power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                             power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode,false);
                                             _unitOfWork.SaveChanges();
                                             if (Editpower.civilLoads != null)
                                             {
@@ -4790,7 +4790,7 @@ namespace TLIS_Service.Services
 
                                             power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                             power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode,false);
                                             _unitOfWork.SaveChanges();
                                             if (Editpower.civilLoads != null)
                                             {
@@ -4984,7 +4984,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                     power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                                    var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode,false);
                                                     _unitOfWork.SaveChanges();
                                                     if (Editpower.civilLoads != null)
                                                     {
@@ -5099,7 +5099,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                     power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                                    var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode,false);
                                                     _unitOfWork.SaveChanges();
                                                     if (Editpower.civilLoads != null)
                                                     {
@@ -5230,7 +5230,7 @@ namespace TLIS_Service.Services
 
                                                     power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                     power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                                    var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode,false);
                                                     _unitOfWork.SaveChanges();
                                                     if (Editpower.civilLoads != null)
                                                     {
@@ -5336,7 +5336,7 @@ namespace TLIS_Service.Services
 
                                                     power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                     power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                                    var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode,false);
                                                     _unitOfWork.SaveChanges();
                                                     if (Editpower.civilLoads != null)
                                                     {
@@ -5527,7 +5527,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                 power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                                var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode,false);
                                                 _unitOfWork.SaveChanges();
                                                 if (Editpower.civilLoads != null)
                                                 {
@@ -5642,7 +5642,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                 power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                                var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode,false);
                                                 _unitOfWork.SaveChanges();
                                                 if (Editpower.civilLoads != null)
                                                 {
@@ -5772,7 +5772,7 @@ namespace TLIS_Service.Services
 
                                                 power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                 power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                                var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode,false);
                                                 _unitOfWork.SaveChanges();
                                                 if (Editpower.civilLoads != null)
                                                 {
@@ -5878,7 +5878,7 @@ namespace TLIS_Service.Services
 
                                                 power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                                 power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                                var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode,false);
                                                 _unitOfWork.SaveChanges();
                                                 if (Editpower.civilLoads != null)
                                                 {
@@ -6040,7 +6040,7 @@ namespace TLIS_Service.Services
 
                                             power.powerLibraryId = Editpower.civilType.powerLibraryId;
                                             power.installationPlaceId = Editpower.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode);
+                                            var HistoryId = _unitOfWork.PowerRepository.UpdateWithHInstallation(UserId, null, powerInst.allLoadInst.power, power, powerInst.SiteCode,false);
                                             _unitOfWork.SaveChanges();
                                             if (Editpower.civilLoads != null)
                                             {

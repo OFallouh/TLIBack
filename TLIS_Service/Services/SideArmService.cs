@@ -58,6 +58,7 @@ using TLIS_DAL.ViewModels.CivilNonSteelDTOs;
 using static TLIS_DAL.ViewModels.SideArmDTOs.EditSidearmInstallationObject;
 using System.Diagnostics.Eventing.Reader;
 using TLIS_DAL.ViewModels.MW_DishDTOs;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace TLIS_Service.Services
 {
@@ -222,7 +223,7 @@ namespace TLIS_Service.Services
         //    //}
         //    return new Response<AllItemAttributes>();
         //}
-        public Response<GetForAddCivilLoadObject> GetAttForAdd(int LibraryId)
+        public Response<GetForAddCivilLoadObject> GetAttForAdd(int LibraryId,int UserId,bool ExternalSys)
         {
             try
             {
@@ -281,6 +282,17 @@ namespace TLIS_Service.Services
 
                     objectInst.dynamicAttribute = _unitOfWork.DynamicAttRepository
                        .GetDynamicInstAttInst(TableNameEntity.Id, null);
+                    if (ExternalSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddCivilLoadObject>(true, objectInst, null, null, (int)ApiReturnCode.success);
 
                 }
@@ -294,12 +306,13 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddCivilLoadObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int? TaskId, string ConnectionString, int UserId)
+        public Response<bool> DismantleSideArm(string SiteCode, int sideArmId, int? TaskId, string ConnectionString, int UserId,bool ExternalSys)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
                 try
                 {
+                    TLIhistory AddTablesHistory = new TLIhistory();
                     var SideArm = _dbContext.TLIcivilLoads.Include(x=>x.sideArm).FirstOrDefault(x => x.sideArmId == sideArmId &&
                     x.SiteCode.ToLower() == SiteCode.ToLower() && x.Dismantle == false && x.allLoadInstId == null);
 
@@ -316,17 +329,33 @@ namespace TLIS_Service.Services
                            
                         SideArm.Dismantle = true;
                         SideArm.sideArm.Name = SideArm.sideArm.Name + DateTime.Now;
-                        TLIhistory AddTablesHistory = new TLIhistory
+                        if (ExternalSys == false)
                         {
-                            HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                            RecordId = sideArmId.ToString(),
-                            TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsideArm").Id,
-                            UserId = UserId,
-                            SiteCode = SiteCode
-                        };
+                            AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                            AddTablesHistory.RecordId = sideArmId.ToString();
+                            AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsideArm").Id;
+                            AddTablesHistory.UserId = UserId;
+                            AddTablesHistory.SiteCode = SiteCode;
+ 
+
+
+                           _dbContext.TLIhistory.Add(AddTablesHistory);
+                            _dbContext.SaveChanges();
+                        }
+                        if (ExternalSys == true)
+                        {
+                            AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                            AddTablesHistory.RecordId = sideArmId.ToString();
+                            AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIsideArm").Id;
+                            AddTablesHistory.ExternalSysId = UserId;
+                            AddTablesHistory.SiteCode = SiteCode;
+
+
+
 
                         _dbContext.TLIhistory.Add(AddTablesHistory);
-                        _dbContext.SaveChanges();
+                            _dbContext.SaveChanges();
+                        }
                         var HistroryId = AddTablesHistory.Id;
                         
                         var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -1751,7 +1780,7 @@ namespace TLIS_Service.Services
         //get activated attributes with values
         //get table name Entity by table name
         //get dynamic attributes
-        public Response<GetForAddLoadObject> GetById(int Id)
+        public Response<GetForAddLoadObject> GetById(int Id,int UserId,bool Externalys)
         {
             try
             {
@@ -2012,7 +2041,18 @@ namespace TLIS_Service.Services
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(X => X.TableName == TablesNames.TLIsideArm.ToString());
                     attributes.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                                           GetDynamicInstAtt(TableNameEntity.Id, Id, null);
-
+                    if (Externalys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            RecordId=Id.ToString(),
+                            HistoryTypeId = 4,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddLoadObject>(true, attributes, null, null, (int)ApiReturnCode.success);
 
                 }
@@ -2754,7 +2794,7 @@ namespace TLIS_Service.Services
         //Function take 1 parameter
         //map ViewModel to Entity
         //update Entity
-        public async Task<Response<EditSidearmInstallationObject>> UpdateSideArm(EditSidearmInstallationObject SideArmViewModel, int? TaskId,int UserId,string ConnectionString)
+        public async Task<Response<EditSidearmInstallationObject>> UpdateSideArm(EditSidearmInstallationObject SideArmViewModel, int? TaskId,int UserId,string ConnectionString,bool ExternalSys)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
@@ -3163,7 +3203,7 @@ namespace TLIS_Service.Services
                         SideArm.sideArmInstallationPlaceId = SideArmViewModel.installationConfig.installationPlaceId;
                         SideArm.sideArmTypeId = SideArmViewModel.installationConfig.sideArmTypeId;
                         SideArm.sideArmLibraryId = SideArmViewModel.civilType.sideArmLibraryId;
-                        var HistoryId=_unitOfWork.SideArmRepository.UpdateWithHInstallation(UserId,null, SideArmInst, SideArm, CivilLoads.SiteCode);
+                        var HistoryId=_unitOfWork.SideArmRepository.UpdateWithHInstallation(UserId,null, SideArmInst, SideArm, CivilLoads.SiteCode, ExternalSys);
                         _unitOfWork.SaveChanges();
 
                         if (SideArmViewModel.CivilLoads != null && (AllCivilInst != null || AllCivilInst != 0))
@@ -4017,7 +4057,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        public Response<SideArmViewDto> AddSideArm(SideArmViewDto addSideArms, string SiteCode, int? TaskId, int UserId, string ConnectionString)
+        public Response<SideArmViewDto> AddSideArm(SideArmViewDto addSideArms, string SiteCode, int? TaskId, int UserId, string ConnectionString,bool ExternalSys)
         {
             using (TransactionScope transaction = new TransactionScope())
             {
@@ -4095,7 +4135,7 @@ namespace TLIS_Service.Services
                                                 SideArm.sideArmInstallationPlaceId = addSideArms.installationConfig.installationPlaceId;
                                                 SideArm.sideArmLibraryId = addSideArms.installationConfig.sideArmLibraryId;
                                                 SideArm.sideArmTypeId = addSideArms.installationConfig.sideArmTypeId;
-                                               var HistoryId= _unitOfWork.SideArmRepository.AddWithHInsatallation(UserId,null, SideArm,SiteCode);
+                                               var HistoryId= _unitOfWork.SideArmRepository.AddWithHInsatallation(UserId,null, SideArm,SiteCode, ExternalSys);
                                                 _unitOfWork.SaveChanges();
 
                                                 if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)
@@ -4220,7 +4260,7 @@ namespace TLIS_Service.Services
                                                 SideArm.sideArmInstallationPlaceId = addSideArms.installationConfig.installationPlaceId;
                                                 SideArm.sideArmLibraryId = addSideArms.installationConfig.sideArmLibraryId;
                                                 SideArm.sideArmTypeId = addSideArms.installationConfig.sideArmTypeId;
-                                                var HistoryId = _unitOfWork.SideArmRepository.AddWithHInsatallation(UserId, null, SideArm, SiteCode);
+                                                var HistoryId = _unitOfWork.SideArmRepository.AddWithHInsatallation(UserId, null, SideArm, SiteCode, ExternalSys);
                                                 _unitOfWork.SaveChanges();
 
                                                 if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)
@@ -4354,7 +4394,7 @@ namespace TLIS_Service.Services
                                             SideArm.sideArmInstallationPlaceId = addSideArms.installationConfig.installationPlaceId;
                                             SideArm.sideArmLibraryId = addSideArms.installationConfig.sideArmLibraryId;
                                             SideArm.sideArmTypeId = addSideArms.installationConfig.sideArmTypeId;
-                                            var HistoryId = _unitOfWork.SideArmRepository.AddWithHInsatallation(UserId, null, SideArm, SiteCode);
+                                            var HistoryId = _unitOfWork.SideArmRepository.AddWithHInsatallation(UserId, null, SideArm, SiteCode, ExternalSys);
                                             _unitOfWork.SaveChanges();
 
                                             if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)
@@ -4504,7 +4544,7 @@ namespace TLIS_Service.Services
                                             SideArm.sideArmInstallationPlaceId = addSideArms.installationConfig.installationPlaceId;
                                             SideArm.sideArmLibraryId = addSideArms.installationConfig.sideArmLibraryId;
                                             SideArm.sideArmTypeId = addSideArms.installationConfig.sideArmTypeId;
-                                            var HistoryId = _unitOfWork.SideArmRepository.AddWithHInsatallation(UserId, null, SideArm, SiteCode);
+                                            var HistoryId = _unitOfWork.SideArmRepository.AddWithHInsatallation(UserId, null, SideArm, SiteCode, ExternalSys);
                                             _unitOfWork.SaveChanges();
 
                                             if (addSideArms != null && addSideArms.civilLoads != null && addSideArms.installationConfig != null)

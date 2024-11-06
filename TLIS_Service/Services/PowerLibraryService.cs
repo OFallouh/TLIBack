@@ -713,7 +713,7 @@ namespace TLIS_Service.Services
                              return new Response<AddPowerLibraryObject>(true, null, null, $"This model {PowerLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             
                           
-                           var HistoryId= _unitOfWork.PowerLibraryRepository.AddWithH(UserId,null, PowerLibrary);
+                           var HistoryId= _unitOfWork.PowerLibraryRepository.AddWithH(UserId,null, PowerLibrary,false);
                             _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
                             List<int?> ints = new List<int?>();
@@ -1183,7 +1183,7 @@ namespace TLIS_Service.Services
                     PowerLibraryEntites.Active = PowerLegLib.Active;
                     PowerLibraryEntites.Deleted = PowerLegLib.Deleted;
 
-                   var HistoryId= _unitOfWork.PowerLibraryRepository.UpdateWithH(userId,null, PowerLegLib, PowerLibraryEntites);
+                   var HistoryId= _unitOfWork.PowerLibraryRepository.UpdateWithH(userId,null, PowerLegLib, PowerLibraryEntites, false);
                     await _unitOfWork.SaveChangesAsync();
 
                     List<int?> sortedIds = new List<int?>();
@@ -2963,7 +2963,7 @@ namespace TLIS_Service.Services
                 var PowerEntity = _unitOfWork.PowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                 TLIpowerLibrary NewPowerLibrary = _unitOfWork.PowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                 NewPowerLibrary.Active = !(NewPowerLibrary.Active);
-                _unitOfWork.PowerLibraryRepository.UpdateWithH(UserId,null, PowerEntity, NewPowerLibrary);
+                _unitOfWork.PowerLibraryRepository.UpdateWithH(UserId,null, PowerEntity, NewPowerLibrary,false);
                 await _unitOfWork.SaveChangesAsync();
                 Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
                 return new Response<AllItemAttributes>();
@@ -3051,7 +3051,7 @@ namespace TLIS_Service.Services
                 TLIpowerLibrary NewPowerLibrary = _unitOfWork.PowerLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                 NewPowerLibrary.Deleted = true;
                 NewPowerLibrary.Model = NewPowerLibrary.Model + "_" + DateTime.Now.ToString();
-                var HistoryId=_unitOfWork.PowerLibraryRepository.UpdateWithH(UserId,null, PowerEntity, NewPowerLibrary);
+                var HistoryId=_unitOfWork.PowerLibraryRepository.UpdateWithH(UserId,null, PowerEntity, NewPowerLibrary,false);
                 DisableDynamicAttLibValuesH(TableNameEntity.Id, Id,UserId, HistoryId);
                 await _unitOfWork.SaveChangesAsync();
                 Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));

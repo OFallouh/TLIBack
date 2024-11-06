@@ -18,10 +18,13 @@ namespace TLIS_Repository.Base
         IQueryable<TEntity> GetAllIncludeMultiple(ParameterPagination parameterPagination, List<FilterObjectList> filter, out int count, params Expression<Func<TEntity, object>>[] includes);
         Task<IEnumerable<TEntity>> GetAllAsync(ParameterPagination parameterPagination = null, List<FilterObjectList> filter = null);
         IEnumerable<TEntity> GetAll(out int count);
+        void AddRangeWithHInstallation(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities, string SiteCode, bool ExternalSys);
+        int UpdateWithHInstallation(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode, bool ExternalSy);
         void UpdateWithHLogic(int? UserId, int HistoryId, int TabelNameId, TEntity OldObject, TEntity NewObject);
         Task<int> AddAsyncWithH(int? UserId, int? SecRecordId, TEntity AddObject);
-        void AddRangeWithH(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities);
-        int UpdateWithH(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject);
+        void AddRangeWithH(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities, bool ExternalSys);
+        int AddWithHInsatallation(int? UserId, int? SecRecordId, TEntity AddObject, string? SiteCode, bool ExternalSy);
+        int UpdateWithH(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, bool ExternalSys);
         IEnumerable<TEntity> GetAllWithoutCount();
         int UpdateWithHInstallationSite(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode);
         void AddRangeWithHDynamic(int? UserId, int HistoryId, int TabelNameId, IEnumerable<TEntity> Entities);
@@ -29,7 +32,7 @@ namespace TLIS_Repository.Base
         void RemoveItemWithH(int? UserId, int? SecRecordId, TEntity OldObject);
         void RemoveRangeItemsWithHistory(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities);
         int GetCount();
-        int AddWithH(int? UserId, int? SecRecordId, TEntity AddObject);
+        int AddWithH(int? UserId, int? SecRecordId, TEntity AddObject, bool ExternalSys);
         TEntity GetByID(TKey id);
         void AddWithHDynamic(int? UserId, int TabelNameId, TEntity AddObject, int HistoryId);
         IQueryable<TEntity> GetAllAsQueryable(out int count);
@@ -78,14 +81,14 @@ namespace TLIS_Repository.Base
         TEntity GetIncludeWhereFirst(Expression<Func<TEntity, bool>> where, params Expression<Func<TEntity, object>>[] includes);
         void RefreshView(string connectionString);
         void AddSiteWithHistory(int? UserId, TEntity entity);
-        int AddWithHInsatallation(int? UserId, int? SecRecordId, TEntity AddObject, string? SiteCode);
         Task<int> AddAsyncWithHInstallation(int? UserId, int? SecRecordId, TEntity AddObject, string SiteCode);
-        void AddRangeWithHInstallation(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities, string SiteCode);
-        int UpdateWithHInstallation(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode);
         int AddWithHInternal(int? UserId, int? SecRecordId, TEntity AddObject);
         int AddWithHInsatallationInternal(int? UserId, int? SecRecordId, TEntity AddObject, string? SiteCode);
         int UpdateWithHInstallationInternal(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode);
         int UpdateWithHInstallationInternalSite(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode);
         int AddWithHSite(int? UserId, int? SecRecordId, TEntity AddObject);
+        int ReturnUserIdToExternalSys(string UserName);
+
+
     }
 }

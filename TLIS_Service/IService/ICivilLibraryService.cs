@@ -21,25 +21,25 @@ namespace TLIS_Service.IService
 {
     public interface ICivilLibraryService
     {
-        Response<GetForAddCivilLibrarybject> GetCivilNonSteelLibraryById(int Id, string TableName);
-        Task<Response<EditCivilNonSteelLibraryObject>> EditCivilNonSteelLibrary(EditCivilNonSteelLibraryObject editCivilNonSteelLibraryObject, string TableName, int userId,string connectionString);
-        Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutCapsuleLibrary(string TableName);
-        Response<AddCivilNonSteelLibraryObject> AddCivilNonSteelLibrary(string TableName, AddCivilNonSteelLibraryObject AddCivilNonSteelLibraryObject, string connectionString, int UserId);
-        Response<AddCivilWithoutLegsLibraryObject> AddCivilWithoutLegsLibrary(string TableName, AddCivilWithoutLegsLibraryObject AddCivilWithoutLegsLibraryObject, string connectionString, int UserId);
-        Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutMonopleLibrary(string TableName);
-        Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutMastLibrary(string TableName);
+        Response<GetForAddCivilLibrarybject> GetCivilNonSteelLibraryById(int Id, string TableName, int UserId, bool ExternalSys);
+        Task<Response<EditCivilNonSteelLibraryObject>> EditCivilNonSteelLibrary(EditCivilNonSteelLibraryObject editCivilNonSteelLibraryObject, string TableName, int userId,string connectionString, bool ExternalSys);
+        Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutCapsuleLibrary(string TableName, int UserId, bool ExternalSys);
+        Response<AddCivilNonSteelLibraryObject> AddCivilNonSteelLibrary(string TableName, AddCivilNonSteelLibraryObject AddCivilNonSteelLibraryObject, string connectionString, int UserId, bool ExternalSys);
+        Response<AddCivilWithoutLegsLibraryObject> AddCivilWithoutLegsLibrary(string TableName, AddCivilWithoutLegsLibraryObject AddCivilWithoutLegsLibraryObject, string connectionString, int UserId, bool ExternalSys);
+        Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutMonopleLibrary(string TableName, int UserId, bool ExternalSys);
+        Response<GetForAddCivilLibrarybject> GetForAddCivilWithoutMastLibrary(string TableName, int UserId, bool ExternalSys);
         Response<ReturnWithFilters<CivilWithLegLibraryViewModel>> getCivilWithLegLibraries(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<CivilWithoutLegLibraryViewModel>> getCivilWithoutLegLibraries(List<FilterObjectList> filters, bool WithFilterData, ParameterPagination parameters);
         Response<ReturnWithFilters<CivilNonSteelLibraryViewModel>> getCivilNonSteelLibraries(List<FilterObjectList> filters, ParameterPagination parameters);
-        Response<GetForAddCivilLibrarybject> GetCivilWithLegsLibraryById(int Id, string TableName);
-        Response<GetForAddCivilLibrarybject> GetCivilWithoutLegsLibraryById(int Id, string TableName, int CategoryId);
-        Task<Response<EditCivilWithoutLegsLibraryObject>> EditCivilWithoutlegsLibrary(EditCivilWithoutLegsLibraryObject editCivilWithoutLegsLibraryObject, string TableName, int userId, string connectionString);
-        Response<AddCivilWithLegsLibraryObject> AddCivilWithLegsLibrary(string TableName, AddCivilWithLegsLibraryObject AddCivilWithLegsLibraryObject, string connectionString,int UserId);
-        Task<Response<EditCivilWithLegsLibraryObject>> EditCivilWithLegsLibrary(EditCivilWithLegsLibraryObject editCivilWithLegsLibrary, string TableName, int userId, string connectionString);
+        Response<GetForAddCivilLibrarybject> GetCivilWithLegsLibraryById(int Id, string TableName, int UserId, bool ExternalSys);
+        Response<GetForAddCivilLibrarybject> GetCivilWithoutLegsLibraryById(int Id, string TableName, int CategoryId, int UserId, bool ExternalSys);
+        Task<Response<EditCivilWithoutLegsLibraryObject>> EditCivilWithoutlegsLibrary(EditCivilWithoutLegsLibraryObject editCivilWithoutLegsLibraryObject, string TableName, int userId, string connectionString, bool ExternalSys);
+        Response<AddCivilWithLegsLibraryObject> AddCivilWithLegsLibrary(string TableName, AddCivilWithLegsLibraryObject AddCivilWithLegsLibraryObject, string connectionString,int UserId, bool ExternalSys);
+        Task<Response<EditCivilWithLegsLibraryObject>> EditCivilWithLegsLibrary(EditCivilWithLegsLibraryObject editCivilWithLegsLibrary, string TableName, int userId, string connectionString, bool ExternalSys);
         Task<Response<AllItemAttributes>> Disable(int Id, string TableName, int UserId, string connectionString);
         Task<Response<AllItemAttributes>> Delete(int Id, string CivilType, int UserId, string connectionString);
         Response<IEnumerable<LibraryNamesViewModel>> GetCivilLibraryByType(string CivilType, int? CivilWithoutLegCategoryId = null);
-        Response<GetForAddCivilLibrarybject> GetForAdd(string TableName);
+        Response<GetForAddCivilLibrarybject> GetForAdd(string TableName, int UserId, bool ExternalSys);
         Response<GetEnableAttribute> GetCivilWithLegLibrariesEnabledAtt( string ConnectionString);
         Response<GetEnableAttribute> GetCivilWithoutLegMastLibrariesEnabledAtt( string ConnectionString);
         Response<GetEnableAttribute> GetCivilWithoutLegCapsuleLibrariesEnabledAtt( string ConnectionString);

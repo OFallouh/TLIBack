@@ -54,7 +54,26 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(CivilNonSteelLibraryViewModel))]
         public IActionResult GetCivilNonSteelLibrary(int id)
         {
-            var response = _unitOfWorkService.CivilLibraryService.GetCivilNonSteelLibraryById(id, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilLibraryService.GetCivilNonSteelLibraryById(id, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId,false);
             return Ok(response);
 
         }
@@ -83,7 +102,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.CivilLibraryService.AddCivilNonSteelLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, ConnectionString, userId);
+                var response = _unitOfWorkService.CivilLibraryService.AddCivilNonSteelLibrary(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), addCivilNonSteelLibraryViewModel, ConnectionString, userId,false);
                 return Ok(response);
             }
             else
@@ -119,7 +138,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.CivilLibraryService.EditCivilNonSteelLibrary(editCivilNonSteelLibraryViewModel, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId, ConnectionString);
+                var response = await _unitOfWorkService.CivilLibraryService.EditCivilNonSteelLibrary(editCivilNonSteelLibraryViewModel, Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId, ConnectionString,false);
                 return Ok(response);
             }
             else
@@ -185,7 +204,26 @@ namespace TLIS_API.Controllers
         [HttpGet("GetForAddCivilNonSteelLibrary")] 
         public IActionResult GetForAddCivilNonSteelLibrary()
         {
-            var response = _unitOfWorkService.CivilLibraryService.GetForAdd(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString());
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.CivilLibraryService.GetForAdd(Helpers.Constants.CivilType.TLIcivilNonSteelLibrary.ToString(), userId,false);
             return Ok(response);
         }
 

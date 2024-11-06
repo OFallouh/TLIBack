@@ -540,8 +540,9 @@ namespace TLIS_Repository.Base
 
 
         //-----------------------------------------------------------------------------------
-        public virtual int AddWithH(int? UserId, int? SecRecordId, TEntity AddObject)
+        public virtual int AddWithH(int? UserId, int? SecRecordId, TEntity AddObject, bool ExternalSys)
         {
+            TLIhistory addTablesHistory = new TLIhistory();
             int HistoryId = 0;
 
             // Add the new entity to the context
@@ -564,16 +565,26 @@ namespace TLIS_Repository.Base
             var entityId = (int)AddObject.GetType().GetProperty("Id")?.GetValue(AddObject);
             var entityIdString = entityId.ToString();
 
-
-            var addTablesHistory = new TLIhistory
+            if (ExternalSys == false)
             {
-                HistoryTypeId = historyTypeId,
-                RecordId = entityIdString,
-                TablesNameId = entityTableNameModel.Id,
-                UserId = UserId.Value
-            };
-            _context.TLIhistory.Add(addTablesHistory);
-            _context.SaveChanges();
+
+                addTablesHistory.HistoryTypeId = historyTypeId;
+                addTablesHistory.RecordId = entityIdString;
+                addTablesHistory.TablesNameId = entityTableNameModel.Id;
+                addTablesHistory.UserId = UserId.Value;
+                _context.TLIhistory.Add(addTablesHistory);
+                _context.SaveChanges();
+            }
+            if (ExternalSys == true)
+            {
+                addTablesHistory.HistoryTypeId = historyTypeId;
+                addTablesHistory.RecordId = entityIdString;
+                addTablesHistory.TablesNameId = entityTableNameModel.Id;
+                addTablesHistory.ExternalSysId = UserId.Value;
+                _context.TLIhistory.Add(addTablesHistory);
+                _context.SaveChanges();
+            }
+            
             HistoryId = addTablesHistory.Id;
 
             var attributes = AddObject.GetType().GetProperties()
@@ -751,8 +762,9 @@ namespace TLIS_Repository.Base
 
             return HistoryId;
         }
-        public virtual int AddWithHInsatallation(int? UserId, int? SecRecordId, TEntity AddObject,string? SiteCode)
+        public virtual int AddWithHInsatallation(int? UserId, int? SecRecordId, TEntity AddObject,string? SiteCode,bool ExternalSy)
         {
+            var addTablesHistory = new TLIhistory();
             int HistoryId = 0;
 
             // Add the new entity to the context
@@ -775,17 +787,31 @@ namespace TLIS_Repository.Base
             var entityId = (int)AddObject.GetType().GetProperty("Id")?.GetValue(AddObject);
             var entityIdString = entityId.ToString();
 
-   
-            var addTablesHistory = new TLIhistory
+            if (ExternalSy == false)
             {
-                HistoryTypeId = historyTypeId,
-                RecordId = entityIdString,
-                TablesNameId = entityTableNameModel.Id,
-                UserId = UserId.Value,
-                SiteCode = SiteCode,
-            };
-            _context.TLIhistory.Add(addTablesHistory);
-            _context.SaveChanges();
+                addTablesHistory.HistoryTypeId = historyTypeId;
+                addTablesHistory.RecordId = entityIdString;
+                addTablesHistory.TablesNameId = entityTableNameModel.Id;
+                addTablesHistory.ExternalSysId = UserId.Value;
+                addTablesHistory.SiteCode = SiteCode;
+
+
+                _context.TLIhistory.Add(addTablesHistory);
+                _context.SaveChanges();
+            }
+            if (ExternalSy == true)
+            {
+
+                addTablesHistory.HistoryTypeId = historyTypeId;
+                addTablesHistory.RecordId = entityIdString;
+                addTablesHistory.TablesNameId = entityTableNameModel.Id;
+                addTablesHistory.ExternalSysId = UserId.Value;
+                addTablesHistory.SiteCode = SiteCode;
+                
+            
+                _context.TLIhistory.Add(addTablesHistory);
+                _context.SaveChanges();
+            }
             HistoryId = addTablesHistory.Id;
 
             var attributes = AddObject.GetType().GetProperties()
@@ -1112,19 +1138,19 @@ namespace TLIS_Repository.Base
             return HistoryId;
         }
 
-        public void AddRangeWithH(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities)
+        public void AddRangeWithH(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities,bool ExternalSys)
         {
             foreach (TEntity Entity in Entities)
             {
-                AddWithH(UserId, SecRecordId, Entity);
+                AddWithH(UserId, SecRecordId, Entity, ExternalSys);
             }
             _context.SaveChanges();
         }
-        public void AddRangeWithHInstallation(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities,string SiteCode)
+        public void AddRangeWithHInstallation(int? UserId, int? SecRecordId, IEnumerable<TEntity> Entities,string SiteCode,bool ExternalSys)
         {
             foreach (TEntity Entity in Entities)
             {
-                AddWithHInsatallation(UserId, SecRecordId, Entity, SiteCode);
+                AddWithHInsatallation(UserId, SecRecordId, Entity, SiteCode, ExternalSys);
             }
             _context.SaveChanges();
         }
@@ -1135,6 +1161,11 @@ namespace TLIS_Repository.Base
                 AddWithHDynamic(UserId, TabelNameId, Entity, HistoryId);
             }
             _context.SaveChanges();
+        }
+        public int ReturnUserIdToExternalSys(string UserName)
+        {
+            var ExternalSysId = _context.TLIexternalSys.FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
+            return ExternalSysId;
         }
         public virtual void UpdateWithHLogic(int? UserId,int HistoryId,int TabelNameId, TEntity OldObject, TEntity NewObject)
         {
@@ -1195,8 +1226,9 @@ namespace TLIS_Repository.Base
             dataTable.Update(OldObject);
             _context.SaveChanges();
         }
-        public virtual int UpdateWithH(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject)
+        public virtual int UpdateWithH(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject,bool ExternalSys)
         {
+            TLIhistory AddTablesHistory = new TLIhistory();
             int HistoryId = 0;
             TEntity entity = _mapper.Map<TEntity>(NewObject);
             if (UserId != null)
@@ -1209,15 +1241,25 @@ namespace TLIS_Repository.Base
 
                 int entityId = (int)entity.GetType().GetProperty("Id").GetValue(entity, null);
                 string entityIdString = entityId.ToString();
-
-                TLIhistory AddTablesHistory = new TLIhistory
+                if (ExternalSys == false)
                 {
-                    HistoryTypeId = HistoryTypeId,
-                    RecordId = entityIdString,
-                    TablesNameId = EntityTableNameModel.Id,
-                    UserId = UserId.Value
-                };
 
+                    AddTablesHistory.HistoryTypeId = HistoryTypeId;
+                    AddTablesHistory.RecordId = entityIdString;
+                    AddTablesHistory.TablesNameId = EntityTableNameModel.Id;
+                    AddTablesHistory.UserId = UserId.Value;
+                    _context.TLIhistory.Add(AddTablesHistory);
+                    _context.SaveChanges();
+                }
+                if (ExternalSys == true)
+                {
+                    AddTablesHistory.HistoryTypeId = HistoryTypeId;
+                    AddTablesHistory.RecordId = entityIdString;
+                    AddTablesHistory.TablesNameId = EntityTableNameModel.Id;
+                    AddTablesHistory.ExternalSysId = UserId.Value;
+                    _context.TLIhistory.Add(AddTablesHistory);
+                    _context.SaveChanges();
+                }
                 _context.TLIhistory.Add(AddTablesHistory);
                 _context.SaveChanges();
                  HistoryId = AddTablesHistory.Id;
@@ -1267,9 +1309,10 @@ namespace TLIS_Repository.Base
 
             return HistoryId; // إرجاع قيمة الـ Id الخاصة بـ AddTablesHistory
         }
-        public virtual int UpdateWithHInstallation(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode)
+        public virtual int UpdateWithHInstallation(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode, bool ExternalSy)
         {
             int HistoryId = 0;
+            TLIhistory AddTablesHistory = new TLIhistory();
             TEntity entity = _mapper.Map<TEntity>(NewObject);
             if (UserId != null)
             {
@@ -1281,18 +1324,32 @@ namespace TLIS_Repository.Base
 
                 int entityId = (int)entity.GetType().GetProperty("Id").GetValue(entity, null);
                 string entityIdString = entityId.ToString();
-
-                TLIhistory AddTablesHistory = new TLIhistory
+                if (ExternalSy == false)
                 {
-                    HistoryTypeId = HistoryTypeId,
-                    RecordId = entityIdString,
-                    TablesNameId = EntityTableNameModel.Id,
-                    UserId = UserId.Value,
-                    SiteCode= SiteCode
-                };
 
-                _context.TLIhistory.Add(AddTablesHistory);
-                _context.SaveChanges();
+                    AddTablesHistory.HistoryTypeId = HistoryTypeId;
+                    AddTablesHistory.RecordId = entityIdString;
+                    AddTablesHistory.TablesNameId = EntityTableNameModel.Id;
+                    AddTablesHistory.UserId = UserId.Value;
+                    AddTablesHistory.SiteCode = SiteCode;
+                    
+                    _context.TLIhistory.Add(AddTablesHistory);
+                    _context.SaveChanges();
+                }
+                if (ExternalSy == true)
+                {
+                    AddTablesHistory.HistoryTypeId = HistoryTypeId;
+                    AddTablesHistory.RecordId = entityIdString;
+                    AddTablesHistory.TablesNameId = EntityTableNameModel.Id;
+                    AddTablesHistory.ExternalSysId = UserId.Value;
+                    AddTablesHistory.SiteCode = SiteCode;
+
+                    _context.TLIhistory.Add(AddTablesHistory);
+                    _context.SaveChanges();
+                    _context.TLIhistory.Add(AddTablesHistory);
+                    _context.SaveChanges();
+                }
+              
                 HistoryId = AddTablesHistory.Id;
                 List<PropertyInfo> Attributes = OldObject.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType ?
                     (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ?

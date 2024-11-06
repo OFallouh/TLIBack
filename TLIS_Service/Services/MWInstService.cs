@@ -81,6 +81,7 @@ using TLIS_DAL.ViewModels.MW_RFULibraryDTOs;
 using static TLIS_DAL.ViewModels.MW_RFULibraryDTOs.EditMWRFULibrary;
 using TLIS_DAL.ViewModels.BoardTypeDTOs;
 using Microsoft.Extensions.Caching.Memory;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace TLIS_Service.Services
 {
@@ -107,7 +108,7 @@ namespace TLIS_Service.Services
         //Get activated attributes for installation table
         //Get dynamic attributes for table name
         //Get related tables
-        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWDishInstallation(string TableName, int LibraryID, string SiteCode, int? UserId)
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWDishInstallation(string TableName, int LibraryID, string SiteCode, int UserId, bool ExternalSy)
         {
             try
             {
@@ -196,7 +197,16 @@ namespace TLIS_Service.Services
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
 
-                   
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
+
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -210,7 +220,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWBUInstallation(string TableName, int LibraryID, string SiteCode,int? UserId)
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWBUInstallation(string TableName, int LibraryID, string SiteCode,int UserId, bool ExternalSy)
         {
             try
             {
@@ -285,7 +295,17 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
-                   
+
+
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -299,7 +319,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWOtherInstallation(string TableName, int LibraryID, string SiteCode, int? UserId )
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWOtherInstallation(string TableName, int LibraryID, string SiteCode, int UserId, bool ExternalSy)
         {
             try
             {
@@ -343,7 +363,17 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
-                    
+
+
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -357,7 +387,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWRFUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId)
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWRFUInstallation(string TableName, int LibraryID, string SiteCode, int UserId, bool ExternalSy)
         {
             try
             {
@@ -454,7 +484,16 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
-                 
+
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -468,7 +507,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWODUInstallation(string TableName, int LibraryID, string SiteCode, int? UserId )
+        public Response<GetForAddMWDishInstallationObject> GetAttForAddMWODUInstallation(string TableName, int LibraryID, string SiteCode, int UserId ,bool ExternalSy)
         {
             try
             {
@@ -533,7 +572,16 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                    .GetDynamicInstAttInst(TableNameEntity.Id, null);
-                  
+
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = SiteCode,
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
 
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
@@ -849,7 +897,7 @@ namespace TLIS_Service.Services
 
             return new Response<List<MW_PortViewModel>>(null);
         }
-        public Response<GetForAddMWDishInstallationObject> AddMWRFUInstallation(object AddMWRFUInstallation, string TableName, string SiteCode, string ConnectionString, int? TaskId, int UserId)
+        public Response<GetForAddMWDishInstallationObject> AddMWRFUInstallation(object AddMWRFUInstallation, string TableName, string SiteCode, string ConnectionString, int? TaskId, int UserId,bool ExternalSy)
         {
             using (var con = new OracleConnection(ConnectionString))
             {
@@ -1025,7 +1073,7 @@ namespace TLIS_Service.Services
 
                             mwRFU.MwRFULibraryId = AddmwRFU.installationConfig.MwRFULibraryId;
                             mwRFU.MwPortId = tLImwPort.Id;
-                            var HistoryId = _unitOfWork.MW_RFURepository.AddWithHInsatallation(UserId, null, mwRFU, SiteCode);
+                            var HistoryId = _unitOfWork.MW_RFURepository.AddWithHInsatallation(UserId, null, mwRFU, SiteCode, ExternalSy);
                             _unitOfWork.SaveChanges();
                             int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwRFU.ToString(), mwRFU.Id);
 
@@ -1109,7 +1157,7 @@ namespace TLIS_Service.Services
 
 
         }
-        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWRFUInstallation(EditMWRFUInstallationObject editMWRFUInstallationObject, string TableName, string ConnectionString, int? TaskId, int UserId)
+        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWRFUInstallation(EditMWRFUInstallationObject editMWRFUInstallationObject, string TableName, string ConnectionString, int? TaskId, int UserId,bool ExternalSy)
         {
             using (var con = new OracleConnection(ConnectionString))
             {
@@ -1308,7 +1356,7 @@ namespace TLIS_Service.Services
                                     mwRFU.MwPortId = portCascuded.Id;
                                 }
                                 mwRFU.MwRFULibraryId = editMWRFUInstallationObject.civilType.MwRFULibraryId;
-                                var HistoryId = _unitOfWork.MW_RFURepository.UpdateWithHInstallation(UserId, null, MWRFU.allLoadInst.mwRFU, mwRFU, MWRFU.SiteCode);
+                                var HistoryId = _unitOfWork.MW_RFURepository.UpdateWithHInstallation(UserId, null, MWRFU.allLoadInst.mwRFU, mwRFU, MWRFU.SiteCode, ExternalSy);
                                 _unitOfWork.SaveChanges();
 
                                 if (editMWRFUInstallationObject.civilLoads != null)
@@ -4639,7 +4687,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public Response<GetForAddMWDishInstallationObject> AddMWInstallation(int UserId, object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int? TaskId)
+        public Response<GetForAddMWDishInstallationObject> AddMWInstallation(int UserId, object MWInstallationViewModel, string TableName, string SiteCode, string ConnectionString, int? TaskId, bool ExternalSy)
         {
             using (var con = new OracleConnection(ConnectionString))
             {
@@ -4700,8 +4748,8 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
                                                     var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
                                                     || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
-                                                    x=>x.allLoadInst,x=>x.allLoadInst.mwBU).ToList();
-                                                    if (MWBUDish.Count>0)
+                                                    x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
+                                                    if (MWBUDish.Count > 0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
                                                 }
@@ -4738,7 +4786,7 @@ namespace TLIS_Service.Services
                                                 mwODU.MwODULibraryId = AddMW_ODU.installationConfig.MwODULibraryId;
                                                 mwODU.Mw_DishId = AddMW_ODU.installationConfig.mwDishId;
                                                 mwODU.OduInstallationTypeId = AddMW_ODU.installationConfig.InstallationPlaceId;
-                                               var HistoryId= _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId,null, mwODU,SiteCode);
+                                                var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId, null, mwODU, SiteCode, ExternalSy);
                                                 _unitOfWork.SaveChanges();
                                                 int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwODU.ToString(), mwODU.Id);
                                                 if (AddMW_ODU.civilLoads != null && Id != 0)
@@ -4760,7 +4808,7 @@ namespace TLIS_Service.Services
 
                                                     };
                                                     var TabelALLCivil = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                                    _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelALLCivil, tLIcivilLoads,HistoryId);
+                                                    _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelALLCivil, tLIcivilLoads, HistoryId);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
@@ -4814,7 +4862,7 @@ namespace TLIS_Service.Services
                                                 var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
                                                   || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                   x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
-                                                if (MWBUDish.Count>0)
+                                                if (MWBUDish.Count > 0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
                                                 List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
@@ -4849,7 +4897,7 @@ namespace TLIS_Service.Services
                                                 mwODU.MwODULibraryId = AddMW_ODU.installationConfig.MwODULibraryId;
                                                 mwODU.Mw_DishId = AddMW_ODU.installationConfig.mwDishId;
                                                 mwODU.OduInstallationTypeId = AddMW_ODU.installationConfig.InstallationPlaceId;
-                                               var HistoryId= _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId,null, mwODU,SiteCode);
+                                                var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId, null, mwODU, SiteCode, ExternalSy);
                                                 _unitOfWork.SaveChanges();
                                                 int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwODU.ToString(), mwODU.Id);
                                                 if (AddMW_ODU.civilLoads != null && Id != 0)
@@ -4871,7 +4919,7 @@ namespace TLIS_Service.Services
 
                                                     };
                                                     var TabelALLCivil = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                                    _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId,TabelALLCivil, tLIcivilLoads,HistoryId);
+                                                    _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelALLCivil, tLIcivilLoads, HistoryId);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
@@ -4925,7 +4973,7 @@ namespace TLIS_Service.Services
                                                 var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
                                                    || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                    x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
-                                                if (MWBUDish.Count>0)
+                                                if (MWBUDish.Count > 0)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
                                                 List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
@@ -4960,7 +5008,7 @@ namespace TLIS_Service.Services
                                                 mwODU.MwODULibraryId = AddMW_ODU.installationConfig.MwODULibraryId;
                                                 mwODU.Mw_DishId = AddMW_ODU.installationConfig.mwDishId;
                                                 mwODU.OduInstallationTypeId = AddMW_ODU.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId,null, mwODU,SiteCode);
+                                                var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId, null, mwODU, SiteCode, ExternalSy);
                                                 _unitOfWork.SaveChanges();
                                                 int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwODU.ToString(), mwODU.Id);
                                                 if (AddMW_ODU.civilLoads != null && Id != 0)
@@ -4982,7 +5030,7 @@ namespace TLIS_Service.Services
 
                                                     };
                                                     var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                                    _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads,HistoryId);
+                                                    _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
@@ -5049,7 +5097,7 @@ namespace TLIS_Service.Services
 
                                                         tLImwDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInstId != null
                                                         && !x.Dismantle && x.allCivilInstId == CivilFound.allCivilInstId
-                                                        && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId 
+                                                        && x.allLoadInst.mwDishId == AddMW_ODU.installationConfig.mwDishId
                                                         && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                         x => x.allLoadInst, x => x.allLoadInst.mwDish, x => x.allLoadInst.mwDish,
                                                          x => x.allLoadInst.mwDish.MwDishLibrary.polarityType, x => x.allCivilInst, x => x.sideArm);
@@ -5058,7 +5106,7 @@ namespace TLIS_Service.Services
                                                         var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
                                                           || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                           x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
-                                                          if (MWBUDish.Count>0)
+                                                        if (MWBUDish.Count > 0)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
 
@@ -5158,7 +5206,7 @@ namespace TLIS_Service.Services
                                                             mwODU.MwODULibraryId = AddMW_ODU.installationConfig.MwODULibraryId;
                                                             mwODU.Mw_DishId = AddMW_ODU.installationConfig.mwDishId;
                                                             mwODU.OduInstallationTypeId = AddMW_ODU.installationConfig.InstallationPlaceId;
-                                                            var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId,null, mwODU,SiteCode);
+                                                            var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId, null, mwODU, SiteCode, ExternalSy);
                                                             _unitOfWork.SaveChanges();
                                                             int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwODU.ToString(), mwODU.Id);
                                                             if (AddMW_ODU.civilLoads != null && Id != 0)
@@ -5178,7 +5226,7 @@ namespace TLIS_Service.Services
 
                                                                 };
                                                                 var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                                                _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads,HistoryId);
+                                                                _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                 _unitOfWork.SaveChanges();
 
                                                             }
@@ -5258,7 +5306,7 @@ namespace TLIS_Service.Services
                                                             mwODU.MwODULibraryId = AddMW_ODU.installationConfig.MwODULibraryId;
                                                             mwODU.Mw_DishId = AddMW_ODU.installationConfig.mwDishId;
                                                             mwODU.OduInstallationTypeId = AddMW_ODU.installationConfig.InstallationPlaceId;
-                                                            var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId, null, mwODU, SiteCode);
+                                                            var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId, null, mwODU, SiteCode, ExternalSy);
                                                             _unitOfWork.SaveChanges();
                                                             int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwODU.ToString(), mwODU.Id);
                                                             if (AddMW_ODU.civilLoads != null && Id != 0)
@@ -5358,7 +5406,7 @@ namespace TLIS_Service.Services
                                                     var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
                                                   || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                   x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
-                                                    if (MWBUDish.Count>0)
+                                                    if (MWBUDish.Count > 0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
                                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
@@ -5457,7 +5505,7 @@ namespace TLIS_Service.Services
                                                         mwODU.MwODULibraryId = AddMW_ODU.installationConfig.MwODULibraryId;
                                                         mwODU.Mw_DishId = AddMW_ODU.installationConfig.mwDishId;
                                                         mwODU.OduInstallationTypeId = AddMW_ODU.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId, null, mwODU, SiteCode);
+                                                        var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId, null, mwODU, SiteCode, ExternalSy);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwODU.ToString(), mwODU.Id);
                                                         if (AddMW_ODU.civilLoads != null && Id != 0)
@@ -5557,7 +5605,7 @@ namespace TLIS_Service.Services
                                                         mwODU.MwODULibraryId = AddMW_ODU.installationConfig.MwODULibraryId;
                                                         mwODU.Mw_DishId = AddMW_ODU.installationConfig.mwDishId;
                                                         mwODU.OduInstallationTypeId = AddMW_ODU.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId, null, mwODU, SiteCode);
+                                                        var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId, null, mwODU, SiteCode, ExternalSy);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwODU.ToString(), mwODU.Id);
                                                         if (AddMW_ODU.civilLoads != null && Id != 0)
@@ -5652,7 +5700,7 @@ namespace TLIS_Service.Services
                                                     var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
                                                   || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                   x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
-                                                    if (MWBUDish.Count>0)
+                                                    if (MWBUDish.Count > 0)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
 
                                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
@@ -5724,7 +5772,7 @@ namespace TLIS_Service.Services
                                                     mwODU.MwODULibraryId = AddMW_ODU.installationConfig.MwODULibraryId;
                                                     mwODU.Mw_DishId = AddMW_ODU.installationConfig.mwDishId;
                                                     mwODU.OduInstallationTypeId = AddMW_ODU.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId, null, mwODU, SiteCode);
+                                                    var HistoryId = _unitOfWork.MW_ODURepository.AddWithHInsatallation(UserId, null, mwODU, SiteCode, ExternalSy);
                                                     _unitOfWork.SaveChanges();
                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwODU.ToString(), mwODU.Id);
                                                     if (AddMW_ODU.civilLoads != null && Id != 0)
@@ -5819,7 +5867,7 @@ namespace TLIS_Service.Services
                                                         var MainDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                             x => x.allLoadInst.mwDishId == AddMW_BU.installationConfig.mainDishId && !x.Dismantle
                                                             && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
-                                                            && x.SiteCode.ToLower()==SiteCode.ToLower()
+                                                            && x.SiteCode.ToLower() == SiteCode.ToLower()
                                                         );
                                                         if (MainDish == null)
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this maindish is not found on same leg", (int)ApiReturnCode.fail);
@@ -5842,7 +5890,7 @@ namespace TLIS_Service.Services
                                                             var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == AddMW_BU.installationConfig.sdDishId
                                                             && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                              x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
-                                                            if (MWODUSDDish.Count >0)
+                                                            if (MWODUSDDish.Count > 0)
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "SDDish is connect of MWODU can not connect of MWBU ", (int)ApiReturnCode.fail);
 
                                                         }
@@ -5863,12 +5911,12 @@ namespace TLIS_Service.Services
                                                                 TLImwPort tLImwPort = new TLImwPort()
                                                                 {
                                                                     MwBUId = Convert.ToInt32(CascededBu.allLoadInst.mwBUId),
-                                                                    MwBULibraryId= CascededBu.allLoadInst.mwBU.MwBULibraryId,
-                                                                    Port_Type= 1,
-                                                                    Port_Name= "CascededBU"
+                                                                    MwBULibraryId = CascededBu.allLoadInst.mwBU.MwBULibraryId,
+                                                                    Port_Type = 1,
+                                                                    Port_Name = "CascededBU"
 
                                                                 };
-                                                                _unitOfWork.MW_PortRepository.Add( tLImwPort);
+                                                                _unitOfWork.MW_PortRepository.Add(tLImwPort);
                                                                 _unitOfWork.SaveChanges();
 
                                                                 mwBU.PortCascadeId = tLImwPort.Id;
@@ -5929,13 +5977,13 @@ namespace TLIS_Service.Services
                                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_BU.installationConfig.legId);
                                                                 if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                                 {
-                                                                    mwBU.Name = legname?.CiviLegName + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                                    mwBU.Name = legname?.CiviLegName + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                                 }
 
                                                                 var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                                 !x.Dismantle &&
-                                                                x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                                x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                                 x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                                 if (CheckName != null)
@@ -5971,9 +6019,9 @@ namespace TLIS_Service.Services
                                                             mwBU.MwBULibraryId = AddMW_BU.installationConfig.mwBuLibraryId;
                                                             mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                             mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
-                                                   
+
                                                             mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
-                                                           var HistoryId= _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId,null, mwBU,SiteCode);
+                                                            var HistoryId = _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId, null, mwBU, SiteCode, ExternalSy);
                                                             _unitOfWork.SaveChanges();
                                                             int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwBU.ToString(), mwBU.Id);
                                                             if (AddMW_BU.civilLoads != null && Id != 0)
@@ -5994,7 +6042,7 @@ namespace TLIS_Service.Services
 
                                                                 };
                                                                 var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                                                _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads,HistoryId);
+                                                                _unitOfWork.CivilLoadsRepository.AddWithHDynamic(UserId, TabelTLIcivilLoads, tLIcivilLoads, HistoryId);
                                                                 _unitOfWork.SaveChanges();
 
                                                             }
@@ -6066,12 +6114,12 @@ namespace TLIS_Service.Services
                                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_BU.installationConfig.legId);
                                                                 if (legname != null && AddMW_BU.installationAttributes.Azimuth > 0 && AddMW_BU.installationAttributes.Height > 0)
                                                                 {
-                                                                    mwBU.Name = legname?.CiviLegName + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                                    mwBU.Name = legname?.CiviLegName + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                                 }
                                                                 var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                                     !x.Dismantle &&
-                                                                    x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                                    x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                                     x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                                 if (CheckName != null)
@@ -6082,7 +6130,7 @@ namespace TLIS_Service.Services
                                                             mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                             mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
                                                             mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
-                                                            var HistoryId = _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId, null, mwBU, SiteCode);
+                                                            var HistoryId = _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId, null, mwBU, SiteCode, ExternalSy);
                                                             _unitOfWork.SaveChanges();
                                                             int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwBU.ToString(), mwBU.Id);
                                                             if (AddMW_BU.civilLoads != null && Id != 0)
@@ -6249,7 +6297,7 @@ namespace TLIS_Service.Services
                                                                 x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
                                                                 && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
                                                                 && (x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
-                                                                == null),x=>x.allLoadInst,x=>x.allLoadInst.mwBU
+                                                                == null), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                , x => x.allLoadInst.mwBU.MwBULibrary);
                                                             if (CascededBu == null)
                                                             {
@@ -6317,9 +6365,9 @@ namespace TLIS_Service.Services
                                                             var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                                 x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
                                                                 && x.allCivilInst.civilWithLegsId == AddMW_BU.installationConfig.civilWithLegId
-                                                                &&((x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
-                                                                == AddMW_BU.installationConfig.sideArmId[1] )||(x.sideArmId== AddMW_BU.installationConfig.sideArmId[1]
-                                                                && x.sideArm2Id== AddMW_BU.installationConfig.sideArmId[0])), x => x.allLoadInst, x => x.allLoadInst.mwBU
+                                                                && ((x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
+                                                                == AddMW_BU.installationConfig.sideArmId[1]) || (x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
+                                                                && x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[0])), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                , x => x.allLoadInst.mwBU.MwBULibrary);
                                                             if (CascededBu == null)
                                                             {
@@ -6337,7 +6385,7 @@ namespace TLIS_Service.Services
                                                                 };
                                                                 _unitOfWork.MW_PortRepository.AddWithHistory(UserId, tLImwPort);
                                                                 _unitOfWork.SaveChanges();
-                                                                mwBU.PortCascadeId = tLImwPort.Id ;
+                                                                mwBU.PortCascadeId = tLImwPort.Id;
 
                                                             }
                                                         }
@@ -6408,7 +6456,7 @@ namespace TLIS_Service.Services
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
                                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                                 {
-                                                                    mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                                    mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                                 }
                                                             }
 
@@ -6433,14 +6481,14 @@ namespace TLIS_Service.Services
                                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
                                                                 if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                                 {
-                                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                                 }
                                                             }
 
                                                         }
                                                         var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                          !x.Dismantle &&
-                                                         x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                         x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                          x.SiteCode.ToLower() == SiteCode.ToLower());
 
 
@@ -6474,9 +6522,9 @@ namespace TLIS_Service.Services
                                                         mwBU.MwBULibraryId = AddMW_BU.installationConfig.mwBuLibraryId;
                                                         mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                         mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
-                                                     
+
                                                         mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId, null, mwBU, SiteCode);
+                                                        var HistoryId = _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId, null, mwBU, SiteCode, ExternalSy);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwBU.ToString(), mwBU.Id);
                                                         if (AddMW_BU.civilLoads != null && Id != 0)
@@ -6575,7 +6623,7 @@ namespace TLIS_Service.Services
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
                                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                                 {
-                                                                    mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                                    mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                                 }
                                                             }
                                                         }
@@ -6598,13 +6646,13 @@ namespace TLIS_Service.Services
                                                             var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
                                                             if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                             {
-                                                                mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                                mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                             }
-                                                            
+
                                                         }
                                                         var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle &&
-                                                        x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                        x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                         x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                         if (CheckName != null)
@@ -6612,9 +6660,9 @@ namespace TLIS_Service.Services
                                                         mwBU.MwBULibraryId = AddMW_BU.installationConfig.mwBuLibraryId;
                                                         mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                         mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
-                                                        
+
                                                         mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId, null, mwBU, SiteCode);
+                                                        var HistoryId = _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId, null, mwBU, SiteCode, ExternalSy);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwBU.ToString(), mwBU.Id);
                                                         if (AddMW_BU.civilLoads != null && Id != 0)
@@ -6811,7 +6859,7 @@ namespace TLIS_Service.Services
                                                         var CascededBu = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(
                                                                     x => x.allLoadInst.mwBUId == AddMW_BU.installationConfig.CascededBuId && !x.Dismantle
                                                                     && x.allCivilInst.civilWithoutLegId == AddMW_BU.installationConfig.civilWithoutLegId
-                                                                    &&((x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
+                                                                    && ((x.sideArmId == AddMW_BU.installationConfig.sideArmId[0] && x.sideArm2Id
                                                                 == AddMW_BU.installationConfig.sideArmId[1]) || (x.sideArmId == AddMW_BU.installationConfig.sideArmId[1]
                                                                 && x.sideArm2Id == AddMW_BU.installationConfig.sideArmId[0])), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                    , x => x.allLoadInst.mwBU.MwBULibrary);
@@ -6893,7 +6941,7 @@ namespace TLIS_Service.Services
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
                                                             if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                             {
-                                                                mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                                mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                             }
                                                         }
                                                     }
@@ -6916,13 +6964,13 @@ namespace TLIS_Service.Services
                                                         var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
                                                         if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                         {
-                                                            mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                            mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                         }
 
                                                     }
                                                     var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                                      !x.Dismantle &&
-                                                                     x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                                     x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                                      x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                     if (CheckName != null)
@@ -6955,7 +7003,7 @@ namespace TLIS_Service.Services
                                                     mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                     mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
                                                     mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId, null, mwBU, SiteCode);
+                                                    var HistoryId = _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId, null, mwBU, SiteCode, ExternalSy);
                                                     _unitOfWork.SaveChanges();
                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwBU.ToString(), mwBU.Id);
                                                     if (AddMW_BU.civilLoads != null && Id != 0)
@@ -7051,7 +7099,7 @@ namespace TLIS_Service.Services
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
                                                             if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                             {
-                                                                mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                                mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                             }
                                                         }
                                                     }
@@ -7074,13 +7122,13 @@ namespace TLIS_Service.Services
                                                         var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
                                                         if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                         {
-                                                            mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                            mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                         }
 
                                                     }
                                                     var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                        !x.Dismantle &&
-                                                       x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                       x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                        x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                     if (CheckName != null)
@@ -7089,7 +7137,7 @@ namespace TLIS_Service.Services
                                                     mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                     mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
                                                     mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId, null, mwBU, SiteCode);
+                                                    var HistoryId = _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId, null, mwBU, SiteCode, ExternalSy);
                                                     _unitOfWork.SaveChanges();
                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwBU.ToString(), mwBU.Id);
                                                     if (AddMW_BU.civilLoads != null && Id != 0)
@@ -7369,7 +7417,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
                                                         if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                         {
-                                                            mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                            mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                         }
                                                     }
                                                 }
@@ -7392,13 +7440,13 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                     }
 
                                                 }
                                                 var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle &&
-                                                        x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                        x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                         x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                 if (CheckName != null)
@@ -7407,9 +7455,9 @@ namespace TLIS_Service.Services
                                                 mwBU.MwBULibraryId = AddMW_BU.installationConfig.mwBuLibraryId;
                                                 mwBU.MainDishId = AddMW_BU.installationConfig.mainDishId;
                                                 mwBU.SdDishId = AddMW_BU.installationConfig?.sdDishId ?? null;
-                                       
+
                                                 mwBU.InstallationPlaceId = AddMW_BU.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId, null, mwBU, SiteCode);
+                                                var HistoryId = _unitOfWork.MW_BURepository.AddWithHInsatallation(UserId, null, mwBU, SiteCode, ExternalSy);
                                                 _unitOfWork.SaveChanges();
                                                 int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwBU.ToString(), mwBU.Id);
                                                 if (AddMW_BU.civilLoads != null && Id != 0)
@@ -7512,7 +7560,7 @@ namespace TLIS_Service.Services
 
                                                         if (mwDish.CenterHigh <= 0)
                                                         {
-                                                            if (mwDish.HBA_Surface<= 0)
+                                                            if (mwDish.HBA_Surface <= 0)
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surfacemust bigger from zero", (int)ApiReturnCode.fail);
                                                             }
@@ -7522,7 +7570,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                mwDish.CenterHigh =(mwDish.HBA_Surface + (MWDishLibrary.diameter / 2));
+                                                                mwDish.CenterHigh = (mwDish.HBA_Surface + (MWDishLibrary.diameter / 2));
                                                             }
                                                         }
                                                         if (mwDish.SpaceInstallation == 0)
@@ -7551,8 +7599,8 @@ namespace TLIS_Service.Services
                                                                 .ToList();
 
                                                         var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_Dish.installationConfig.legId
-                                                            ,null, AddMW_Dish.installationConfig.civilWithLegId,null,null,null,null, mwDish.Azimuth
-                                                            , mwDish.HeightBase,1).Data;
+                                                            , null, AddMW_Dish.installationConfig.civilWithLegId, null, null, null, null, mwDish.Azimuth
+                                                            , mwDish.HeightBase, 1).Data;
 
                                                         if (Data == false)
                                                         {
@@ -7567,13 +7615,15 @@ namespace TLIS_Service.Services
                                                             TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_Dish.installationConfig.legId);
                                                             if (legname != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                             {
-                                                                mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+
+                                                                mwDish.DishName = legname?.CiviLegName + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
 
                                                             }
 
                                                             var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                             !x.Dismantle &&
-                                                            x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                            x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                             x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                             if (CheckName != null)
@@ -7651,7 +7701,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
                                                         mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode);
+                                                        var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode, ExternalSy);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
                                                         if (AddMW_Dish.civilLoads != null && Id != 0)
@@ -7700,7 +7750,7 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (mwDish.CenterHigh <= 0)
                                                         {
-                                                            if (mwDish.HBA_Surface<= 0)
+                                                            if (mwDish.HBA_Surface <= 0)
                                                             {
                                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surfacemust bigger from zero", (int)ApiReturnCode.fail);
                                                             }
@@ -7710,7 +7760,7 @@ namespace TLIS_Service.Services
                                                             }
                                                             else
                                                             {
-                                                                mwDish.CenterHigh =  (MWDishLibrary.diameter / 2) +  mwDish.HBA_Surface;
+                                                                mwDish.CenterHigh = (MWDishLibrary.diameter / 2) + mwDish.HBA_Surface;
                                                             }
                                                         }
                                                         if (mwDish.SpaceInstallation == 0)
@@ -7755,12 +7805,13 @@ namespace TLIS_Service.Services
                                                             TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_Dish.installationConfig.legId);
                                                             if (legname != null && AddMW_Dish.installationAttributes.Azimuth > 0 && AddMW_Dish.installationAttributes.HeightBase > 0)
                                                             {
-                                                                mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                                mwDish.DishName = legname?.CiviLegName + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
 
                                                             }
                                                             var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                              !x.Dismantle &&
-                                                             x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                             x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                              x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                             if (CheckName != null)
@@ -7812,7 +7863,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
                                                         mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode);
+                                                        var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode, ExternalSy);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
                                                         if (AddMW_Dish.civilLoads != null && Id != 0)
@@ -8004,7 +8055,8 @@ namespace TLIS_Service.Services
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
                                                                 if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                                 {
-                                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                                 }
                                                             }
 
@@ -8041,14 +8093,15 @@ namespace TLIS_Service.Services
                                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
                                                                 if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                                 {
-                                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                                 }
                                                             }
 
                                                         }
                                                         var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                          !x.Dismantle &&
-                                                         x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                         x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                          x.SiteCode.ToLower() == SiteCode.ToLower());
 
 
@@ -8124,7 +8177,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
                                                         mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode);
+                                                        var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode, ExternalSy);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
                                                         if (AddMW_Dish.civilLoads != null && Id != 0)
@@ -8231,7 +8284,8 @@ namespace TLIS_Service.Services
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
                                                                 if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                                 {
-                                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                                 }
                                                             }
                                                         }
@@ -8268,13 +8322,14 @@ namespace TLIS_Service.Services
                                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
                                                                 if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                                 {
-                                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                                 }
                                                             }
                                                         }
                                                         var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle &&
-                                                        x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                        x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                         x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                         if (CheckName != null)
@@ -8325,7 +8380,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
                                                         mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode);
+                                                        var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode, ExternalSy);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
                                                         if (AddMW_Dish.civilLoads != null && Id != 0)
@@ -8418,7 +8473,7 @@ namespace TLIS_Service.Services
 
                                                     if (mwDish.CenterHigh <= 0)
                                                     {
-                                                        if (mwDish.HBA_Surface<= 0)
+                                                        if (mwDish.HBA_Surface <= 0)
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surfacemust bigger from zero", (int)ApiReturnCode.fail);
                                                         }
@@ -8428,7 +8483,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            mwDish.CenterHigh =  (MWDishLibrary.diameter / 2) +  mwDish.HBA_Surface;
+                                                            mwDish.CenterHigh = (MWDishLibrary.diameter / 2) + mwDish.HBA_Surface;
                                                         }
                                                     }
                                                     if (mwDish.SpaceInstallation == 0)
@@ -8475,7 +8530,8 @@ namespace TLIS_Service.Services
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
                                                             if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                             {
-                                                                mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                                mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                             }
                                                         }
                                                     }
@@ -8494,7 +8550,7 @@ namespace TLIS_Service.Services
 
 
                                                         var Data = _unitOfWork.CivilWithLegsRepository.FilterAzimuthAndHeight(SiteCode, AddMW_Dish.installationConfig.legId
-                                                           , null, AddMW_Dish.installationConfig.civilWithLegId, AddMW_Dish.installationConfig.civilWithoutLegId, AddMW_Dish.installationConfig.civilNonSteelId, 
+                                                           , null, AddMW_Dish.installationConfig.civilWithLegId, AddMW_Dish.installationConfig.civilWithoutLegId, AddMW_Dish.installationConfig.civilNonSteelId,
                                                            AddMW_Dish.installationConfig.sideArmId[0]
                                                            , AddMW_Dish.installationConfig.sideArmId[1], mwDish.Azimuth
                                                            , mwDish.HeightBase, 3).Data;
@@ -8514,13 +8570,14 @@ namespace TLIS_Service.Services
                                                             var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
                                                             if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                             {
-                                                                mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                                mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                             }
                                                         }
                                                     }
                                                     var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                                      !x.Dismantle &&
-                                                                     x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                                     x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                                      x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                     if (CheckName != null)
@@ -8594,7 +8651,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
                                                     mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode);
+                                                    var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode, ExternalSy);
                                                     _unitOfWork.SaveChanges();
                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
                                                     if (AddMW_Dish.civilLoads != null && Id != 0)
@@ -8606,7 +8663,7 @@ namespace TLIS_Service.Services
                                                             legId = AddMW_Dish.installationConfig?.legId,
                                                             allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                             sideArmId = AddMW_Dish.installationConfig?.sideArmId?.FirstOrDefault(),
-                                                            sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 1? AddMW_Dish.installationConfig.sideArmId[1] : (int?)null,
+                                                            sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 1 ? AddMW_Dish.installationConfig.sideArmId[1] : (int?)null,
                                                             ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
                                                             ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
                                                             Dismantle = false,
@@ -8643,7 +8700,7 @@ namespace TLIS_Service.Services
                                                 {
                                                     if (mwDish.CenterHigh <= 0)
                                                     {
-                                                        if (mwDish.HBA_Surface<= 0)
+                                                        if (mwDish.HBA_Surface <= 0)
                                                         {
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surfacemust bigger from zero", (int)ApiReturnCode.fail);
                                                         }
@@ -8653,7 +8710,7 @@ namespace TLIS_Service.Services
                                                         }
                                                         else
                                                         {
-                                                            mwDish.CenterHigh =  (MWDishLibrary.diameter / 2) +  mwDish.HBA_Surface;
+                                                            mwDish.CenterHigh = (MWDishLibrary.diameter / 2) + mwDish.HBA_Surface;
                                                         }
                                                     }
                                                     if (mwDish.SpaceInstallation == 0)
@@ -8702,7 +8759,8 @@ namespace TLIS_Service.Services
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
                                                             if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                             {
-                                                                mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                                mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                             }
                                                         }
                                                     }
@@ -8742,13 +8800,14 @@ namespace TLIS_Service.Services
                                                             var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
                                                             if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                             {
-                                                                mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                                mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                             }
                                                         }
                                                     }
                                                     var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                        !x.Dismantle &&
-                                                       x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                       x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                        x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                     if (CheckName != null)
@@ -8798,7 +8857,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
                                                     mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode);
+                                                    var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode, ExternalSy);
                                                     _unitOfWork.SaveChanges();
                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
                                                     if (AddMW_Dish.civilLoads != null && Id != 0)
@@ -8810,7 +8869,7 @@ namespace TLIS_Service.Services
                                                             legId = AddMW_Dish.installationConfig?.legId,
                                                             allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                             sideArmId = AddMW_Dish.installationConfig?.sideArmId?.FirstOrDefault(),
-                                                            sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 1? AddMW_Dish.installationConfig.sideArmId[1] : (int?)null,
+                                                            sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 1 ? AddMW_Dish.installationConfig.sideArmId[1] : (int?)null,
                                                             ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
                                                             ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
                                                             Dismantle = false,
@@ -8886,7 +8945,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 if (mwDish.CenterHigh <= 0)
                                                 {
-                                                    if (mwDish.HBA_Surface<= 0)
+                                                    if (mwDish.HBA_Surface <= 0)
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "HBA_Surfacemust bigger from zero", (int)ApiReturnCode.fail);
                                                     }
@@ -8896,7 +8955,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        mwDish.CenterHigh =  (MWDishLibrary.diameter / 2) +  mwDish.HBA_Surface;
+                                                        mwDish.CenterHigh = (MWDishLibrary.diameter / 2) + mwDish.HBA_Surface;
                                                     }
                                                 }
                                                 if (mwDish.SpaceInstallation == 0)
@@ -8952,7 +9011,8 @@ namespace TLIS_Service.Services
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[0]);
                                                         if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                         {
-                                                            mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                            mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                         }
                                                     }
                                                 }
@@ -8991,13 +9051,14 @@ namespace TLIS_Service.Services
                                                         var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.sideArmId[1]);
                                                         if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                         {
-                                                            mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                            mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                         }
                                                     }
                                                 }
                                                 var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle &&
-                                                        x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                        x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                         x.SiteCode.ToLower() == SiteCode.ToLower());
 
                                                 if (CheckName != null)
@@ -9048,7 +9109,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 mwDish.MwDishLibraryId = AddMW_Dish.installationConfig.MwDishLibraryId;
                                                 mwDish.InstallationPlaceId = AddMW_Dish.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode);
+                                                var HistoryId = _unitOfWork.MW_DishRepository.AddWithHInsatallation(UserId, null, mwDish, SiteCode, ExternalSy);
                                                 _unitOfWork.SaveChanges();
                                                 int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwDish.ToString(), mwDish.Id);
                                                 if (AddMW_Dish.civilLoads != null && Id != 0)
@@ -9060,7 +9121,7 @@ namespace TLIS_Service.Services
                                                         legId = null,
                                                         allCivilInstId = AllcivilinstId.allCivilInst.Id,
                                                         sideArmId = AddMW_Dish.installationConfig?.sideArmId?.FirstOrDefault(),
-                                                        sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 1? AddMW_Dish.installationConfig.sideArmId[1] : (int?)null,
+                                                        sideArm2Id = AddMW_Dish.installationConfig?.sideArmId != null && AddMW_Dish.installationConfig.sideArmId.Count > 1 ? AddMW_Dish.installationConfig.sideArmId[1] : (int?)null,
                                                         ItemOnCivilStatus = AddMW_Dish.civilLoads.ItemOnCivilStatus,
                                                         ItemStatus = AddMW_Dish.civilLoads?.ItemStatus,
                                                         Dismantle = false,
@@ -9224,7 +9285,7 @@ namespace TLIS_Service.Services
 
                                                         MWOther.mwOtherLibraryId = AddMWOther.installationConfig.mwOtherLibraryId;
                                                         MWOther.InstallationPlaceId = AddMWOther.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode);
+                                                        var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode, ExternalSy);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwOther.ToString(), MWOther.Id);
                                                         if (AddMWOther.civilLoads != null && Id != 0)
@@ -9318,7 +9379,7 @@ namespace TLIS_Service.Services
 
                                                         MWOther.mwOtherLibraryId = AddMWOther.installationConfig.mwOtherLibraryId;
                                                         MWOther.InstallationPlaceId = AddMWOther.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode);
+                                                        var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode, ExternalSy);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwOther.ToString(), MWOther.Id);
                                                         if (AddMWOther.civilLoads != null && Id != 0)
@@ -9504,7 +9565,7 @@ namespace TLIS_Service.Services
 
                                                                     MWOther.mwOtherLibraryId = AddMWOther.installationConfig.mwOtherLibraryId;
                                                                     MWOther.InstallationPlaceId = AddMWOther.installationConfig.InstallationPlaceId;
-                                                                    var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode);
+                                                                    var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode, ExternalSy);
                                                                     _unitOfWork.SaveChanges();
                                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwOther.ToString(), MWOther.Id);
                                                                     if (AddMWOther.civilLoads != null && Id != 0)
@@ -9600,7 +9661,7 @@ namespace TLIS_Service.Services
 
                                                                     MWOther.mwOtherLibraryId = AddMWOther.installationConfig.mwOtherLibraryId;
                                                                     MWOther.InstallationPlaceId = AddMWOther.installationConfig.InstallationPlaceId;
-                                                                    var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode);
+                                                                    var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode, ExternalSy);
                                                                     _unitOfWork.SaveChanges();
                                                                     int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwOther.ToString(), MWOther.Id);
                                                                     if (AddMWOther.civilLoads != null && Id != 0)
@@ -9782,7 +9843,7 @@ namespace TLIS_Service.Services
 
                                                             MWOther.mwOtherLibraryId = AddMWOther.installationConfig.mwOtherLibraryId;
                                                             MWOther.InstallationPlaceId = AddMWOther.installationConfig.InstallationPlaceId;
-                                                            var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode);
+                                                            var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode, ExternalSy);
                                                             _unitOfWork.SaveChanges();
                                                             int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwOther.ToString(), MWOther.Id);
                                                             if (AddMWOther.civilLoads != null && Id != 0)
@@ -9878,7 +9939,7 @@ namespace TLIS_Service.Services
 
                                                             MWOther.mwOtherLibraryId = AddMWOther.installationConfig.mwOtherLibraryId;
                                                             MWOther.InstallationPlaceId = AddMWOther.installationConfig.InstallationPlaceId;
-                                                            var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode);
+                                                            var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode, ExternalSy);
                                                             _unitOfWork.SaveChanges();
                                                             int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwOther.ToString(), MWOther.Id);
                                                             if (AddMWOther.civilLoads != null && Id != 0)
@@ -10033,7 +10094,7 @@ namespace TLIS_Service.Services
 
                                                         MWOther.mwOtherLibraryId = AddMWOther.installationConfig.mwOtherLibraryId;
                                                         MWOther.InstallationPlaceId = AddMWOther.installationConfig.InstallationPlaceId;
-                                                        var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode);
+                                                        var HistoryId = _unitOfWork.Mw_OtherRepository.AddWithHInsatallation(UserId, null, MWOther, SiteCode, ExternalSy);
                                                         _unitOfWork.SaveChanges();
                                                         int Id = _unitOfWork.AllLoadInstRepository.AddAllLoadInst(LoadSubType.TLImwOther.ToString(), MWOther.Id);
                                                         if (AddMWOther.civilLoads != null && Id != 0)
@@ -10152,7 +10213,7 @@ namespace TLIS_Service.Services
                 entry.State = EntityState.Detached;
             }
         }
-        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWDishInstallation(int UserId, EditMWDishInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString)
+        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWDishInstallation(int UserId, EditMWDishInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString,bool ExternalSy)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
@@ -10234,8 +10295,8 @@ namespace TLIS_Service.Services
                                             }
 
                                             var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
-                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id 
-                                              && x.SIDEARM_ID == null && x.SideArmSec_Id == null&&
+                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id
+                                              && x.SIDEARM_ID == null && x.SideArmSec_Id == null &&
                                                 x.LEG_ID == MWDishInst.legId && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
@@ -10243,7 +10304,7 @@ namespace TLIS_Service.Services
 
 
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                             null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwDish.Azimuth
                                             , mwDish.HeightBase, 1).Data;
 
@@ -10260,13 +10321,14 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWDishInst.legId);
                                                 if (legname != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                    mwDish.DishName = legname?.CiviLegName + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
 
                                                 }
                                                 var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwDish.Id &&
-                                                    x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                    x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                     x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
 
@@ -10344,7 +10406,7 @@ namespace TLIS_Service.Services
 
                                             mwDish.MwDishLibraryId = MWInstallationViewModel.civilType.MwDishLibraryId;
                                             mwDish.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (MWInstallationViewModel.civilLoads != null)
                                             {
@@ -10370,15 +10432,15 @@ namespace TLIS_Service.Services
                                                 TLIMWDish.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                                 TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                 var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, existingEntity, TLIMWDish);
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, TLIMWDish);
                                                 _unitOfWork.SaveChanges();
 
 
                                             }
-                                            var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId 
+                                            var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
                                             == MWInstallationViewModel.installationAttributes.Id
                                             && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
-                                            if(MWODU !=null && MWODU.Count > 0)
+                                            if (MWODU != null && MWODU.Count > 0)
                                             {
                                                 foreach (var item in MWODU)
                                                 {
@@ -10451,13 +10513,13 @@ namespace TLIS_Service.Services
                                             }
                                             var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id &&
-                                                x.LEG_ID == MWDishInst.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null 
+                                                x.LEG_ID == MWDishInst.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null
                                                 && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                             null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwDish.Azimuth
                                             , mwDish.HeightBase, 1).Data;
 
@@ -10474,13 +10536,14 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWDishInst.legId);
                                                 if (legname != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                    mwDish.DishName = legname?.CiviLegName + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
 
                                                 }
                                                 var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwDish.Id &&
-                                                    x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                    x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                     x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                                 if (CheckName != null)
@@ -10544,7 +10607,7 @@ namespace TLIS_Service.Services
                                             }
                                             mwDish.MwDishLibraryId = MWInstallationViewModel.civilType.MwDishLibraryId;
                                             mwDish.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (MWInstallationViewModel.civilLoads != null)
                                             {
@@ -10653,13 +10716,13 @@ namespace TLIS_Service.Services
 
                                             var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id &&
-                                                x.LEG_ID == MWDishInst.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null 
+                                                x.LEG_ID == MWDishInst.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null
                                                 && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                            , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwDish.Azimuth
                                            , mwDish.HeightBase, 1).Data;
 
@@ -10676,13 +10739,14 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWDishInst.legId);
                                                 if (legname != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                    mwDish.DishName = legname?.CiviLegName + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
 
                                                 }
                                                 var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                    !x.Dismantle &&
                                                    x.Id != mwDish.Id &&
-                                                   x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                   x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                    x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                                 if (CheckName != null)
@@ -10758,7 +10822,7 @@ namespace TLIS_Service.Services
                                             }
                                             mwDish.MwDishLibraryId = MWInstallationViewModel.civilType.MwDishLibraryId;
                                             mwDish.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (MWInstallationViewModel.civilLoads != null)
                                             {
@@ -10866,13 +10930,13 @@ namespace TLIS_Service.Services
                                             }
                                             var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id &&
-                                                x.LEG_ID == MWDishInst.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null 
+                                                x.LEG_ID == MWDishInst.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null
                                                 && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                            , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwDish.Azimuth
                                            , mwDish.HeightBase, 1).Data;
 
@@ -10889,13 +10953,14 @@ namespace TLIS_Service.Services
                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWDishInst.legId);
                                                 if (legname != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = legname?.CiviLegName + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                    mwDish.DishName = legname?.CiviLegName + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
 
                                                 }
                                                 var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                           !x.Dismantle &&
                                                           x.Id != mwDish.Id &&
-                                                          x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                          x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                           x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                                 if (CheckName != null)
@@ -10946,7 +11011,7 @@ namespace TLIS_Service.Services
                                             }
                                             mwDish.MwDishLibraryId = MWInstallationViewModel.civilType.MwDishLibraryId;
                                             mwDish.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (MWInstallationViewModel.civilLoads != null)
                                             {
@@ -11148,11 +11213,11 @@ namespace TLIS_Service.Services
                                                     && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
                                                     && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
-                                                          .GroupBy(x => new { x.ALLCIVILINST_ID,x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
+                                                          .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                              null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                              null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                              , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                               MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                              , mwDish.HeightBase, 2).Data;
@@ -11170,7 +11235,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                        mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                     }
                                                 }
                                             }
@@ -11188,7 +11254,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                             null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                              MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
@@ -11207,7 +11273,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                     }
                                                 }
                                             }
@@ -11215,7 +11282,7 @@ namespace TLIS_Service.Services
                                             var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                    !x.Dismantle &&
                                                    x.Id != mwDish.Id &&
-                                                   x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                   x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                    x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                             if (CheckName != null)
@@ -11287,7 +11354,7 @@ namespace TLIS_Service.Services
                                             }
                                             mwDish.MwDishLibraryId = MWInstallationViewModel.civilType.MwDishLibraryId;
                                             mwDish.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (MWInstallationViewModel.civilLoads != null)
                                             {
@@ -11404,7 +11471,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                              null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                              null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                              , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                               MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                              , mwDish.HeightBase, 2).Data;
@@ -11422,7 +11489,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                        mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                     }
                                                 }
                                             }
@@ -11440,7 +11508,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                             null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                              MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
@@ -11459,7 +11527,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                     }
                                                 }
                                             }
@@ -11468,7 +11537,7 @@ namespace TLIS_Service.Services
                                             var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                   !x.Dismantle &&
                                                   x.Id != mwDish.Id &&
-                                                  x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                  x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                   x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                             if (CheckName != null)
@@ -11527,7 +11596,7 @@ namespace TLIS_Service.Services
                                             }
                                             mwDish.MwDishLibraryId = MWInstallationViewModel.civilType.MwDishLibraryId;
                                             mwDish.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (MWInstallationViewModel.civilLoads != null)
                                             {
@@ -11553,35 +11622,35 @@ namespace TLIS_Service.Services
                                                 TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                                 TLIMWDish.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                                 TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, existingEntity, TLIMWDish);
+                                                var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, TLIMWDish);
                                                 _unitOfWork.SaveChanges();
 
 
                                             }
-                                            var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId 
+                                            var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
                                                     == MWInstallationViewModel.installationAttributes.Id
                                                     && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
-                                                    if(MWODU !=null && MWODU.Count > 0)
-                                                    {
-                                                        foreach (var item in MWODU)
-                                                        {
-                                                            var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
-                                                                .FirstOrDefault(x => x.Id == item.Id);
+                                            if (MWODU != null && MWODU.Count > 0)
+                                            {
+                                                foreach (var item in MWODU)
+                                                {
+                                                    var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                        .FirstOrDefault(x => x.Id == item.Id);
 
 
-                                                            item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                                            item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                                            item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
-                                                            item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                                            item.legId = MWInstallationViewModel.installationConfig?.legId;
-                                                            item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
-                                                            item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                                            item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
-                                                            _unitOfWork.SaveChanges();
-                                                        }
-                                                    }
+                                                    item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                    item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                    item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
+                                                    item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                    item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                    item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                    item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                    item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                    _unitOfWork.SaveChanges();
+                                                }
+                                            }
                                             var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(MWInstallationViewModel, HistoryId);
 
                                             if (MWInstallationViewModel.dynamicAttribute != null && MWInstallationViewModel.dynamicAttribute.Count > 0)
@@ -11645,7 +11714,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                              null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                              null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                              , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                               MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                              , mwDish.HeightBase, 2).Data;
@@ -11663,7 +11732,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                        mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                     }
                                                 }
                                             }
@@ -11681,7 +11751,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                             null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                              MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
@@ -11700,7 +11770,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                     }
                                                 }
                                             }
@@ -11709,7 +11780,7 @@ namespace TLIS_Service.Services
                                             var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwDish.Id &&
-                                                    x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                    x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                     x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                             if (CheckName != null)
@@ -11783,7 +11854,7 @@ namespace TLIS_Service.Services
                                             }
                                             mwDish.MwDishLibraryId = MWInstallationViewModel.civilType.MwDishLibraryId;
                                             mwDish.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (MWInstallationViewModel.civilLoads != null)
                                             {
@@ -11900,7 +11971,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                              null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                              null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                              , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                               MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                              , mwDish.HeightBase, 2).Data;
@@ -11918,7 +11989,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                        mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                     }
                                                 }
                                             }
@@ -11936,7 +12008,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                             null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                              MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
@@ -11955,7 +12027,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                     {
-                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                        mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                     }
                                                 }
                                             }
@@ -11964,7 +12037,7 @@ namespace TLIS_Service.Services
                                             var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                    !x.Dismantle &&
                                                    x.Id != mwDish.Id &&
-                                                   x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                   x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                    x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                             if (CheckName != null)
@@ -12015,7 +12088,7 @@ namespace TLIS_Service.Services
                                             }
                                             mwDish.MwDishLibraryId = MWInstallationViewModel.civilType.MwDishLibraryId;
                                             mwDish.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (MWInstallationViewModel.civilLoads != null)
                                             {
@@ -12183,7 +12256,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                             , mwDish.HeightBase, 2).Data;
@@ -12201,7 +12274,8 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                    mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                 }
                                             }
                                         }
@@ -12219,7 +12293,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
@@ -12238,7 +12312,8 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                 }
                                             }
                                         }
@@ -12246,7 +12321,7 @@ namespace TLIS_Service.Services
                                         var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                    !x.Dismantle &&
                                                    x.Id != mwDish.Id &&
-                                                   x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                   x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                    x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                         if (CheckName != null)
@@ -12317,7 +12392,7 @@ namespace TLIS_Service.Services
                                         }
                                         mwDish.MwDishLibraryId = MWInstallationViewModel.civilType.MwDishLibraryId;
                                         mwDish.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                        var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode);
+                                        var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode, ExternalSy);
                                         _unitOfWork.SaveChanges();
                                         if (MWInstallationViewModel.civilLoads != null)
                                         {
@@ -12435,7 +12510,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                             , mwDish.HeightBase, 2).Data;
@@ -12453,7 +12528,8 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                    mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                 }
                                             }
                                         }
@@ -12471,7 +12547,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
@@ -12490,7 +12566,8 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                 }
                                             }
                                         }
@@ -12498,7 +12575,7 @@ namespace TLIS_Service.Services
                                         var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                   !x.Dismantle &&
                                                   x.Id != mwDish.Id &&
-                                                  x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                  x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                   x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                         if (CheckName != null)
@@ -12563,8 +12640,8 @@ namespace TLIS_Service.Services
                                         }
                                         mwDish.MwDishLibraryId = MWInstallationViewModel.civilType.MwDishLibraryId;
                                         mwDish.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                    var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode);
-                                    _unitOfWork.SaveChanges();
+                                        var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode, ExternalSy);
+                                        _unitOfWork.SaveChanges();
                                         if (MWInstallationViewModel.civilLoads != null)
                                         {
 
@@ -12589,35 +12666,35 @@ namespace TLIS_Service.Services
                                             TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                             TLIMWDish.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                             TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, TLIMWDish);
-                                        _unitOfWork.SaveChanges();
-
-
-                                    }
-                                    var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
-                                    == MWInstallationViewModel.installationAttributes.Id
-                                    && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
-                                    if (MWODU != null && MWODU.Count > 0)
-                                    {
-                                        foreach (var item in MWODU)
-                                        {
-                                            var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
-                                                .FirstOrDefault(x => x.Id == item.Id);
-
-
-                                            item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                            item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
-                                            item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                            item.legId = MWInstallationViewModel.installationConfig?.legId;
-                                            item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
-                                            item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                            item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
+
+
                                         }
-                                    }
+                                        var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                        == MWInstallationViewModel.installationAttributes.Id
+                                        && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                        if (MWODU != null && MWODU.Count > 0)
+                                        {
+                                            foreach (var item in MWODU)
+                                            {
+                                                var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                    .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
+                                                item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                _unitOfWork.SaveChanges();
+                                            }
+                                        }
                                         var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(MWInstallationViewModel, HistoryId);
 
                                         if (MWInstallationViewModel.dynamicAttribute != null && MWInstallationViewModel.dynamicAttribute.Count > 0)
@@ -12637,7 +12714,7 @@ namespace TLIS_Service.Services
                                         }
 
                                     }
-                                else if (MWDishInst.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == true)
+                                    else if (MWDishInst.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == true)
                                     {
 
                                         if (mwDish.CenterHigh <= 0)
@@ -12682,7 +12759,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                             , mwDish.HeightBase, 2).Data;
@@ -12700,7 +12777,8 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                    mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                 }
                                             }
                                         }
@@ -12718,7 +12796,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
@@ -12737,7 +12815,8 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                 }
                                             }
                                         }
@@ -12745,7 +12824,7 @@ namespace TLIS_Service.Services
                                         var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwDish.Id &&
-                                                    x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                    x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                     x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                         if (CheckName != null)
@@ -12816,8 +12895,8 @@ namespace TLIS_Service.Services
                                         }
                                         mwDish.MwDishLibraryId = MWInstallationViewModel.civilType.MwDishLibraryId;
                                         mwDish.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                    var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode);
-                                    _unitOfWork.SaveChanges();
+                                        var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode, ExternalSy);
+                                        _unitOfWork.SaveChanges();
                                         if (MWInstallationViewModel.civilLoads != null)
                                         {
 
@@ -12842,35 +12921,35 @@ namespace TLIS_Service.Services
                                             TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                             TLIMWDish.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                             TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, TLIMWDish);
-                                        _unitOfWork.SaveChanges();
-
-
-                                    }
-                                    var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
-                                    == MWInstallationViewModel.installationAttributes.Id
-                                    && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
-                                    if (MWODU != null && MWODU.Count > 0)
-                                    {
-                                        foreach (var item in MWODU)
-                                        {
-                                            var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
-                                                .FirstOrDefault(x => x.Id == item.Id);
-
-
-                                            item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                            item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
-                                            item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                            item.legId = MWInstallationViewModel.installationConfig?.legId;
-                                            item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
-                                            item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                            item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
+
+
                                         }
-                                    }
+                                        var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                        == MWInstallationViewModel.installationAttributes.Id
+                                        && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                        if (MWODU != null && MWODU.Count > 0)
+                                        {
+                                            foreach (var item in MWODU)
+                                            {
+                                                var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                    .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
+                                                item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                _unitOfWork.SaveChanges();
+                                            }
+                                        }
                                         var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(MWInstallationViewModel, HistoryId);
 
                                         if (MWInstallationViewModel.dynamicAttribute != null && MWInstallationViewModel.dynamicAttribute.Count > 0)
@@ -12891,7 +12970,7 @@ namespace TLIS_Service.Services
 
 
                                     }
-                                else if (MWDishInst.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == false)
+                                    else if (MWDishInst.ReservedSpace == false && MWInstallationViewModel.civilLoads.ReservedSpace == false)
                                     {
 
                                         if (mwDish.CenterHigh <= 0)
@@ -12936,7 +13015,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                             , mwDish.HeightBase, 2).Data;
@@ -12954,7 +13033,8 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                    mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                 }
                                             }
                                         }
@@ -12972,7 +13052,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                            null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                            null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                             MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                             , mwDish.HeightBase, 3).Data;
@@ -12991,7 +13071,8 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                                 {
-                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                    mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                                 }
                                             }
                                         }
@@ -12999,7 +13080,7 @@ namespace TLIS_Service.Services
                                         var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                       !x.Dismantle &&
                                                       x.Id != mwDish.Id &&
-                                                      x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                      x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                       x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                         if (CheckName != null)
@@ -13049,8 +13130,8 @@ namespace TLIS_Service.Services
                                         }
                                         mwDish.MwDishLibraryId = MWInstallationViewModel.civilType.MwDishLibraryId;
                                         mwDish.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                    var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode);
-                                    _unitOfWork.SaveChanges();
+                                        var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode, ExternalSy);
+                                        _unitOfWork.SaveChanges();
                                         if (MWInstallationViewModel.civilLoads != null)
                                         {
 
@@ -13075,35 +13156,35 @@ namespace TLIS_Service.Services
                                             TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                             TLIMWDish.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                             TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, TLIMWDish);
-                                        _unitOfWork.SaveChanges();
-
-
-                                    }
-                                    var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
-                                    == MWInstallationViewModel.installationAttributes.Id
-                                    && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
-                                    if (MWODU != null && MWODU.Count > 0)
-                                    {
-                                        foreach (var item in MWODU)
-                                        {
-                                            var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
-                                                .FirstOrDefault(x => x.Id == item.Id);
-
-
-                                            item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                            item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                            item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
-                                            item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                            item.legId = MWInstallationViewModel.installationConfig?.legId;
-                                            item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
-                                            item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                            item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                            var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, TLIMWDish);
                                             _unitOfWork.SaveChanges();
+
+
                                         }
-                                    }
+                                        var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                        == MWInstallationViewModel.installationAttributes.Id
+                                        && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                        if (MWODU != null && MWODU.Count > 0)
+                                        {
+                                            foreach (var item in MWODU)
+                                            {
+                                                var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                    .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                                item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                                item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                                item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
+                                                item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                                item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                                item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                                item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                                item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                                _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                                _unitOfWork.SaveChanges();
+                                            }
+                                        }
                                         var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(MWInstallationViewModel, HistoryId);
 
                                         if (MWInstallationViewModel.dynamicAttribute != null && MWInstallationViewModel.dynamicAttribute.Count > 0)
@@ -13123,7 +13204,7 @@ namespace TLIS_Service.Services
                                         }
                                     }
 
-                                else
+                                    else
                                     {
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found  in the siteCode ", (int)ApiReturnCode.fail);
                                     }
@@ -13212,7 +13293,7 @@ namespace TLIS_Service.Services
                                                               .Select(g => g.First())
                                                                 .ToList();
                                         var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                         null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                         null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                          , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                          MWInstallationViewModel.installationConfig.sideArmId[0], null, mwDish.Azimuth
                                          , mwDish.HeightBase, 2).Data;
@@ -13230,7 +13311,8 @@ namespace TLIS_Service.Services
                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                             if (SideArmName1 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                             {
-                                                mwDish.DishName = SideArmName1?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                mwDish.DishName = SideArmName1?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                             }
                                         }
                                     }
@@ -13249,7 +13331,7 @@ namespace TLIS_Service.Services
                                                                 .ToList();
 
                                         var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(mwDish.Id, null, null,
-                                         null, null, null, null, null, null, null,null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                         null, null, null, null, null, null, null, null, "TLImwDish", MWDishInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                          , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                          MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwDish.Azimuth
                                          , mwDish.HeightBase, 3).Data;
@@ -13268,7 +13350,8 @@ namespace TLIS_Service.Services
                                             var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                             if (SideArmName1 != null && SideArmName2 != null && mwDish.Azimuth > 0 && mwDish.HeightBase > 0)
                                             {
-                                                mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwDish.HeightBase + "HE" + " " + mwDish.Azimuth + "AZ";
+                                                mwDish.DishName = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Math.Round(mwDish.HeightBase, 1, MidpointRounding.ToEven) + "HE"
+                                                                        + " " + Math.Round(mwDish.Azimuth, 1, MidpointRounding.ToEven) + "AZ".Trim();
                                             }
                                         }
                                     }
@@ -13276,7 +13359,7 @@ namespace TLIS_Service.Services
                                     var CheckName = _dbContext.MV_MWDISH_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwDish.Id &&
-                                                    x.DishName.ToLower() == mwDish.DishName.ToLower() &&
+                                                    x.DishName.Trim().ToLower() == mwDish.DishName.ToLower() &&
                                                     x.SiteCode.ToLower() == MWDishInst.SiteCode.ToLower());
 
                                     if (CheckName != null)
@@ -13326,8 +13409,8 @@ namespace TLIS_Service.Services
                                     }
                                     mwDish.MwDishLibraryId = MWInstallationViewModel.civilType.MwDishLibraryId;
                                     mwDish.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode);
-                                _unitOfWork.SaveChanges();
+                                    var HistoryId = _unitOfWork.MW_DishRepository.UpdateWithHInstallation(UserId, null, MWDishInst.allLoadInst.mwDish, mwDish, MWDishInst.SiteCode, ExternalSy);
+                                    _unitOfWork.SaveChanges();
                                     if (MWInstallationViewModel.civilLoads != null)
                                     {
 
@@ -13351,35 +13434,35 @@ namespace TLIS_Service.Services
                                         TLIMWDish.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
                                         TLIMWDish.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                         TLIMWDish.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                    var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, TLIMWDish);
-                                    _unitOfWork.SaveChanges();
-
-
-                                }
-                                var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
-                                == MWInstallationViewModel.installationAttributes.Id
-                                && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
-                                if (MWODU != null && MWODU.Count > 0)
-                                {
-                                    foreach (var item in MWODU)
-                                    {
-                                        var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
-                                            .FirstOrDefault(x => x.Id == item.Id);
-
-
-                                        item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
-                                        item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
-                                        item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
-                                        item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
-                                        item.legId = MWInstallationViewModel.installationConfig?.legId;
-                                        item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
-                                        item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
-                                        item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
-                                        _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                        var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
+                                        _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, TLIMWDish);
                                         _unitOfWork.SaveChanges();
+
+
                                     }
-                                }
+                                    var MWODU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(x => x.allLoadInst.mwODU.Mw_DishId
+                                    == MWInstallationViewModel.installationAttributes.Id
+                                    && !x.Dismantle, x => x.allLoadInst, x => x.allLoadInst.mwODU).ToList();
+                                    if (MWODU != null && MWODU.Count > 0)
+                                    {
+                                        foreach (var item in MWODU)
+                                        {
+                                            var OldMWODU = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
+                                                .FirstOrDefault(x => x.Id == item.Id);
+
+
+                                            item.allCivilInstId = AllcivilinstId.allCivilInst.Id;
+                                            item.sideArmId = MWInstallationViewModel.installationConfig?.sideArmId?.FirstOrDefault();
+                                            item.sideArm2Id = MWInstallationViewModel.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 ? MWInstallationViewModel.installationConfig.sideArmId[1] : (int?)null;
+                                            item.InstallationDate = MWInstallationViewModel.civilLoads.InstallationDate;
+                                            item.legId = MWInstallationViewModel.installationConfig?.legId;
+                                            item.ItemOnCivilStatus = MWInstallationViewModel.civilLoads.ItemOnCivilStatus;
+                                            item.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
+                                            item.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
+                                            _unitOfWork.CivilLoadsRepository.UpdateWithHistory(UserId, OldMWODU, item);
+                                            _unitOfWork.SaveChanges();
+                                        }
+                                    }
                                     var sortedIds = _unitOfWork.CivilWithLegsRepository.ProcessDynamicAttributes(MWInstallationViewModel, HistoryId);
 
                                     if (MWInstallationViewModel.dynamicAttribute != null && MWInstallationViewModel.dynamicAttribute.Count > 0)
@@ -13398,7 +13481,7 @@ namespace TLIS_Service.Services
                                         }
                                     }
                                 }
-                            else
+                                else
                                 {
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "this civil is not found  in the siteCode ", (int)ApiReturnCode.fail);
                                 }
@@ -13450,7 +13533,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWBUInstallation(int UserId, EditMWBUInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString)
+        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWBUInstallation(int UserId, EditMWBUInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString, bool ExternalSy)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
@@ -13474,7 +13557,7 @@ namespace TLIS_Service.Services
                         if (MWInstallationViewModel.installationConfig.civilWithLegId != null)
                         {
                             AllcivilinstId = _unitOfWork.CivilSiteDateRepository.GetIncludeWhereFirst(x => x.allCivilInst.civilWithLegsId ==
-                                         MWInstallationViewModel.installationConfig.civilWithLegId && !x.Dismantle&& x.SiteCode.ToLower() ==
+                                         MWInstallationViewModel.installationConfig.civilWithLegId && !x.Dismantle && x.SiteCode.ToLower() ==
                                             mwBUInst.SiteCode.ToLower(), x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg,
                                          x => x.allCivilInst.civilWithLegs.CivilWithLegsLib, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib);
                             if (AllcivilinstId != null)
@@ -13586,7 +13669,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        mwBU.CenterHigh = mwBU.HBA +( mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
+                                                        mwBU.CenterHigh = mwBU.HBA + (mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (mwBU.SpaceInstallation == 0)
@@ -13607,7 +13690,7 @@ namespace TLIS_Service.Services
 
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                 mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                 mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                                 , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwBU.Azimuth
                                                 , mwBU.Height, 1).Data;
 
@@ -13621,13 +13704,13 @@ namespace TLIS_Service.Services
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWInstallationViewModel.installationConfig.legId);
                                                     if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                        mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                     var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle &&
                                                         x.Id != mwBU.Id &&
-                                                        x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                        x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                         x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
 
 
@@ -13663,9 +13746,9 @@ namespace TLIS_Service.Services
                                                 mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                                 mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                                 mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                             
+
                                                 mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                                var HistoryId= _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId,null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode);
+                                                var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode, ExternalSy);
                                                 _unitOfWork.SaveChanges();
                                                 if (MWInstallationViewModel.civilLoads != null)
                                                 {
@@ -13691,7 +13774,7 @@ namespace TLIS_Service.Services
                                                     TLImwBU.ItemStatus = MWInstallationViewModel.civilLoads?.ItemStatus;
                                                     TLImwBU.ReservedSpace = MWInstallationViewModel.civilLoads.ReservedSpace;
                                                     var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
-                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId,HistoryId, TabelTLIcivilLoads, existingEntity, TLImwBU);
+                                                    _unitOfWork.CivilLoadsRepository.UpdateWithHLogic(UserId, HistoryId, TabelTLIcivilLoads, existingEntity, TLImwBU);
                                                     _unitOfWork.SaveChanges();
 
                                                 }
@@ -13729,7 +13812,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        mwBU.CenterHigh = mwBU.HBA +( mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
+                                                        mwBU.CenterHigh = mwBU.HBA + (mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (mwBU.SpaceInstallation == 0)
@@ -13749,7 +13832,7 @@ namespace TLIS_Service.Services
                                                 }
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                  mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                                  , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwBU.Azimuth
                                                  , mwBU.Height, 1).Data;
 
@@ -13763,13 +13846,13 @@ namespace TLIS_Service.Services
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWInstallationViewModel.installationConfig.legId);
                                                     if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                        mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                     var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle &&
                                                         x.Id != mwBU.Id &&
-                                                        x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                        x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                         x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
 
                                                     if (CheckName != null)
@@ -13790,9 +13873,9 @@ namespace TLIS_Service.Services
                                                 mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                                 mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                                 mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                        
+
                                                 mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode);
+                                                var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode, ExternalSy);
                                                 _unitOfWork.SaveChanges();
 
                                                 if (MWInstallationViewModel.civilLoads != null)
@@ -13859,7 +13942,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        mwBU.CenterHigh = mwBU.HBA +( mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
+                                                        mwBU.CenterHigh = mwBU.HBA + (mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (mwBU.SpaceInstallation == 0)
@@ -13880,7 +13963,7 @@ namespace TLIS_Service.Services
 
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                  mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                                  , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwBU.Azimuth
                                                  , mwBU.Height, 1).Data;
 
@@ -13894,13 +13977,13 @@ namespace TLIS_Service.Services
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWInstallationViewModel.installationConfig.legId);
                                                     if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                        mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                     var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                        !x.Dismantle &&
                                                        x.Id != mwBU.Id &&
-                                                       x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                       x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                        x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
 
                                                     if (CheckName != null)
@@ -13935,9 +14018,9 @@ namespace TLIS_Service.Services
                                                 mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                                 mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                                 mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                          
+
                                                 mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode);
+                                                var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode, ExternalSy);
                                                 _unitOfWork.SaveChanges();
                                                 if (MWInstallationViewModel.civilLoads != null)
                                                 {
@@ -14002,7 +14085,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     else
                                                     {
-                                                        mwBU.CenterHigh = mwBU.HBA +( mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
+                                                        mwBU.CenterHigh = mwBU.HBA + (mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
                                                     }
                                                 }
                                                 if (mwBU.SpaceInstallation == 0)
@@ -14022,7 +14105,7 @@ namespace TLIS_Service.Services
                                                 }
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                  mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                                  , null, MWInstallationViewModel.installationConfig.civilWithLegId, null, null, null, null, mwBU.Azimuth
                                                  , mwBU.Height, 1).Data;
 
@@ -14036,13 +14119,13 @@ namespace TLIS_Service.Services
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWInstallationViewModel.installationConfig.legId);
                                                     if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + mwBU.Height + "HE";
+                                                        mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                     var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                               !x.Dismantle &&
                                                               x.Id != mwBU.Id &&
-                                                              x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                              x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                               x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
 
                                                     if (CheckName != null)
@@ -14051,9 +14134,9 @@ namespace TLIS_Service.Services
                                                 mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                                 mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                                 mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                     
+
                                                 mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode);
+                                                var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode, ExternalSy);
                                                 _unitOfWork.SaveChanges();
                                                 if (MWInstallationViewModel.civilLoads != null)
                                                 {
@@ -14143,7 +14226,7 @@ namespace TLIS_Service.Services
                             .Include(x => x.allCivilInst.civilWithLegs.CivilWithLegsLib)
                             .Include(x => x.allCivilInst.civilNonSteel.CivilNonsteelLibrary)
                             .FirstOrDefault(x => x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
-                            && !x.Dismantle &&x.SiteCode.ToLower() ==
+                            && !x.Dismantle && x.SiteCode.ToLower() ==
                                             mwBUInst.SiteCode.ToLower());
 
                             if (AllcivilinstId != null)
@@ -14316,7 +14399,7 @@ namespace TLIS_Service.Services
                                                     x => x.allLoadInst.mwBUId == MWInstallationViewModel.installationConfig.CascededBuId && !x.Dismantle
                                                     && x.allCivilInst.civilWithLegsId == MWInstallationViewModel.installationConfig.civilWithLegId
                                                     && ((x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[0] && x.sideArm2Id
-                                                    == MWInstallationViewModel.installationConfig.sideArmId[1])|| (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1] && x.sideArm2Id
+                                                    == MWInstallationViewModel.installationConfig.sideArmId[1]) || (x.sideArmId == MWInstallationViewModel.installationConfig.sideArmId[1] && x.sideArm2Id
                                                     == MWInstallationViewModel.installationConfig.sideArmId[0])), x => x.allLoadInst, x => x.allLoadInst.mwBU
                                                                , x => x.allLoadInst.mwBU.MwBULibrary);
                                                 if (CascededBu == null)
@@ -14374,7 +14457,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    mwBU.CenterHigh = mwBU.HBA +( mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
+                                                    mwBU.CenterHigh = mwBU.HBA + (mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
                                                 }
                                             }
                                             if (mwBU.SpaceInstallation == 0)
@@ -14397,7 +14480,7 @@ namespace TLIS_Service.Services
                                             {
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                 mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                 mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                                 , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                                  MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
                                                 , mwBU.Height, 2).Data;
@@ -14412,8 +14495,8 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + + mwBU.Height+"HE";
-                                                            
+                                                        mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+
                                                     }
                                                 }
                                             }
@@ -14422,7 +14505,7 @@ namespace TLIS_Service.Services
                                             {
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                  mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                                  , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                                   MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
                                                  , mwBU.Height, 3).Data;
@@ -14438,7 +14521,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                     }
                                                 }
                                             }
@@ -14446,7 +14529,7 @@ namespace TLIS_Service.Services
                                             var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwBU.Id &&
-                                                    x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                    x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                     x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
 
                                             if (CheckName != null)
@@ -14476,9 +14559,9 @@ namespace TLIS_Service.Services
                                             mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                             mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                             mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                         
+
                                             mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (MWInstallationViewModel.civilLoads != null)
                                             {
@@ -14542,7 +14625,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    mwBU.CenterHigh = mwBU.HBA +( mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
+                                                    mwBU.CenterHigh = mwBU.HBA + (mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
                                                 }
                                             }
                                             if (mwBU.SpaceInstallation == 0)
@@ -14565,7 +14648,7 @@ namespace TLIS_Service.Services
                                             {
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                 mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                 mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                                 , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                                  MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
                                                 , mwBU.Height, 2).Data;
@@ -14580,7 +14663,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                        mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                 }
@@ -14590,7 +14673,7 @@ namespace TLIS_Service.Services
                                             {
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                  mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                                  , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                                   MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
                                                  , mwBU.Height, 3).Data;
@@ -14606,14 +14689,14 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                     }
                                                 }
                                             }
                                             var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwBU.Id &&
-                                                    x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                    x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                     x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
 
                                             if (CheckName != null)
@@ -14630,10 +14713,10 @@ namespace TLIS_Service.Services
                                             mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                             mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                             mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                   
+
                                             mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode);
-                             
+                                            var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode, ExternalSy);
+
                                             _unitOfWork.SaveChanges();
                                             if (MWInstallationViewModel.civilLoads != null)
                                             {
@@ -14697,7 +14780,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    mwBU.CenterHigh = mwBU.HBA +( mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
+                                                    mwBU.CenterHigh = mwBU.HBA + (mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
                                                 }
                                             }
                                             if (mwBU.SpaceInstallation == 0)
@@ -14720,7 +14803,7 @@ namespace TLIS_Service.Services
                                             {
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                 mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                 mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                                 , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                                  MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
                                                 , mwBU.Height, 2).Data;
@@ -14735,7 +14818,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                        mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                 }
@@ -14745,7 +14828,7 @@ namespace TLIS_Service.Services
                                             {
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                  mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                                  , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                                   MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
                                                  , mwBU.Height, 3).Data;
@@ -14761,14 +14844,14 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                     }
                                                 }
                                             }
                                             var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwBU.Id &&
-                                                    x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                    x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                     x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
 
                                             if (CheckName != null)
@@ -14799,9 +14882,9 @@ namespace TLIS_Service.Services
                                             mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                             mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                             mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                    
+
                                             mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (MWInstallationViewModel.civilLoads != null)
                                             {
@@ -14865,7 +14948,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 else
                                                 {
-                                                    mwBU.CenterHigh = mwBU.HBA +( mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
+                                                    mwBU.CenterHigh = mwBU.HBA + (mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
                                                 }
                                             }
                                             if (mwBU.SpaceInstallation == 0)
@@ -14888,7 +14971,7 @@ namespace TLIS_Service.Services
                                             {
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                 mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                 mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                                 , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                                  MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
                                                 , mwBU.Height, 2).Data;
@@ -14903,7 +14986,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                        mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                 }
@@ -14913,7 +14996,7 @@ namespace TLIS_Service.Services
                                             {
 
                                                 var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                                  mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                                  mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                                  , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                                   MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
                                                  , mwBU.Height, 3).Data;
@@ -14929,14 +15012,14 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                     }
                                                 }
                                             }
                                             var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwBU.Id &&
-                                                    x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                    x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                     x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
 
                                             if (CheckName != null)
@@ -14944,9 +15027,9 @@ namespace TLIS_Service.Services
                                             mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                             mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                             mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                
+
                                             mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (MWInstallationViewModel.civilLoads != null)
                                             {
@@ -15213,7 +15296,7 @@ namespace TLIS_Service.Services
                                             }
                                             else
                                             {
-                                                mwBU.CenterHigh = mwBU.HBA +( mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
+                                                mwBU.CenterHigh = mwBU.HBA + (mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
                                             }
                                         }
                                         if (mwBU.SpaceInstallation == 0)
@@ -15236,7 +15319,7 @@ namespace TLIS_Service.Services
                                         {
 
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                             mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                              MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
                                             , mwBU.Height, 2).Data;
@@ -15251,7 +15334,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                    mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                 }
                                             }
@@ -15261,7 +15344,7 @@ namespace TLIS_Service.Services
                                         {
 
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                              mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                              mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                              , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                               MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
                                              , mwBU.Height, 3).Data;
@@ -15277,14 +15360,14 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                 }
                                             }
                                         }
                                         var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwBU.Id &&
-                                                    x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                    x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                     x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
 
                                         if (CheckName != null)
@@ -15313,9 +15396,9 @@ namespace TLIS_Service.Services
                                         mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                         mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                         mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                   
+
                                         mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                        var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode);
+                                        var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode, ExternalSy);
                                         _unitOfWork.SaveChanges();
                                         if (MWInstallationViewModel.civilLoads != null)
                                         {
@@ -15379,7 +15462,7 @@ namespace TLIS_Service.Services
                                             }
                                             else
                                             {
-                                                mwBU.CenterHigh = mwBU.HBA +( mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
+                                                mwBU.CenterHigh = mwBU.HBA + (mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
                                             }
                                         }
                                         if (mwBU.SpaceInstallation == 0)
@@ -15402,7 +15485,7 @@ namespace TLIS_Service.Services
                                         {
 
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                             mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                              MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
                                             , mwBU.Height, 2).Data;
@@ -15417,7 +15500,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                    mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                 }
                                             }
@@ -15427,7 +15510,7 @@ namespace TLIS_Service.Services
                                         {
 
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                              mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                              mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                              , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                               MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
                                              , mwBU.Height, 3).Data;
@@ -15443,7 +15526,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                 }
                                             }
                                         }
@@ -15451,7 +15534,7 @@ namespace TLIS_Service.Services
                                         var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwBU.Id &&
-                                                    x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                    x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                     x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
 
                                         if (CheckName != null)
@@ -15474,9 +15557,9 @@ namespace TLIS_Service.Services
                                         mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                         mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                         mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                   
+
                                         mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                        var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode);
+                                        var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode, ExternalSy);
                                         _unitOfWork.SaveChanges();
                                         if (MWInstallationViewModel.civilLoads != null)
                                         {
@@ -15541,7 +15624,7 @@ namespace TLIS_Service.Services
                                             }
                                             else
                                             {
-                                                mwBU.CenterHigh = mwBU.HBA +( mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
+                                                mwBU.CenterHigh = mwBU.HBA + (mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
                                             }
                                         }
                                         if (mwBU.SpaceInstallation == 0)
@@ -15563,7 +15646,7 @@ namespace TLIS_Service.Services
                                         {
 
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                             mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                              MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
                                             , mwBU.Height, 2).Data;
@@ -15578,7 +15661,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                    mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                 }
                                             }
@@ -15588,7 +15671,7 @@ namespace TLIS_Service.Services
                                         {
 
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                              mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                              mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                              , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                               MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
                                              , mwBU.Height, 3).Data;
@@ -15604,7 +15687,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                 }
                                             }
                                         }
@@ -15612,7 +15695,7 @@ namespace TLIS_Service.Services
                                         var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwBU.Id &&
-                                                    x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                    x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                     x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
 
                                         if (CheckName != null)
@@ -15642,9 +15725,9 @@ namespace TLIS_Service.Services
                                         mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                         mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                         mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                
+
                                         mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                        var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode);
+                                        var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode, ExternalSy);
                                         _unitOfWork.SaveChanges();
                                         if (MWInstallationViewModel.civilLoads != null)
                                         {
@@ -15709,7 +15792,7 @@ namespace TLIS_Service.Services
                                             }
                                             else
                                             {
-                                                mwBU.CenterHigh = mwBU.HBA +( mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
+                                                mwBU.CenterHigh = mwBU.HBA + (mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
                                             }
                                         }
                                         if (mwBU.SpaceInstallation == 0)
@@ -15732,7 +15815,7 @@ namespace TLIS_Service.Services
                                         {
 
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                             mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                             mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                             , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                              MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
                                             , mwBU.Height, 2).Data;
@@ -15747,7 +15830,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                    mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                 }
                                             }
@@ -15757,7 +15840,7 @@ namespace TLIS_Service.Services
                                         {
 
                                             var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                              mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                              mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                              , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                               MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
                                              , mwBU.Height, 3).Data;
@@ -15773,7 +15856,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                 }
                                             }
                                         }
@@ -15781,7 +15864,7 @@ namespace TLIS_Service.Services
                                         var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                         !x.Dismantle &&
                                                         x.Id != mwBU.Id &&
-                                                        x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                        x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                         x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
 
                                         if (CheckName != null)
@@ -15789,9 +15872,9 @@ namespace TLIS_Service.Services
                                         mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                         mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                         mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                                  
+
                                         mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                        var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode);
+                                        var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode, ExternalSy);
                                         _unitOfWork.SaveChanges();
                                         if (MWInstallationViewModel.civilLoads != null)
                                         {
@@ -15995,7 +16078,7 @@ namespace TLIS_Service.Services
                                             x => x.allLoadInst.mwDishId == MWInstallationViewModel.installationConfig.sdDishId && !x.Dismantle
                                             && x.allCivilInst.civilNonSteelId == MWInstallationViewModel.installationConfig.civilNonSteelId
                                              && x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
-                                                               ;
+                                            ;
                                             if (sdDish == null)
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"this sdDish is not found on same sidearm", (int)ApiReturnCode.fail);
                                             var MWODUSDDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.sdDishId
@@ -16053,7 +16136,7 @@ namespace TLIS_Service.Services
                                         }
                                         else
                                         {
-                                            mwBU.CenterHigh = mwBU.HBA +( mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
+                                            mwBU.CenterHigh = mwBU.HBA + (mwBUInst.allLoadInst.mwBU.MwBULibrary.Length / 2);
                                         }
                                     }
                                     if (mwBU.SpaceInstallation == 0)
@@ -16075,7 +16158,7 @@ namespace TLIS_Service.Services
                                     {
 
                                         var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                         mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                         mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                         , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                          MWInstallationViewModel.installationConfig.sideArmId[0], null, mwBU.Azimuth
                                         , mwBU.Height, 2).Data;
@@ -16090,7 +16173,7 @@ namespace TLIS_Service.Services
                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                             if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                             {
-                                                mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                             }
                                         }
@@ -16100,7 +16183,7 @@ namespace TLIS_Service.Services
                                     {
 
                                         var Data = _unitOfWork.CivilWithLegsRepository.EditFilterAzimuthAndHeight(null, null, null,
-                                          mwBU.Id, null, null, null, null, null, null,null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
+                                          mwBU.Id, null, null, null, null, null, null, null, "TLImwBU", mwBUInst.SiteCode, MWInstallationViewModel.installationConfig.legId
                                          , null, MWInstallationViewModel.installationConfig.civilWithLegId, MWInstallationViewModel.installationConfig.civilWithoutLegId, MWInstallationViewModel.installationConfig.civilNonSteelId,
                                           MWInstallationViewModel.installationConfig.sideArmId[0], MWInstallationViewModel.installationConfig.sideArmId[1], mwBU.Azimuth
                                          , mwBU.Height, 3).Data;
@@ -16116,7 +16199,7 @@ namespace TLIS_Service.Services
                                             var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                             if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                             {
-                                                mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + +mwBU.Height + "HE";
+                                                mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                             }
                                         }
                                     }
@@ -16124,7 +16207,7 @@ namespace TLIS_Service.Services
                                     var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
                                                     !x.Dismantle &&
                                                     x.Id != mwBU.Id &&
-                                                    x.Name.ToLower() == mwBU.Name.ToLower() &&
+                                                    x.Name.Trim().ToLower() == mwBU.Name.ToLower() &&
                                                     x.SiteCode.ToLower() == mwBUInst.SiteCode.ToLower());
 
                                     if (CheckName != null)
@@ -16132,9 +16215,9 @@ namespace TLIS_Service.Services
                                     mwBU.MwBULibraryId = MWInstallationViewModel.civilType.mwBuLibraryId;
                                     mwBU.MainDishId = MWInstallationViewModel.installationConfig.mainDishId;
                                     mwBU.SdDishId = MWInstallationViewModel.installationConfig?.sdDishId ?? null;
-                           
+
                                     mwBU.InstallationPlaceId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                    var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode);
+                                    var HistoryId = _unitOfWork.MW_BURepository.UpdateWithHInstallation(UserId, null, mwBUInst.allLoadInst.mwBU, mwBU, mwBUInst.SiteCode, ExternalSy);
                                     _unitOfWork.SaveChanges();
                                     if (MWInstallationViewModel.civilLoads != null)
                                     {
@@ -16235,7 +16318,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWOtherInstallation(int UserId, EditMWOtherInstallationObject editmwOtherInstallationObject, string TableName, int? TaskId, string ConnectionString)
+        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWOtherInstallation(int UserId, EditMWOtherInstallationObject editmwOtherInstallationObject, string TableName, int? TaskId, string ConnectionString, bool ExternalSy)
 
         {
             using (TransactionScope transactionScope = new TransactionScope())
@@ -16371,7 +16454,7 @@ namespace TLIS_Service.Services
                                             }
                                             mwOther.mwOtherLibraryId = editmwOtherInstallationObject.civilType.mwOtherLibraryId;
                                             mwOther.InstallationPlaceId = editmwOtherInstallationObject.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode);
+                                            var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (editmwOtherInstallationObject.civilLoads != null)
                                             {
@@ -16495,7 +16578,7 @@ namespace TLIS_Service.Services
                                             }
                                             mwOther.mwOtherLibraryId = editmwOtherInstallationObject.civilType.mwOtherLibraryId;
                                             mwOther.InstallationPlaceId = editmwOtherInstallationObject.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode);
+                                            var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (editmwOtherInstallationObject.civilLoads != null)
                                             {
@@ -16636,7 +16719,7 @@ namespace TLIS_Service.Services
 
                                             mwOther.mwOtherLibraryId = editmwOtherInstallationObject.civilType.mwOtherLibraryId;
                                             mwOther.InstallationPlaceId = editmwOtherInstallationObject.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode);
+                                            var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (editmwOtherInstallationObject.civilLoads != null)
                                             {
@@ -16754,7 +16837,7 @@ namespace TLIS_Service.Services
 
                                             mwOther.mwOtherLibraryId = editmwOtherInstallationObject.civilType.mwOtherLibraryId;
                                             mwOther.InstallationPlaceId = editmwOtherInstallationObject.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode);
+                                            var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode, ExternalSy);
                                             _unitOfWork.SaveChanges();
                                             if (editmwOtherInstallationObject.civilLoads != null)
                                             {
@@ -16960,7 +17043,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     mwOther.mwOtherLibraryId = editmwOtherInstallationObject.civilType.mwOtherLibraryId;
                                                     mwOther.InstallationPlaceId = editmwOtherInstallationObject.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode);
+                                                    var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode, ExternalSy);
                                                     _unitOfWork.SaveChanges();
                                                     if (editmwOtherInstallationObject.civilLoads != null)
                                                     {
@@ -17084,7 +17167,7 @@ namespace TLIS_Service.Services
                                                     }
                                                     mwOther.mwOtherLibraryId = editmwOtherInstallationObject.civilType.mwOtherLibraryId;
                                                     mwOther.InstallationPlaceId = editmwOtherInstallationObject.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode);
+                                                    var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode, ExternalSy);
                                                     _unitOfWork.SaveChanges();
                                                     if (editmwOtherInstallationObject.civilLoads != null)
                                                     {
@@ -17224,7 +17307,7 @@ namespace TLIS_Service.Services
 
                                                     mwOther.mwOtherLibraryId = editmwOtherInstallationObject.civilType.mwOtherLibraryId;
                                                     mwOther.InstallationPlaceId = editmwOtherInstallationObject.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode);
+                                                    var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode, ExternalSy);
                                                     _unitOfWork.SaveChanges();
                                                     if (editmwOtherInstallationObject.civilLoads != null)
                                                     {
@@ -17341,7 +17424,7 @@ namespace TLIS_Service.Services
 
                                                     mwOther.mwOtherLibraryId = editmwOtherInstallationObject.civilType.mwOtherLibraryId;
                                                     mwOther.InstallationPlaceId = editmwOtherInstallationObject.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode);
+                                                    var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode, ExternalSy);
                                                     _unitOfWork.SaveChanges();
                                                     if (editmwOtherInstallationObject.civilLoads != null)
                                                     {
@@ -17543,7 +17626,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 mwOther.mwOtherLibraryId = editmwOtherInstallationObject.civilType.mwOtherLibraryId;
                                                 mwOther.InstallationPlaceId = editmwOtherInstallationObject.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode);
+                                                var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode, ExternalSy);
                                                 _unitOfWork.SaveChanges();
                                                 if (editmwOtherInstallationObject.civilLoads != null)
                                                 {
@@ -17668,7 +17751,7 @@ namespace TLIS_Service.Services
                                                 }
                                                 mwOther.mwOtherLibraryId = editmwOtherInstallationObject.civilType.mwOtherLibraryId;
                                                 mwOther.InstallationPlaceId = editmwOtherInstallationObject.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode);
+                                                var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode, ExternalSy);
                                                 _unitOfWork.SaveChanges();
                                                 if (editmwOtherInstallationObject.civilLoads != null)
                                                 {
@@ -17807,7 +17890,7 @@ namespace TLIS_Service.Services
 
                                                 mwOther.mwOtherLibraryId = editmwOtherInstallationObject.civilType.mwOtherLibraryId;
                                                 mwOther.InstallationPlaceId = editmwOtherInstallationObject.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode);
+                                                var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode, ExternalSy);
                                                 _unitOfWork.SaveChanges();
                                                 if (editmwOtherInstallationObject.civilLoads != null)
                                                 {
@@ -17924,7 +18007,7 @@ namespace TLIS_Service.Services
 
                                                 mwOther.mwOtherLibraryId = editmwOtherInstallationObject.civilType.mwOtherLibraryId;
                                                 mwOther.InstallationPlaceId = editmwOtherInstallationObject.installationConfig.InstallationPlaceId;
-                                                var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode);
+                                                var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode, ExternalSy);
                                                 _unitOfWork.SaveChanges();
                                                 if (editmwOtherInstallationObject.civilLoads != null)
                                                 {
@@ -18096,7 +18179,7 @@ namespace TLIS_Service.Services
 
                                             mwOther.mwOtherLibraryId = editmwOtherInstallationObject.civilType.mwOtherLibraryId;
                                             mwOther.InstallationPlaceId = editmwOtherInstallationObject.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode); _unitOfWork.Mw_OtherRepository.UpdateWithHistory(UserId, mwOtherInst.allLoadInst.mwOther, mwOther);
+                                            var HistoryId = _unitOfWork.Mw_OtherRepository.UpdateWithHInstallation(UserId, null, mwOtherInst.allLoadInst.mwOther, mwOther, mwOtherInst.SiteCode, ExternalSy); _unitOfWork.Mw_OtherRepository.UpdateWithHistory(UserId, mwOtherInst.allLoadInst.mwOther, mwOther);
                                             _unitOfWork.SaveChanges();
                                             if (editmwOtherInstallationObject.civilLoads != null)
                                             {
@@ -18212,7 +18295,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWODUInstallation(int UserId, EditMWODUInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString)
+        public async Task<Response<GetForAddMWDishInstallationObject>> EditMWODUInstallation(int UserId, EditMWODUInstallationObject MWInstallationViewModel, string TableName, int? TaskId, string ConnectionString, bool ExternalSy)
         {
             using (var transactionScope = new TransactionScope())
             {
@@ -18303,7 +18386,7 @@ namespace TLIS_Service.Services
                                         mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                                         mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
                                         mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                        var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode);
+                                        var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode, ExternalSy);
                                         await _unitOfWork.SaveChangesAsync();
 
                                         if (MWInstallationViewModel.civilLoads != null)
@@ -18428,7 +18511,7 @@ namespace TLIS_Service.Services
                                     mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                                     mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
                                     mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                    var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode);
+                                    var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode, ExternalSy);
                                     await _unitOfWork.SaveChangesAsync();
 
                                     if (MWInstallationViewModel.civilLoads != null)
@@ -18547,7 +18630,7 @@ namespace TLIS_Service.Services
                                     mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                                     mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
                                     mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                    var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode);
+                                    var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode, ExternalSy);
                                     await _unitOfWork.SaveChangesAsync();
 
                                     if (MWInstallationViewModel.civilLoads != null)
@@ -18753,7 +18836,7 @@ namespace TLIS_Service.Services
                                                     mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                                                     mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
                                                     mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode);
+                                                    var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode, ExternalSy);
                                                     await _unitOfWork.SaveChangesAsync();
 
                                                     if (MWInstallationViewModel.civilLoads != null)
@@ -18881,7 +18964,7 @@ namespace TLIS_Service.Services
                                                     mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                                                     mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
                                                     mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode);
+                                                    var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode, ExternalSy);
                                                     await _unitOfWork.SaveChangesAsync();
 
                                                     if (MWInstallationViewModel.civilLoads != null)
@@ -18997,7 +19080,7 @@ namespace TLIS_Service.Services
                                                     mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                                                     mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
                                                     mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode);
+                                                    var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode, ExternalSy);
                                                     await _unitOfWork.SaveChangesAsync();
 
                                                     if (MWInstallationViewModel.civilLoads != null)
@@ -19101,7 +19184,7 @@ namespace TLIS_Service.Services
                                                     mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                                                     mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
                                                     mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                                    var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode);
+                                                    var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode, ExternalSy);
                                                     await _unitOfWork.SaveChangesAsync();
                                                     if (MWInstallationViewModel.civilLoads != null)
                                                     {
@@ -19301,7 +19384,7 @@ namespace TLIS_Service.Services
                                             mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                                             mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
                                             mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode, ExternalSy);
                                             await _unitOfWork.SaveChangesAsync();
 
                                             if (MWInstallationViewModel.civilLoads != null)
@@ -19429,7 +19512,7 @@ namespace TLIS_Service.Services
                                             mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                                             mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
                                             mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode, ExternalSy);
                                             await _unitOfWork.SaveChangesAsync();
 
                                             if (MWInstallationViewModel.civilLoads != null)
@@ -19546,7 +19629,7 @@ namespace TLIS_Service.Services
                                             mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                                             mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
                                             mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode, ExternalSy);
                                             await _unitOfWork.SaveChangesAsync();
 
                                             if (MWInstallationViewModel.civilLoads != null)
@@ -19650,7 +19733,7 @@ namespace TLIS_Service.Services
                                             mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                                             mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
                                             mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                            var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode);
+                                            var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode, ExternalSy);
                                             await _unitOfWork.SaveChangesAsync();
 
                                             if (MWInstallationViewModel.civilLoads != null)
@@ -19821,7 +19904,7 @@ namespace TLIS_Service.Services
                                         mwODU.MwODULibraryId = MWInstallationViewModel.civilType.MwODULibraryId;
                                         mwODU.Mw_DishId = MWInstallationViewModel.installationConfig.mwDishId;
                                         mwODU.OduInstallationTypeId = MWInstallationViewModel.installationConfig.InstallationPlaceId;
-                                        var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode);
+                                        var HistoryId = _unitOfWork.MW_ODURepository.UpdateWithHInstallation(UserId, null, TLIMWODU.allLoadInst.mwODU, mwODU, TLIMWODU.SiteCode, ExternalSy);
                                         await _unitOfWork.SaveChangesAsync();
 
                                         if (MWInstallationViewModel.civilLoads != null)
@@ -19917,7 +20000,7 @@ namespace TLIS_Service.Services
                     }
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(ConnectionString));
                     return new Response<GetForAddMWDishInstallationObject>();
-                    
+
                 }
                 catch (Exception err)
                 {
@@ -25411,14 +25494,16 @@ namespace TLIS_Service.Services
         //        //return new Response<bool>(false, false, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
         //    }
         //}
-        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId, int UserId, string connectionString)
+        public Response<bool> DismantleLoads(string sitecode, int LoadId, string LoadName, int? TaskId, int UserId, string connectionString,bool ExternalSys)
         {
             using (TransactionScope transactionScope = new TransactionScope())
             {
                 try
                 {
+                    TLIhistory AddTablesHistory = new TLIhistory();
                     if (LoadName == Helpers.Constants.TablesNames.TLImwDish.ToString())
                     {
+                     
                         var DishLoad = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.allLoadInst.mwDishId
                         == LoadId && !x.Dismantle && x.SiteCode.ToLower() == sitecode.ToLower(), x => x.allLoadInst, x => x.allLoadInst.mwDish
                         , x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilNonSteel);
@@ -25451,17 +25536,33 @@ namespace TLIS_Service.Services
                             DishLoad.allLoadInst.mwDish.DishName = DishLoad.allLoadInst.mwDish.DishName + DateTime.Now;
                             var OldDishLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                   .AsNoTracking().FirstOrDefault(x => x.Id == DishLoad.Id);
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = LoadId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwDish").Id,
-                                UserId = UserId,
-                                SiteCode = sitecode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwDish").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+                               
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
+
+                            if (ExternalSys == true)
+                            {
+
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwDish").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25508,17 +25609,33 @@ namespace TLIS_Service.Services
 
                             var OldODULoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == ODULoad.Id);
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = LoadId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwODU").Id,
-                                UserId = UserId,
-                                SiteCode = sitecode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwODU").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
+
+                            if (ExternalSys == true)
+                            {
+
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwODU").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25576,17 +25693,33 @@ namespace TLIS_Service.Services
                             RadioRRULoad.allLoadInst.radioRRU.Name = RadioRRULoad.allLoadInst.radioRRU.Name + DateTime.Now;
                             var OldORadioRRULoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == RadioRRULoad.Id);
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = LoadId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIradioRRU").Id,
-                                UserId = UserId,
-                                SiteCode = sitecode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIradioRRU").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
+
+                            if (ExternalSys == true)
+                            {
+
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIradioRRU").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25634,17 +25767,33 @@ namespace TLIS_Service.Services
 
                             var OldOPowerLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == PowerLoad.Id);
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = LoadId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIpower").Id,
-                                UserId = UserId,
-                                SiteCode = sitecode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIpower").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
+
+                            if (ExternalSys == true)
+                            {
+
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIpower").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25690,17 +25839,33 @@ namespace TLIS_Service.Services
                             OtherLoad.allLoadInst.loadOther.Name = OtherLoad.allLoadInst.loadOther.Name + DateTime.Now;
                             var OldOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == OtherLoad.Id);
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = LoadId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIloadOther").Id,
-                                UserId = UserId,
-                                SiteCode = sitecode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIloadOther").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
+
+                            if (ExternalSys == true)
+                            {
+
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIloadOther").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25776,17 +25941,33 @@ namespace TLIS_Service.Services
                             RadioAntennaLoad.allLoadInst.radioAntenna.Name = RadioAntennaLoad.allLoadInst.radioAntenna.Name + DateTime.Now;
                             var OldOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == RadioAntennaLoad.Id);
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = LoadId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIradioAntenna").Id,
-                                UserId = UserId,
-                                SiteCode = sitecode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIradioAntenna").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
+
+                            if (ExternalSys == true)
+                            {
+
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIradioAntenna").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25853,17 +26034,33 @@ namespace TLIS_Service.Services
                             MWBULoad.allLoadInst.mwBU.Name = MWBULoad.allLoadInst.mwBU.Name + DateTime.Now;
                             var OldOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == MWBULoad.Id);
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = LoadId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwBU").Id,
-                                UserId = UserId,
-                                SiteCode = sitecode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwBU").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
+
+                            if (ExternalSys == true)
+                            {
+
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwBU").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25909,17 +26106,33 @@ namespace TLIS_Service.Services
                             MWRFULoad.allLoadInst.mwRFU.Name = MWRFULoad.allLoadInst.mwRFU.Name + DateTime.Now;
                             var OldMWRFULoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == MWRFULoad.Id);
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = LoadId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwRFU").Id,
-                                UserId = UserId,
-                                SiteCode = sitecode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwRFU").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
+                            
+                            if (ExternalSys == true)
+                            {
+
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwRFU").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -25966,17 +26179,33 @@ namespace TLIS_Service.Services
                             MWOtherLoad.allLoadInst.mwOther.Name = MWOtherLoad.allLoadInst.mwOther.Name + DateTime.Now;
                             var OldMWOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == MWOtherLoad.Id);
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = LoadId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwOther").Id,
-                                UserId = UserId,
-                                SiteCode = sitecode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwOther").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
+
+                            if (ExternalSys == true)
+                            {
+
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLImwOther").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -26022,17 +26251,33 @@ namespace TLIS_Service.Services
                             RdioOtherLoad.allLoadInst.radioOther.Name = RdioOtherLoad.allLoadInst.radioOther.Name + DateTime.Now;
                             var OldRdioOtherLoad = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable()
                                .AsNoTracking().FirstOrDefault(x => x.Id == RdioOtherLoad.Id);
-                            TLIhistory AddTablesHistory = new TLIhistory
+                            if (ExternalSys == false)
                             {
-                                HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id,
-                                RecordId = LoadId.ToString(),
-                                TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIradioOther").Id,
-                                UserId = UserId,
-                                SiteCode = sitecode
-                            };
 
-                            _dbContext.TLIhistory.Add(AddTablesHistory);
-                            _dbContext.SaveChanges();
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIradioOther").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
+
+                            if (ExternalSys == true)
+                            {
+
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = LoadId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIradioOther").Id;
+                                AddTablesHistory.ExternalSysId = UserId;
+                                AddTablesHistory.SiteCode = sitecode;
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+                                _dbContext.SaveChanges();
+                            }
                             var HistroryId = AddTablesHistory.Id;
 
                             var TabelTLIcivilLoads = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilLoads").Id;
@@ -28264,7 +28509,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddLoadObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddLoadObject> GetMWDishInstallationById(int MWInsId, string TableName, int? UserId )
+        public Response<GetForAddLoadObject> GetMWDishInstallationById(int MWInsId, string TableName, int UserId, bool ExternalSy)
         {
             try
             {
@@ -28639,7 +28884,16 @@ namespace TLIS_Service.Services
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
-                   
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = MWDish.SiteCode,
+                        RecordId = MWInsId.ToString()
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
 
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
@@ -28655,7 +28909,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddLoadObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddLoadObject> GetMWBUInstallationById(int MWInsId, string TableName, int? UserId )
+        public Response<GetForAddLoadObject> GetMWBUInstallationById(int MWInsId, string TableName, int UserId, bool ExternalSy)
         {
             try
             {
@@ -29100,7 +29354,16 @@ namespace TLIS_Service.Services
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
-                  
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = MWBU.SiteCode,
+                        RecordId = MWInsId.ToString()
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
 
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
@@ -29116,7 +29379,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddLoadObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddLoadObject> GetMWRFUInstallationById(int MWInsId, string TableName, int? UserId )
+        public Response<GetForAddLoadObject> GetMWRFUInstallationById(int MWInsId, string TableName, int UserId, bool ExternalSy)
         {
             try
             {
@@ -29341,7 +29604,16 @@ namespace TLIS_Service.Services
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
-                    
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = MWRFU.SiteCode,
+                        RecordId = MWInsId.ToString()
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
                 else
@@ -29356,7 +29628,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddLoadObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddLoadObject> GetMWODUInstallationById(int MWInsId, string TableName, int? UserId)
+        public Response<GetForAddLoadObject> GetMWODUInstallationById(int MWInsId, string TableName, int UserId, bool ExternalSy)
         {
             try
             {
@@ -29675,7 +29947,16 @@ namespace TLIS_Service.Services
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
-                  
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = MWODU.SiteCode,
+                        RecordId = MWInsId.ToString()
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
                 else
@@ -29690,7 +29971,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddLoadObject>(true, null, null, err.Message, (int)ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddLoadObject> GetMWOtherInstallationById(int MWOtherId, string TableName, int? UserId)
+        public Response<GetForAddLoadObject> GetMWOtherInstallationById(int MWOtherId, string TableName, int UserId, bool ExternalSy)
         {
             try
             {
@@ -29955,7 +30236,16 @@ namespace TLIS_Service.Services
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWOtherId, null);
-                    
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        SiteCode = MWOther.SiteCode,
+                        RecordId = MWOtherId.ToString()
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
                 else

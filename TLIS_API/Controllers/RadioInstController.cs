@@ -48,8 +48,25 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddRadioAntennaInstallation(int LibId, string SiteCode)
         {
-            
-            var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioAntennaInstallation(LibId, SiteCode);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioAntennaInstallation(LibId, SiteCode, userId,false);
             return Ok(response);
          
         }
@@ -58,8 +75,25 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddRadioRRUInstallation(int LibId, string SiteCode)
         {
-            
-            var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioRRUInstallation(LibId, SiteCode );
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioRRUInstallation(LibId, SiteCode, userId,false);
             return Ok(response);
            
         }
@@ -68,8 +102,25 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddRadioOtherInstallation(int LibId, string SiteCode)
         {
-            
-            var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioOtherInstallation(LibId, SiteCode);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.RadioInstService.GetAttForAddRadioOtherInstallation(LibId, SiteCode, userId,false);
             return Ok(response);
            
         }
@@ -100,7 +151,7 @@ namespace TLIS_API.Controllers
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), SiteCode, ConnectionString , TaskId, userId);
+                var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), SiteCode, ConnectionString , TaskId, userId,false);
                 return Ok(response);
             }
             else
@@ -138,7 +189,7 @@ namespace TLIS_API.Controllers
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioOtherInstallationObject, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), SiteCode, ConnectionString, TaskId, userId);
+                var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioOtherInstallationObject, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), SiteCode, ConnectionString, TaskId, userId,false);
                 return Ok(response);
             }
             else
@@ -176,7 +227,7 @@ namespace TLIS_API.Controllers
 
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
-                var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, ConnectionString, TaskId, userId);
+                var response = _unitOfWorkService.RadioInstService.AddRadioInstallation(addRadioRRU, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), SiteCode, ConnectionString, TaskId, userId,false);
                 return Ok(response);
             }
             else
@@ -329,7 +380,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.RadioInstService.EditRadioInstallation(editRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), TaskId, userId, ConnectionString);
+                var response = await _unitOfWorkService.RadioInstService.EditRadioInstallation(editRadioAntenna, Helpers.Constants.LoadSubType.TLIradioAntenna.ToString(), TaskId, userId, ConnectionString,false);
                 return Ok(response);
             }
             else
@@ -366,7 +417,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.RadioInstService.EditRadioInstallation(editRadioRRUInstallationObject, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), TaskId, userId, ConnectionString);
+                var response = await _unitOfWorkService.RadioInstService.EditRadioInstallation(editRadioRRUInstallationObject, Helpers.Constants.LoadSubType.TLIradioRRU.ToString(), TaskId, userId, ConnectionString,false);
                 return Ok(response);
             }
             else
@@ -403,7 +454,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.RadioInstService.EditRadioInstallation(editRadioOtherInstallationObject, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), TaskId, userId, ConnectionString);
+                var response = await _unitOfWorkService.RadioInstService.EditRadioInstallation(editRadioOtherInstallationObject, Helpers.Constants.LoadSubType.TLIradioOther.ToString(), TaskId, userId, ConnectionString,false);
                 return Ok(response);
             }
             else

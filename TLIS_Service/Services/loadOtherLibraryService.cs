@@ -100,7 +100,7 @@ namespace TLIS_Service.Services
                             if (CheckModel != null)
                                 return new Response<AddLoadOtherLibraryObject>(true, null, null, $"This model {LoadOtherLibrary.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
-                            var HistoryId = _unitOfWork.LoadOtherLibraryRepository.AddWithH(UserId,null, LoadOtherLibrary);
+                            var HistoryId = _unitOfWork.LoadOtherLibraryRepository.AddWithH(UserId,null, LoadOtherLibrary, false);
                             _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
 
@@ -798,7 +798,7 @@ namespace TLIS_Service.Services
                     var NewLoadOtherEntity = _unitOfWork.LoadOtherLibraryRepository.GetByID(Id);
                     NewLoadOtherEntity.Deleted = true;
 
-                    var HistoryId = _unitOfWork.LoadOtherLibraryRepository.UpdateWithH(UserId,null, LoadOtherEntity, NewLoadOtherEntity);
+                    var HistoryId = _unitOfWork.LoadOtherLibraryRepository.UpdateWithH(UserId,null, LoadOtherEntity, NewLoadOtherEntity,false);
                     DisableDynamicAttLibValuesH(TableNameEntity.Id, Id,UserId, HistoryId);
                     await _unitOfWork.SaveChangesAsync();
                     //AddHistory(LoadOtherEntity.Id, Helpers.Constants.HistoryType.Delete.ToString(), Helpers.Constants.LoadSubType.TLIloadOtherLibrary.ToString());
@@ -844,7 +844,7 @@ namespace TLIS_Service.Services
                     var LoadOtherLibraryEntity = _unitOfWork.LoadOtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                     var NewLoadOtherLibraryEntity = _unitOfWork.LoadOtherLibraryRepository.GetByID( Id);
                     NewLoadOtherLibraryEntity.Active = !NewLoadOtherLibraryEntity.Active;
-                    _unitOfWork.LoadOtherLibraryRepository.UpdateWithH(UserId,null, LoadOtherLibraryEntity, NewLoadOtherLibraryEntity);
+                    _unitOfWork.LoadOtherLibraryRepository.UpdateWithH(UserId,null, LoadOtherLibraryEntity, NewLoadOtherLibraryEntity, false);
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
@@ -1455,7 +1455,7 @@ namespace TLIS_Service.Services
                         return new Response<EditLoadOtherLibraryObject>(true, null, null, $"This model {loadOther.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                     loadOther.Active = OldLoadOther.Active;
                     loadOther.Deleted = OldLoadOther.Deleted;
-                    var HistoryId = _unitOfWork.LoadOtherLibraryRepository.UpdateWithH(UserId,null, OldLoadOther, loadOther);
+                    var HistoryId = _unitOfWork.LoadOtherLibraryRepository.UpdateWithH(UserId,null, OldLoadOther, loadOther, false);
                     await _unitOfWork.SaveChangesAsync();
 
                     List<int?> sortedIds = new List<int?>();

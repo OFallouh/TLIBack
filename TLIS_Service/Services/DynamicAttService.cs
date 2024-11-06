@@ -15994,7 +15994,7 @@ namespace TLIS_Service.Services
                 if (Helpers.Constants.OtherInventoryType.TLIsolar.ToString() == TabelName)
                 {
                     var ListAttributesActivated = _unitOfWork.AttributeActivatedRepository.
-                        GetInstAttributeActivatedGetForAdd(OtherInventoryType.TLIsolar.ToString(), null, "SolarLibraryId", "Cabinet_Name").ToList();
+                        GetInstAttributeActivatedGetForAdd(OtherInventoryType.TLIsolar.ToString(), null, "SolarLibraryId", "CabinetId").ToList();
                     var ListAttributesActivatedSite = _unitOfWork.AttributeActivatedRepository.GetAttributeActivatedGetForAdd("TLIsite", null, null, "STATUS_DATE", "CREATE_DATE");
                     ListAttributesActivatedSite
                         .Where(FKitem => FKitem.DataType.ToLower() == "list" && !string.IsNullOrEmpty(FKitem.Label))
@@ -16418,7 +16418,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<AddDynamicObject>> EditDynamicAttribute(int DynamicAttributeId, AddDynamicObject DynamicAttViewModel, int UserId, string connectionString)
+        public async Task<Response<AddDynamicObject>> EditDynamicAttribute(int DynamicAttributeId, AddDynamicObject DynamicAttViewModel, int UserId, string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -16469,7 +16469,7 @@ namespace TLIS_Service.Services
                     NewDynamicAttribute.Description = DynamicAttViewModel.general.description;
                     NewDynamicAttribute.Required = DynamicAttViewModel.general.isRequired;
 
-                    _unitOfWork.DynamicAttRepository.UpdateWithH(UserId, null, OldDynamicAttData, NewDynamicAttribute);
+                    _unitOfWork.DynamicAttRepository.UpdateWithH(UserId, null, OldDynamicAttData, NewDynamicAttribute, ExternalSys);
                     await _unitOfWork.SaveChangesAsync();
                     transaction.Complete();
                     Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
@@ -18916,7 +18916,7 @@ namespace TLIS_Service.Services
 
                 if (DynamicAtt.disable)
                     DynamicAtt.Required = false;
-                _unitOfWork.DynamicAttRepository.UpdateWithH(UserId, null, OldDynamicAtt, DynamicAtt);
+                _unitOfWork.DynamicAttRepository.UpdateWithH(UserId, null, OldDynamicAtt, DynamicAtt, false);
                 _unitOfWork.SaveChanges();
          
                 return new Response<DynamicAttViewModel>();
@@ -18934,7 +18934,7 @@ namespace TLIS_Service.Services
                 TLIdynamicAtt DynamicAtt = _unitOfWork.DynamicAttRepository.GetByID(DynamicAttId);
 
                 DynamicAtt.Required = !(DynamicAtt.Required);
-                _unitOfWork.DynamicAttRepository.UpdateWithH(UserId, null, OldDynamicAtt, DynamicAtt);
+                _unitOfWork.DynamicAttRepository.UpdateWithH(UserId, null, OldDynamicAtt, DynamicAtt, false);
                 _unitOfWork.SaveChanges();
                 return new Response<DynamicAttViewModel>();
             }
@@ -19416,7 +19416,7 @@ namespace TLIS_Service.Services
            
         }
 
-        public Response<AddDynamicObject> AddDynamic(AddDynamicObject addDynamicObject, string connectionString, string TabelName, int UserId, int? CategoryId)
+        public Response<AddDynamicObject> AddDynamic(AddDynamicObject addDynamicObject, string connectionString, string TabelName, int UserId, int? CategoryId, bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -19435,7 +19435,7 @@ namespace TLIS_Service.Services
                             {
                                 var EditabelViewManagment = _unitOfWork.EditableManagmentViewRepository.GetWhereFirst(x => x.TLItablesNames1Id == TabelNameId && x.CivilWithoutLegCategoryId == CategoryId).Id;
                                 var DynamicKey = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Key.ToLower() == addDynamicObject.general.name.ToLower() && x.tablesNames.TableName.ToLower() == TabelName.ToLower()
-                                 &&x.CivilWithoutLegCategoryId==CategoryId);
+                                 && x.CivilWithoutLegCategoryId == CategoryId);
                                 if (DynamicKey != null)
                                     return new Response<AddDynamicObject>(true, null, null, $"This Key {addDynamicObject.general.name} is Already Exist in Table {TabelName} as a Dynamic Attribute", (int)Constants.ApiReturnCode.fail);
 
@@ -19443,12 +19443,12 @@ namespace TLIS_Service.Services
 
                                 if (property != null)
                                 {
-                                  
+
                                     var entityType = property.PropertyType.GenericTypeArguments.FirstOrDefault();
 
                                     if (entityType != null)
                                     {
-                                        
+
                                         var attributeNames = entityType.GetProperties().Select(p => p.Name).ToList();
 
                                         foreach (var attribute in attributeNames)
@@ -19464,15 +19464,15 @@ namespace TLIS_Service.Services
                                         }
                                     }
                                 }
-                         
+
                                 double double_Test = 0;
                                 DateTime datetime_Test = DateTime.Now;
                                 Boolean boolean_Test = false;
                                 if (addDynamicObject.general.defualtValue == null)
                                     return new Response<AddDynamicObject>(true, null, null, "The default can not to be null.", (int)Constants.ApiReturnCode.fail);
 
-                                if((addDynamicObject.type==0 || addDynamicObject.type==null)&& addDynamicObject.general.isRequired==true&& addDynamicObject.validation==null)
-                                   return new Response<AddDynamicObject>(true, null, null, $"The dynamic attribute cannot be requierd without having validation.", (int)Constants.ApiReturnCode.fail);                           
+                                if ((addDynamicObject.type == 0 || addDynamicObject.type == null) && addDynamicObject.general.isRequired == true && addDynamicObject.validation == null)
+                                    return new Response<AddDynamicObject>(true, null, null, $"The dynamic attribute cannot be requierd without having validation.", (int)Constants.ApiReturnCode.fail);
 
                                 if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
                                 {
@@ -19504,7 +19504,7 @@ namespace TLIS_Service.Services
                                     }
 
                                 }
-                               
+
                                 if (addDynamicObject.type == 0)
                                 {
                                     var defultvalue = addDynamicObject.general.defualtValue?.ToString().Trim();
@@ -19517,12 +19517,12 @@ namespace TLIS_Service.Services
                                         DataTypeId = addDynamicObject.general.dataType,
                                         tablesNamesId = TabelNameId,
                                         disable = false,
-                                         LibraryAtt = addDynamicObject.general.IsLibrary,
+                                        LibraryAtt = addDynamicObject.general.IsLibrary,
                                         CivilWithoutLegCategoryId = CategoryId,
                                         Type = 0
 
                                     };
-                                    var HistoryId = _unitOfWork.DynamicAttRepository.AddWithH(UserId, null, tLIdynamicAtt);
+                                    var HistoryId = _unitOfWork.DynamicAttRepository.AddWithH(UserId, null, tLIdynamicAtt, ExternalSys);
                                     _unitOfWork.SaveChanges();
                                     var TabelNameTLIattributeViewManagment = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIattributeViewManagment").Id;
                                     TLIattributeViewManagment tLIattributeViewManagment = new TLIattributeViewManagment()
@@ -19750,12 +19750,12 @@ namespace TLIS_Service.Services
                                             DataTypeId = addDynamicObject.general.dataType,
                                             tablesNamesId = TabelNameId,
                                             disable = false,
-                                             LibraryAtt = addDynamicObject.general.IsLibrary,
+                                            LibraryAtt = addDynamicObject.general.IsLibrary,
                                             CivilWithoutLegCategoryId = CategoryId,
                                             Type = 1
 
                                         };
-                                        var HistoryId = _unitOfWork.DynamicAttRepository.AddWithH(UserId, null, tLIdynamicAtt);
+                                        var HistoryId = _unitOfWork.DynamicAttRepository.AddWithH(UserId, null, tLIdynamicAtt, ExternalSys);
                                         _unitOfWork.SaveChanges();
                                         var TabelNameTLIattributeViewManagment = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIattributeViewManagment").Id;
                                         TLIattributeViewManagment tLIattributeViewManagment = new TLIattributeViewManagment()
@@ -20355,12 +20355,12 @@ namespace TLIS_Service.Services
                                             DataTypeId = addDynamicObject.general.dataType,
                                             tablesNamesId = TabelNameId,
                                             disable = false,
-                                             LibraryAtt = addDynamicObject.general.IsLibrary,
+                                            LibraryAtt = addDynamicObject.general.IsLibrary,
                                             CivilWithoutLegCategoryId = CategoryId,
                                             Type = 2
 
                                         };
-                                        var HistoryId = _unitOfWork.DynamicAttRepository.AddWithH(UserId, null, tLIdynamicAtt);
+                                        var HistoryId = _unitOfWork.DynamicAttRepository.AddWithH(UserId, null, tLIdynamicAtt, ExternalSys);
                                         _unitOfWork.SaveChanges();
 
                                         var TabelNameTLIattributeViewManagment = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIattributeViewManagment").Id;
@@ -20402,7 +20402,7 @@ namespace TLIS_Service.Services
                                         {
                                             bool overallResult = false;
                                             var RecordsIds = GetLibraryRecordsIds(TabelName);
-                                            
+
                                             foreach (var group in addDynamicObject.dependency.groups)
                                             {
                                                 TLIrow row = new TLIrow();
@@ -20416,8 +20416,8 @@ namespace TLIS_Service.Services
                                                     {
                                                         var AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
                                                        .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                        && x.DynamicAtt.tablesNames.TableName.ToLower()==TabelName.ToLower(),x=>x.DynamicAtt
-                                                        ,x=>x.DynamicAtt.tablesNames,x=>x.DynamicAtt.DataType);
+                                                        && x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower(), x => x.DynamicAtt
+                                                        , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
                                                         if (AttributeViewManagment.DynamicAtt.DataType.Name.ToLower() == "int")
                                                         {
                                                             TLIrule tLIrule = new TLIrule()
@@ -20449,7 +20449,7 @@ namespace TLIS_Service.Services
                                                                 OperationId = rule.Operation,
                                                                 OperationValueDouble = double.Parse(rule.Value.ToString()),
                                                                 tablesNamesId = TabelNameId,
-                                                                IsDynamic=true
+                                                                IsDynamic = true
                                                             };
                                                             _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
                                                             _unitOfWork.SaveChanges();
@@ -20736,7 +20736,7 @@ namespace TLIS_Service.Services
 
                                                 foreach (var group in addDynamicObject.dependency.groups)
                                                 {
-                                                    
+
                                                     bool groupResult = true;
 
 
@@ -20763,7 +20763,7 @@ namespace TLIS_Service.Services
                                                             ValueString = resultvalue,
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
@@ -20776,7 +20776,7 @@ namespace TLIS_Service.Services
                                                             ValueDouble = Convert.ToDouble(resultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 25)
@@ -20789,7 +20789,7 @@ namespace TLIS_Service.Services
                                                             ValueDateTime = Convert.ToDateTime(resultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 24)
@@ -20802,7 +20802,7 @@ namespace TLIS_Service.Services
                                                             ValueBoolean = Convert.ToBoolean(resultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                 }
@@ -20818,7 +20818,7 @@ namespace TLIS_Service.Services
                                                             ValueString = defultvalue,
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
@@ -20831,7 +20831,7 @@ namespace TLIS_Service.Services
                                                             ValueDouble = Convert.ToDouble(defultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 25)
@@ -20844,7 +20844,7 @@ namespace TLIS_Service.Services
                                                             ValueDateTime = Convert.ToDateTime(defultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 24)
@@ -20857,7 +20857,7 @@ namespace TLIS_Service.Services
                                                             ValueBoolean = Convert.ToBoolean(defultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttLibRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                 }
@@ -20900,209 +20900,209 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (rule.Layer == 0)
                                                         {
-                                                          AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                          .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                           && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIsite".ToLower(), x => x.DynamicAtt
-                                                           , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                            AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                            .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                             && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIsite".ToLower(), x => x.DynamicAtt
+                                                             , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
                                                         }
                                                         if (rule.Layer == 1)
                                                         {
-                                                          AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                          .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                           && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilWithLegs".ToLower(), x => x.DynamicAtt
-                                                           , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                            AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                            .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                             && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilWithLegs".ToLower(), x => x.DynamicAtt
+                                                             , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
                                                         }
                                                         if (rule.Layer == 2)
                                                         {
-                                                          AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                         .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                          && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilWithoutLeg".ToLower()
-                                                          && x.DynamicAtt.CivilWithoutLegCategoryId == 1, x => x.DynamicAtt
-                                                          , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                            AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                           .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                            && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilWithoutLeg".ToLower()
+                                                            && x.DynamicAtt.CivilWithoutLegCategoryId == 1, x => x.DynamicAtt
+                                                            , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
                                                         }
                                                         if (rule.Layer == 3)
                                                         {
-                                                          AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                           .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                            && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilWithoutLeg".ToLower()
-                                                            && x.DynamicAtt.CivilWithoutLegCategoryId == 2, x => x.DynamicAtt
-                                                            , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                            AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                             .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                              && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilWithoutLeg".ToLower()
+                                                              && x.DynamicAtt.CivilWithoutLegCategoryId == 2, x => x.DynamicAtt
+                                                              , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
                                                         }
                                                         if (rule.Layer == 4)
                                                         {
-                                                          AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                         .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                          && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilWithoutLeg".ToLower()
-                                                          && x.DynamicAtt.CivilWithoutLegCategoryId == 3, x => x.DynamicAtt
-                                                          , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                            AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                           .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                            && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilWithoutLeg".ToLower()
+                                                            && x.DynamicAtt.CivilWithoutLegCategoryId == 3, x => x.DynamicAtt
+                                                            , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
                                                         }
                                                         if (rule.Layer == 5)
                                                         {
-                                                          AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                          .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                           && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilNonSteel".ToLower(), x => x.DynamicAtt
-                                                           , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                            AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                            .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                             && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilNonSteel".ToLower(), x => x.DynamicAtt
+                                                             , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
                                                         }
                                                         if (rule.Layer == 6)
                                                         {
-                                                          AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                          .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                           && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIsideArm".ToLower(), x => x.DynamicAtt
-                                                           , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                            AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                            .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                             && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIsideArm".ToLower(), x => x.DynamicAtt
+                                                             , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
                                                         }
                                                         if (rule.Layer == 7)
                                                         {
-                                                          AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                          .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                           && x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower(), x => x.DynamicAtt
-                                                           , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                            AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                            .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                             && x.DynamicAtt.tablesNames.TableName.ToLower() == TabelName.ToLower(), x => x.DynamicAtt
+                                                             , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
                                                         }
                                                         if (rule.Layer == 8)
                                                         {
                                                             if (TabelName == "TLIcivilWithLegs")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilWithLegLibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilWithLegLibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLIcivilWithoutLeg")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilWithoutLegLibrary".ToLower()
-                                                               && x.DynamicAtt.CivilWithoutLegCategoryId==CategoryId, x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilWithoutLegLibrary".ToLower()
+                                                                 && x.DynamicAtt.CivilWithoutLegCategoryId == CategoryId, x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLIcivilNonSteel")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilNonSteelLibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcivilNonSteelLibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLIsideArm")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIsideArmLibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIsideArmLibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLImwBU")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLImwBULibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLImwBULibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLImwDish")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLImwDishLibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLImwDishLibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLImwODU")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLImwODULibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLImwODULibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLImwOther")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLImwOtherLibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLImwOtherLibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLImwRFU")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLImwRFULibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLImwRFULibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLIradioRRU")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIradioRRULibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIradioRRULibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLIradioAntenna")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIradioAntennaLibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIradioAntennaLibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLIradioOther")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIradioOtherLibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIradioOtherLibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLIloadOther")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIloadOtherLibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIloadOtherLibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLIpower")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIpowerLibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIpowerLibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLIsolar")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIsolarLibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIsolarLibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLIgenerator")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIgeneratorLibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIgeneratorLibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                             if (TabelName == "TLIcabinetPower")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcabinetPowerLibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcabinetPowerLibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
-                                                        
+
                                                             if (TabelName == "TLIcabinetTelecom")
                                                             {
-                                                              AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
-                                                              .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
-                                                               && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcabinetTelecomLibrary".ToLower(), x => x.DynamicAtt
-                                                               , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
+                                                                AttributeViewManagment = _unitOfWork.AttributeViewManagmentRepository
+                                                                .GetIncludeWhereFirst(x => x.DynamicAtt.Key.ToLower() == rule.ColumnName.ToLower()
+                                                                 && x.DynamicAtt.tablesNames.TableName.ToLower() == "TLIcabinetTelecomLibrary".ToLower(), x => x.DynamicAtt
+                                                                 , x => x.DynamicAtt.tablesNames, x => x.DynamicAtt.DataType);
 
                                                             }
                                                         }
@@ -21116,7 +21116,7 @@ namespace TLIS_Service.Services
                                                                 OperationValueDouble = int.Parse(rule.Value.ToString()),
                                                                 tablesNamesId = TabelNameId,
                                                                 IsDynamic = true,
-                                                                Layer= rule.Layer,
+                                                                Layer = rule.Layer,
                                                             };
                                                             _unitOfWork.RuleRepository.AddWithHDynamic(UserId, TabelNameTLIrule, tLIrule, HistoryId);
                                                             _unitOfWork.SaveChanges();
@@ -21270,192 +21270,192 @@ namespace TLIS_Service.Services
                                                     {
                                                         if (rule.Layer == 0)
                                                         {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
+                                                            AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
                                                            .GetWhereFirst(x => x.Tabel.ToLower() == "TLIsite".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
-                                                           
+
                                                         }
                                                         if (rule.Layer == 1)
                                                         {
-                                                        AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                           .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilWithLegs".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
-                                               
+                                                            AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                               .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilWithLegs".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+
                                                         }
                                                         if (rule.Layer == 2)
                                                         {
-                                                        AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                          .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilWithoutLeg".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
-                                                           
+                                                            AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                              .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilWithoutLeg".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+
                                                         }
                                                         if (rule.Layer == 3)
                                                         {
-                                                        AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                           .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilWithoutLeg".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                            AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                               .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilWithoutLeg".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
                                                         }
                                                         if (rule.Layer == 4)
                                                         {
-                                                        AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilWithoutLeg".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
-                                                    
+                                                            AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilWithoutLeg".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+
                                                         }
                                                         if (rule.Layer == 5)
                                                         {
-                                                        AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                            .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilNonSteel".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
-                                                           
+                                                            AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilNonSteel".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+
                                                         }
                                                         if (rule.Layer == 6)
                                                         {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
+                                                            AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
                                                                 .GetWhereFirst(x => x.Tabel.ToLower() == "TLIsideArm".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
-                                                        
+
                                                         }
                                                         if (rule.Layer == 7)
                                                         {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
+                                                            AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
                                                             .GetWhereFirst(x => x.Tabel.ToLower() == TabelName.ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
-                                                              
+
                                                         }
                                                         if (rule.Layer == 8)
                                                         {
                                                             if (TabelName == "TLIcivilWithLegs")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                        .     GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilWithLegLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                            .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilWithLegLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
                                                             }
-                                                            
+
                                                             if (TabelName == "TLIcivilWithoutLeg")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                               .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilWithoutLegLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                   .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilWithoutLegLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
 
                                                             }
                                                             if (TabelName == "TLIcivilNonSteel")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                                .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilNonSteelLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
-                                                                  
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                    .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcivilNonSteelLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+
 
                                                             }
                                                             if (TabelName == "TLIsideArm")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                              .GetWhereFirst(x => x.Tabel.ToLower() == "TLIsideArmLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                  .GetWhereFirst(x => x.Tabel.ToLower() == "TLIsideArmLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
 
                                                             }
                                                             if (TabelName == "TLImwBU")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                              .GetWhereFirst(x => x.Tabel.ToLower() == "TLImwBULibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                  .GetWhereFirst(x => x.Tabel.ToLower() == "TLImwBULibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
-                                                              
+
 
                                                             }
                                                             if (TabelName == "TLImwDish")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                                .GetWhereFirst(x => x.Tabel.ToLower() == "TLImwDishLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                    .GetWhereFirst(x => x.Tabel.ToLower() == "TLImwDishLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
-                                                     
+
 
                                                             }
                                                             if (TabelName == "TLImwODU")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                              .GetWhereFirst(x => x.Tabel.ToLower() == "TLImwODULibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                  .GetWhereFirst(x => x.Tabel.ToLower() == "TLImwODULibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
-                                                             
+
 
                                                             }
                                                             if (TabelName == "TLImwOther")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                              .GetWhereFirst(x => x.Tabel.ToLower() == "TLImwOtherLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                  .GetWhereFirst(x => x.Tabel.ToLower() == "TLImwOtherLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
-                                                           
+
 
                                                             }
                                                             if (TabelName == "TLImwRFU")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                               .GetWhereFirst(x => x.Tabel.ToLower() == "TLImwRFULibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                   .GetWhereFirst(x => x.Tabel.ToLower() == "TLImwRFULibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
-                                                     
+
 
                                                             }
                                                             if (TabelName == "TLIradioRRU")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                                .GetWhereFirst(x => x.Tabel.ToLower() == "TLIradioRRULibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                    .GetWhereFirst(x => x.Tabel.ToLower() == "TLIradioRRULibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
-                                        
+
 
                                                             }
                                                             if (TabelName == "TLIradioAntenna")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                               .GetWhereFirst(x => x.Tabel.ToLower() == "TLIradioAntennaLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                   .GetWhereFirst(x => x.Tabel.ToLower() == "TLIradioAntennaLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
-                                                              
+
 
                                                             }
                                                             if (TabelName == "TLIradioOther")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                               .GetWhereFirst(x => x.Tabel.ToLower() == "TLIradioOtherLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                   .GetWhereFirst(x => x.Tabel.ToLower() == "TLIradioOtherLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
 
 
                                                             }
                                                             if (TabelName == "TLIloadOther")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                             .GetWhereFirst(x => x.Tabel.ToLower() == "TLIloadOtherLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                 .GetWhereFirst(x => x.Tabel.ToLower() == "TLIloadOtherLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
 
                                                             }
                                                             if (TabelName == "TLIpower")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                               .GetWhereFirst(x => x.Tabel.ToLower() == "TLIpowerLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                   .GetWhereFirst(x => x.Tabel.ToLower() == "TLIpowerLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
-                                                          
+
 
                                                             }
                                                             if (TabelName == "TLIsolar")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                              .GetWhereFirst(x => x.Tabel.ToLower() == "TLIsolarLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                  .GetWhereFirst(x => x.Tabel.ToLower() == "TLIsolarLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
-                                                               
+
 
                                                             }
                                                             if (TabelName == "TLIgenerator")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                              .GetWhereFirst(x => x.Tabel.ToLower() == "TLIgeneratorLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                  .GetWhereFirst(x => x.Tabel.ToLower() == "TLIgeneratorLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
 
                                                             }
                                                             if (TabelName == "TLIcabinetPower")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                              .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcabinetPowerLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                  .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcabinetPowerLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
-                                                            
+
 
                                                             }
-                                                        
+
                                                             if (TabelName == "TLIcabinetTelecom")
                                                             {
-                                                            AttributeActivatedRule= _unitOfWork.AttributeActivatedRepository
-                                                             .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcabinetTelecomLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
+                                                                AttributeActivatedRule = _unitOfWork.AttributeActivatedRepository
+                                                                 .GetWhereFirst(x => x.Tabel.ToLower() == "TLIcabinetTelecomLibrary".ToLower() && x.Key.ToLower() == rule.ColumnName.ToLower());
 
                                                             }
                                                         }
-                                                    
+
 
                                                         if (AttributeActivatedRule.DataType.ToLower() == "int")
                                                         {
@@ -21651,7 +21651,7 @@ namespace TLIS_Service.Services
                                                             ValueString = resultvalue,
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
@@ -21664,7 +21664,7 @@ namespace TLIS_Service.Services
                                                             ValueDouble = Convert.ToDouble(resultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 25)
@@ -21677,7 +21677,7 @@ namespace TLIS_Service.Services
                                                             ValueDateTime = Convert.ToDateTime(resultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 24)
@@ -21690,7 +21690,7 @@ namespace TLIS_Service.Services
                                                             ValueBoolean = Convert.ToBoolean(resultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                 }
@@ -21706,7 +21706,7 @@ namespace TLIS_Service.Services
                                                             ValueString = defultvalue,
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 21 || addDynamicObject.general.dataType == 22)
@@ -21719,7 +21719,7 @@ namespace TLIS_Service.Services
                                                             ValueDouble = Convert.ToDouble(defultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 25)
@@ -21732,7 +21732,7 @@ namespace TLIS_Service.Services
                                                             ValueDateTime = Convert.ToDateTime(defultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                     else if (addDynamicObject.general.dataType == 24)
@@ -21745,7 +21745,7 @@ namespace TLIS_Service.Services
                                                             ValueBoolean = Convert.ToBoolean(defultvalue),
                                                             tablesNamesId = TabelNameId,
                                                         };
-                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue);
+                                                        _unitOfWork.DynamicAttInstValueRepository.AddWithH(UserId, null, tLIdynamicAttLibValue, ExternalSys);
                                                         _unitOfWork.SaveChanges();
                                                     }
                                                 }
@@ -21769,12 +21769,12 @@ namespace TLIS_Service.Services
                                             DataTypeId = addDynamicObject.general.dataType,
                                             tablesNamesId = TabelNameId,
                                             disable = false,
-                                             LibraryAtt = addDynamicObject.general.IsLibrary,
+                                            LibraryAtt = addDynamicObject.general.IsLibrary,
                                             CivilWithoutLegCategoryId = CategoryId,
                                             Type = 3
 
                                         };
-                                        var HistoryId = _unitOfWork.DynamicAttRepository.AddWithH(UserId, null, tLIdynamicAtt);
+                                        var HistoryId = _unitOfWork.DynamicAttRepository.AddWithH(UserId, null, tLIdynamicAtt, ExternalSys);
                                         _unitOfWork.SaveChanges();
                                         var TabelNameTLIattributeViewManagment = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIattributeViewManagment").Id;
                                         TLIattributeViewManagment tLIattributeViewManagment = new TLIattributeViewManagment()
@@ -21958,7 +21958,7 @@ namespace TLIS_Service.Services
                                         }
                                         if (addDynamicObject.dependency != null)
                                         {
-                                       
+
                                             var TabelNameTLIdependency = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIdependency").Id;
                                             TLIdependency tLIdependency = new TLIdependency()
                                             {
@@ -22318,8 +22318,8 @@ namespace TLIS_Service.Services
 
                                                     }
                                                 }
-                                                }
                                             }
+                                        }
                                         if (TabelName == "TLIcivilWithLegs"
                                       || TabelName == "TLIcivilWithoutLeg"
                                       || TabelName == "TLIcivilNonSteel"
@@ -23077,7 +23077,7 @@ namespace TLIS_Service.Services
                                                 }
                                             }
                                         }
-                                        }
+                                    }
                                     else
                                     {
                                         return new Response<AddDynamicObject>(true, null, null, "validation and dependence can not be null ", Int32.Parse(Constants.ApiReturnCode.fail.ToString()));
@@ -23104,8 +23104,8 @@ namespace TLIS_Service.Services
                 }
             }
         }
-       
-        public Response<AddDynamicObject> GetDynamicLibraryById(int id)
+
+        public Response<AddDynamicObject> GetDynamicLibraryById(int id,int UserId,bool ExternalSys)
         {
             try
             {
@@ -23141,10 +23141,16 @@ namespace TLIS_Service.Services
                     dependency = GetDependency(dynamicAtt.Id)
                 };
 
-                if (dynamicAtt.DataTypeId == 24)
+                var TabelNameId = _dbContext.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIdynamicAtt").Id;
+                TLIhistory tLIhistory = new TLIhistory()
                 {
-                    addDynamicObject.general.defualtValue = Convert.ToBoolean(addDynamicObject.general.defualtValue);
-                }
+                    TablesNameId = TabelNameId,
+                    ExternalSysId = UserId,
+                    HistoryTypeId = 4,
+                    RecordId = id.ToString(),
+                };
+                _dbContext.TLIhistory.Add(tLIhistory);
+                _dbContext.SaveChanges();
                 return new Response<AddDynamicObject>(false, addDynamicObject, null, "Success", (int)Constants.ApiReturnCode.success);
             }
             catch (Exception ex)

@@ -411,7 +411,7 @@ namespace TLIS_Service.Services
         //Get the record by Id
         //Get activated attributes and values
         //Get dynamic attributes
-        public Response<GetForAddCivilLibrarybject> GetById(int Id, string TableName)
+        public Response<GetForAddCivilLibrarybject> GetById(int Id, string TableName, int UserId, bool ExternalSys)
         {
             try
             {
@@ -627,8 +627,19 @@ namespace TLIS_Service.Services
                         return new Response<GetForAddCivilLibrarybject>(false, null, null, "this MWOtherLibrary is not found", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
-
-
+                var TabelNameId = db.TLItablesNames.FirstOrDefault(x => x.TableName == TableName).Id;
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                        RecordId=Id.ToString()
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
+                }
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -3907,7 +3918,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<AddMWDishLibraryObject> AddMWDishLibrary(int UserId, string TableName, AddMWDishLibraryObject addMWDishLibraryObject, string connectionString)
+        public Response<AddMWDishLibraryObject> AddMWDishLibrary(int UserId, string TableName, AddMWDishLibraryObject addMWDishLibraryObject, string connectionString,bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -3940,7 +3951,7 @@ namespace TLIS_Service.Services
                                     return new Response<AddMWDishLibraryObject>(true, null, null, $"This model {MW_DishLibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                                 
 
-                                var HistoryId=_unitOfWork.MW_DishLibraryRepository.AddWithH(UserId,null, MW_DishLibraryEntity);
+                                var HistoryId=_unitOfWork.MW_DishLibraryRepository.AddWithH(UserId,null, MW_DishLibraryEntity, ExternalSys);
                                 _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
 
@@ -4029,7 +4040,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<ADDMWODULibraryObject> AddMWODULibrary(int UserId, string TableName, ADDMWODULibraryObject aDDMWODULibraryObject, string connectionString)
+        public Response<ADDMWODULibraryObject> AddMWODULibrary(int UserId, string TableName, ADDMWODULibraryObject aDDMWODULibraryObject, string connectionString,bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -4065,7 +4076,7 @@ namespace TLIS_Service.Services
                               return new Response<ADDMWODULibraryObject>(true, null, null, $"This model {MW_ODULibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
                             
 
-                            var HistoryId=  _unitOfWork.MW_ODULibraryRepository.AddWithH(UserId,null, MW_ODULibraryEntity);
+                            var HistoryId=  _unitOfWork.MW_ODULibraryRepository.AddWithH(UserId,null, MW_ODULibraryEntity, ExternalSys);
                             _unitOfWork.SaveChanges();
 
                             List<int?> sortedIds = new List<int?>();
@@ -4154,7 +4165,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<AddMWBULibraryObject> AddMWBULibrary(int UserId, string TableName, AddMWBULibraryObject addMWBULibraryObject, string connectionString)
+        public Response<AddMWBULibraryObject> AddMWBULibrary(int UserId, string TableName, AddMWBULibraryObject addMWBULibraryObject, string connectionString,bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -4194,7 +4205,7 @@ namespace TLIS_Service.Services
 
 
 
-                            var HistoryId = _unitOfWork.MW_BULibraryRepository.AddWithH(UserId,null, MW_BULibraryEntity);
+                            var HistoryId = _unitOfWork.MW_BULibraryRepository.AddWithH(UserId,null, MW_BULibraryEntity,ExternalSys);
                             _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
 
@@ -4403,7 +4414,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<AddMWOtherLibraryObject> AddMWOtherLibrary(int UserId, string TableName, AddMWOtherLibraryObject addMWOtherLibraryObject, string connectionString)
+        public Response<AddMWOtherLibraryObject> AddMWOtherLibrary(int UserId, string TableName, AddMWOtherLibraryObject addMWOtherLibraryObject, string connectionString,bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -4438,7 +4449,7 @@ namespace TLIS_Service.Services
                                 return new Response<AddMWOtherLibraryObject>(true, null, null, $"This model {MW_OtherLibraryEntity.Model} is already exists", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
-                           var HistoryId= _unitOfWork.MW_OtherLibraryRepository.AddWithH(UserId,null, MW_OtherLibraryEntity);
+                           var HistoryId= _unitOfWork.MW_OtherLibraryRepository.AddWithH(UserId,null, MW_OtherLibraryEntity, ExternalSys);
                             _unitOfWork.SaveChanges();
 
                             List<int?> sortedIds = new List<int?>();
@@ -4525,7 +4536,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<AddMWRFULibraryObject> AddMWRFULibrary(int UserId, string TableName, AddMWRFULibraryObject addMWRFULibraryObject, string connectionString)
+        public Response<AddMWRFULibraryObject> AddMWRFULibrary(int UserId, string TableName, AddMWRFULibraryObject addMWRFULibraryObject, string connectionString,bool ExternalSys)
         {
             using (var con = new OracleConnection(connectionString))
             {
@@ -4560,7 +4571,7 @@ namespace TLIS_Service.Services
 
 
 
-                            var HistoryId = _unitOfWork.MW_RFULibraryRepository.AddWithH(UserId,null, MW_RFULibraryEntity);
+                            var HistoryId = _unitOfWork.MW_RFULibraryRepository.AddWithH(UserId,null, MW_RFULibraryEntity, ExternalSys);
                             _unitOfWork.SaveChanges();
                             List<int?> sortedIds = new List<int?>();
 
@@ -5701,7 +5712,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<EditMWBULibraryObject>> EditMWBULibrary(int userId, EditMWBULibraryObject editMWBULibrary, string TableName,string connectionString)
+        public async Task<Response<EditMWBULibraryObject>> EditMWBULibrary(int userId, EditMWBULibraryObject editMWBULibrary, string TableName,string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -5742,7 +5753,7 @@ namespace TLIS_Service.Services
 
                     MWBULibraryEntites.Active = MWBULegLib.Active;
                     MWBULibraryEntites.Deleted = MWBULegLib.Deleted;
-                    var HistoryId =_unitOfWork.MW_BULibraryRepository.UpdateWithH(userId,null, MWBULegLib, MWBULibraryEntites);
+                    var HistoryId =_unitOfWork.MW_BULibraryRepository.UpdateWithH(userId,null, MWBULegLib, MWBULibraryEntites, ExternalSys);
                     _unitOfWork.SaveChanges();
 
                     List<int?> sortedIds = new List<int?>();
@@ -6248,7 +6259,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public async Task<Response<EditMWOtherLibraryObject>> EditMWOtherLibrary(int userId, EditMWOtherLibraryObject editMWOtherLibraryObject, string TableName, string connectionString)
+        public async Task<Response<EditMWOtherLibraryObject>> EditMWOtherLibrary(int userId, EditMWOtherLibraryObject editMWOtherLibraryObject, string TableName, string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -6287,7 +6298,7 @@ namespace TLIS_Service.Services
 
                     MWOtherLibraryEntites.Active = MWOtherLegLib.Active;
                     MWOtherLibraryEntites.Deleted = MWOtherLegLib.Deleted;
-                    var HistoryId = _unitOfWork.MW_OtherLibraryRepository.UpdateWithH(userId,null, MWOtherLegLib, MWOtherLibraryEntites);
+                    var HistoryId = _unitOfWork.MW_OtherLibraryRepository.UpdateWithH(userId,null, MWOtherLegLib, MWOtherLibraryEntites, ExternalSys);
                     _unitOfWork.SaveChanges();
 
                     List<int?> sortedIds = new List<int?>();
@@ -6427,7 +6438,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public async Task<Response<EditMWRFULibrary>> EditMWRFULibrary(int userId, EditMWRFULibrary editMWRFULibraryAttributes, string TableName, string connectionString)
+        public async Task<Response<EditMWRFULibrary>> EditMWRFULibrary(int userId, EditMWRFULibrary editMWRFULibraryAttributes, string TableName, string connectionString, bool ExternalSys)
         {
             using (TransactionScope transaction =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -6466,7 +6477,7 @@ namespace TLIS_Service.Services
                     MWRFULibraryEntites.Active = MWRFULegLib.Active;
                     MWRFULibraryEntites.Deleted = MWRFULegLib.Deleted;
 
-                   var HistoryId= _unitOfWork.MW_RFULibraryRepository.UpdateWithH(userId,null, MWRFULegLib, MWRFULibraryEntites);
+                   var HistoryId= _unitOfWork.MW_RFULibraryRepository.UpdateWithH(userId,null, MWRFULegLib, MWRFULibraryEntites, ExternalSys);
                     _unitOfWork.SaveChanges();
 
                     List<int?> sortedIds = new List<int?>();
@@ -6612,7 +6623,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public async Task<Response<EditMWDishLibraryObject>> EditMWDishLibrary(int userId, EditMWDishLibraryObject editMWDishLibraryObject, string TableName,string connectionString)
+        public async Task<Response<EditMWDishLibraryObject>> EditMWDishLibrary(int userId, EditMWDishLibraryObject editMWDishLibraryObject, string TableName,string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -6648,7 +6659,7 @@ namespace TLIS_Service.Services
                     MWDishLibraryEntites.Active = MWDishLegLib.Active;
                     MWDishLibraryEntites.Deleted = MWDishLegLib.Deleted;
 
-                    var HistoryId=_unitOfWork.MW_DishLibraryRepository.UpdateWithH(userId,null, MWDishLegLib, MWDishLibraryEntites);
+                    var HistoryId=_unitOfWork.MW_DishLibraryRepository.UpdateWithH(userId,null, MWDishLegLib, MWDishLibraryEntites, ExternalSys);
                     _unitOfWork.SaveChanges();
 
                     List<int?> sortedIds = new List<int?>();
@@ -6790,7 +6801,7 @@ namespace TLIS_Service.Services
             }
 
         }
-        public async Task<Response<EditMWODULibraryObject>> EditMWODULibrary(int userId, EditMWODULibraryObject editMWODULibraryObject, string TableName,string connectionString)
+        public async Task<Response<EditMWODULibraryObject>> EditMWODULibrary(int userId, EditMWODULibraryObject editMWODULibraryObject, string TableName,string connectionString,bool ExternalSys)
         {
             using (TransactionScope transaction =
                 new TransactionScope(TransactionScopeOption.Required,
@@ -6830,7 +6841,7 @@ namespace TLIS_Service.Services
                     MWODULibraryEntites.Active = MWODULegLib.Active;
                     MWODULibraryEntites.Deleted = MWODULegLib.Deleted;
 
-                    var HistoryId= _unitOfWork.MW_ODULibraryRepository.UpdateWithH(userId,null, MWODULegLib, MWODULibraryEntites);
+                    var HistoryId= _unitOfWork.MW_ODULibraryRepository.UpdateWithH(userId,null, MWODULegLib, MWODULibraryEntites, ExternalSys);
                     _unitOfWork.SaveChanges();
 
                     List<int?> sortedIds = new List<int?>();
@@ -9046,7 +9057,7 @@ namespace TLIS_Service.Services
                         TLImwBULibrary NewMW_BULibrary = _unitOfWork.MW_BULibraryRepository.GetByID(Id);
                         NewMW_BULibrary.Active = !(NewMW_BULibrary.Active);
 
-                        _unitOfWork.MW_BULibraryRepository.UpdateWithH(UserId,null, OldMW_BULibrary, NewMW_BULibrary);
+                        _unitOfWork.MW_BULibraryRepository.UpdateWithH(UserId,null, OldMW_BULibrary, NewMW_BULibrary, false);
 
                         await _unitOfWork.SaveChangesAsync();
 
@@ -9063,7 +9074,7 @@ namespace TLIS_Service.Services
                         var NewMW_DishLibrary = _unitOfWork.MW_DishLibraryRepository.GetByID(Id);
                         NewMW_DishLibrary.Active = !(NewMW_DishLibrary.Active);
 
-                        _unitOfWork.MW_DishLibraryRepository.UpdateWithH(UserId, null, MW_DishLibrary, NewMW_DishLibrary);
+                        _unitOfWork.MW_DishLibraryRepository.UpdateWithH(UserId, null, MW_DishLibrary, NewMW_DishLibrary, false);
                         await _unitOfWork.SaveChangesAsync();
 
                     }
@@ -9078,7 +9089,7 @@ namespace TLIS_Service.Services
 
                         var NewMW_ODULibrary = _unitOfWork.MW_ODULibraryRepository.GetByID(Id);
                         NewMW_ODULibrary.Active = !(NewMW_ODULibrary.Active);
-                        _unitOfWork.MW_ODULibraryRepository.UpdateWithH(UserId, null, MW_ODULibrary, NewMW_ODULibrary);
+                        _unitOfWork.MW_ODULibraryRepository.UpdateWithH(UserId, null, MW_ODULibrary, NewMW_ODULibrary, false);
                         await _unitOfWork.SaveChangesAsync();
 
                     }
@@ -9092,7 +9103,7 @@ namespace TLIS_Service.Services
                         var MW_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         TLImwRFULibrary NewMw_RFULibrary = _unitOfWork.MW_RFULibraryRepository.GetByID(Id);
                         NewMw_RFULibrary.Active = !(NewMw_RFULibrary.Active);
-                        _unitOfWork.MW_RFULibraryRepository.UpdateWithH(UserId, null, MW_RFULibrary, NewMw_RFULibrary);
+                        _unitOfWork.MW_RFULibraryRepository.UpdateWithH(UserId, null, MW_RFULibrary, NewMw_RFULibrary, false);
                         await _unitOfWork.SaveChangesAsync();
 
                     }
@@ -9105,7 +9116,7 @@ namespace TLIS_Service.Services
                         var MW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         var NewMW_OtherLibrary = _unitOfWork.MW_OtherLibraryRepository.GetByID(Id);
                         NewMW_OtherLibrary.Active = !(NewMW_OtherLibrary.Active);
-                        _unitOfWork.MW_OtherLibraryRepository.UpdateWithH(UserId, null, MW_OtherLibrary, NewMW_OtherLibrary);
+                        _unitOfWork.MW_OtherLibraryRepository.UpdateWithH(UserId, null, MW_OtherLibrary, NewMW_OtherLibrary, false);
                         await _unitOfWork.SaveChangesAsync();
                     }
                     transaction.Complete();
@@ -9125,7 +9136,7 @@ namespace TLIS_Service.Services
         //specify the table i deal with
         //get activate attributes depened on TableName
         //get dynamic attributes depened on TableNameId
-        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName)
+        public Response<GetForAddCivilLibrarybject> GetForAdd(string TableName,int UserId,bool ExternalSys)
         {
             try
             {
@@ -9433,6 +9444,18 @@ namespace TLIS_Service.Services
                     attributes.DynamicAttributes = DynamicAttributesWithoutValue;
 
                 }
+                var TabelNameId = db.TLItablesNames.FirstOrDefault(x => x.TableName == TableName).Id;
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TabelNameId,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                    };
+                    db.TLIhistory.Add(tLIhistory);
+                    db.SaveChanges();
+                }
                 return new Response<GetForAddCivilLibrarybject>(true, attributes, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -9467,8 +9490,8 @@ namespace TLIS_Service.Services
                              NewMW_BULibrary.Deleted = true;
                             NewMW_BULibrary.Model = NewMW_BULibrary.Model + "_" + DateTime.Now.ToString();
 
-                            var HistoryId = _unitOfWork.MW_BULibraryRepository.UpdateWithH(UserId,null, OldMW_BULibrary, NewMW_BULibrary);
-                            DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId, HistoryId);
+                            var HistoryId = _unitOfWork.MW_BULibraryRepository.UpdateWithH(UserId,null, OldMW_BULibrary, NewMW_BULibrary, false);
+                        DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId, HistoryId);
                             await _unitOfWork.SaveChangesAsync();
                             //AddHistory(MW_BULibrary.Id, Helpers.Constants.HistoryType.Delete.ToString(), TablesNames.TLImwBULibrary.ToString());
                         
@@ -9485,7 +9508,7 @@ namespace TLIS_Service.Services
                         NewMW_DishLibrary.Deleted = true;
                         NewMW_DishLibrary.Model = NewMW_DishLibrary.Model + "_" + DateTime.Now.ToString();
 
-                        var HistoryId = _unitOfWork.MW_DishLibraryRepository.UpdateWithH(UserId, null, MW_DishLibrary, NewMW_DishLibrary);
+                        var HistoryId = _unitOfWork.MW_DishLibraryRepository.UpdateWithH(UserId, null, MW_DishLibrary, NewMW_DishLibrary, false);
                         DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId, HistoryId);
                         await _unitOfWork.SaveChangesAsync();
                     }
@@ -9500,7 +9523,7 @@ namespace TLIS_Service.Services
                         NewMW_ODULibrary.Deleted = true;
                         NewMW_ODULibrary.Model = NewMW_ODULibrary.Model + "_" + DateTime.Now.ToString();
 
-                        var HistoryId = _unitOfWork.MW_ODULibraryRepository.UpdateWithH(UserId,null, MW_ODULibrary, NewMW_ODULibrary);
+                        var HistoryId = _unitOfWork.MW_ODULibraryRepository.UpdateWithH(UserId,null, MW_ODULibrary, NewMW_ODULibrary, false);
                         DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId, HistoryId);
                         await _unitOfWork.SaveChangesAsync();
                     }
@@ -9516,7 +9539,7 @@ namespace TLIS_Service.Services
                         NewMW_RFULibrary.Deleted = true;
                         NewMW_RFULibrary.Model = NewMW_RFULibrary.Model + "_" + DateTime.Now.ToString();
 
-                        var HistoryId = _unitOfWork.MW_RFULibraryRepository.UpdateWithH(UserId,null, MW_RFULibrary, NewMW_RFULibrary);
+                        var HistoryId = _unitOfWork.MW_RFULibraryRepository.UpdateWithH(UserId,null, MW_RFULibrary, NewMW_RFULibrary, false);
                         DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId, HistoryId);
                         await _unitOfWork.SaveChangesAsync();
                     }
@@ -9532,7 +9555,7 @@ namespace TLIS_Service.Services
                         NewMW_OtherLibrary.Deleted = true;
                         NewMW_OtherLibrary.Model = NewMW_OtherLibrary.Model + "_" + DateTime.Now.ToString();
 
-                        var HistoryId = _unitOfWork.MW_OtherLibraryRepository.UpdateWithH(UserId,null, MW_OtherLibrary, NewMW_OtherLibrary);
+                        var HistoryId = _unitOfWork.MW_OtherLibraryRepository.UpdateWithH(UserId,null, MW_OtherLibrary, NewMW_OtherLibrary, false);
                         DisableDynamicAttLibValuesH(TableNameEntity.Id, Id, UserId, HistoryId);
                         await _unitOfWork.SaveChangesAsync();
                     }

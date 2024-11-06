@@ -18,8 +18,9 @@ namespace TLIS_Service.IService
     public interface IDynamicAttService
     {
         Response<DynamicAttributeValidations> GetDynamicAttributeValidation(int DynamicAttId);
-        Task<Response<AddDynamicObject>> EditDynamicAttribute(int DynamicAttributeId, AddDynamicObject DynamicAttViewModel, int UserId, string connectionString);
-        Response<AddDynamicObject> AddDynamic(AddDynamicObject addDynamicObject, string connectionString, string TabelName, int UserId, int? CategoryId);
+        Response<AddDynamicObject> GetDynamicLibraryById(int id, int UserId, bool ExternalSys);
+        Response<AddDynamicObject> AddDynamic(AddDynamicObject addDynamicObject, string connectionString, string TabelName, int UserId, int? CategoryId, bool ExternalSys);
+        Task<Response<AddDynamicObject>> EditDynamicAttribute(int DynamicAttributeId, AddDynamicObject DynamicAttViewModel, int UserId, string connectionString, bool ExternalSys);
         Response<GetForAddDynamicAttribute> GeStaticAttsAndDynamicAttsByTableName(string TabelName, bool IsLibrary, int? CategoryId);
         Response<IEnumerable<AttributeActivatedViewModel>> GetAttributes(string TableName);
         Response<AddDynamicLibAttValueViewModel> AddDynamicAttLibValue(AddDynamicLibAttValueViewModel addDynamicLibAttValueViewModel);
@@ -39,8 +40,8 @@ namespace TLIS_Service.IService
         Response<List<OutPutString>> GetLayers(string TableName);
         Response<FirstStepAddDependencyViewModel> GetForAddingDynamicAttribute(string TableName);
         Response<DynamicAttViewModel> CheckEditingDynamicAttDataType(int DynamicAttributeId, int NewDataTypeId);
-        Response<AddDynamicObject> GetDynamicLibraryById(int id);
         Response<getLayersAndAttributesStaticAndDynamic> getLayersAndAttributesStaticAndDynamic(string TabelName, int? CategoryId);
         Response<bool> MoveDynamicToAttributeViewManagment();
+       
     }
 }

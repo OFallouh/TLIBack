@@ -13,6 +13,7 @@ using TLIS_DAL.Helpers;
 using TLIS_DAL.ViewModels.DependencyDTOs;
 using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.OperationDTOs;
+using TLIS_Repository.Base;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
 using static TLIS_Service.Services.DynamicAttService;
@@ -27,10 +28,12 @@ namespace TLIS_API.Controllers.DynamicAtt
     {
         private readonly IUnitOfWorkService _unitOfWorkService;
         private readonly IConfiguration _configuration;
+   
         public DynamicAttController(IUnitOfWorkService unitOfWorkService, IConfiguration configuration)
         {
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
+        
         }
 
         [HttpPost("AddDynamicAtts")]
@@ -115,7 +118,7 @@ namespace TLIS_API.Controllers.DynamicAtt
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var responceResult = _unitOfWorkService.DynamicAttService.AddDynamic(addDependencyInstViewModel, ConnectionString, TabelName, userId, CategoryId);
+                var responceResult = _unitOfWorkService.DynamicAttService.AddDynamic(addDependencyInstViewModel, ConnectionString, TabelName, userId, CategoryId,false);
                 return Ok(responceResult);
             }
             else
@@ -151,7 +154,7 @@ namespace TLIS_API.Controllers.DynamicAtt
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var responceResult = await _unitOfWorkService.DynamicAttService.EditDynamicAttribute(DynamicAttributeId, addDynamicObject, userId, ConnectionString);
+                var responceResult = await _unitOfWorkService.DynamicAttService.EditDynamicAttribute(DynamicAttributeId, addDynamicObject, userId, ConnectionString,false);
                 return Ok(responceResult);
             }
             else
@@ -331,7 +334,26 @@ namespace TLIS_API.Controllers.DynamicAtt
         [ProducesResponseType(200, Type = typeof(FirstStepAddDependencyViewModel))]
         public IActionResult GetDynamicLibraryById(int DynamicAttributeId)
         {
-            var response = _unitOfWorkService.DynamicAttService.GetDynamicLibraryById(DynamicAttributeId);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.DynamicAttService.GetDynamicLibraryById(DynamicAttributeId, userId,false);
             return Ok(response);
         }
         [HttpGet("MoveDynamicToAttributeViewManagment")]

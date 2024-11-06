@@ -73,8 +73,8 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.MWInstService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, userId);
-                        return Ok(response);
+                        var response = _unitOfWorkService.MWInstService.GetAttForAddMWBUInstallation(Helpers.Constants.LoadSubType.TLImwBU.ToString(), LibId, SiteCode, userId, false);
+                    return Ok(response);
                     }  
                     else
                     {
@@ -118,8 +118,8 @@ namespace TLIS_API.Controllers
                         string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                         var userId = Convert.ToInt32(userInfo);
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                        var response = _unitOfWorkService.MWInstService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, userId);
-                        return Ok(response);
+                        var response = _unitOfWorkService.MWInstService.GetAttForAddMWODUInstallation(Helpers.Constants.LoadSubType.TLImwODU.ToString(), LibId, SiteCode, userId, false);
+                    return Ok(response);
                     }
                    
                     else
@@ -165,7 +165,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, userId);
+                    var response = _unitOfWorkService.MWInstService.GetAttForAddMWDishInstallation(Helpers.Constants.LoadSubType.TLImwDish.ToString(), LibId, SiteCode, userId, false);
                     return Ok(response);
                 }
                
@@ -210,7 +210,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, userId);
+                var response = _unitOfWorkService.MWInstService.GetAttForAddMWRFUInstallation(Helpers.Constants.LoadSubType.TLImwRFU.ToString(), LibId, SiteCode, userId, false);
                 return Ok(response);
             }
            
@@ -249,7 +249,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, userId);
+                var response = _unitOfWorkService.MWInstService.GetAttForAddMWOtherInstallation(Helpers.Constants.LoadSubType.TLImwOther.ToString(), LibId, SiteCode, userId, false);
                 return Ok(response);
             }
            
@@ -287,7 +287,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, ConnectionString, TaskId);
+                var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, ConnectionString, TaskId,false);
                 return Ok(response);
             }
             else
@@ -325,7 +325,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId,AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, ConnectionString, TaskId);
+                var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId,AddMW_ODUViewModel, Helpers.Constants.LoadSubType.TLImwODU.ToString(), SiteCode, ConnectionString, TaskId, false);
                 return Ok(response);
             }
             else
@@ -363,7 +363,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, ConnectionString, TaskId);
+                var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_DishViewModel, Helpers.Constants.LoadSubType.TLImwDish.ToString(), SiteCode, ConnectionString, TaskId, false);
                 return Ok(response);
             }
             else
@@ -400,7 +400,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.AddMWRFUInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, ConnectionString, TaskId, userId);
+                var response = _unitOfWorkService.MWInstService.AddMWRFUInstallation(AddMW_RFUViewModel, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), SiteCode, ConnectionString, TaskId, userId, false);
                 return Ok(response);
             }
             else
@@ -438,7 +438,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId,AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, ConnectionString, TaskId);
+                var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId,AddMw_OtherViewModel, Helpers.Constants.LoadSubType.TLImwOther.ToString(), SiteCode, ConnectionString, TaskId, false);
                 return Ok(response);
             }
             else
@@ -477,7 +477,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.MWInstService.EditMWBUInstallation(userId,MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, ConnectionString);
+                var response = await _unitOfWorkService.MWInstService.EditMWBUInstallation(userId,MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, ConnectionString, false);
                 return Ok(response);
             }
             else
@@ -515,7 +515,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.MWInstService.EditMWDishInstallation(userId,MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, ConnectionString);
+                var response = await _unitOfWorkService.MWInstService.EditMWDishInstallation(userId,MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, ConnectionString, false);
                 return Ok(response);
             }
             else
@@ -552,7 +552,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.MWInstService.EditMWODUInstallation(userId, MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, ConnectionString);
+                var response = await _unitOfWorkService.MWInstService.EditMWODUInstallation(userId, MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, ConnectionString, false);
                 return Ok(response);
             }
             else
@@ -589,7 +589,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response =await  _unitOfWorkService.MWInstService.EditMWRFUInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), ConnectionString, TaskId, userId);
+                var response =await  _unitOfWorkService.MWInstService.EditMWRFUInstallation(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), ConnectionString, TaskId, userId, false);
                 return Ok(response);
             }
             else
@@ -626,7 +626,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = await _unitOfWorkService.MWInstService.EditMWOtherInstallation(userId,Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, ConnectionString);
+                var response = await _unitOfWorkService.MWInstService.EditMWOtherInstallation(userId,Mw_Other, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, ConnectionString, false);
                 return Ok(response);
             }
             else
@@ -660,7 +660,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwBU.ToString(), TaskId, userId, ConnectionString,false);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -686,7 +686,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwODU.ToString(), TaskId, userId, ConnectionString, false);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -713,7 +713,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), TaskId, userId, ConnectionString, false);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -740,7 +740,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwDish.ToString(), TaskId, userId, ConnectionString, false);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -767,7 +767,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, userId, ConnectionString);
+            var response = _unitOfWorkService.MWInstService.DismantleLoads(sitecode, Id, Helpers.Constants.LoadSubType.TLImwOther.ToString(), TaskId, userId, ConnectionString, false);
             return Ok(response);
         }
        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -797,7 +797,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), userId);
+                var response = _unitOfWorkService.MWInstService.GetMWBUInstallationById(MW_BU, Helpers.Constants.LoadSubType.TLImwBU.ToString(), userId,false);
                 return Ok(response);
             }
           
@@ -835,7 +835,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), userId);
+                var response = _unitOfWorkService.MWInstService.GetMWODUInstallationById(MW_ODU, Helpers.Constants.LoadSubType.TLImwODU.ToString(), userId, false);
                 return Ok(response);
             }
            
@@ -872,7 +872,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), userId);
+                var response = _unitOfWorkService.MWInstService.GetMWDishInstallationById(MW_Dish, Helpers.Constants.LoadSubType.TLImwDish.ToString(), userId, false);
                 return Ok(response);
             }
             
@@ -909,7 +909,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), userId);
+                var response = _unitOfWorkService.MWInstService.GetMWRFUInstallationById(MW_RFU, Helpers.Constants.LoadSubType.TLImwRFU.ToString(), userId, false);
                 return Ok(response);
             }
            
@@ -946,7 +946,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), userId);
+                var response = _unitOfWorkService.MWInstService.GetMWOtherInstallationById(mwOther, Helpers.Constants.LoadSubType.TLImwOther.ToString(), userId, false);
                 return Ok(response);
             }
             

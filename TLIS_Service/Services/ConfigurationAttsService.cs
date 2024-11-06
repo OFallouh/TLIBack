@@ -13578,7 +13578,7 @@ namespace TLIS_Service.Services
 
                             NewEntity.OwnerName = NewName;
 
-                            _unitOfWork.OwnerRepository.UpdateWithH(UserId,null, OldEntity, NewEntity);
+                            _unitOfWork.OwnerRepository.UpdateWithH(UserId,null, OldEntity, NewEntity, false);
                             await _unitOfWork.SaveChangesAsync();
                         }
                         else
@@ -13727,7 +13727,7 @@ namespace TLIS_Service.Services
 
                              NewEntity.Disable = !( OldEntity.Disable);
 
-                            _unitOfWork.OwnerRepository.UpdateWithH(UserId,null, OldEntity, NewEntity);
+                            _unitOfWork.OwnerRepository.UpdateWithH(UserId,null, OldEntity, NewEntity,false);
                             await _unitOfWork.SaveChangesAsync();
                         }
                         else
@@ -13762,7 +13762,7 @@ namespace TLIS_Service.Services
 
                             NewEntity.Disable = !(OldEntity.Disable);
 
-                            _unitOfWork.RenewableCabinetTypeRepository.UpdateWithH(UserId,null, OldEntity, NewEntity);
+                            _unitOfWork.RenewableCabinetTypeRepository.UpdateWithH(UserId,null, OldEntity, NewEntity,false);
                             await _unitOfWork.SaveChangesAsync();
                         }
                         else
@@ -13797,7 +13797,7 @@ namespace TLIS_Service.Services
 
                             NewEntity.Disable = !(OldEntity.Disable);
 
-                            _unitOfWork.ParityRepository.UpdateWithH(UserId,null, OldEntity, NewEntity);
+                            _unitOfWork.ParityRepository.UpdateWithH(UserId,null, OldEntity, NewEntity,false);
                             await _unitOfWork.SaveChangesAsync();
                         }
                         else

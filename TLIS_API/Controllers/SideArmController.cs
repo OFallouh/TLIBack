@@ -71,7 +71,26 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(AllItemAttributes))]
         public IActionResult GetSideArm(int id)
         {
-            var response = _UnitOfWorkService.SideArmService.GetById(id);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _UnitOfWorkService.SideArmService.GetById(id, userId, false);
             return Ok(response);
         }
        
@@ -115,7 +134,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var Response = _UnitOfWorkService.SideArmService.AddSideArm(addSideArms, SiteCode, TaskId, userId, ConnectionString);
+            var Response = _UnitOfWorkService.SideArmService.AddSideArm(addSideArms, SiteCode, TaskId, userId, ConnectionString, false);
             return Ok(Response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -139,7 +158,26 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAdd(int LibId)
         {
-            var response = _UnitOfWorkService.SideArmService.GetAttForAdd(LibId);
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _UnitOfWorkService.SideArmService.GetAttForAdd(LibId, userId,false);
             return Ok(response);
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
@@ -165,7 +203,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _UnitOfWorkService.SideArmService.DismantleSideArm(SiteCode, sideArmId, TaskId, ConnectionString, userId);
+            var response = _UnitOfWorkService.SideArmService.DismantleSideArm(SiteCode, sideArmId, TaskId, ConnectionString, userId,false);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -258,7 +296,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             string ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = await _UnitOfWorkService.SideArmService.UpdateSideArm(SideArmViewModel, TaskId, userId, ConnectionString);
+            var response = await _UnitOfWorkService.SideArmService.UpdateSideArm(SideArmViewModel, TaskId, userId, ConnectionString, false);
             return Ok(response);
         }
 

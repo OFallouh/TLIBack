@@ -379,7 +379,7 @@ namespace TLIS_Service.Services
 
                 TLIuser User = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && !x.Deleted);
                 User.Active = !(User.Active);
-                _unitOfWork.UserRepository.UpdateWithH(userid,null, OldUser, User);
+                _unitOfWork.UserRepository.UpdateWithH(userid,null, OldUser, User,false);
                 await _unitOfWork.SaveChangesAsync();
                 return new Response<UserViewModel>();
             }
@@ -711,7 +711,7 @@ namespace TLIS_Service.Services
                             }
                             UserEntity.Active = OldUserInfo.Active;
                             UserEntity.Deleted = false;
-                            _unitOfWork.UserRepository.UpdateWithH(UserId, null, OldUserInfo, UserEntity);
+                            _unitOfWork.UserRepository.UpdateWithH(UserId, null, OldUserInfo, UserEntity,false);
                             await _unitOfWork.SaveChangesAsync();
 
                             List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
