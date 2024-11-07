@@ -11942,13 +11942,26 @@ namespace TLIS_Service.Services
                                 AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
                                 AddTablesHistory.RecordId = CivilId.ToString();
                                 AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithLegs").Id;
-                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.ExternalSysId = UserId;
                                 AddTablesHistory.SiteCode = SiteCode;
  
 
 
                                _dbContext.TLIhistory.Add(AddTablesHistory);
                 
+                            }
+                            if (ExternalSys == false)
+                            {
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = CivilId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithLegs").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+
                             }
                             var HistroryId = AddTablesHistory.Id;
 
@@ -11994,13 +12007,26 @@ namespace TLIS_Service.Services
                                 AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
                                 AddTablesHistory.RecordId = CivilId.ToString();
                                 AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithLegs").Id;
-                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.ExternalSysId = UserId;
                                 AddTablesHistory.SiteCode = SiteCode;
 
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
                             
+                            }
+                            if (ExternalSys == false)
+                            {
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = CivilId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithLegs").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+
                             }
                             var HistroryId = AddTablesHistory.Id;
 
@@ -12100,13 +12126,29 @@ namespace TLIS_Service.Services
                                 AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
                                 AddTablesHistory.RecordId = CivilId.ToString();
                                 AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithoutLeg").Id;
-                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.ExternalSysId = UserId;
                                 AddTablesHistory.SiteCode = SiteCode;
 
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
              
+                            }
+
+
+                            if (ExternalSys == false)
+                            {
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = CivilId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithoutLeg").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+
                             }
                             var HistroryId = AddTablesHistory.Id;
 
@@ -12153,13 +12195,27 @@ namespace TLIS_Service.Services
                                 AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
                                 AddTablesHistory.RecordId = CivilId.ToString();
                                 AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithoutLeg").Id;
-                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.ExternalSysId = UserId;
                                 AddTablesHistory.SiteCode = SiteCode;
 
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
                          
+                            }
+                            if (ExternalSys == false)
+                            {
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = CivilId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilWithoutLeg").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+
                             }
                             var HistroryId = AddTablesHistory.Id;
 
@@ -12258,13 +12314,27 @@ namespace TLIS_Service.Services
                                 AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
                                 AddTablesHistory.RecordId = CivilId.ToString();
                                 AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilNonSteel").Id;
-                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.ExternalSysId = UserId;
                                 AddTablesHistory.SiteCode = SiteCode;
 
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
                        
+                            }
+                            if (ExternalSys == false)
+                            {
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = CivilId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilNonSteel").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+
                             }
                             var HistroryId = AddTablesHistory.Id;
                        
@@ -12309,13 +12379,27 @@ namespace TLIS_Service.Services
                                 AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
                                 AddTablesHistory.RecordId = CivilId.ToString();
                                 AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilNonSteel").Id;
-                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.ExternalSysId = UserId;
                                 AddTablesHistory.SiteCode = SiteCode;
 
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
                     
+                            }
+                            if (ExternalSys == false)
+                            {
+
+                                AddTablesHistory.HistoryTypeId = _unitOfWork.HistoryTypeRepository.GetWhereFirst(x => x.Name == "Delete").Id;
+                                AddTablesHistory.RecordId = CivilId.ToString();
+                                AddTablesHistory.TablesNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilNonSteel").Id;
+                                AddTablesHistory.UserId = UserId;
+                                AddTablesHistory.SiteCode = SiteCode;
+
+
+
+                                _dbContext.TLIhistory.Add(AddTablesHistory);
+
                             }
                             var HistroryId = AddTablesHistory.Id;
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;

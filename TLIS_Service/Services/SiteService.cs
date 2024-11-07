@@ -744,7 +744,46 @@ namespace TLIS_Service.Services
                 }
                 foreach (var itemSitesViewModels in SitesViewModels)
                 {
-                    itemSitesViewModels.isUsed = AllUsedSites.Any(x => x.ToLower() == itemSitesViewModels.SiteCode.ToLower());
+                    string? LocationTypeInModel = _MySites.FirstOrDefault(x => x.SiteCode.ToLower() == itemSitesViewModels.SiteCode.ToLower())
+                        .LocationType;
+
+                    if (!string.IsNullOrEmpty(LocationTypeInModel))
+                    {
+                        TLIlocationType? CheckLocation = Locations.FirstOrDefault(x => x.Id.ToString() == LocationTypeInModel);
+
+
+                        itemSitesViewModels.SiteCode = itemSitesViewModels.SiteCode;
+                        itemSitesViewModels.LocationType = CheckLocation != null ? CheckLocation.Name : null;
+                        itemSitesViewModels.SiteName = itemSitesViewModels.SiteName;
+                        itemSitesViewModels.Area = itemSitesViewModels.Area;
+                        itemSitesViewModels.CityName = itemSitesViewModels.CityName;
+                        itemSitesViewModels.Latitude = itemSitesViewModels.Latitude;
+                        itemSitesViewModels.LocationHieght = itemSitesViewModels.LocationHieght;
+                        itemSitesViewModels.Longitude = itemSitesViewModels.Longitude;
+                        itemSitesViewModels.Region = itemSitesViewModels.Region;
+                        itemSitesViewModels.RentedSpace = itemSitesViewModels.RentedSpace;
+                        itemSitesViewModels.ReservedSpace = itemSitesViewModels.ReservedSpace;
+                        itemSitesViewModels.Status = itemSitesViewModels.Status;
+                        itemSitesViewModels.SiteVisiteDate = itemSitesViewModels.SiteVisiteDate;
+                        itemSitesViewModels.isUsed = AllUsedSites.Any(x => x.ToLower() == itemSitesViewModels.SiteCode.ToLower());
+                    }
+                    else
+                    {
+                        itemSitesViewModels.SiteCode = itemSitesViewModels.SiteCode;
+                        itemSitesViewModels.LocationType = null;
+                        itemSitesViewModels.SiteName = itemSitesViewModels.SiteName;
+                        itemSitesViewModels.Area = itemSitesViewModels.Area;
+                        itemSitesViewModels.CityName = itemSitesViewModels.CityName;
+                        itemSitesViewModels.Latitude = itemSitesViewModels.Latitude;
+                        itemSitesViewModels.LocationHieght = itemSitesViewModels.LocationHieght;
+                        itemSitesViewModels.Longitude = itemSitesViewModels.Longitude;
+                        itemSitesViewModels.Region = itemSitesViewModels.Region;
+                        itemSitesViewModels.RentedSpace = itemSitesViewModels.RentedSpace;
+                        itemSitesViewModels.ReservedSpace = itemSitesViewModels.ReservedSpace;
+                        itemSitesViewModels.Status = itemSitesViewModels.Status;
+                        itemSitesViewModels.SiteVisiteDate = itemSitesViewModels.SiteVisiteDate;
+                        itemSitesViewModels.isUsed = AllUsedSites.Any(x => x.ToLower() == itemSitesViewModels.SiteCode.ToLower());
+                    }
                 }
 
                 if (filterRequest != null && filterRequest.Filters != null && filterRequest.Filters.Count > 0)
@@ -945,11 +984,7 @@ namespace TLIS_Service.Services
                         }
                     }
                 }
-                else
-                {
-                    SitesViewModels = SitesViewModels.Take(filterRequest?.Rows ?? 10);
-                }
-
+                
 
                 int count = SitesViewModels.Count();
                 int skipCount = filterRequest?.First ?? 0;
