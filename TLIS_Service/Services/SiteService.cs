@@ -742,103 +742,215 @@ namespace TLIS_Service.Services
                     _MySites.Count();
                     SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(_MySites);
                 }
+                foreach (var itemSitesViewModels in SitesViewModels)
+                {
+                    itemSitesViewModels.isUsed = AllUsedSites.Any(x => x.ToLower() == itemSitesViewModels.SiteCode.ToLower());
+                }
 
-                // التحقق من الفلاتر
-                // التحقق من الفلاتر
                 if (filterRequest != null && filterRequest.Filters != null && filterRequest.Filters.Count > 0)
                 {
                     foreach (var filter in filterRequest.Filters)
                     {
-                        // التحقق من أن قيمة الفلتر ليست null أو فارغة
-                        if (filter.Value?.Value != null && !string.IsNullOrEmpty(filter.Value.Value.ToString()))
+                        string field = filter.Key;
+
+                        // Serialize filter.Value (Filter object) to JSON string
+                        string filterJsonString = JsonSerializer.Serialize(filter.Value);
+
+                        // Parse the JSON string to JsonElement
+                        JsonElement filterValue = JsonSerializer.Deserialize<JsonElement>(filterJsonString);
+
+                        // Check if Value is null or empty and skip if it is
+                        if (filterValue.TryGetProperty("Value", out JsonElement valueElement))
                         {
-                            PropertyInfo property = typeof(SiteViewModelForGetAll).GetProperty(filter.Key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                            // تحقق من إذا كانت القيمة Null أو فارغة بناءً على نوع القيمة
+                            if (valueElement.ValueKind == JsonValueKind.Null ||
+                                (valueElement.ValueKind == JsonValueKind.String && string.IsNullOrEmpty(valueElement.GetString())))
+                            {
+                                continue; // تخطي الفلتر إذا كانت القيمة Null أو فارغة
+                            }
+                        }
+
+
+                        if (filterValue.TryGetProperty("MatchMode", out JsonElement matchModeElement))
+                        {
+                            string matchMode = matchModeElement.GetString();
+                            JsonElement value = filterValue.GetProperty("Value");
+
+                            PropertyInfo property = typeof(SiteViewModelForGetAll).GetProperty(field, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
                             if (property != null)
                             {
-                                var filterValue = filter.Value.Value.ToLower();
-                                var matchMode = filter.Value.MatchMode;
+                                // تحديد النوع الصحيح بناءً على قيمة filter
+                                var propertyValue = property.GetValue(SitesViewModels.FirstOrDefault());
+                                bool? boolValue = null;
+                                string stringValue = null;
+                                decimal? decimalValue = null;
+                                DateTime? dateTimeValue = null;
 
-                                switch (matchMode)
+                                if (value.ValueKind == JsonValueKind.String)
                                 {
-                                    case FilterMatchMode.STARTS_WITH:
-                                        SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().StartsWith(filterValue) ?? false);
-                                        break;
-                                    case FilterMatchMode.CONTAINS:
-                                        SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().Contains(filterValue) ?? false);
-                                        break;
-                                    case FilterMatchMode.NOT_CONTAINS:
-                                        SitesViewModels = SitesViewModels.Where(x => !property.GetValue(x)?.ToString().ToLower().Contains(filterValue) ?? true);
-                                        break;
-                                    case FilterMatchMode.ENDS_WITH:
-                                        SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().EndsWith(filterValue) ?? false);
-                                        break;
-                                    case FilterMatchMode.EQUALS:
-                                        SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower() == filterValue);
-                                        break;
-                                    case FilterMatchMode.NOT_EQUALS:
-                                        SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower() != filterValue);
-                                        break;
-                                    case FilterMatchMode.LESS_THAN:
-                                        if (decimal.TryParse(filterValue, out var lessThanValue))
+                                    stringValue = value.GetString();
+                                }
+                                else if (value.ValueKind == JsonValueKind.True || value.ValueKind == JsonValueKind.False)
+                                {
+                                    boolValue = value.GetBoolean();
+                                }
+                                else if (value.ValueKind == JsonValueKind.Number)
+                                {
+                                    decimalValue = value.GetDecimal();
+                                }
+                                else if (value.ValueKind == JsonValueKind.String && DateTime.TryParse(value.GetString(), out DateTime tempDate))
+                                {
+                                    dateTimeValue = tempDate;
+                                }
+
+                                string filterValueLower = stringValue?.ToLower();
+                                switch (matchMode.ToLower())
+                                {
+                                    case "equals":
+                                        if (stringValue != null)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out var propValue) && propValue < lessThanValue);
+                                            SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower() == filterValueLower);
+                                        }
+                                        else if (boolValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => (bool?)property.GetValue(x) == boolValue.Value);
+                                        }
+                                        else if (decimalValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue == decimalValue.Value);
+                                        }
+                                        else if (dateTimeValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date == dateTimeValue.Value.Date);
                                         }
                                         break;
-                                    case FilterMatchMode.LESS_THAN_OR_EQUAL_TO:
-                                        if (decimal.TryParse(filterValue, out var lessOrEqualValue))
+
+                                    case "notequals":
+                                        if (stringValue != null)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out var propValue) && propValue <= lessOrEqualValue);
+                                            SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower() != filterValueLower);
+                                        }
+                                        else if (boolValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => (bool?)property.GetValue(x) != boolValue.Value);
+                                        }
+                                        else if (decimalValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue != decimalValue.Value);
+                                        }
+                                        else if (dateTimeValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date != dateTimeValue.Value.Date);
                                         }
                                         break;
-                                    case FilterMatchMode.GREATER_THAN:
-                                        if (decimal.TryParse(filterValue, out var greaterThanValue))
+
+                                    case "startswith":
+                                        if (stringValue != null)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out var propValue) && propValue > greaterThanValue);
+                                            SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().StartsWith(filterValueLower ?? "") ?? false);
+                                        }
+                                        else if (boolValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => (bool?)property.GetValue(x) == boolValue.Value);
                                         }
                                         break;
-                                    case FilterMatchMode.GREATER_THAN_OR_EQUAL_TO:
-                                        if (decimal.TryParse(filterValue, out var greaterOrEqualValue))
+
+                                    case "contains":
+                                        if (stringValue != null)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out var propValue) && propValue >= greaterOrEqualValue);
+                                            SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().Contains(filterValueLower ?? "") ?? false);
+                                        }
+                                        else if (boolValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => (bool?)property.GetValue(x) == boolValue.Value);
                                         }
                                         break;
-                                    case FilterMatchMode.DATE_IS:
-                                        if (DateTime.TryParse(filterValue, out var dateIsValue))
+
+                                    case "notcontains":
+                                        if (stringValue != null)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out var propDate) && propDate.Date == dateIsValue.Date);
+                                            SitesViewModels = SitesViewModels.Where(x => !(property.GetValue(x)?.ToString().ToLower().Contains(filterValueLower ?? "") ?? true));
+                                        }
+                                        else if (boolValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => (bool?)property.GetValue(x) != boolValue.Value);
                                         }
                                         break;
-                                    case FilterMatchMode.DATE_IS_NOT:
-                                        if (DateTime.TryParse(filterValue, out var dateIsNotValue))
+
+                                    case "lessThan":
+                                        if (decimalValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out var propDate) && propDate.Date != dateIsNotValue.Date);
+                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue < decimalValue.Value);
                                         }
                                         break;
-                                    case FilterMatchMode.DATE_BEFORE:
-                                        if (DateTime.TryParse(filterValue, out var dateBeforeValue))
+
+                                    case "lessThanOrEqualTo":
+                                        if (decimalValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out var propDate) && propDate.Date < dateBeforeValue.Date);
+                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue <= decimalValue.Value);
                                         }
                                         break;
-                                    case FilterMatchMode.DATE_AFTER:
-                                        if (DateTime.TryParse(filterValue, out var dateAfterValue))
+
+                                    case "greaterThan":
+                                        if (decimalValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out var propDate) && propDate.Date > dateAfterValue.Date);
+                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue > decimalValue.Value);
                                         }
                                         break;
+
+                                    case "greaterThanOrEqualTo":
+                                        if (decimalValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue >= decimalValue.Value);
+                                        }
+                                        break;
+
+                                    case "dateIs":
+                                        if (dateTimeValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date == dateTimeValue.Value.Date);
+                                        }
+                                        break;
+
+                                    case "dateIsNot":
+                                        if (dateTimeValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date != dateTimeValue.Value.Date);
+                                        }
+                                        break;
+
+                                    case "dateBefore":
+                                        if (dateTimeValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date < dateTimeValue.Value.Date);
+                                        }
+                                        break;
+
+                                    case "dateAfter":
+                                        if (dateTimeValue.HasValue)
+                                        {
+                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date > dateTimeValue.Value.Date);
+                                        }
+                                        break;
+
                                     default:
                                         throw new InvalidOperationException($"Filter match mode '{matchMode}' is not supported.");
                                 }
+
+
+
+
                             }
                         }
                     }
                 }
                 else
                 {
-                    // في حالة عدم وجود فلاتر، نعيد فقط عدد محدود من النتائج لتجنب إرجاع كل البيانات
-                    SitesViewModels = SitesViewModels.Take(filterRequest?.Rows ?? 10); // قم بتحديد العدد المناسب بدلًا من 10
+                    SitesViewModels = SitesViewModels.Take(filterRequest?.Rows ?? 10);
                 }
+
+
                 int count = SitesViewModels.Count();
                 int skipCount = filterRequest?.First ?? 0;
                 int takeCount = filterRequest?.Rows ?? int.MaxValue;
@@ -8477,7 +8589,7 @@ namespace TLIS_Service.Services
 
         public class Filter
         {
-            public string Value { get; set; }
+            public dynamic Value { get; set; }
             public string MatchMode { get; set; } 
         }
 

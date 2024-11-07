@@ -94,6 +94,11 @@ namespace TLIS_Service.Services
                     {
                         TableNameAtts.Remove(e);
                     }
+
+                    if (TableName == "TLIcivilWithLegLibrary" && e.ToLower() == "NumberOfLegs".ToLower())
+                    {
+                        TableNameAtts.Remove(e);
+                    }
                 }
                 TableNameAtts.Remove("Id");
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
