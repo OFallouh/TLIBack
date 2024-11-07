@@ -14304,6 +14304,7 @@ namespace TLIS_Service.Services
             {
                 List<TLIattachedFiles> AttachedFiles = _unitOfWork.AttachedFilesRepository.GetWhereAndInclude(x => x.SiteCode == SiteCode, y => y.tablesName).ToList();
 
+
                 int Count = AttachedFiles.Count();
 
              

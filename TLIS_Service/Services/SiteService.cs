@@ -711,17 +711,17 @@ namespace TLIS_Service.Services
                 List<TLIlocationType> Locations = _context.TLIlocationType.AsNoTracking().ToList();
 
                 List<string> UsedSitesInLoads = _context.TLIcivilLoads.AsNoTracking()
-                    .Where(x => !string.IsNullOrEmpty(x.SiteCode))
+                    .Where(x => !string.IsNullOrEmpty(x.SiteCode) && !x.Dismantle)
                     .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
 
                 List<string> UsedSitesInCivils = _context.TLIcivilSiteDate.AsNoTracking()
-                    .Where(x => !string.IsNullOrEmpty(x.SiteCode))
+                    .Where(x => !string.IsNullOrEmpty(x.SiteCode) && !x.Dismantle)
                     .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
 
                 UsedSitesInCivils.AddRange(UsedSitesInLoads);
 
                 List<string> UsedSitesInOtherInventories = _context.TLIotherInSite.AsNoTracking()
-                    .Where(x => !string.IsNullOrEmpty(x.SiteCode))
+                    .Where(x => !string.IsNullOrEmpty(x.SiteCode) && !x.Dismantle)
                     .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
 
                 UsedSitesInOtherInventories.AddRange(UsedSitesInCivils);

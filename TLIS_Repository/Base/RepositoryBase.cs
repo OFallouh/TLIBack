@@ -1260,8 +1260,6 @@ namespace TLIS_Repository.Base
                     _context.TLIhistory.Add(AddTablesHistory);
                     _context.SaveChanges();
                 }
-                _context.TLIhistory.Add(AddTablesHistory);
-                _context.SaveChanges();
                  HistoryId = AddTablesHistory.Id;
                 List<PropertyInfo> Attributes = OldObject.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType ?
                     (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ?

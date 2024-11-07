@@ -11948,7 +11948,7 @@ namespace TLIS_Service.Services
 
 
                                _dbContext.TLIhistory.Add(AddTablesHistory);
-                                _dbContext.SaveChanges();
+                
                             }
                             var HistroryId = AddTablesHistory.Id;
 
@@ -11971,13 +11971,16 @@ namespace TLIS_Service.Services
 
                             }
 
+                            var AttachFileRelated = _dbContext.TLIattachedFiles.Include(x => x.tablesName
+                            ).Where(x => x.tablesName.TableName == "TLIcivilWithLegs" && x.RecordId == CivilId);
+                            _dbContext.RemoveRange(AttachFileRelated);
                             var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
                             if (Site != null)
                             {
                          
                                 Site.ReservedSpace -= (float)Freespace;
                                 _unitOfWork.SiteRepository.Update( Site);
-                                _dbContext.SaveChanges();
+                      
                             }
                         }
                         var civilSiteDate1 = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
@@ -11997,7 +12000,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-                                _dbContext.SaveChanges();
+                            
                             }
                             var HistroryId = AddTablesHistory.Id;
 
@@ -12020,13 +12023,16 @@ namespace TLIS_Service.Services
                       
                             }
 
+                            var AttachFileRelated = _dbContext.TLIattachedFiles.Include(x => x.tablesName
+                            ).Where(x => x.tablesName.TableName == "TLIcivilWithLegs" && x.RecordId == CivilId);
+                            _dbContext.RemoveRange(AttachFileRelated);
                             var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
                             if (Site != null)
                             {
                              
                                 Site.ReservedSpace -= (float)Freespace;
                                 _unitOfWork.SiteRepository.Update( Site);
-                                _dbContext.SaveChanges();
+                          ;
                             }
                         }
                         if (TaskId != null)
@@ -12100,7 +12106,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-                                _dbContext.SaveChanges();
+             
                             }
                             var HistroryId = AddTablesHistory.Id;
 
@@ -12123,13 +12129,16 @@ namespace TLIS_Service.Services
                    
                             }
 
+                            var AttachFileRelated = _dbContext.TLIattachedFiles.Include(x => x.tablesName
+                            ).Where(x => x.tablesName.TableName == "TLIcivilWithoutLeg" && x.RecordId == CivilId);
+                            _dbContext.RemoveRange(AttachFileRelated);
                             var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
                             if (Site != null)
                             {
                     
                                 Site.ReservedSpace -= (float)Freespace;
                                 _unitOfWork.SiteRepository.Update( Site);
-                                _dbContext.SaveChanges();
+                        
                             }
                         }
                         var civilSiteDate1 = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
@@ -12150,7 +12159,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-                                _dbContext.SaveChanges();
+                         
                             }
                             var HistroryId = AddTablesHistory.Id;
 
@@ -12171,7 +12180,10 @@ namespace TLIS_Service.Services
                                 _unitOfWork.CivilLoadsRepository.Update(tLIcivilLoads);
                           
                             }
-
+                            
+                            var AttachFileRelated = _dbContext.TLIattachedFiles.Include(x => x.tablesName
+                            ).Where(x => x.tablesName.TableName == "TLIcivilWithoutLeg" && x.RecordId == CivilId);
+                            _dbContext.RemoveRange(AttachFileRelated);
                             var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
                             if (Site != null)
                             {
@@ -12252,7 +12264,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-                                _dbContext.SaveChanges();
+                       
                             }
                             var HistroryId = AddTablesHistory.Id;
                        
@@ -12273,13 +12285,15 @@ namespace TLIS_Service.Services
                                 _unitOfWork.CivilLoadsRepository.Update(tLIcivilLoads);
                              
                             }
-
+                            var AttachFileRelated = _dbContext.TLIattachedFiles.Include(x => x.tablesName
+                             ).Where(x => x.tablesName.TableName == "TLIcivilNonSteel" && x.RecordId == CivilId);
+                            _dbContext.RemoveRange(AttachFileRelated);
                             var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
                             if (Site != null)
                             {
                                 Site.ReservedSpace -= (float)Freespace;
                                 _unitOfWork.SiteRepository.Update( Site);
-                                _dbContext.SaveChanges();
+                     
                             }
                         }
                         var civilSiteDate1 = _dbContext.TLIcivilSiteDate.FirstOrDefault(x => x.allCivilInstId == allcivil.Id && x.SiteCode == SiteCode && x.ReservedSpace == false && x.Dismantle == false);
@@ -12301,7 +12315,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-                                _dbContext.SaveChanges();
+                    
                             }
                             var HistroryId = AddTablesHistory.Id;
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
@@ -12322,18 +12336,20 @@ namespace TLIS_Service.Services
                                 _unitOfWork.CivilLoadsRepository.Update(tLIcivilLoads);
                           
                             }
-
+                            
+                            var AttachFileRelated = _dbContext.TLIattachedFiles.Include(x => x.tablesName
+                            ).Where(x => x.tablesName.TableName == "TLIcivilNonSteel" && x.RecordId == CivilId);
+                            _dbContext.RemoveRange(AttachFileRelated);
                             var Site = _dbContext.TLIsite.FirstOrDefault(x => x.SiteCode == SiteCode);
                             if (Site != null)
                             {
                          
                                 Site.ReservedSpace -= (float)Freespace;
                                 _unitOfWork.SiteRepository.Update( Site);
-                                _dbContext.SaveChanges();
+                        
                             }
                         }
 
-                        
                         if (TaskId != null)
                         {
                             var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
