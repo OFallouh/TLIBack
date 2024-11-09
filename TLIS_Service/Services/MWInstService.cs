@@ -8046,7 +8046,7 @@ namespace TLIS_Service.Services
                                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] ||
                                                                x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
-                                                               x.LEG_ID == AddMW_Dish.installationConfig.legId &&
+                                                               x.LEG_ID == AddMW_Dish.installationConfig.legId &&!x.Dismantle&&
                                                                 x.SiteCode.ToLower() == SiteCode.ToLower())
                                                                    .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
@@ -8274,8 +8274,8 @@ namespace TLIS_Service.Services
                                                             List<MV_MWDISH_VIEW> Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                                x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                               (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] ||
-                                                              x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
-
+                                                              x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) 
+                                                              && !x.Dismantle &&
                                                                x.SiteCode.ToLower() == SiteCode.ToLower())
                                                                  .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
@@ -8520,7 +8520,7 @@ namespace TLIS_Service.Services
                                                               x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                              (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] ||
                                                              x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
-                                                             x.LEG_ID == AddMW_Dish.installationConfig.legId &&
+                                                             x.LEG_ID == AddMW_Dish.installationConfig.legId && !x.Dismantle &&
                                                               x.SiteCode.ToLower() == SiteCode.ToLower())
                                                                  .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
@@ -8747,7 +8747,7 @@ namespace TLIS_Service.Services
                                                                  x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                 (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] ||
                                                                 x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
-                                                                x.LEG_ID == AddMW_Dish.installationConfig.legId &&
+                                                                x.LEG_ID == AddMW_Dish.installationConfig.legId &&!x.Dismantle &&
                                                                  x.SiteCode.ToLower() == SiteCode.ToLower())
                                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
@@ -9000,7 +9000,7 @@ namespace TLIS_Service.Services
                                                                      x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id &&
                                                                     (x.SIDEARM_ID == AddMW_Dish.installationConfig.sideArmId[0] ||
                                                                     x.SideArmSec_Id == AddMW_Dish.installationConfig.sideArmId[0]) &&
-                                                                    x.LEG_ID == AddMW_Dish.installationConfig.legId &&
+                                                                    x.LEG_ID == AddMW_Dish.installationConfig.legId && !x.Dismantle &&
                                                                      x.SiteCode.ToLower() == SiteCode.ToLower())
                                                                         .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
@@ -10310,7 +10310,7 @@ namespace TLIS_Service.Services
 
                                             var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id
-                                              && x.SIDEARM_ID == null && x.SideArmSec_Id == null &&
+                                              && x.SIDEARM_ID == null && x.SideArmSec_Id == null &&!x.Dismantle&&
                                                 x.LEG_ID == MWDishInst.legId && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
@@ -10528,7 +10528,7 @@ namespace TLIS_Service.Services
                                             var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id &&
                                                 x.LEG_ID == MWDishInst.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle )
                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -10731,7 +10731,7 @@ namespace TLIS_Service.Services
                                             var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id &&
                                                 x.LEG_ID == MWDishInst.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle )
                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -10945,7 +10945,7 @@ namespace TLIS_Service.Services
                                             var Checkinstallationplace = _dbContext.MV_MWDISH_VIEW.Where(
                                                 x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id && x.Id != mwDish.Id &&
                                                 x.LEG_ID == MWDishInst.legId && x.SIDEARM_ID == null && x.SideArmSec_Id == null
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                   .GroupBy(x => new { x.ALLCIVILINST_ID, x.LEG_ID, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -11226,7 +11226,7 @@ namespace TLIS_Service.Services
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                                     && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -11263,7 +11263,7 @@ namespace TLIS_Service.Services
                                                 x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
                                                 || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                 && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -11480,7 +11480,7 @@ namespace TLIS_Service.Services
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                                     && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -11517,7 +11517,7 @@ namespace TLIS_Service.Services
                                                 x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
                                                 || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                 && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -11723,7 +11723,7 @@ namespace TLIS_Service.Services
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                                     && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -11760,7 +11760,7 @@ namespace TLIS_Service.Services
                                                 x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
                                                 || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                 && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -11980,7 +11980,7 @@ namespace TLIS_Service.Services
                                                     x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                                     && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                                     || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                    && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower()&& !x.Dismantle)
                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -12017,7 +12017,7 @@ namespace TLIS_Service.Services
                                                 x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
                                                 || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                 && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                           .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -12265,7 +12265,7 @@ namespace TLIS_Service.Services
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                             && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                             || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -12302,7 +12302,7 @@ namespace TLIS_Service.Services
                                                 x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
                                                 || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                 && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -12519,7 +12519,7 @@ namespace TLIS_Service.Services
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                             && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                             || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -12556,7 +12556,7 @@ namespace TLIS_Service.Services
                                                 x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
                                                 || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                 && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -12768,7 +12768,7 @@ namespace TLIS_Service.Services
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                             && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                             || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -12805,7 +12805,7 @@ namespace TLIS_Service.Services
                                                 x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
                                                 || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                 && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -13024,7 +13024,7 @@ namespace TLIS_Service.Services
                                             x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                             && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                             || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                     .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -13061,7 +13061,7 @@ namespace TLIS_Service.Services
                                                 x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
                                                 || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                                 && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                                && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                                .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -13302,7 +13302,7 @@ namespace TLIS_Service.Services
                                         x => x.ALLCIVILINST_ID == AllcivilinstId.allCivilInst.Id
                                         && x.Id != mwDish.Id && (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[0]
                                         || x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                        && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                        && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
@@ -13339,7 +13339,7 @@ namespace TLIS_Service.Services
                                             x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[1])
                                             || (x.SIDEARM_ID == MWInstallationViewModel.installationConfig.sideArmId[1]
                                             && x.SideArmSec_Id == MWInstallationViewModel.installationConfig.sideArmId[0])
-                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower())
+                                            && x.SiteCode.ToLower() == AllcivilinstId.SiteCode.ToLower() && !x.Dismantle)
                                            .GroupBy(x => new { x.ALLCIVILINST_ID, x.SIDEARM_ID, x.SideArmSec_Id, x.SiteCode, x.Id })
                                                               .Select(g => g.First())
                                                                 .ToList();
