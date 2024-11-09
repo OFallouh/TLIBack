@@ -11948,7 +11948,7 @@ namespace TLIS_Service.Services
 
 
                                _dbContext.TLIhistory.Add(AddTablesHistory);
-                
+                                _dbContext.SaveChanges();
                             }
                             if (ExternalSys == false)
                             {
@@ -11961,7 +11961,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                                _dbContext.SaveChanges();
                             }
                             var HistroryId = AddTablesHistory.Id;
 
@@ -12013,7 +12013,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-                            
+                                _dbContext.SaveChanges();
                             }
                             if (ExternalSys == false)
                             {
@@ -12026,7 +12026,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                                _dbContext.SaveChanges();
                             }
                             var HistroryId = AddTablesHistory.Id;
 
@@ -12132,7 +12132,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-             
+                                _dbContext.SaveChanges();
                             }
 
 
@@ -12148,7 +12148,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                                _dbContext.SaveChanges();
                             }
                             var HistroryId = AddTablesHistory.Id;
 
@@ -12201,7 +12201,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-                         
+                                _dbContext.SaveChanges();
                             }
                             if (ExternalSys == false)
                             {
@@ -12215,7 +12215,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                                _dbContext.SaveChanges();
                             }
                             var HistroryId = AddTablesHistory.Id;
 
@@ -12320,7 +12320,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-                       
+                                _dbContext.SaveChanges();
                             }
                             if (ExternalSys == false)
                             {
@@ -12334,7 +12334,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                                _dbContext.SaveChanges();
                             }
                             var HistroryId = AddTablesHistory.Id;
                        
@@ -12385,7 +12385,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-                    
+                                _dbContext.SaveChanges();
                             }
                             if (ExternalSys == false)
                             {
@@ -12399,7 +12399,7 @@ namespace TLIS_Service.Services
 
 
                                 _dbContext.TLIhistory.Add(AddTablesHistory);
-
+                                _dbContext.SaveChanges();
                             }
                             var HistroryId = AddTablesHistory.Id;
                             var TabelTLIcivilSiteDate = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIcivilSiteDate").Id;
