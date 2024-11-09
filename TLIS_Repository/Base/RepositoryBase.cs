@@ -1344,8 +1344,7 @@ namespace TLIS_Repository.Base
 
                     _context.TLIhistory.Add(AddTablesHistory);
                     _context.SaveChanges();
-                    _context.TLIhistory.Add(AddTablesHistory);
-                    _context.SaveChanges();
+                   
                 }
               
                 HistoryId = AddTablesHistory.Id;

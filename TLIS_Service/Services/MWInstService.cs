@@ -4760,11 +4760,11 @@ namespace TLIS_Service.Services
                                                    x => x.allLoadInst.mwDish.MwDishLibrary.polarityType, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs);
                                                     if (tLImwDish == null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
-                                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
-                                                    || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => (x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
+                                                    || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                     x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                                     if (MWBUDish.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connected via MWBU, so it cannot be connected with MWODU. ", (int)ApiReturnCode.fail);
 
                                                 }
                                                 List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
@@ -4776,7 +4776,7 @@ namespace TLIS_Service.Services
                                                 if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                                 else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
 
                                                 if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                 {
@@ -4873,11 +4873,11 @@ namespace TLIS_Service.Services
                                                 if (tLImwDish == null)
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
 
-                                                var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
-                                                  || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => (x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                   x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                                 if (MWBUDish.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connected via MWBU, so it cannot be connected with MWODU. ", (int)ApiReturnCode.fail);
 
                                                 List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
                                                 && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.allCivilInst.civilWithoutLegId ==
@@ -4888,7 +4888,7 @@ namespace TLIS_Service.Services
                                                 if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                                 else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
 
                                                 if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                 {
@@ -4988,7 +4988,7 @@ namespace TLIS_Service.Services
                                                    || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                    x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                                 if (MWBUDish.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connected via MWBU, so it cannot be connected with MWODU. ", (int)ApiReturnCode.fail);
 
                                                 List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
                                                 && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.allCivilInst.civilNonSteelId ==
@@ -4999,7 +4999,7 @@ namespace TLIS_Service.Services
                                                 if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                                 else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
 
                                                 if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                 {
@@ -5121,7 +5121,7 @@ namespace TLIS_Service.Services
                                                           || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                           x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                                         if (MWBUDish.Count > 0)
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connected via MWBU, so it cannot be connected with MWODU. ", (int)ApiReturnCode.fail);
 
 
                                                         List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
@@ -5131,7 +5131,7 @@ namespace TLIS_Service.Services
                                                         if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                                         else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
-                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
                                                         if (!string.IsNullOrEmpty(mwODU.Serial_Number))
                                                         {
                                                             bool CheckSerialNumber = _dbContext.MV_MWODU_VIEW.Any(x => x.Serial_Number == mwODU.Serial_Number && !x.Dismantle);
@@ -5417,11 +5417,11 @@ namespace TLIS_Service.Services
                                                     if (tLImwDish == null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
 
-                                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
-                                                  || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => (x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                   x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                                     if (MWBUDish.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connected via MWBU, so it cannot be connected with MWODU. ", (int)ApiReturnCode.fail);
 
                                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
                                                     && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
@@ -5430,7 +5430,7 @@ namespace TLIS_Service.Services
                                                     if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                                     else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
                                                     if (!string.IsNullOrEmpty(mwODU.Serial_Number))
                                                     {
                                                         bool CheckSerialNumber = _dbContext.MV_MWODU_VIEW.Any(x => x.Serial_Number == mwODU.Serial_Number && !x.Dismantle);
@@ -5711,11 +5711,11 @@ namespace TLIS_Service.Services
                                                        x => x.allLoadInst.mwDish.MwDishLibrary.polarityType, x => x.allCivilInst, x => x.sideArm);
                                                     if (tLImwDish == null)
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
-                                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
-                                                  || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
+                                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => (x.allLoadInst.mwBU.MainDishId == AddMW_ODU.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == AddMW_ODU.installationConfig.mwDishId) && !x.Dismantle && x.SiteCode.ToLower() == SiteCode.ToLower(),
                                                   x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                                     if (MWBUDish.Count > 0)
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connected via MWBU, so it cannot be connected with MWODU. ", (int)ApiReturnCode.fail);
 
                                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInstId != null
                                                     && !x.Dismantle && x.allLoadInst.mwODU.Mw_DishId == AddMW_ODU.installationConfig.mwDishId && x.SiteCode.ToLower() == SiteCode.ToLower(),
@@ -5724,7 +5724,7 @@ namespace TLIS_Service.Services
                                                     if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                                     else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
-                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
                                                     if (!string.IsNullOrEmpty(mwODU.Serial_Number))
                                                     {
                                                         bool CheckSerialNumber = _dbContext.MV_MWODU_VIEW.Any(x => x.Serial_Number == mwODU.Serial_Number && !x.Dismantle);
@@ -18364,11 +18364,11 @@ namespace TLIS_Service.Services
                                         if (tLImwDish == null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
 
-                                        var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
-                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
+                                        var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => (x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId) && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
                                                   x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                         if (MWBUDish.Count > 0)
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connected via MWBU, so it cannot be connected with MWODU. ", (int)ApiReturnCode.fail);
 
                                         List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                                        .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.
@@ -18380,7 +18380,7 @@ namespace TLIS_Service.Services
                                         if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                         else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
 
                                         if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
                                         {
@@ -18492,11 +18492,11 @@ namespace TLIS_Service.Services
 
                                     if (tLImwDish == null)
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
-                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
-                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
+                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => (x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId) && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
                                                   x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                     if (MWBUDish.Count > 0)
-                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connected via MWBU, so it cannot be connected with MWODU. ", (int)ApiReturnCode.fail);
 
                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                                     .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
@@ -18506,7 +18506,7 @@ namespace TLIS_Service.Services
                                     if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                     else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
-                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
 
                                     if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
                                     {
@@ -18611,11 +18611,11 @@ namespace TLIS_Service.Services
 
                                     if (tLImwDish == null)
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
-                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
-                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
+                                    var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => (x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId) && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
                                                   x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                     if (MWBUDish.Count > 0)
-                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connected via MWBU, so it cannot be connected with MWODU. ", (int)ApiReturnCode.fail);
 
                                     List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                                     .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
@@ -18625,7 +18625,7 @@ namespace TLIS_Service.Services
                                     if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                     else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
-                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
 
                                     if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
                                     {
@@ -18756,7 +18756,7 @@ namespace TLIS_Service.Services
                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
                                                  x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                                 if (MWBUDish.Count > 0)
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connected via MWBU, so it cannot be connected with MWODU. ", (int)ApiReturnCode.fail);
 
                                                 List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                                                  .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
@@ -18766,7 +18766,7 @@ namespace TLIS_Service.Services
                                                 if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                                 else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
-                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
 
                                                 if (TLIMWODU.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == true)
                                                 {
@@ -19305,7 +19305,7 @@ namespace TLIS_Service.Services
                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
                                                  x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                         if (MWBUDish.Count > 0)
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connected via MWBU, so it cannot be connected with MWODU. ", (int)ApiReturnCode.fail);
 
                                         List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                                          .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
@@ -19315,7 +19315,7 @@ namespace TLIS_Service.Services
                                         if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                         else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
 
                                         if (TLIMWODU.ReservedSpace == true && MWInstallationViewModel.civilLoads.ReservedSpace == true)
                                         {
@@ -19847,11 +19847,11 @@ namespace TLIS_Service.Services
                                        && x.SiteCode.ToLower() == CivilFound.SiteCode.ToLower());
                                         if (tLImwDish == null)
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
-                                        var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
-                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
+                                        var MWBUDish = _unitOfWork.CivilLoadsRepository.GetIncludeWhere(x => (x.allLoadInst.mwBU.MainDishId == MWInstallationViewModel.installationConfig.mwDishId
+                                                  || x.allLoadInst.mwBU.SdDishId == MWInstallationViewModel.installationConfig.mwDishId) && !x.Dismantle && x.SiteCode.ToLower() == TLIMWODU.SiteCode.ToLower(),
                                                   x => x.allLoadInst, x => x.allLoadInst.mwBU).ToList();
                                         if (MWBUDish.Count > 0)
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connect of MWBU can not connect of ODU ", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is connected via MWBU, so it cannot be connected with MWODU. ", (int)ApiReturnCode.fail);
 
                                         List<TLIcivilLoads> tLImwDishCount = _unitOfWork.CivilLoadsRepository.GetAllAsQueryable().AsNoTracking()
                                         .Where(x => x.allLoadInstId != null && !x.Dismantle && x.allLoadInst.mwODU.Id != mwODU.Id && x.allLoadInst.mwODU.Mw_DishId == MWInstallationViewModel.installationConfig.mwDishId
@@ -19861,7 +19861,7 @@ namespace TLIS_Service.Services
                                         if (tLImwDishCount != null && tLImwDishCount.Count == 1 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "single")
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                         else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
-                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found tow MWODU installed directly and polarityType to MWDish is dual ", (int)ApiReturnCode.fail);
+                                            return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
 
                                         if (mwODU.CenterHigh <= 0)
                                         {
