@@ -77,11 +77,11 @@ namespace TLIS_API.Controllers
         private IUnitOfWorkService _unitOfWorkService;
         private readonly IConfiguration _configuration;
         IUnitOfWork _unitOfWork;
-        public InternalApiController(IUnitOfWorkService unitOfWorkService, IConfiguration configuration ,IUnitOfWork unitOfWork)
+        public InternalApiController(IUnitOfWorkService unitOfWorkService, IConfiguration configuration, IUnitOfWork unitOfWork)
         {
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
-             _unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;
         }
         [HttpPost("GetCivilsInstalledonSite")]
         [ProducesResponseType(200, Type = typeof(AllCivilInstallationViewModel))]
@@ -488,7 +488,7 @@ namespace TLIS_API.Controllers
                     string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                     var userId = Convert.ToInt32(userInfo);
                     var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                    
+
                     var responceResult = _unitOfWorkService.DynamicAttService.AddDynamic(addDynamicObject, connectionString, TabelName, userId, CategoryId, true);
                     return Ok(responceResult);
                 }
@@ -1425,7 +1425,7 @@ namespace TLIS_API.Controllers
                         var password = decodedUsernamePassword.Split(':')[1];
                         var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
                         var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
-                        var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId,true);
+                        var response = _unitOfWorkService.MWInstService.AddMWInstallation(userId, AddMW_BUViewModel, Helpers.Constants.LoadSubType.TLImwBU.ToString(), SiteCode, connectionString, TaskId, true);
                         return Ok(response);
                     }
                     else
@@ -4146,7 +4146,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetMWRFULibrariesEnabledAtt(connectionString,userId, null);
+                var response = _unitOfWorkService.InternalApiService.GetMWRFULibrariesEnabledAtt(connectionString, userId, null);
                 return Ok(response);
             }
             else if (authHeader.ToLower().StartsWith("basic "))
@@ -4157,14 +4157,14 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GetMWRFULibrariesEnabledAtt( connectionString,null, username);
+                var response = _unitOfWorkService.InternalApiService.GetMWRFULibrariesEnabledAtt(connectionString, null, username);
                 return Ok(response);
             }
             else
             {
                 return Unauthorized();
             }
-            
+
         }
         [HttpPost("AddMWOtherLibrary")]
         public IActionResult AddMWOtherLibrary([FromBody] AddMWOtherLibraryObject addMW_OtherLibraryViewModel)
@@ -5338,7 +5338,7 @@ namespace TLIS_API.Controllers
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithoutLegMonopoleBySiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
-        
+
         public IActionResult GetCivilWithoutLegMonopoleBySiteWithEnableAtt([FromQuery] string? SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -6109,7 +6109,7 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
-      
+
         [HttpGet("GetCivilNonSteelByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithOutLegInstallationcs>))]
         public IActionResult GetCivilNonSteelByIdInstallation(int CivilId)
@@ -6873,7 +6873,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-          
+
         }
         [HttpGet("GetRelationshipBetweenloads")]
         [ProducesResponseType(200, Type = typeof(CivilLoads))]
@@ -6914,7 +6914,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-           
+
         }
         [HttpGet("GetForAddGeneratorLibrary")]
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
@@ -6956,7 +6956,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-          
+
         }
         [HttpGet("GetForAddSolarLibrary")]
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilLibrarybject>))]
@@ -6999,7 +6999,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-         
+
         }
         [HttpPost("GeStaticAttsAndDynamicAttsByTableName")]
         [ProducesResponseType(200, Type = typeof(GetForAddDynamicAttribute))]
@@ -7040,7 +7040,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-           
+
         }
         [HttpPost("GetDynamicById")]
         [ProducesResponseType(200, Type = typeof(AddDynamicObject))]
@@ -7082,7 +7082,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-   
+
         }
         [HttpPost("GetDynamicAttsByTableName")]
         [ProducesResponseType(200, Type = typeof(ReturnWithFilters<DynamicAttViewModel>))]
@@ -7123,7 +7123,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-       
+
         }
         [HttpPost("GetLoadsOnSideArm")]
         [ProducesResponseType(200, Type = typeof(CivilLoads))]
@@ -7165,7 +7165,7 @@ namespace TLIS_API.Controllers
             {
                 return Unauthorized();
             }
-          
+
         }
         [HttpPost("getAllSites")]
         [ProducesResponseType(200, Type = typeof(List<SiteViewModelForGetAll>))]
@@ -7204,6 +7204,161 @@ namespace TLIS_API.Controllers
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var response = _unitOfWorkService.SiteService.GetSiteIntegration(null, username, isRefresh, GetItemsCountOnEachSite);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+        }
+        [HttpPost("AttachFileInstallation")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public IActionResult AttachFileInstallation(string RecordId, string TableName, int DocumentTypeId, string Model = null, string Name = null, string SiteCode = null)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+                var asset = _configuration["assets"];
+
+                //string contentRootPath = _hostingEnvironment.ContentRootPath;
+                string contentRootPath = _configuration["StoreFiles"];
+
+                string AttachFolder = Path.Combine(contentRootPath, "AttachFiles");
+
+                if (!Directory.Exists(AttachFolder))
+                {
+                    DirectoryInfo di = Directory.CreateDirectory(AttachFolder);
+                }
+
+                var File = Request.Form.Files[0];
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.FileManagmentService.AttachFile(userId, File, DocumentTypeId, Model, Name, SiteCode, RecordId, TableName, connectionString, AttachFolder, asset, true);
+
+                if (response.Code == (int)Helpers.Constants.ApiReturnCode.fail)
+                    return BadRequest(response);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+                var asset = _configuration["assets"];
+
+                //string contentRootPath = _hostingEnvironment.ContentRootPath;
+                string contentRootPath = _configuration["StoreFiles"];
+
+                string AttachFolder = Path.Combine(contentRootPath, "AttachFiles");
+
+                if (!Directory.Exists(AttachFolder))
+                {
+                    DirectoryInfo di = Directory.CreateDirectory(AttachFolder);
+                }
+
+                var File = Request.Form.Files[0];
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.FileManagmentService.AttachFile(userId, File, DocumentTypeId, Model, Name, SiteCode, RecordId, TableName, connectionString, AttachFolder, asset,true);
+
+                if (response.Code == (int)Helpers.Constants.ApiReturnCode.fail)
+                    return BadRequest(response);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
+        [HttpPost("GetFilesByRecordIdAndTableNameInstallation")]
+        [ProducesResponseType(200, Type = typeof(ReturnWithFilters<DynamicAttViewModel>))]
+        public IActionResult GetFilesByRecordIdAndTableNameInstallation(int RecordId, string TableName, string SiteCode)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, SiteCode, userId, true);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, SiteCode, userId, true);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+        }
+
+        [HttpPost("GetAttachecdFilesBySite")]
+        [ProducesResponseType(200, Type = typeof(ReturnWithFilters<DynamicAttViewModel>))]
+        public IActionResult GetAttachecdFilesBySite(string SiteCode)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.FileManagmentService.GetAttachecdFilesBySite(SiteCode,userId,true);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.FileManagmentService.GetAttachecdFilesBySite(SiteCode,userId,true);
                 return Ok(response);
             }
             else

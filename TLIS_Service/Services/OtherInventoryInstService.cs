@@ -6142,7 +6142,10 @@ namespace TLIS_Service.Services
                             }
                         }
                     }
-
+                    var AttachFileRelated = _dbContext.TLIattachedFiles.Include(x => x.tablesName
+                    ).Where(x => x.tablesName.TableName.ToLower() == OtherInventoryName.ToLower() &&
+                    x.RecordId == OtherInventoryId);
+                    _dbContext.RemoveRange(AttachFileRelated);
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);

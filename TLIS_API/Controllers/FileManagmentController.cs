@@ -158,7 +158,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = _unitOfWorkService.FileManagmentService.AttachFile(userId, File, DocumentTypeId, Model, Name, SiteCode, RecordId, TableName, ConnectionString, AttachFolder, asset);
+            var response = _unitOfWorkService.FileManagmentService.AttachFile(userId, File, DocumentTypeId, Model, Name, SiteCode, RecordId, TableName, ConnectionString, AttachFolder, asset,false);
 
             if (response.Code == (int)Helpers.Constants.ApiReturnCode.fail)
                 return BadRequest(response);
@@ -201,7 +201,7 @@ namespace TLIS_API.Controllers
 
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
-            var response = _unitOfWorkService.FileManagmentService.AttachFile(userId,File, DocumentTypeId, Model, Name, SiteCode, RecordId, TableName, ConnectionString, AttachFolder, asset);
+            var response = _unitOfWorkService.FileManagmentService.AttachFile(userId,File, DocumentTypeId, Model, Name, SiteCode, RecordId, TableName, ConnectionString, AttachFolder, asset,false);
 
             if (response.Code == (int)Helpers.Constants.ApiReturnCode.fail)
                 return BadRequest(response);
@@ -228,7 +228,27 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public IActionResult GetFilesByRecordIdAndTableName(int RecordId, string TableName, string SiteCode)
         {
-            var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, SiteCode);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+            var file = Request.Form.Files[0];
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+
+            var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, SiteCode,userId,false);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
@@ -236,7 +256,27 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public IActionResult GetFilesByRecordIdAndTableNameLibrary(int RecordId, string TableName,string SiteCode)
         {
-            var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, SiteCode);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+            var file = Request.Form.Files[0];
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+
+            var response = _unitOfWorkService.FileManagmentService.GetFilesByRecordIdAndTableName(RecordId, TableName, SiteCode, userId, false);
             return Ok(response);
         }
         [HttpPost("GetAttachecdFiles")]
@@ -251,7 +291,26 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(Response<List<AttachedFilesViewModel>>))]
         public IActionResult GetAttachecdFilesBySite(string SiteCode )
         {
-            var response = _unitOfWorkService.FileManagmentService.GetAttachecdFilesBySite(SiteCode);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+            var file = Request.Form.Files[0];
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var response = _unitOfWorkService.FileManagmentService.GetAttachecdFilesBySite(SiteCode, userId,false);
             return Ok(response);
         }
         [HttpPost("AttachedUnAttached")]

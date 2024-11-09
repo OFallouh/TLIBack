@@ -82,6 +82,7 @@ using static TLIS_DAL.ViewModels.MW_RFULibraryDTOs.EditMWRFULibrary;
 using TLIS_DAL.ViewModels.BoardTypeDTOs;
 using Microsoft.Extensions.Caching.Memory;
 using Org.BouncyCastle.Asn1.X509;
+using TLIS_DAL.ViewModels.SiteDTOs;
 
 namespace TLIS_Service.Services
 {
@@ -196,16 +197,18 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
-
-                    TLIhistory tLIhistory = new TLIhistory()
+                    if (ExternalSy == true)
                     {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                            SiteCode = SiteCode,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
 
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
@@ -297,15 +300,18 @@ namespace TLIS_Service.Services
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
 
 
-                    TLIhistory tLIhistory = new TLIhistory()
+                    if (ExternalSy == true)
                     {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                            SiteCode = SiteCode,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -365,15 +371,18 @@ namespace TLIS_Service.Services
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
 
 
-                    TLIhistory tLIhistory = new TLIhistory()
+                    if (ExternalSy == true)
                     {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                            SiteCode = SiteCode,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -485,15 +494,18 @@ namespace TLIS_Service.Services
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                     .GetDynamicInstAttInst(TableNameEntity.Id, null);
 
-                    TLIhistory tLIhistory = new TLIhistory()
+                    if (ExternalSy == true)
                     {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                            SiteCode = SiteCode,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
                 else
@@ -572,16 +584,18 @@ namespace TLIS_Service.Services
 
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttRepository
                    .GetDynamicInstAttInst(TableNameEntity.Id, null);
-
-                    TLIhistory tLIhistory = new TLIhistory()
+                    if (ExternalSy == true)
                     {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = SiteCode,
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                            SiteCode = SiteCode,
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
 
                     return new Response<GetForAddMWDishInstallationObject>(true, objectInst, null, null, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
@@ -26312,6 +26326,10 @@ namespace TLIS_Service.Services
                             return new Response<bool>(true, false, null, "this item is not found", (int)ApiReturnCode.fail);
                         }
                     }
+                    var AttachFileRelated = _dbContext.TLIattachedFiles.Include(x => x.tablesName
+                      ).Where(x => x.tablesName.TableName.ToLower() == LoadName.ToLower() &&
+                      x.RecordId == LoadId);
+                    _dbContext.RemoveRange(AttachFileRelated);
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);
@@ -26333,9 +26351,7 @@ namespace TLIS_Service.Services
                         transactionScope.Complete();
                     }
 
-                    Task.Run(() => _unitOfWork.CivilWithLegsRepository.RefreshView(connectionString));
-
-
+             
                     return new Response<bool>(true, true, null, null, (int)ApiReturnCode.success);
                 }
                 catch (Exception err)
@@ -28884,16 +28900,19 @@ namespace TLIS_Service.Services
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
-                    TLIhistory tLIhistory = new TLIhistory()
+                    if (ExternalSy == true)
                     {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = MWDish.SiteCode,
-                        RecordId = MWInsId.ToString()
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                            SiteCode = MWDish.SiteCode,
+                            RecordId = MWInsId.ToString()
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
 
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
@@ -29354,16 +29373,19 @@ namespace TLIS_Service.Services
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
-                    TLIhistory tLIhistory = new TLIhistory()
+                    if (ExternalSy == true)
                     {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = MWBU.SiteCode,
-                        RecordId = MWInsId.ToString()
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                            SiteCode = MWBU.SiteCode,
+                            RecordId = MWInsId.ToString()
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
 
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
@@ -29604,16 +29626,19 @@ namespace TLIS_Service.Services
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
-                    TLIhistory tLIhistory = new TLIhistory()
+                    if (ExternalSy == true)
                     {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = MWRFU.SiteCode,
-                        RecordId = MWInsId.ToString()
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                            SiteCode = MWRFU.SiteCode,
+                            RecordId = MWInsId.ToString()
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
                 else
@@ -29947,16 +29972,19 @@ namespace TLIS_Service.Services
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWInsId, null);
-                    TLIhistory tLIhistory = new TLIhistory()
+                    if (ExternalSy == true)
                     {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = MWODU.SiteCode,
-                        RecordId = MWInsId.ToString()
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                            SiteCode = MWODU.SiteCode,
+                            RecordId = MWInsId.ToString()
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
                 else
@@ -30236,16 +30264,19 @@ namespace TLIS_Service.Services
                     objectInst.InstallationAttributes = objectInst.InstallationAttributes.Except(ExeptAttributes).ToList();
                     objectInst.DynamicAttribute = _unitOfWork.DynamicAttInstValueRepository.
                         GetDynamicInstAtt(TableNameEntity.Id, MWOtherId, null);
-                    TLIhistory tLIhistory = new TLIhistory()
+                    if (ExternalSy == true)
                     {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
-                        HistoryTypeId = 4,
-                        SiteCode = MWOther.SiteCode,
-                        RecordId = MWOtherId.ToString()
-                    };
-                    _dbContext.TLIhistory.Add(tLIhistory);
-                    _dbContext.SaveChanges();
+                        TLIhistory tLIhistory = new TLIhistory()
+                        {
+                            TablesNameId = TableNameEntity.Id,
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 4,
+                            SiteCode = MWOther.SiteCode,
+                            RecordId = MWOtherId.ToString()
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                     return new Response<GetForAddLoadObject>(false, objectInst, null, null, (int)ApiReturnCode.fail);
                 }
                 else

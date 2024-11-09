@@ -1667,6 +1667,10 @@ namespace TLIS_Service.Services
                             return new Response<bool>(true, false, null, "this item is not found", (int)ApiReturnCode.fail);
                         }
                     }
+                    var AttachFileRelated = _dbContext.TLIattachedFiles.Include(x => x.tablesName
+                    ).Where(x => x.tablesName.TableName.ToLower() == LoadName.ToLower() &&
+                    x.RecordId == LoadId);
+                    _dbContext.RemoveRange(AttachFileRelated);
                     if (TaskId != null)
                     {
                         var Submit = _unitOfWork.SiteRepository.SubmitTaskByTLI(TaskId);

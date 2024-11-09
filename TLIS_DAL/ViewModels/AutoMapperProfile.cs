@@ -313,7 +313,6 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIradioOtherLibrary, TLIradioOtherLibrary>().ReverseMap();
             CreateMap<TLIradioOtherLibrary, object>().ReverseMap();
             CreateMap<TLIloadOtherLibrary, TLIloadOtherLibrary>().ReverseMap();
-            CreateMap<TLIloadOtherLibrary, object>().ReverseMap();
             CreateMap<TLIpowerLibrary, TLIpowerLibrary>().ReverseMap();
             CreateMap<TLIpowerLibrary, object>().ReverseMap();
             CreateMap<TLIcabinetPowerLibrary, TLIcabinetPowerLibrary>().ReverseMap();
