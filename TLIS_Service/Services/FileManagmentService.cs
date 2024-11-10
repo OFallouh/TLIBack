@@ -14012,7 +14012,7 @@ namespace TLIS_Service.Services
         //Fourth SiteCode to add it to file name if i deal with site
         //Fifth RecordId to add it to file name
         //Sixth TableName to specify the table i deal with
-        public Response<string> AttachFile(int UserId,IFormFile file, int documenttypeId, string Model, string Name, string SiteCode, string RecordId, string TableName, string connection, string AttachFolder, string asset,bool ExternalSys)
+        public Response<string> AttachFile(int UserId,IFormFile file, string SiteCode, string RecordId, string TableName, string connection, string AttachFolder, string asset,bool ExternalSys)
         {
             try
             {
@@ -14059,7 +14059,7 @@ namespace TLIS_Service.Services
                     TLIsite site = new TLIsite();
                     site.SiteCode = null;
                     DirectoryPath = Path.Combine(fileDirectory, "AttachFiles", "Library", TableName);
-                    FilePath = Path.Combine(DirectoryPath, $"{FileName}_{RecordId.ToString()}_{Model}_{DateTime.Now.ToString("yyyy_MM_dd")}.{FileType}");
+                    FilePath = Path.Combine(DirectoryPath, $"{FileName}_{RecordId.ToString()}_{DateTime.Now.ToString("yyyy_MM_dd")}.{FileType}");
                 }
                 else if (TableName == "TLIsite")
                 {
@@ -14083,7 +14083,7 @@ namespace TLIS_Service.Services
                 else
                 {
                     DirectoryPath = Path.Combine(fileDirectory, "AttachFiles", "Installation", OldValueOfTableName);
-                    FilePath = Path.Combine(DirectoryPath, $"{FileName}_{RecordId.ToString()}_{Name}_{DateTime.Now.ToString("yyyy_MM_dd")}.{FileType}");
+                    FilePath = Path.Combine(DirectoryPath, $"{FileName}_{RecordId.ToString()}_{DateTime.Now.ToString("yyyy_MM_dd")}.{FileType}");
                 }
                 //Check if DirectoryPath not exist then create it
                 if (!Directory.Exists(DirectoryPath))
@@ -14107,8 +14107,7 @@ namespace TLIS_Service.Services
                 if (TableName.Contains("Library"))
                 {
                     cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                 " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + "," + documenttypeId + "," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
-
+                 " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + ", NULL ," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
                 }
                 else if (TableName.Contains("TLIsite"))
                 {
@@ -14116,22 +14115,20 @@ namespace TLIS_Service.Services
                     {
                         FilePath = Path.Combine($"{asset}\\galleria", $"{FileName}.{FileType}");
                         cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                   " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + "," + documenttypeId + "," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
-
+                   " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + ", NULL ," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
                     }
                     else
                     {
                         cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                        " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + "," + documenttypeId + "," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+                        " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + ", NULL ," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
                     }
                 }
-
-
                 else
                 {
                     cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                    " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + "," + documenttypeId + "," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+                    " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + ", NULL ," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
                 }
+
 
                 connectionString.Open();
                 cmd.ExecuteNonQuery();
@@ -14206,7 +14203,7 @@ namespace TLIS_Service.Services
         }
         //Function take 3 parameters 
         //3 parameters helps me to get file from database
-        public Response<string> DeleteFile(string FileName, int RecordId, string TableName, string SiteCode)
+        public Response<string> DeleteFile(string FileName, int RecordId, string TableName, string SiteCode,int UserId,bool ExternaSys)
         {
             try
             {
@@ -14224,6 +14221,33 @@ namespace TLIS_Service.Services
                     }
                     //remove record from database
                     _unitOfWork.AttachedFilesRepository.RemoveItem(AttachFile);
+                    if (ExternaSys == false)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory
+                        {
+                            UserId = UserId,
+                            HistoryTypeId = 2,
+                            SiteCode = SiteCode,
+                            RecordId=RecordId.ToString(),
+                            TablesNameId= TableNameEntity.Id
+
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
+                    if (ExternaSys == true)
+                    {
+                        TLIhistory tLIhistory = new TLIhistory
+                        {
+                            ExternalSysId = UserId,
+                            HistoryTypeId = 2,
+                            SiteCode = SiteCode,
+                            RecordId = RecordId.ToString(),
+                            TablesNameId = TableNameEntity.Id
+                        };
+                        _dbContext.TLIhistory.Add(tLIhistory);
+                        _dbContext.SaveChanges();
+                    }
                 }
 
                 else
@@ -14236,9 +14260,33 @@ namespace TLIS_Service.Services
                     }
                     //remove record from database
                     _unitOfWork.AttachedFilesRepository.RemoveItem(AttachFile);
+                    if (ExternaSys == false)
+                {
+                    TLIhistory tLIhistory = new TLIhistory
+                    {
+                        UserId = UserId,
+                        HistoryTypeId=2,
+                        SiteCode=SiteCode,
+
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
+                }
+                if (ExternaSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory
+                    {
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 2,
+                        SiteCode = SiteCode,
+
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
+                }
                 }
                 _unitOfWork.SaveChanges();
-
+                
                 return new Response<string>(true, null, null, "File Deleted", (int)Helpers.Constants.ApiReturnCode.success);
 
             }

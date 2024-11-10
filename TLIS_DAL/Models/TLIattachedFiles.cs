@@ -29,7 +29,7 @@ namespace TLIS_DAL.Models
         public int RecordId { get; set; }
         public virtual TLIdocumentType documenttype { get; set; }
         [ForeignKey("documenttype")]
-        public int documenttypeId { get; set; }
+        public int? documenttypeId { get; set; }
         public virtual TLItablesNames tablesName { get; set; }
         [ForeignKey("tablesName")]
         public int? tablesNamesId { get; set; }

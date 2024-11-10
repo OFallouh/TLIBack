@@ -7214,7 +7214,7 @@ namespace TLIS_API.Controllers
         }
         [HttpPost("AttachFileInstallation")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult AttachFileInstallation(string RecordId, string TableName, int DocumentTypeId, string Model = null, string Name = null, string SiteCode = null)
+        public IActionResult AttachFileInstallation(string RecordId, string TableName, string SiteCode = null)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
             if (authHeader.ToLower().StartsWith("bearer "))
@@ -7244,7 +7244,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.FileManagmentService.AttachFile(userId, File, DocumentTypeId, Model, Name, SiteCode, RecordId, TableName, connectionString, AttachFolder, asset, true);
+                var response = _unitOfWorkService.FileManagmentService.AttachFile(userId, File, SiteCode, RecordId, TableName, connectionString, AttachFolder, asset, true);
 
                 if (response.Code == (int)Helpers.Constants.ApiReturnCode.fail)
                     return BadRequest(response);
@@ -7271,7 +7271,7 @@ namespace TLIS_API.Controllers
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
-                var response = _unitOfWorkService.FileManagmentService.AttachFile(userId, File, DocumentTypeId, Model, Name, SiteCode, RecordId, TableName, connectionString, AttachFolder, asset,true);
+                var response = _unitOfWorkService.FileManagmentService.AttachFile(userId, File, SiteCode, RecordId, TableName, connectionString, AttachFolder, asset,true);
 
                 if (response.Code == (int)Helpers.Constants.ApiReturnCode.fail)
                     return BadRequest(response);
@@ -7366,6 +7366,53 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
 
+        }
+
+        [HttpPost("DeleteFileInstallation")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public IActionResult DeleteFileInstallatio(string FileName, int RecordId, string TableName, string SiteCode)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+                
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.FileManagmentService.DeleteFile(FileName, RecordId, TableName, SiteCode, userId, true);
+
+                if (response.Code == (int)Helpers.Constants.ApiReturnCode.fail)
+                    return BadRequest(response);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+                
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.FileManagmentService.DeleteFile(FileName, RecordId, TableName, SiteCode, userId, true);
+
+                if (response.Code == (int)Helpers.Constants.ApiReturnCode.fail)
+                    return BadRequest(response);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
     }
 }
