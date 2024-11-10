@@ -1668,32 +1668,11 @@ namespace TLIS_Service.Services
                             }
                         }
 
+                      
                         int NumberOfLegs_test = 0;
-                        if (dt.Columns.Contains("NumberOfLegs"))
-                        {
-                            if (!String.IsNullOrEmpty(dt.Rows[j]["NumberOfLegs"].ToString()))
-                            {
-                                int NumberOfLegs_test_1;
-                                test = int.TryParse(dt.Rows[j]["NumberOfLegs"].ToString(), out NumberOfLegs_test_1);
-                                if (test == true)
-                                {
-                                    NumberOfLegs_test = NumberOfLegs_test_1;
-                                }
-                                else
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"NumberOfLegs Wrong Input DataType in the row {j + 2}"));
-                                    goto ERROR;
-                                }
-
-                            }
-                            else
-                            {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"NumberOfLegs can not to be null must input number in the row {j + 2}"));
-                                goto ERROR;
-                            }
-                        }
-
-
+                    
+                           
+                    
                         int supporttypedesignedId_test = 0;
 
                         if (dt.Columns.Contains("supportTypeDesignedId"))
@@ -1741,6 +1720,15 @@ namespace TLIS_Service.Services
                                 {
                                     structuretypeId_test = Convert.ToInt32(structureType.Id);
                                     structuretypeName_test = structureType.Value;
+
+                                    if (structuretypeName_test.ToLower() == "Triangular".ToLower())
+                                    {
+                                        NumberOfLegs_test = 3;
+                                    }
+                                    if (structuretypeName_test.ToLower() == "Square".ToLower())
+                                    {
+                                        NumberOfLegs_test = 4;
+                                    }
                                 }
                                 else
                                 {
