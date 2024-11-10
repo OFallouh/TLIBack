@@ -7370,7 +7370,7 @@ namespace TLIS_API.Controllers
 
         [HttpPost("DeleteFileInstallation")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult DeleteFileInstallatio(string FileName, int RecordId, string TableName, string SiteCode)
+        public IActionResult DeleteFileInstallation(string FileName, int RecordId, string TableName, string SiteCode)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
             if (authHeader.ToLower().StartsWith("bearer "))
