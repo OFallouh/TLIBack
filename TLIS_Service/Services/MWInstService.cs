@@ -4725,7 +4725,7 @@ namespace TLIS_Service.Services
                                 && !x.Deleted && x.Active);
                                 if (MWODULibrary == null)
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDishLibrary is not found", (int)ApiReturnCode.fail);
-
+                                var Model = _dbContext.MV_MWODU_LIBRARY_VIEW.FirstOrDefault(x => x.Id == AddMW_ODU.installationConfig.MwODULibraryId).Model;
                                 if (AddMW_ODU.installationConfig.InstallationPlaceId == 1)
                                 {
                                     if (AddMW_ODU.installationConfig?.civilSteelType == 0)
@@ -4777,10 +4777,10 @@ namespace TLIS_Service.Services
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"can not selected this MWDish because found other MWODU installed directly and polarityType to MWDish is single ", (int)ApiReturnCode.fail);
                                                 else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
                                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
-
+                                             
                                                 if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                 {
-                                                    mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                    mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                                        mwDish.MwDishLibrary.polarityType.Name;
                                                 }
                                                 var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -4892,7 +4892,7 @@ namespace TLIS_Service.Services
 
                                                 if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                 {
-                                                    mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                    mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                                        mwDish.MwDishLibrary.polarityType.Name;
                                                 }
                                                 var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -5003,7 +5003,7 @@ namespace TLIS_Service.Services
 
                                                 if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                 {
-                                                    mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + tLImwDish.allLoadInst.mwDish.MwDishLibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                    mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                                        mwDish.MwDishLibrary.polarityType.Name;
                                                 }
                                                 var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -5182,7 +5182,7 @@ namespace TLIS_Service.Services
 
                                                             if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                             {
-                                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model+ ' ' + tLImwDish.allLoadInst.
                                                                    mwDish.MwDishLibrary.polarityType.Name;
                                                             }
                                                             var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -5307,7 +5307,7 @@ namespace TLIS_Service.Services
 
                                                             if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                             {
-                                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model+ ' ' + tLImwDish.allLoadInst.
                                                                    mwDish.MwDishLibrary.polarityType.Name;
                                                             }
                                                             var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -5481,7 +5481,7 @@ namespace TLIS_Service.Services
 
                                                         if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                         {
-                                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model+ ' ' + tLImwDish.allLoadInst.
                                                                mwDish.MwDishLibrary.polarityType.Name;
                                                         }
                                                         var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -5606,7 +5606,7 @@ namespace TLIS_Service.Services
 
                                                         if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                         {
-                                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model+ ' ' + tLImwDish.allLoadInst.
                                                                mwDish.MwDishLibrary.polarityType.Name;
                                                         }
                                                         var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -5773,7 +5773,7 @@ namespace TLIS_Service.Services
 
                                                     if (tLImwDish.allLoadInst.mwDish != null && MWODULibrary != null)
                                                     {
-                                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + MWODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model+ ' ' + tLImwDish.allLoadInst.
                                                             mwDish.MwDishLibrary.polarityType.Name;
                                                     }
                                                     var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -5854,7 +5854,7 @@ namespace TLIS_Service.Services
                                 && !x.Deleted && x.Active);
                                 if (mwBULibrary == null)
                                     return new Response<GetForAddMWDishInstallationObject>(false, null, null, "mwBULibrary is not found", (int)ApiReturnCode.fail);
-
+                                var Model = _dbContext.MV_MWBU_LIBRARY_VIEW.FirstOrDefault(x => x.Id == AddMW_BU.installationConfig.mwBuLibraryId).Model;
                                 if (AddMW_BU.installationConfig.InstallationPlaceId == 1)
                                 {
 
@@ -5991,7 +5991,7 @@ namespace TLIS_Service.Services
                                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_BU.installationConfig.legId);
                                                                 if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                                 {
-                                                                    mwBU.Name = legname?.CiviLegName + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                                    mwBU.Name = legname?.CiviLegName + " " +Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                                 }
 
@@ -6128,7 +6128,7 @@ namespace TLIS_Service.Services
                                                                 TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == AddMW_BU.installationConfig.legId);
                                                                 if (legname != null && AddMW_BU.installationAttributes.Azimuth > 0 && AddMW_BU.installationAttributes.Height > 0)
                                                                 {
-                                                                    mwBU.Name = legname?.CiviLegName + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                                    mwBU.Name = legname?.CiviLegName + " " +Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                                 }
                                                                 var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
@@ -6470,7 +6470,7 @@ namespace TLIS_Service.Services
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
                                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                                 {
-                                                                    mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                                    mwBU.Name = SideArmName1?.Name + " " +Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                                 }
                                                             }
 
@@ -6495,7 +6495,7 @@ namespace TLIS_Service.Services
                                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
                                                                 if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                                 {
-                                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " +Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                                 }
                                                             }
 
@@ -6637,7 +6637,7 @@ namespace TLIS_Service.Services
                                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
                                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                                 {
-                                                                    mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                                    mwBU.Name = SideArmName1?.Name + " " +Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                                 }
                                                             }
                                                         }
@@ -6660,7 +6660,7 @@ namespace TLIS_Service.Services
                                                             var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
                                                             if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                             {
-                                                                mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                                mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " +Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                             }
 
                                                         }
@@ -6955,7 +6955,7 @@ namespace TLIS_Service.Services
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
                                                             if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                             {
-                                                                mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                                mwBU.Name = SideArmName1?.Name + " " +Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                             }
                                                         }
                                                     }
@@ -6978,7 +6978,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
                                                         if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                         {
-                                                            mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                            mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " +Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                         }
 
                                                     }
@@ -7113,7 +7113,7 @@ namespace TLIS_Service.Services
                                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
                                                             if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                             {
-                                                                mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                                mwBU.Name = SideArmName1?.Name + " " +Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                             }
                                                         }
                                                     }
@@ -7136,7 +7136,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
                                                         if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                         {
-                                                            mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                            mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " +Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                         }
 
                                                     }
@@ -7431,7 +7431,7 @@ namespace TLIS_Service.Services
                                                         var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[0]);
                                                         if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                         {
-                                                            mwBU.Name = SideArmName1?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                            mwBU.Name = SideArmName1?.Name + " " +Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                         }
                                                     }
                                                 }
@@ -7454,7 +7454,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == AddMW_BU.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " +Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                     }
 
                                                 }
@@ -13561,7 +13561,7 @@ namespace TLIS_Service.Services
                         .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwBU).Include(x => x.allLoadInst.mwBU.MwBULibrary).Include(x => x.allCivilInst)
                         .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                         .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwBUId == mwBU.Id && !x.Dismantle);
-
+                    var Model = _dbContext.MV_MWBU_LIBRARY_VIEW.FirstOrDefault(x => x.Id == mwBUInst.allLoadInst.mwBU.MwBULibrary.Id).Model;
                     if (mwBUInst == null)
                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWBU is not found", (int)ApiReturnCode.fail);
 
@@ -13718,7 +13718,7 @@ namespace TLIS_Service.Services
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWInstallationViewModel.installationConfig.legId);
                                                     if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                        mwBU.Name = legname?.CiviLegName + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                     var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
@@ -13860,7 +13860,7 @@ namespace TLIS_Service.Services
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWInstallationViewModel.installationConfig.legId);
                                                     if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                        mwBU.Name = legname?.CiviLegName + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                     var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
@@ -13991,7 +13991,7 @@ namespace TLIS_Service.Services
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWInstallationViewModel.installationConfig.legId);
                                                     if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                        mwBU.Name = legname?.CiviLegName + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                     var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
@@ -14133,7 +14133,7 @@ namespace TLIS_Service.Services
                                                     TLIleg legname = _dbContext.TLIleg.FirstOrDefault(x => x.Id == MWInstallationViewModel.installationConfig.legId);
                                                     if (legname != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = legname?.CiviLegName + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                        mwBU.Name = legname?.CiviLegName + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                     var CheckName = _dbContext.MV_MWBU_VIEW.FirstOrDefault(x =>
@@ -14509,7 +14509,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                        mwBU.Name = SideArmName1?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                 }
@@ -14535,7 +14535,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                     }
                                                 }
                                             }
@@ -14677,7 +14677,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                        mwBU.Name = SideArmName1?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                 }
@@ -14703,7 +14703,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                     }
                                                 }
                                             }
@@ -14832,7 +14832,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                        mwBU.Name = SideArmName1?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                 }
@@ -14858,7 +14858,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                     }
                                                 }
                                             }
@@ -15000,7 +15000,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                     if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                        mwBU.Name = SideArmName1?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                     }
                                                 }
@@ -15026,7 +15026,7 @@ namespace TLIS_Service.Services
                                                     var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                     if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                     {
-                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                        mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                     }
                                                 }
                                             }
@@ -15348,7 +15348,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                    mwBU.Name = SideArmName1?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                 }
                                             }
@@ -15374,7 +15374,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                 }
                                             }
                                         }
@@ -15514,7 +15514,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                    mwBU.Name = SideArmName1?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                 }
                                             }
@@ -15540,7 +15540,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                 }
                                             }
                                         }
@@ -15675,7 +15675,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                    mwBU.Name = SideArmName1?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                 }
                                             }
@@ -15701,7 +15701,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                 }
                                             }
                                         }
@@ -15844,7 +15844,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                                 if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                    mwBU.Name = SideArmName1?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                                 }
                                             }
@@ -15870,7 +15870,7 @@ namespace TLIS_Service.Services
                                                 var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                                 if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                                 {
-                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                    mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                                 }
                                             }
                                         }
@@ -16187,7 +16187,7 @@ namespace TLIS_Service.Services
                                             var SideArmName1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[0]);
                                             if (SideArmName1 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                             {
-                                                mwBU.Name = SideArmName1?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                mwBU.Name = SideArmName1?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
 
                                             }
                                         }
@@ -16213,7 +16213,7 @@ namespace TLIS_Service.Services
                                             var SideArmName2 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == MWInstallationViewModel.installationConfig.sideArmId[1]);
                                             if (SideArmName1 != null && SideArmName2 != null && mwBU.Azimuth > 0 && mwBU.Height > 0)
                                             {
-                                                mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + mwBUInst.allLoadInst.mwBU.MwBULibrary.Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
+                                                mwBU.Name = SideArmName1?.Name + " " + SideArmName2?.Name + " " + Model + " " + Math.Round(mwBU.Height, 1, MidpointRounding.ToEven) + "HE".Trim();
                                             }
                                         }
                                     }
@@ -18326,7 +18326,7 @@ namespace TLIS_Service.Services
                         == MWInstallationViewModel.installationAttributes.Id);
                     if (TLIMWODU == null)
                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"This item is not found", (int)ApiReturnCode.fail);
-
+                    var Model = _dbContext.MV_MWODU_LIBRARY_VIEW.FirstOrDefault(x => x.Id == TLIMWODU.allLoadInst.mwODU.MwODULibrary.Id).Model;
                     TLImwODU mwODU = _mapper.Map<TLImwODU>(MWInstallationViewModel.installationAttributes);
                     if (MWInstallationViewModel.installationConfig.InstallationPlaceId == 1)
                     {
@@ -18382,9 +18382,9 @@ namespace TLIS_Service.Services
                                         else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
 
-                                        if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                        if (tLImwDish.allLoadInst.mwDish != null && Model != null)
                                         {
-                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                                 mwDish.MwDishLibrary.polarityType.Name;
                                         }
                                         var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -18508,9 +18508,9 @@ namespace TLIS_Service.Services
                                     else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
 
-                                    if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                    if (tLImwDish.allLoadInst.mwDish != null && Model != null)
                                     {
-                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                             mwDish.MwDishLibrary.polarityType.Name;
                                     }
                                     var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -18627,9 +18627,9 @@ namespace TLIS_Service.Services
                                     else if (tLImwDishCount != null && tLImwDishCount.Count == 2 && tLImwDish.allLoadInst.mwDish.MwDishLibrary.polarityType.Name.ToLower() == "dual")
                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, $"It is not possible to select this MWDish because two MWODUs have been installed directly on it, the polarity type of the MWDish is dual, and there are no available empty ports. ", (int)ApiReturnCode.fail);
 
-                                    if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                    if (tLImwDish.allLoadInst.mwDish != null && Model != null)
                                     {
-                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                             mwDish.MwDishLibrary.polarityType.Name;
                                     }
                                     var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -18809,9 +18809,9 @@ namespace TLIS_Service.Services
                                                     {
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                                     }
-                                                    if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                                    if (tLImwDish.allLoadInst.mwDish != null && Model != null)
                                                     {
-                                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                                             mwDish.MwDishLibrary.polarityType.Name;
                                                     }
                                                     var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -18938,9 +18938,9 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                                    if (tLImwDish.allLoadInst.mwDish != null && Model != null)
                                                     {
-                                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                                             mwDish.MwDishLibrary.polarityType.Name;
                                                     }
                                                     var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -19064,9 +19064,9 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                                    if (tLImwDish.allLoadInst.mwDish != null && Model != null)
                                                     {
-                                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                                             mwDish.MwDishLibrary.polarityType.Name;
                                                     }
                                                     var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -19182,9 +19182,9 @@ namespace TLIS_Service.Services
                                                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                                     }
 
-                                                    if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                                    if (tLImwDish.allLoadInst.mwDish != null && Model != null)
                                                     {
-                                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                        mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                                             mwDish.MwDishLibrary.polarityType.Name;
                                                     }
                                                     var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -19358,9 +19358,9 @@ namespace TLIS_Service.Services
                                             {
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                             }
-                                            if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                            if (tLImwDish.allLoadInst.mwDish != null && Model != null)
                                             {
-                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                                     mwDish.MwDishLibrary.polarityType.Name;
                                             }
                                             var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -19486,9 +19486,9 @@ namespace TLIS_Service.Services
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                             }
 
-                                            if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                            if (tLImwDish.allLoadInst.mwDish != null && Model != null)
                                             {
-                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                                     mwDish.MwDishLibrary.polarityType.Name;
                                             }
                                             var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -19614,9 +19614,9 @@ namespace TLIS_Service.Services
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                             }
 
-                                            if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                            if (tLImwDish.allLoadInst.mwDish != null && Model != null)
                                             {
-                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                                     mwDish.MwDishLibrary.polarityType.Name;
                                             }
                                             var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -19731,9 +19731,9 @@ namespace TLIS_Service.Services
                                                 return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                             }
 
-                                            if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                            if (tLImwDish.allLoadInst.mwDish != null && Model != null)
                                             {
-                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                                mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                                     mwDish.MwDishLibrary.polarityType.Name;
                                             }
                                             var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>
@@ -19902,9 +19902,9 @@ namespace TLIS_Service.Services
                                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "can not installed the MWODU on same azimuth and height because found other MWODU in same angle", (int)ApiReturnCode.fail);
                                         }
 
-                                        if (tLImwDish.allLoadInst.mwDish != null && TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model != null)
+                                        if (tLImwDish.allLoadInst.mwDish != null && Model != null)
                                         {
-                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + TLIMWODU.allLoadInst.mwODU.MwODULibrary.Model + ' ' + tLImwDish.allLoadInst.
+                                            mwODU.Name = tLImwDish.allLoadInst.mwDish.DishName + ' ' + Model + ' ' + tLImwDish.allLoadInst.
                                                 mwDish.MwDishLibrary.polarityType.Name;
                                         }
                                         var CheckName = _dbContext.MV_MWODU_VIEW.FirstOrDefault(x =>

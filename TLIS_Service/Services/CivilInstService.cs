@@ -2662,8 +2662,7 @@ namespace TLIS_Service.Services
                             return new Response<ObjectInstAtts>(false, null, null, $"Owner It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                         ownername = _dbContext.TLIowner.FirstOrDefault(x => x.Id == AddCivilWithLegsViewModel.installationAttributes.OwnerId)?.OwnerName;
-                        if (civilwithleglibrary.Model != null)
-                            Model = civilwithleglibrary.Model;
+                        Model = _dbContext.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Id == AddCivilWithLegsViewModel.civilType.civilWithLegsLibId).Model;
 
                         civilWithLegs.Name = $"{sitename} {Model} {ownername} {Math.Round(AddCivilWithLegsViewModel.installationAttributes.HeightImplemented, 1, MidpointRounding.ToEven)}HE";
 
@@ -2935,10 +2934,10 @@ namespace TLIS_Service.Services
                             return new Response<ObjectInstAtts>(false, null, null, $"Owner It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                         ownername = _dbContext.TLIowner.FirstOrDefault(x => x.Id == addCivilWithoutLegViewModel.installationAttributes.OwnerId)?.OwnerName;
-                        if (CvilWithoutlegsLibrary.Model != null)
-                            Model = CvilWithoutlegsLibrary.Model;
+                    
+                        Model = _dbContext.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Id == addCivilWithoutLegViewModel.civilType.civilWithOutLegsLibId).Model;
 
-                       
+
                         civilwithoutlegs.Name = $"{sitename} {Model} {ownername} {Math.Round(addCivilWithoutLegViewModel.installationAttributes.HeightImplemented, 1, MidpointRounding.ToEven)}HE";
                         var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW
                           .Where(x => x.Name != null &&

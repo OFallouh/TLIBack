@@ -14189,7 +14189,7 @@ namespace TLIS_Service.Services
                     _dbContext.TLIhistory.Add(tLIhistory);
                     _dbContext.SaveChanges();
                 }
-                if (ExternalSys == false)
+                if (ExternalSys == true)
                 {
                     TLIhistory tLIhistory = new TLIhistory()
                     {
