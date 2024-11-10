@@ -230,7 +230,7 @@ namespace TLIS_API.Controllers
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             string authHeader = HttpContext.Request.Headers["Authorization"];
-            var file = Request.Form.Files[0];
+        
             if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
             {
                 return Unauthorized();
@@ -258,7 +258,7 @@ namespace TLIS_API.Controllers
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             string authHeader = HttpContext.Request.Headers["Authorization"];
-            var file = Request.Form.Files[0];
+     
             if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
             {
                 return Unauthorized();

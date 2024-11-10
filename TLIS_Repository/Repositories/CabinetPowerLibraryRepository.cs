@@ -56,7 +56,7 @@ namespace TLIS_Repository.Repositories
 
 
             var rfuTypeList = Enum.GetValues(typeof(IntegratedWith))
-                       .Cast<RFUType>()
+                       .Cast<IntegratedWith>()
                        .Select(e => new DropDownListFilters
                        {
                            Id = ((int)e),

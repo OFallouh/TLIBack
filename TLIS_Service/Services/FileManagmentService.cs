@@ -394,6 +394,10 @@ namespace TLIS_Service.Services
                                 SheetColumn.Add(sheet.Cells[1, i].Value.ToString());
 
                             }
+                            if(TableName== "TLIcivilWithLegLibrary")
+                            {
+                                ActivatedAtts.Remove("NumberOfLegs");
+                            }
                             List<string> MissedAttributes = new List<string>();
                             //Get activated attributes that exist in database and not found in excel sheet
                             MissedAttributes = ActivatedAtts.Except(SheetColumn).ToList();
