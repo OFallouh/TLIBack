@@ -13,7 +13,7 @@ namespace TLIS_Service.IService
     {
         Response<string> GenerateExcelTemplacteByTableName(string TableName, string fileDirectory, int? CategoryId);
         Response<List<KeyValuePair<int, string>>> ImportFile(IFormFile file, string TableName, int? CategoryId, string ConnectionString, int UserId);
-        Response<string> AttachFile(int UserId, IFormFile file , string SiteCode, string RecordId, string TableName, string connection, string AttachFolder, string asset, bool ExternalSys);
+        Response<string> AttachFile(int UserId, IFormFile file , string SiteCode, string? RecordId, string TableName, string connection, string AttachFolder, string asset, bool ExternalSys);
         Response<string> DeleteFile(string FileName, int RecordId, string TableName, string SiteCode,int UserId,bool ExternalSys);
         Response<IEnumerable<AttachedFilesViewModel>> GetFilesByRecordIdAndTableName(int RecordId, string TableName, string SiteCode, int UserId, bool ExternalSys);
         Response<List<AttachedFilesViewModel>> GetAttachecdFiles(int RecordId, string TableName);

@@ -124,7 +124,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpPost("AttachFileInstallation")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult AttachFile(string RecordId, string TableName, int DocumentTypeId, string Model = null, string Name = null, string SiteCode = null)
+        public IActionResult AttachFile(string? RecordId, string TableName, string SiteCode = null)
         {
             var asset = _configuration["assets"];
 
@@ -167,7 +167,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("AttachFileLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult AttachFileLibrary(string RecordId, string TableName, int DocumentTypeId, string Model = null, string Name = null, string SiteCode = null)
+        public IActionResult AttachFileLibrary(string? RecordId, string TableName, string SiteCode = null)
         {
             var asset = _configuration["assets"];
 

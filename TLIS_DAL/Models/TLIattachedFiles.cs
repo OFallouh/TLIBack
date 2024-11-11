@@ -26,7 +26,7 @@ namespace TLIS_DAL.Models
         public string Description2 { get; set; }
         public float fileSize { get; set; }
         public string Path { get; set; }
-        public int RecordId { get; set; }
+        public int? RecordId { get; set; }
         public virtual TLIdocumentType documenttype { get; set; }
         [ForeignKey("documenttype")]
         public int? documenttypeId { get; set; }

@@ -14012,10 +14012,11 @@ namespace TLIS_Service.Services
         //Fourth SiteCode to add it to file name if i deal with site
         //Fifth RecordId to add it to file name
         //Sixth TableName to specify the table i deal with
-        public Response<string> AttachFile(int UserId,IFormFile file, string SiteCode, string RecordId, string TableName, string connection, string AttachFolder, string asset,bool ExternalSys)
+        public Response<string> AttachFile(int UserId,IFormFile file, string SiteCode, string? RecordId, string TableName, string connection, string AttachFolder, string asset,bool ExternalSys)
         {
             try
             {
+                int? Record= null;
                 string OldValueOfTableName = TableName;
                 if (TableName.ToLower() == "TLIcabinetPower".ToLower() || TableName.ToLower() == "TLIcabinetTelecom".ToLower())
                     TableName = "TLIcabinet";
@@ -14029,7 +14030,14 @@ namespace TLIS_Service.Services
                 var FileName = file.FileName;
 
                 // Check if the file is already exist
-                var Record = Convert.ToInt32(RecordId);
+                if (RecordId != null)
+                {
+                     Record = Convert.ToInt32(RecordId);
+                }
+                else
+                {
+                     Record = null;
+                }
                 var FileExists = _unitOfWork.AttachedFilesRepository.GetWhereFirst(x => x.Name == FileName && x.RecordId == Record && x.SiteCode == SiteCode);
 
                 // If file exist then return error message 
@@ -14104,30 +14112,30 @@ namespace TLIS_Service.Services
                 var IsImage = IsImg == false ? 0 : 1;
 
                 OracleCommand cmd = connectionString.CreateCommand();
+                var recordValue = Record.HasValue ? Record : null;
+
                 if (TableName.Contains("Library"))
                 {
-                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                 " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + ", NULL ," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\", \"IsImg\", \"documenttypeId\", \"fileSize\", \"SiteCode\", \"Description\", \"Description2\", \"UnAttached\")" +
+                      $" VALUES ('{FullFileName}', '{FilePath}', {recordValue}, {TableNamesEntity.Id}, {IsImage}, NULL, {FileSizePerMega}, '{SiteCode}', '', '', 0)";
                 }
                 else if (TableName.Contains("TLIsite"))
                 {
-                    if (IsImg == true)
+                    if (IsImg)
                     {
                         FilePath = Path.Combine($"{asset}\\galleria", $"{FileName}.{FileType}");
-                        cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                   " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + ", NULL ," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
                     }
-                    else
-                    {
-                        cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                        " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + ", NULL ," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
-                    }
+                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\", \"IsImg\", \"documenttypeId\", \"fileSize\", \"SiteCode\", \"Description\", \"Description2\", \"UnAttached\")" +
+                      $" VALUES ('{FullFileName}', '{FilePath}', {recordValue}, {TableNamesEntity.Id}, {IsImage}, NULL, {FileSizePerMega}, '{SiteCode}', '', '', 0)";
                 }
                 else
                 {
-                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                    " VALUES ('" + FullFileName + "','" + FilePath + "'," + Record + "," + TableNamesEntity.Id + "," + IsImage + ", NULL ," + FileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\", \"IsImg\", \"documenttypeId\", \"fileSize\", \"SiteCode\", \"Description\", \"Description2\", \"UnAttached\")" +
+                      $" VALUES ('{FullFileName}', '{FilePath}', {recordValue}, {TableNamesEntity.Id}, {IsImage}, NULL, {FileSizePerMega}, '{SiteCode}', '', '', 0)";
                 }
+
+
+
 
 
                 connectionString.Open();
