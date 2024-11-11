@@ -80,6 +80,7 @@ using ClosedXML.Excel;
 using static TLIS_Service.Helpers.Constants;
 using MimeKit.IO.Filters;
 using static TLIS_Service.Services.SiteService;
+using Newtonsoft.Json;
 
 
 
@@ -8033,7 +8034,10 @@ namespace TLIS_Service.Services
                     }
                 }
 
-                List<SiteDataFromOutsiderApiViewModel> SiteViewModelLists = new JavaScriptSerializer().Deserialize<List<SiteDataFromOutsiderApiViewModel>>(SMIS_Response);
+                // تعديل هذا الجزء من الكود
+                List<SiteDataFromOutsiderApiViewModel> SiteViewModelLists =
+                    JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(SMIS_Response);
+
 
                 using (TransactionScope transaction = new TransactionScope())
                 {
