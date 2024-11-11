@@ -8005,12 +8005,12 @@ namespace TLIS_Service.Services
             {
                 ServiceProvider serviceProvider = _services.BuildServiceProvider();
                 IConfiguration Configuration = serviceProvider.GetService<IConfiguration>();
-
                 HttpWebRequest Request = !string.IsNullOrEmpty(Paramater) ?
                     (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"] + $"{UserName}/{Password}/{ViewName}/'{Paramater}'") :
                     (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"] + $"{UserName}/{Password}/{ViewName}");
 
-                Request.Method = "POST";
+                Request.Method = "GET";
+
 
                 if (!string.IsNullOrEmpty(RowContent))
                 {
