@@ -14112,12 +14112,12 @@ namespace TLIS_Service.Services
                 var IsImage = IsImg == false ? 0 : 1;
 
                 OracleCommand cmd = connectionString.CreateCommand();
-                var recordValue = Record.HasValue ? Record : null;
+                var recordValue = Record.HasValue ? Record.Value.ToString() : "NULL"; // "NULL" سيتم استبدالها بالقيمة الفارغة الفعلية في SQL
 
                 if (TableName.Contains("Library"))
                 {
                     cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\", \"IsImg\", \"documenttypeId\", \"fileSize\", \"SiteCode\", \"Description\", \"Description2\", \"UnAttached\")" +
-                      $" VALUES ('{FullFileName}', '{FilePath}', {recordValue}, {TableNamesEntity.Id}, {IsImage}, NULL, {FileSizePerMega}, '{SiteCode}', '', '', 0)";
+                       $" VALUES ('{FullFileName}', '{FilePath}', {(Record.HasValue ? Record.Value.ToString() : "NULL")}, {TableNamesEntity.Id}, {IsImage}, NULL, {FileSizePerMega}, '{SiteCode}', '', '', 0)";
                 }
                 else if (TableName.Contains("TLIsite"))
                 {
@@ -14126,14 +14126,13 @@ namespace TLIS_Service.Services
                         FilePath = Path.Combine($"{asset}\\galleria", $"{FileName}.{FileType}");
                     }
                     cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\", \"IsImg\", \"documenttypeId\", \"fileSize\", \"SiteCode\", \"Description\", \"Description2\", \"UnAttached\")" +
-                      $" VALUES ('{FullFileName}', '{FilePath}', {recordValue}, {TableNamesEntity.Id}, {IsImage}, NULL, {FileSizePerMega}, '{SiteCode}', '', '', 0)";
+                       $" VALUES ('{FullFileName}', '{FilePath}', {(Record.HasValue ? Record.Value.ToString() : "NULL")}, {TableNamesEntity.Id}, {IsImage}, NULL, {FileSizePerMega}, '{SiteCode}', '', '', 0)";
                 }
                 else
                 {
                     cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\", \"IsImg\", \"documenttypeId\", \"fileSize\", \"SiteCode\", \"Description\", \"Description2\", \"UnAttached\")" +
-                      $" VALUES ('{FullFileName}', '{FilePath}', {recordValue}, {TableNamesEntity.Id}, {IsImage}, NULL, {FileSizePerMega}, '{SiteCode}', '', '', 0)";
+                       $" VALUES ('{FullFileName}', '{FilePath}', {(Record.HasValue ? Record.Value.ToString() : "NULL")}, {TableNamesEntity.Id}, {IsImage}, NULL, {FileSizePerMega}, '{SiteCode}, '', '', 0)";
                 }
-
 
 
 
