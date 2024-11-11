@@ -5940,9 +5940,9 @@ namespace TLIS_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetCivilWithLegsInstallationByIdInstallation")]
+        [HttpGet("GetCivilWithLegsByIdInstallation")]
         [ProducesResponseType(200, Type = typeof(Response<GetForAddCivilWithLegObject>))]
-        public IActionResult GetForAddCivilWithLegIntsallation(int CivilId)
+        public IActionResult GetCivilWithLegsByIdInstallation(int CivilId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
 

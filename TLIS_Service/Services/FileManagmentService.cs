@@ -2107,11 +2107,11 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
 
                             {
-
+                                var DynamicAttrName = _dbContext.TLIdynamicAtt.FirstOrDefault(x => x.Id == DynamicAtt.Item1);
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, civilWithLegLibraryList[0]).Message;
                                 if (Message != "Success")
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{DynamicAttrName.Key} in the Row Number {k + 2} "));
                                     goto ERROR;
                                 }
 
