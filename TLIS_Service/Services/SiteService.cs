@@ -84,7 +84,6 @@ using Newtonsoft.Json;
 
 
 
-
 namespace TLIS_Service.Services
 {
     public class SiteService : ISiteService
@@ -794,10 +793,10 @@ namespace TLIS_Service.Services
                         string field = filter.Key;
 
                         // Serialize filter.Value (Filter object) to JSON string
-                        string filterJsonString = JsonSerializer.Serialize(filter.Value);
+                        string filterJsonString = System.Text.Json.JsonSerializer.Serialize(filter.Value);
 
                         // Parse the JSON string to JsonElement
-                        JsonElement filterValue = JsonSerializer.Deserialize<JsonElement>(filterJsonString);
+                        JsonElement filterValue = System.Text.Json. JsonSerializer.Deserialize<JsonElement>(filterJsonString);
 
                         // Check if Value is null or empty and skip if it is
                         if (filterValue.TryGetProperty("Value", out JsonElement valueElement))
@@ -8037,8 +8036,6 @@ namespace TLIS_Service.Services
                 // تعديل هذا الجزء من الكود
                 List<SiteDataFromOutsiderApiViewModel> SiteViewModelLists =
                     JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(SMIS_Response);
-
-
                 using (TransactionScope transaction = new TransactionScope())
                 {
                     foreach (SiteDataFromOutsiderApiViewModel item in SiteViewModelLists)
