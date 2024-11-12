@@ -48,7 +48,7 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
         public string siteStatus { get; set; } // Object (يمكن تجاهل هذه الخاصية إذا لم تكن موجودة في الاستجابة)
 
         [JsonProperty("HIGHT")]
-        public float LocationHieght { get; set; }
+        public float? LocationHieght { get; set; }
 
         [JsonProperty("RentedSpace")]
         public float RentedSpace { get; set; } // (قد تكون غير موجودة في الاستجابة)

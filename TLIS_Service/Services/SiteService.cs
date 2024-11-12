@@ -8311,7 +8311,7 @@ namespace TLIS_Service.Services
             site.SubArea = item.Subarea;
             site.STATUS_DATE = item.Statusdate;
             site.CREATE_DATE = item.Createddate;
-            site.LocationHieght = item.LocationHieght;
+            site.LocationHieght = Convert.ToInt64( item.LocationHieght);
             site.AreaId = await GetAreaIdAsync(item.Area);
             site.RegionCode = await GetRegionCodeAsync(item.RegionCode);
             site.siteStatusId = await GetSiteStatusIdAsync(item.siteStatus);
@@ -8321,6 +8321,10 @@ namespace TLIS_Service.Services
 
         private async Task AddNewSiteAsync(SiteDataFromOutsiderApiViewModel item)
         {
+            if (item.LocationHieght == null)
+            {
+                item.LocationHieght = 0;
+            }
             var newSite = new TLIsite
             {
                 SiteCode = item.Sitecode,
@@ -8331,14 +8335,15 @@ namespace TLIS_Service.Services
                 SubArea = item.Subarea,
                 STATUS_DATE = item.Statusdate,
                 CREATE_DATE = item.Createddate,
-                LocationHieght = item.LocationHieght,
+                LocationHieght =Convert.ToInt64(item.LocationHieght),
                 RentedSpace=0,
                 ReservedSpace=0,
                 SiteVisiteDate=DateTime.Now,
                 AreaId = await GetAreaIdAsync(item.Area),
                 RegionCode = await GetRegionCodeAsync(item.RegionCode),
                 siteStatusId = await GetSiteStatusIdAsync(item.siteStatus),
-                LocationType = await GetLocationTypeIdAsync(item.LocationType)
+                LocationType = await GetLocationTypeIdAsync(item.LocationType),
+                
             };
 
             await _unitOfWork.SiteRepository.AddAsync(newSite);
