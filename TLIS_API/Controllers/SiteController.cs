@@ -328,7 +328,7 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpPost("GetSMIS_Site")]
+        [HttpPost("GetSMIS_Site_Test")]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> GetSMIS_Site_Test(string UserName, string Password, string ViewName, string Paramater, [FromBody] string RowContent)
         {
