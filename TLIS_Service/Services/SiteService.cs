@@ -7999,6 +7999,248 @@ namespace TLIS_Service.Services
         #endregion
 
         // string Baseurl = "https://localhost:44311";
+        //public async Task<string> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, string RowContent)
+        //{
+        //    try
+        //    {
+        //        ServiceProvider serviceProvider = _services.BuildServiceProvider();
+        //        IConfiguration Configuration = serviceProvider.GetService<IConfiguration>();
+        //        HttpWebRequest Request = !string.IsNullOrEmpty(Paramater) ?
+        //            (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"] + $"{UserName}/{Password}/{ViewName}/'{Paramater}'") :
+        //            (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"] + $"{UserName}/{Password}/{ViewName}");
+
+        //        Request.Method = "GET";
+
+
+        //        if (!string.IsNullOrEmpty(RowContent))
+        //        {
+        //            Request.ContentType = "text/plain";
+
+        //            ASCIIEncoding encoding = new ASCIIEncoding();
+        //            byte[] BodyText = encoding.GetBytes(RowContent);
+
+        //            Stream NewStream = Request.GetRequestStream();
+        //            NewStream.Write(BodyText, 0, BodyText.Length);
+        //            Request.ContentLength = BodyText.Length;
+        //        }
+
+        //        string SMIS_Response = "";
+        //        using (WebResponse WebResponse = Request.GetResponse())
+        //        {
+        //            using (StreamReader Reader = new StreamReader(WebResponse.GetResponseStream()))
+        //            {
+        //                SMIS_Response = Reader.ReadToEnd();
+        //            }
+        //        }
+
+        //        // تعديل هذا الجزء من الكود
+        //        List<SiteDataFromOutsiderApiViewModel> SiteViewModelLists =
+        //            JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(SMIS_Response);
+        //        using (TransactionScope transaction = new TransactionScope())
+        //        {
+        //            foreach (SiteDataFromOutsiderApiViewModel item in SiteViewModelLists)
+        //            {
+        //                TLIsite CheckSiteCodeIfExist = _unitOfWork.SiteRepository
+        //                    .GetWhereFirst(x => x.SiteCode.ToLower() == item.Sitecode.ToLower() ||
+        //                        x.SiteName.ToLower() == item.Sitename.ToLower());
+
+        //                if (CheckSiteCodeIfExist != null)
+        //                {
+        //                    CheckSiteCodeIfExist.SiteCode = item.Sitecode;
+        //                    CheckSiteCodeIfExist.SiteName = item.Sitename;
+        //                    CheckSiteCodeIfExist.LocationType = item.LocationType;
+        //                    CheckSiteCodeIfExist.Latitude = item.Latitude;
+        //                    CheckSiteCodeIfExist.Longitude = item.Longitude;
+        //                    CheckSiteCodeIfExist.Zone = item.Zone;
+        //                    CheckSiteCodeIfExist.SubArea = item.Subarea;
+        //                    CheckSiteCodeIfExist.STATUS_DATE = item.Statusdate;
+        //                    CheckSiteCodeIfExist.CREATE_DATE = item.Createddate;
+        //                    CheckSiteCodeIfExist.LocationHieght = item.LocationHieght;
+        //                    CheckSiteCodeIfExist.LocationType = item.LocationType;
+        //                    CheckSiteCodeIfExist.RentedSpace = item.RentedSpace;
+        //                    CheckSiteCodeIfExist.ReservedSpace = item.ReservedSpace;
+        //                    CheckSiteCodeIfExist.SiteVisiteDate = item.SiteVisiteDate;
+        //                    TLIarea CheckAreaIfExist = _unitOfWork.AreaRepository
+        //                        .GetWhereFirst(x => x.AreaName.ToLower() == item.Area.ToLower());
+
+        //                    if (CheckAreaIfExist == null)
+        //                    {
+        //                        TLIarea AddNewArea = new TLIarea
+        //                        {
+        //                            AreaName = item.Area
+        //                        };
+        //                        await _unitOfWork.AreaRepository.AddAsync(AddNewArea);
+        //                        await _unitOfWork.SaveChangesAsync();
+
+        //                        CheckSiteCodeIfExist.AreaId = AddNewArea.Id;
+        //                    }
+        //                    else
+        //                    {
+        //                        CheckSiteCodeIfExist.AreaId = CheckAreaIfExist.Id;
+        //                    }
+
+        //                    TLIregion CheckRegonIfExist = await _context.TLIregion
+        //                        .FirstOrDefaultAsync(x => x.RegionCode.ToLower() == item.RegionCode.ToLower());
+
+        //                    if (CheckRegonIfExist == null)
+        //                    {
+        //                        await _context.TLIregion.AddAsync(new TLIregion { RegionCode = item.RegionCode });
+        //                        await _context.SaveChangesAsync();
+
+        //                        CheckSiteCodeIfExist.RegionCode = item.RegionCode;
+        //                    }
+        //                    else
+        //                    {
+        //                        CheckSiteCodeIfExist.RegionCode = CheckRegonIfExist.RegionCode;
+        //                    }
+
+        //                    TLIsiteStatus ChecksiteStatusIfExist = _unitOfWork.SiteStatusRepository
+        //                       .GetWhereFirst(x => x.Name.ToLower() == item.siteStatus.ToLower());
+
+        //                    if (ChecksiteStatusIfExist == null)
+        //                    {
+        //                        TLIsiteStatus AddNewsiteStatus = new TLIsiteStatus
+        //                        {
+        //                            Name = item.siteStatus
+        //                        };
+        //                        await _unitOfWork.SiteStatusRepository.AddAsync(AddNewsiteStatus);
+        //                        await _unitOfWork.SaveChangesAsync();
+
+        //                        CheckSiteCodeIfExist.siteStatusId = AddNewsiteStatus.Id;
+        //                    }
+        //                    else
+        //                    {
+        //                        CheckSiteCodeIfExist.siteStatusId = ChecksiteStatusIfExist.Id;
+        //                    }
+
+        //                    TLIlocationType ChecklocationTypeIfExist = _unitOfWork.LocationTypeRepository
+        //                      .GetWhereFirst(x => x.Name.ToLower() == item.LocationType.ToLower());
+
+        //                    if (ChecklocationTypeIfExist == null)
+        //                    {
+        //                        TLIlocationType AddNewTLIlocationType = new TLIlocationType
+        //                        {
+        //                            Name = item.LocationType
+        //                        };
+        //                        await _unitOfWork.LocationTypeRepository.AddAsync(AddNewTLIlocationType);
+        //                        await _unitOfWork.SaveChangesAsync();
+
+        //                        CheckSiteCodeIfExist.LocationType = AddNewTLIlocationType.Id.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        CheckSiteCodeIfExist.LocationType = ChecklocationTypeIfExist.Id.ToString();
+        //                    }
+
+        //                    await _unitOfWork.SaveChangesAsync();
+        //                }
+        //                else
+        //                {
+        //                    TLIsite NewSiteToAdd = new TLIsite();
+
+        //                    NewSiteToAdd.SiteCode = item.Sitecode;
+        //                    TLIregion CheckRegonIfExist = await _context.TLIregion
+        //                        .FirstOrDefaultAsync(x => x.RegionCode.ToLower() == item.RegionCode.ToLower());
+
+        //                    if (CheckRegonIfExist == null)
+        //                    {
+        //                        await _context.TLIregion.AddAsync(new TLIregion { RegionCode = item.RegionCode });
+        //                        await _context.SaveChangesAsync();
+
+        //                        NewSiteToAdd.RegionCode = item.RegionCode;
+        //                    }
+        //                    else
+        //                    {
+        //                        NewSiteToAdd.RegionCode = CheckRegonIfExist.RegionCode;
+        //                    }
+
+        //                    TLIarea CheckAreaIfExist = _unitOfWork.AreaRepository
+        //                        .GetWhereFirst(x => x.AreaName.ToLower() == item.Area.ToLower());
+
+        //                    if (CheckAreaIfExist == null)
+        //                    {
+        //                        TLIarea AddNewArea = new TLIarea
+        //                        {
+        //                            AreaName = item.Area
+        //                        };
+        //                        await _unitOfWork.AreaRepository.AddAsync(AddNewArea);
+        //                        await _unitOfWork.SaveChangesAsync();
+
+        //                        NewSiteToAdd.AreaId = AddNewArea.Id;
+        //                    }
+        //                    else
+        //                    {
+        //                        NewSiteToAdd.AreaId = CheckAreaIfExist.Id;
+        //                    }
+
+
+
+        //                    TLIsiteStatus ChecksiteStatusIfExist = _unitOfWork.SiteStatusRepository
+        //                       .GetWhereFirst(x => x.Name.ToLower() == item.siteStatus.ToLower());
+
+        //                    if (ChecksiteStatusIfExist == null)
+        //                    {
+        //                        TLIsiteStatus AddNewsiteStatus = new TLIsiteStatus
+        //                        {
+        //                            Name = item.siteStatus
+        //                        };
+        //                        await _unitOfWork.SiteStatusRepository.AddAsync(AddNewsiteStatus);
+        //                        await _unitOfWork.SaveChangesAsync();
+
+        //                        NewSiteToAdd.siteStatusId = AddNewsiteStatus.Id;
+        //                    }
+        //                    else
+        //                    {
+        //                        NewSiteToAdd.siteStatusId = ChecksiteStatusIfExist.Id;
+        //                    }
+
+        //                    TLIlocationType ChecklocationTypeIfExist = _unitOfWork.LocationTypeRepository
+        //                      .GetWhereFirst(x => x.Name.ToLower() == item.LocationType.ToLower());
+
+        //                    if (ChecklocationTypeIfExist == null)
+        //                    {
+        //                        TLIlocationType AddNewTLIlocationType = new TLIlocationType
+        //                        {
+        //                            Name = item.LocationType
+        //                        };
+        //                        await _unitOfWork.LocationTypeRepository.AddAsync(AddNewTLIlocationType);
+        //                        await _unitOfWork.SaveChangesAsync();
+
+        //                        NewSiteToAdd.LocationType = AddNewTLIlocationType.Id.ToString();
+        //                    }
+        //                    else
+        //                    {
+        //                        NewSiteToAdd.LocationType = ChecklocationTypeIfExist.Id.ToString();
+        //                    }
+        //                    NewSiteToAdd.Latitude = item.Latitude;
+        //                    NewSiteToAdd.Longitude = item.Longitude;
+        //                    NewSiteToAdd.Zone = item.Zone;
+        //                    NewSiteToAdd.SubArea = item.Subarea;
+        //                    NewSiteToAdd.STATUS_DATE = item.Statusdate;
+        //                    NewSiteToAdd.CREATE_DATE = item.Createddate;
+        //                    NewSiteToAdd.LocationHieght = item.LocationHieght;
+        //                    NewSiteToAdd.LocationType = item.LocationType;
+        //                    NewSiteToAdd.RentedSpace = item.RentedSpace;
+        //                    NewSiteToAdd.ReservedSpace = item.ReservedSpace;
+        //                    NewSiteToAdd.SiteVisiteDate = item.SiteVisiteDate;
+
+        //                    await _unitOfWork.SiteRepository.AddAsync(NewSiteToAdd);
+        //                    await _unitOfWork.SaveChangesAsync();
+        //                }
+        //            }
+
+        //            _MySites = _context.TLIsite.AsNoTracking()
+        //                .Include(x => x.siteStatus).Include(x => x.Region).Include(x => x.AreaId).ToList();
+
+        //            transaction.Complete();
+        //        }
+        //        return "No Error Found";
+        //    }
+        //    catch (Exception err)
+        //    {
+        //        return err.Message;
+        //    }
+        //}
         public async Task<string> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, string RowContent)
         {
             try
@@ -8010,7 +8252,6 @@ namespace TLIS_Service.Services
                     (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"] + $"{UserName}/{Password}/{ViewName}");
 
                 Request.Method = "GET";
-
 
                 if (!string.IsNullOrEmpty(RowContent))
                 {
@@ -8033,16 +8274,15 @@ namespace TLIS_Service.Services
                     }
                 }
 
-                // تعديل هذا الجزء من الكود
                 List<SiteDataFromOutsiderApiViewModel> SiteViewModelLists =
                     JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(SMIS_Response);
+
                 using (TransactionScope transaction = new TransactionScope())
                 {
                     foreach (SiteDataFromOutsiderApiViewModel item in SiteViewModelLists)
                     {
                         TLIsite CheckSiteCodeIfExist = _unitOfWork.SiteRepository
-                            .GetWhereFirst(x => x.SiteCode.ToLower() == item.Sitecode.ToLower() ||
-                                x.SiteName.ToLower() == item.Sitename.ToLower());
+                            .GetWhereFirst(x => x.SiteCode == item.Sitecode || x.SiteName == item.Sitename);
 
                         if (CheckSiteCodeIfExist != null)
                         {
@@ -8056,12 +8296,12 @@ namespace TLIS_Service.Services
                             CheckSiteCodeIfExist.STATUS_DATE = item.Statusdate;
                             CheckSiteCodeIfExist.CREATE_DATE = item.Createddate;
                             CheckSiteCodeIfExist.LocationHieght = item.LocationHieght;
-                            CheckSiteCodeIfExist.LocationType = item.LocationType;
                             CheckSiteCodeIfExist.RentedSpace = item.RentedSpace;
                             CheckSiteCodeIfExist.ReservedSpace = item.ReservedSpace;
                             CheckSiteCodeIfExist.SiteVisiteDate = item.SiteVisiteDate;
+
                             TLIarea CheckAreaIfExist = _unitOfWork.AreaRepository
-                                .GetWhereFirst(x => x.AreaName.ToLower() == item.Area.ToLower());
+                                .GetWhereFirst(x => x.AreaName == item.Area);
 
                             if (CheckAreaIfExist == null)
                             {
@@ -8080,7 +8320,7 @@ namespace TLIS_Service.Services
                             }
 
                             TLIregion CheckRegonIfExist = await _context.TLIregion
-                                .FirstOrDefaultAsync(x => x.RegionCode.ToLower() == item.RegionCode.ToLower());
+                                .FirstOrDefaultAsync(x => x.RegionCode == item.RegionCode);
 
                             if (CheckRegonIfExist == null)
                             {
@@ -8095,7 +8335,7 @@ namespace TLIS_Service.Services
                             }
 
                             TLIsiteStatus ChecksiteStatusIfExist = _unitOfWork.SiteStatusRepository
-                               .GetWhereFirst(x => x.Name.ToLower() == item.siteStatus.ToLower());
+                                .GetWhereFirst(x => x.Name == item.siteStatus);
 
                             if (ChecksiteStatusIfExist == null)
                             {
@@ -8114,7 +8354,7 @@ namespace TLIS_Service.Services
                             }
 
                             TLIlocationType ChecklocationTypeIfExist = _unitOfWork.LocationTypeRepository
-                              .GetWhereFirst(x => x.Name.ToLower() == item.LocationType.ToLower());
+                                .GetWhereFirst(x => x.Name == item.LocationType);
 
                             if (ChecklocationTypeIfExist == null)
                             {
@@ -8136,11 +8376,23 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            TLIsite NewSiteToAdd = new TLIsite();
+                            TLIsite NewSiteToAdd = new TLIsite
+                            {
+                                SiteCode = item.Sitecode,
+                                Latitude = item.Latitude,
+                                Longitude = item.Longitude,
+                                Zone = item.Zone,
+                                SubArea = item.Subarea,
+                                STATUS_DATE = item.Statusdate,
+                                CREATE_DATE = item.Createddate,
+                                LocationHieght = item.LocationHieght,
+                                RentedSpace = item.RentedSpace,
+                                ReservedSpace = item.ReservedSpace,
+                                SiteVisiteDate = item.SiteVisiteDate
+                            };
 
-                            NewSiteToAdd.SiteCode = item.Sitecode;
                             TLIregion CheckRegonIfExist = await _context.TLIregion
-                                .FirstOrDefaultAsync(x => x.RegionCode.ToLower() == item.RegionCode.ToLower());
+                                .FirstOrDefaultAsync(x => x.RegionCode == item.RegionCode);
 
                             if (CheckRegonIfExist == null)
                             {
@@ -8155,7 +8407,7 @@ namespace TLIS_Service.Services
                             }
 
                             TLIarea CheckAreaIfExist = _unitOfWork.AreaRepository
-                                .GetWhereFirst(x => x.AreaName.ToLower() == item.Area.ToLower());
+                                .GetWhereFirst(x => x.AreaName == item.Area);
 
                             if (CheckAreaIfExist == null)
                             {
@@ -8173,10 +8425,8 @@ namespace TLIS_Service.Services
                                 NewSiteToAdd.AreaId = CheckAreaIfExist.Id;
                             }
 
-                          
-
                             TLIsiteStatus ChecksiteStatusIfExist = _unitOfWork.SiteStatusRepository
-                               .GetWhereFirst(x => x.Name.ToLower() == item.siteStatus.ToLower());
+                                .GetWhereFirst(x => x.Name == item.siteStatus);
 
                             if (ChecksiteStatusIfExist == null)
                             {
@@ -8195,7 +8445,7 @@ namespace TLIS_Service.Services
                             }
 
                             TLIlocationType ChecklocationTypeIfExist = _unitOfWork.LocationTypeRepository
-                              .GetWhereFirst(x => x.Name.ToLower() == item.LocationType.ToLower());
+                                .GetWhereFirst(x => x.Name == item.LocationType);
 
                             if (ChecklocationTypeIfExist == null)
                             {
@@ -8212,33 +8462,18 @@ namespace TLIS_Service.Services
                             {
                                 NewSiteToAdd.LocationType = ChecklocationTypeIfExist.Id.ToString();
                             }
-                            NewSiteToAdd.Latitude = item.Latitude;
-                            NewSiteToAdd.Longitude = item.Longitude;
-                            NewSiteToAdd.Zone = item.Zone;
-                            NewSiteToAdd.SubArea = item.Subarea;
-                            NewSiteToAdd.STATUS_DATE = item.Statusdate;
-                            NewSiteToAdd.CREATE_DATE = item.Createddate;
-                            NewSiteToAdd.LocationHieght = item.LocationHieght;
-                            NewSiteToAdd.LocationType = item.LocationType;
-                            NewSiteToAdd.RentedSpace = item.RentedSpace;
-                            NewSiteToAdd.ReservedSpace = item.ReservedSpace;
-                            NewSiteToAdd.SiteVisiteDate = item.SiteVisiteDate;
 
                             await _unitOfWork.SiteRepository.AddAsync(NewSiteToAdd);
                             await _unitOfWork.SaveChangesAsync();
                         }
                     }
-
-                    _MySites = _context.TLIsite.AsNoTracking()
-                        .Include(x => x.siteStatus).Include(x => x.Region).Include(x => x.AreaId).ToList();
-
                     transaction.Complete();
                 }
-                return "No Error Found";
+                return "تمت العملية بنجاح";
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                return err.Message;
+                return ex.Message;
             }
         }
 
