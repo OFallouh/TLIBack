@@ -8311,6 +8311,10 @@ namespace TLIS_Service.Services
             site.SubArea = item.Subarea;
             site.STATUS_DATE = item.Statusdate;
             site.CREATE_DATE = item.Createddate;
+            if (item.LocationHieght == null)
+            {
+                item.LocationHieght = 0;
+            }
             site.LocationHieght = Convert.ToInt64( item.LocationHieght);
             site.AreaId = await GetAreaIdAsync(item.Area);
             site.RegionCode = await GetRegionCodeAsync(item.RegionCode);
