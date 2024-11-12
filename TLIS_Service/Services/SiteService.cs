@@ -8312,9 +8312,6 @@ namespace TLIS_Service.Services
             site.STATUS_DATE = item.Statusdate;
             site.CREATE_DATE = item.Createddate;
             site.LocationHieght = item.LocationHieght;
-            site.RentedSpace = item.RentedSpace;
-            site.ReservedSpace = item.ReservedSpace;
-            site.SiteVisiteDate = item.SiteVisiteDate;
             site.AreaId = await GetAreaIdAsync(item.Area);
             site.RegionCode = await GetRegionCodeAsync(item.RegionCode);
             site.siteStatusId = await GetSiteStatusIdAsync(item.siteStatus);
@@ -8335,9 +8332,9 @@ namespace TLIS_Service.Services
                 STATUS_DATE = item.Statusdate,
                 CREATE_DATE = item.Createddate,
                 LocationHieght = item.LocationHieght,
-                RentedSpace = item.RentedSpace,
-                ReservedSpace = item.ReservedSpace,
-                SiteVisiteDate = item.SiteVisiteDate,
+                RentedSpace=0,
+                ReservedSpace=0,
+                SiteVisiteDate=DateTime.Now,
                 AreaId = await GetAreaIdAsync(item.Area),
                 RegionCode = await GetRegionCodeAsync(item.RegionCode),
                 siteStatusId = await GetSiteStatusIdAsync(item.siteStatus),
