@@ -8245,7 +8245,6 @@ namespace TLIS_Service.Services
         {
             try
             {
-                // تفعيل تسجيل البيانات الحساسة لمزيد من التفاصيل حول الاستعلامات
                 ServiceProvider serviceProvider = _services.BuildServiceProvider();
                 IConfiguration Configuration = serviceProvider.GetService<IConfiguration>();
                 HttpWebRequest Request = !string.IsNullOrEmpty(Paramater) ?
@@ -8278,17 +8277,12 @@ namespace TLIS_Service.Services
                 List<SiteDataFromOutsiderApiViewModel> SiteViewModelLists =
                     JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(SMIS_Response);
 
-                // تفعيل تسجيل البيانات الحساسة
-                _context.Database.GetDbConnection().ConnectionString = Configuration["ConnectionStrings:DefaultConnection"];
-                _context.Database.EnableSensitiveDataLogging();
-
                 using (TransactionScope transaction = new TransactionScope())
                 {
                     foreach (SiteDataFromOutsiderApiViewModel item in SiteViewModelLists)
                     {
-                        // التحقق إذا كان الموقع موجود
-                        TLIsite CheckSiteCodeIfExist = await _unitOfWork.SiteRepository
-                            .GetWhereFirstAsync(x => x.SiteCode == item.Sitecode || x.SiteName == item.Sitename);
+                        TLIsite CheckSiteCodeIfExist = _unitOfWork.SiteRepository
+                            .GetWhereFirst(x => x.SiteCode == item.Sitecode || x.SiteName == item.Sitename);
 
                         if (CheckSiteCodeIfExist != null)
                         {
@@ -8306,9 +8300,8 @@ namespace TLIS_Service.Services
                             CheckSiteCodeIfExist.ReservedSpace = item.ReservedSpace;
                             CheckSiteCodeIfExist.SiteVisiteDate = item.SiteVisiteDate;
 
-                            // التعامل مع المناطق
-                            TLIarea CheckAreaIfExist = await _unitOfWork.AreaRepository
-                                .GetWhereFirstAsync(x => x.AreaName == item.Area);
+                            TLIarea CheckAreaIfExist = _unitOfWork.AreaRepository
+                                .GetWhereFirst(x => x.AreaName == item.Area);
 
                             if (CheckAreaIfExist == null)
                             {
@@ -8326,7 +8319,6 @@ namespace TLIS_Service.Services
                                 CheckSiteCodeIfExist.AreaId = CheckAreaIfExist.Id;
                             }
 
-                            // التعامل مع المنطقة
                             TLIregion CheckRegonIfExist = await _context.TLIregion
                                 .FirstOrDefaultAsync(x => x.RegionCode == item.RegionCode);
 
@@ -8342,9 +8334,8 @@ namespace TLIS_Service.Services
                                 CheckSiteCodeIfExist.RegionCode = CheckRegonIfExist.RegionCode;
                             }
 
-                            // التعامل مع حالة الموقع
-                            TLIsiteStatus ChecksiteStatusIfExist = await _unitOfWork.SiteStatusRepository
-                                .GetWhereFirstAsync(x => x.Name == item.siteStatus);
+                            TLIsiteStatus ChecksiteStatusIfExist = _unitOfWork.SiteStatusRepository
+                                .GetWhereFirst(x => x.Name == item.siteStatus);
 
                             if (ChecksiteStatusIfExist == null)
                             {
@@ -8362,9 +8353,8 @@ namespace TLIS_Service.Services
                                 CheckSiteCodeIfExist.siteStatusId = ChecksiteStatusIfExist.Id;
                             }
 
-                            // التعامل مع نوع الموقع
-                            TLIlocationType ChecklocationTypeIfExist = await _unitOfWork.LocationTypeRepository
-                                .GetWhereFirstAsync(x => x.Name == item.LocationType);
+                            TLIlocationType ChecklocationTypeIfExist = _unitOfWork.LocationTypeRepository
+                                .GetWhereFirst(x => x.Name == item.LocationType);
 
                             if (ChecklocationTypeIfExist == null)
                             {
@@ -8386,7 +8376,6 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            // إضافة موقع جديد
                             TLIsite NewSiteToAdd = new TLIsite
                             {
                                 SiteCode = item.Sitecode,
@@ -8402,7 +8391,6 @@ namespace TLIS_Service.Services
                                 SiteVisiteDate = item.SiteVisiteDate
                             };
 
-                            // التعامل مع المنطقة
                             TLIregion CheckRegonIfExist = await _context.TLIregion
                                 .FirstOrDefaultAsync(x => x.RegionCode == item.RegionCode);
 
@@ -8418,9 +8406,8 @@ namespace TLIS_Service.Services
                                 NewSiteToAdd.RegionCode = CheckRegonIfExist.RegionCode;
                             }
 
-                            // التعامل مع المنطقة
-                            TLIarea CheckAreaIfExist = await _unitOfWork.AreaRepository
-                                .GetWhereFirstAsync(x => x.AreaName == item.Area);
+                            TLIarea CheckAreaIfExist = _unitOfWork.AreaRepository
+                                .GetWhereFirst(x => x.AreaName == item.Area);
 
                             if (CheckAreaIfExist == null)
                             {
@@ -8438,9 +8425,8 @@ namespace TLIS_Service.Services
                                 NewSiteToAdd.AreaId = CheckAreaIfExist.Id;
                             }
 
-                            // التعامل مع حالة الموقع
-                            TLIsiteStatus ChecksiteStatusIfExist = await _unitOfWork.SiteStatusRepository
-                                .GetWhereFirstAsync(x => x.Name == item.siteStatus);
+                            TLIsiteStatus ChecksiteStatusIfExist = _unitOfWork.SiteStatusRepository
+                                .GetWhereFirst(x => x.Name == item.siteStatus);
 
                             if (ChecksiteStatusIfExist == null)
                             {
@@ -8458,9 +8444,8 @@ namespace TLIS_Service.Services
                                 NewSiteToAdd.siteStatusId = ChecksiteStatusIfExist.Id;
                             }
 
-                            // التعامل مع نوع الموقع
-                            TLIlocationType ChecklocationTypeIfExist = await _unitOfWork.LocationTypeRepository
-                                .GetWhereFirstAsync(x => x.Name == item.LocationType);
+                            TLIlocationType ChecklocationTypeIfExist = _unitOfWork.LocationTypeRepository
+                                .GetWhereFirst(x => x.Name == item.LocationType);
 
                             if (ChecklocationTypeIfExist == null)
                             {
@@ -8484,14 +8469,53 @@ namespace TLIS_Service.Services
                     }
                     transaction.Complete();
                 }
-                return "Success";
+                return "تمت العملية بنجاح";
             }
             catch (Exception ex)
             {
-                return $"Error: {ex.Message}";
+                return ex.Message;
             }
         }
+        public async Task<string> GetSMIS_Site_Test(string UserName, string Password, string ViewName, string Paramater, string RowContent)
+        {
+            try
+            {
+                // إعداد الاتصال بخدمات API من خلال الـ configuration
+                ServiceProvider serviceProvider = _services.BuildServiceProvider();
+                IConfiguration Configuration = serviceProvider.GetService<IConfiguration>();
 
+                // بناء الـ URL بناءً على المعطيات المدخلة
+                HttpWebRequest Request = !string.IsNullOrEmpty(Paramater) ?
+                    (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"] + $"{UserName}/{Password}/{ViewName}/'{Paramater}'") :
+                    (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"] + $"{UserName}/{Password}/{ViewName}");
+
+                Request.Method = "GET";  // تحديد نوع الطلب
+
+                // إذا كان هناك محتوى في RowContent، نقوم بإضافته في الجسم
+                if (!string.IsNullOrEmpty(RowContent))
+                {
+                    Request.ContentType = "text/plain";
+                    ASCIIEncoding encoding = new ASCIIEncoding();
+                    byte[] BodyText = encoding.GetBytes(RowContent);
+
+                    Stream NewStream = Request.GetRequestStream();
+                    NewStream.Write(BodyText, 0, BodyText.Length);
+                    Request.ContentLength = BodyText.Length;
+                }
+
+                // استلام الاستجابة من الـ API
+                using (WebResponse WebResponse = Request.GetResponse())
+                {
+                    // إذا تم الوصول بنجاح، إرجاع true
+                    return "true";
+                }
+            }
+            catch (Exception ex)
+            {
+                // إذا حدث استثناء (مثل فشل في الاتصال أو استجابة خاطئة من الـ API)، إرجاع رسالة الخطأ أو false
+                return "false";
+            }
+        }
 
         public Response<List<RegionViewModel>> GetAllRegion()
         {
