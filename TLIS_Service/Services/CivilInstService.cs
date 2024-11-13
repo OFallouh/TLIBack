@@ -3709,7 +3709,7 @@ namespace TLIS_Service.Services
 
                         
                         var ownername = _dbContext.TLIowner.FirstOrDefault(x => x.Id == civilWithoutLegsEntity.OwnerId)?.OwnerName;
-                        Model = _dbContext.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Id == editCivilWithoutLegsInstallationObject.civilType.civilWithOutLegsLibId);.Model;
+                        Model = _dbContext.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Id == editCivilWithoutLegsInstallationObject.civilType.civilWithOutLegsLibId).Model;
 
 
                         civilWithoutLegsEntity.Name = $"{SiteCode.Site.SiteName} {Model} {ownername} {Math.Round(civilWithoutLegsEntity.HeightImplemented, 1, MidpointRounding.ToEven)}HE";
