@@ -2662,7 +2662,7 @@ namespace TLIS_Service.Services
                             return new Response<ObjectInstAtts>(false, null, null, $"Owner It does not have to be empty", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                         ownername = _dbContext.TLIowner.FirstOrDefault(x => x.Id == AddCivilWithLegsViewModel.installationAttributes.OwnerId)?.OwnerName;
-                        Model = _dbContext.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Id == AddCivilWithLegsViewModel.civilType.civilWithLegsLibId).Model;
+                        Model = _dbContext.MV_CIVIL_WITHLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Id == AddCivilWithLegsViewModel.civilType.civilWithLegsLibId).Model;
 
                         civilWithLegs.Name = $"{sitename} {Model} {ownername} {Math.Round(AddCivilWithLegsViewModel.installationAttributes.HeightImplemented, 1, MidpointRounding.ToEven)}HE";
 
@@ -3316,8 +3316,7 @@ namespace TLIS_Service.Services
                              
                         
                         ownername = _dbContext.TLIowner.FirstOrDefault(x => x.Id == civilWithLegsEntity.OwnerId)?.OwnerName;
-                        if (CivilWithLegInst.CivilWithLegsLib.Model != null)
-                            Model = CivilWithLegInst.CivilWithLegsLib.Model;
+                        Model = _dbContext.MV_CIVIL_WITHLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Id == editCivilWithLegsInstallationObject.civilType.civilWithLegsLibId).Model;
 
                         civilWithLegsEntity.Name = $"{SiteCode.Site.SiteName} {Model} {ownername} {Math.Round(civilWithLegsEntity.HeightImplemented, 1, MidpointRounding.ToEven)}HE";
                         var CheckName = _dbContext.MV_CIVIL_WITHLEGS_VIEW
@@ -3677,7 +3676,7 @@ namespace TLIS_Service.Services
                 {
                     string ErrorMessage = string.Empty;
                     int TableNameId = 0;
-                    string Model = " ";
+                    string Model = null;
                     TableNameId = _unitOfWork.TablesNamesRepository.GetWhereSelectFirst(x => x.TableName == "TLIcivilWithoutLeg", x => new { x.Id }).Id;
 
                     TLIcivilWithoutLeg civilWithoutLegsEntity = _mapper.Map<TLIcivilWithoutLeg>(editCivilWithoutLegsInstallationObject.installationAttributes);
@@ -3710,10 +3709,9 @@ namespace TLIS_Service.Services
 
                         
                         var ownername = _dbContext.TLIowner.FirstOrDefault(x => x.Id == civilWithoutLegsEntity.OwnerId)?.OwnerName;
-                        if (CivilWithoutLegInst.CivilWithoutlegsLib.Model != null)
-                            Model = CivilWithoutLegInst.CivilWithoutlegsLib.Model;
+                        Model = _dbContext.MV_CIVIL_WITHOUTLEG_LIBRARY_VIEW.FirstOrDefault(x => x.Id == editCivilWithoutLegsInstallationObject.civilType.civilWithOutLegsLibId);.Model;
 
-                 
+
                         civilWithoutLegsEntity.Name = $"{SiteCode.Site.SiteName} {Model} {ownername} {Math.Round(civilWithoutLegsEntity.HeightImplemented, 1, MidpointRounding.ToEven)}HE";
                         var CheckName = _dbContext.MV_CIVIL_WITHOUTLEGS_VIEW
                         .Where(x => x.Id != civilWithoutLegsEntity.Id &&
