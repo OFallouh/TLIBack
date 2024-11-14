@@ -2727,7 +2727,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.CivilSiteDateRepository.AddWithHDynamic(UserId, TabelTLIcivilSiteDate, civilSiteDate, HistoryId);
                             _unitOfWork.SaveChanges();
                         }
-                        if (AddCivilWithLegsViewModel.civilSupportDistance != null)
+                        if (AddCivilWithLegsViewModel.civilSupportDistance != null && AddCivilWithLegsViewModel.civilSupportDistance.ReferenceCivilId !=null)
                         {
                             var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
                              AddCivilWithLegsViewModel.civilSupportDistance.ReferenceCivilId && x.Distance == AddCivilWithLegsViewModel.civilSupportDistance.Distance
@@ -2958,6 +2958,9 @@ namespace TLIS_Service.Services
                         {
                             civilwithoutlegs.NumberOfCivilParts = 2;
                         }
+                        if(civilwithoutlegs.BottomPartLengthm> civilwithoutlegs.HeightImplemented)
+                            return new Response<ObjectInstAtts>(false, null, null, $"BottomPartLengthm cannot to be bigger of HeightImplemented", (int)Helpers.Constants.ApiReturnCode.fail);
+
                         //if (civilwithoutlegs.BottomPartDiameterm != 51 && civilwithoutlegs.BottomPartDiameterm != 76 && civilwithoutlegs.BottomPartDiameterm != 88
                         //  && civilwithoutlegs.BottomPartDiameterm != 101 && civilwithoutlegs.BottomPartDiameterm != 114 && civilwithoutlegs.BottomPartDiameterm != 127)
                         //{
@@ -3016,7 +3019,7 @@ namespace TLIS_Service.Services
                         //{
                         //    return new Response<ObjectInstAtts>(false, null, null, $"The SpinBasePlateAnchorDiametercm value must be in this list (12,14,16,18,20)", (int)Helpers.Constants.ApiReturnCode.fail);
                         //}
-                       
+
                         civilwithoutlegs.CivilWithoutlegsLibId = addCivilWithoutLegViewModel.civilType.civilWithOutLegsLibId;
                         var HistoryId= _unitOfWork.CivilWithoutLegRepository.AddWithHInsatallation(UserId,null, civilwithoutlegs,SiteCode, ExternalSys);
                         _unitOfWork.SaveChanges();
@@ -3042,7 +3045,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.CivilSiteDateRepository.AddWithHDynamic(UserId, TabelTLIcivilSiteDate, civilSiteDate, HistoryId);
                             _unitOfWork.SaveChanges();
                         }
-                        if (addCivilWithoutLegViewModel.civilSupportDistance != null)
+                        if (addCivilWithoutLegViewModel.civilSupportDistance != null && addCivilWithoutLegViewModel.civilSupportDistance.ReferenceCivilId != null)
                         {
                             var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
                              addCivilWithoutLegViewModel.civilSupportDistance.ReferenceCivilId && x.Distance == addCivilWithoutLegViewModel.civilSupportDistance.Distance
@@ -3190,7 +3193,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.CivilSiteDateRepository.AddWithHDynamic(UserId, TabelTLIcivilSiteDate, civilSiteDate,HistorId);
                             _unitOfWork.SaveChanges();
                         }
-                        if (addCivilNonSteelObject.civilSupportDistance != null)
+                        if (addCivilNonSteelObject.civilSupportDistance != null && addCivilNonSteelObject.civilSupportDistance.ReferenceCivilId != null)
                         {
                             var CivilReference = _unitOfWork.CivilSupportDistanceRepository.GetIncludeWhere(x => x.ReferenceCivilId ==
                             addCivilNonSteelObject.civilSupportDistance.ReferenceCivilId && x.Distance == addCivilNonSteelObject.civilSupportDistance.Distance
@@ -3733,6 +3736,10 @@ namespace TLIS_Service.Services
                         {
                             civilWithoutLegsEntity.NumberOfCivilParts = 2;
                         }
+                        if (civilWithoutLegsEntity.BottomPartLengthm > civilWithoutLegsEntity.HeightImplemented)
+                            return new Response<ObjectInstAtts>(false, null, null, $"BottomPartLengthm cannot to be bigger of HeightImplemented", (int)Helpers.Constants.ApiReturnCode.fail);
+
+
                         //if (civilWithoutLegsEntity.BottomPartDiameterm != 51 && civilWithoutLegsEntity.BottomPartDiameterm != 76 && civilWithoutLegsEntity.BottomPartDiameterm != 88
                         //  && civilWithoutLegsEntity.BottomPartDiameterm != 101 && civilWithoutLegsEntity.BottomPartDiameterm != 114 && civilWithoutLegsEntity.BottomPartDiameterm != 127)
                         //{
@@ -14146,11 +14153,11 @@ namespace TLIS_Service.Services
                           .Include(x => x.allLoadInst.mwRFU).Include(x => x.allLoadInst.mwODU).Include(x => x.allLoadInst.mwOther)
                           .Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.radioAntenna).Include(x => x.allLoadInst.radioRRU)
                           .Include(x => x.allLoadInst.radioOther).Include(x => x.allLoadInst.power).Include(x => x.allLoadInst.loadOther).ToList();
-                        AllCivilInst.civilWithLegs.CurrentLoads = 0;
+                        AllCivilInst.civilWithoutLeg.CurrentLoads = 0;
                         if (AllLoadOnCivil.Count == 0)
                         {
-                            AllCivilInst.civilWithLegs.CurrentLoads = 0;
-                            _dbContext.TLIcivilWithLegs.Update(AllCivilInst.civilWithLegs);
+                            AllCivilInst.civilWithoutLeg.CurrentLoads = 0;
+                            _dbContext.TLIcivilWithoutLeg.Update(AllCivilInst.civilWithoutLeg);
                             _dbContext.SaveChanges();
                         }
                         foreach (var item in AllLoadOnCivil)

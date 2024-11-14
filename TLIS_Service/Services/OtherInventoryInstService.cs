@@ -2788,7 +2788,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                             }
                             var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
-                            if (addGeneratorInstallationObject.OtherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
+                            if (addGeneratorInstallationObject.OtherInventoryDistance != null&& addGeneratorInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId != null && CheckOtherInventoryReference.Count > 0)
                             {
                                 var OtherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
                                                                 == addGeneratorInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId && x.Distance == addGeneratorInstallationObject.OtherInventoryDistance.Distance
@@ -2927,7 +2927,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                             }
                             var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
-                            if (addCabinetPowerInstallation.OtherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
+                            if (addCabinetPowerInstallation.OtherInventoryDistance != null && addCabinetPowerInstallation.OtherInventoryDistance.ReferenceOtherInventoryId != null && CheckOtherInventoryReference.Count > 0)
                             {
                                 var OtherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
                                 == addCabinetPowerInstallation.OtherInventoryDistance.ReferenceOtherInventoryId && x.Distance == addCabinetPowerInstallation.OtherInventoryDistance.Distance
@@ -3066,7 +3066,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                             }
                             var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
-                            if (addCabinetTelecomInstallationObject.OtherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
+                            if (addCabinetTelecomInstallationObject.OtherInventoryDistance != null && addCabinetTelecomInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId != null && CheckOtherInventoryReference.Count > 0)
                             {
 
                                 var OtherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
@@ -3206,7 +3206,7 @@ namespace TLIS_Service.Services
                                 _unitOfWork.SaveChanges();
                             }
                             var CheckOtherInventoryReference = _unitOfWork.OtherInSiteRepository.GetWhere(x => x.SiteCode == SiteCode).ToList();
-                            if (addSolarInstallationObject.OtherInventoryDistance != null && CheckOtherInventoryReference.Count > 0)
+                            if (addSolarInstallationObject.OtherInventoryDistance != null && addSolarInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId != null && CheckOtherInventoryReference.Count > 0)
                             {
                                 var OtherInventoryDistance = _unitOfWork.OtherInventoryDistanceRepository.GetWhere(x => x.ReferenceOtherInventoryId
                                                                == addSolarInstallationObject.OtherInventoryDistance.ReferenceOtherInventoryId && x.Distance == addSolarInstallationObject.OtherInventoryDistance.Distance
