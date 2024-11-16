@@ -18918,7 +18918,7 @@ namespace TLIS_Service.Services
                 {
                     foreach (var item in RuleParent)
                     {
-                        return new Response<DynamicAttViewModel>(true, null, null, $"You cannot activate this dynamic attribute before activating the dependent dynamic attribute name {item.dynamicAtt.Key} in the table {item.dynamicAtt.tablesNames.TableName}.", (int)Constants.ApiReturnCode.fail);
+                        return new Response<DynamicAttViewModel>(true, null, null, $"You cannot activate this dynamic attribute before activating the dependent dynamic attribute name {item.AttributeViewManagment.DynamicAtt.Key} in the table {item.dynamicAtt.tablesNames.TableName}.", (int)Constants.ApiReturnCode.fail);
                     }
                 }
                 
