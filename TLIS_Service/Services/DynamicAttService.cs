@@ -18912,6 +18912,16 @@ namespace TLIS_Service.Services
                 && !x.dynamicAtt.disable,x=>x.dynamicAtt,x=>x.dynamicAtt.tablesNames);
                 if(Rule !=null)
                     return new Response<DynamicAttViewModel>(true, null, null, $"Cannot change the status of this dynamic element because it is involved in the dependency process of a dynamic attribute {Rule.dynamicAtt.Key} in tabel {Rule.dynamicAtt.tablesNames.TableName}.", (int)Constants.ApiReturnCode.fail);
+                var RuleParent = _unitOfWork.RuleRepository.GetWhereAndInclude(x => x.dynamicAttId == RecordId && x.AttributeViewManagment.DynamicAttId !=null
+                && x.AttributeViewManagment.DynamicAtt.disable, x => x.AttributeViewManagment, x => x.AttributeViewManagment.DynamicAtt, x => x.AttributeViewManagment.DynamicAtt.tablesNames);
+                if (OldDynamicAtt.disable==true && RuleParent.Count>0)
+                {
+                    foreach (var item in RuleParent)
+                    {
+                        return new Response<DynamicAttViewModel>(true, null, null, $"You cannot activate this dynamic attribute before activating the dependent dynamic attribute name {item.dynamicAtt.Key} in the table {item.dynamicAtt.tablesNames.TableName}.", (int)Constants.ApiReturnCode.fail);
+                    }
+                }
+                
                 DynamicAtt.disable = !(DynamicAtt.disable);
 
                 if (DynamicAtt.disable)
