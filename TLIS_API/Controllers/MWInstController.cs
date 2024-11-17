@@ -1256,22 +1256,7 @@ namespace TLIS_API.Controllers
             public List<string> Data { get; set; } // قائمة من النصوص
         }
 
-        [HttpPost("Test")]
-        [Produces("application/json")]
-        [ProducesResponseType(200, Type = typeof(YourResponseType))]
-        public IActionResult Test([FromQuery] string? SiteCode)
-        {
-            var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.MWInstService.Test(SiteCode, connectionString);
-
-            // تأكد من أن response هو من النوع YourResponseType
-            var jsonResponse = JsonConvert.SerializeObject(response);
-
-            // إذا كنت ترغب في التحقق من jsonResponse، يمكنك القيام بذلك هنا (مثل تسجيله أو التحقق منه)
-            // Console.WriteLine(jsonResponse);  // يمكنك تسجيله في السجلات لمراجعة النتيجة
-
-            return Ok(response); // ASP.NET Core سيتولى تعيين نوع المحتوى إلى application/json تلقائيًا
-        }
+      
 
 
 

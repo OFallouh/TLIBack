@@ -55,7 +55,6 @@ namespace TLIS_Service.IService
         Response<List<InstallationPlaceViewModel>> GetInstallationPlaces(string TableName, string LoadType);
         Response<List<MW_PortViewModel>> GetMW_PortsForMW_RFUInstallation(int AllCivilInstId);
         Response<List<MW_BULibraryViewModel>> GetMW_BULibrariesForMW_BUInstallation();
-        Response<GetEnableAttribute> GetMWDishInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId );
 
         Response<List<MW_Free_BUInstDto>> GetMw_Free_BuInst(int AllCivilInstId);
         Response<GetForAddLoadObject> GetMWODUInstallationById(int MWInsId, string TableName, int UserId, bool ExternalSy);
@@ -67,6 +66,6 @@ namespace TLIS_Service.IService
         Response<ObjectInstAtts> GetAttForAddForMW_ODUOnly(string TableName, int LibraryID, string SiteCode, int AllCivilInstId);
         Response<List<MW_PortViewModel>> GetPortCascadedByBUId(int BUId, int? MainBUId);
         Response<GetEnableAttribute> GetMWODUInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId);
-        Response<GetEnableAttributes> Test(string? SiteCode, string ConnectionString);
+        Response<GetEnableAttribute> GetMWDishInstallationWithEnableAtt(string? SiteCode, string ConnectionString, int? UserId);
     }
 }

@@ -987,11 +987,7 @@ namespace TLIS_Service.Services
                 
 
                 int count = SitesViewModels.Count();
-                int skipCount = filterRequest?.First ?? 0;
-                int takeCount = filterRequest?.Rows ?? int.MaxValue;
-
-                SitesViewModels = SitesViewModels.Skip(skipCount).Take(takeCount);
-
+              
 
                 // التحقق من MultiSortMeta إذا كانت موجودة
                 if (filterRequest.MultiSortMeta != null && filterRequest.MultiSortMeta.Count > 0)
@@ -1012,21 +1008,14 @@ namespace TLIS_Service.Services
 
                     SitesViewModels = orderedSites?.ToList() ?? SitesViewModels.ToList();
                 }
-                else if (filterRequest.SortOrder != 0)
-                {
-                    PropertyInfo sortProperty = typeof(SiteViewModelForGetAll).GetProperty("SomeDefaultSortField", BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
-                    if (sortProperty != null)
-                    {
-                        SitesViewModels = filterRequest.SortOrder == 1 ?
-                            SitesViewModels.OrderBy(x => sortProperty.GetValue(x)).ToList() :
-                            SitesViewModels.OrderByDescending(x => sortProperty.GetValue(x)).ToList();
-                    }
-                }
 
                 // تابع الكود لبناء النتيجة النهائية كما هو موضح سابقًا
 
+                int skipCount = filterRequest?.First ?? 0;
+                int takeCount = filterRequest?.Rows ?? int.MaxValue;
 
+                SitesViewModels = SitesViewModels.Skip(skipCount).Take(takeCount);
 
                 List<SiteViewModelForGetAll> ListForOutPutOnly = new List<SiteViewModelForGetAll>();
 
