@@ -844,7 +844,7 @@ namespace TLIS_Service.Services
                                 }
 
                                 string filterValueLower = stringValue?.ToLower();
-                                switch (matchMode.ToLower())
+                                switch (matchMode)
                                 {
                                     case "equals":
                                         if (stringValue != null)
@@ -917,56 +917,56 @@ namespace TLIS_Service.Services
                                         }
                                         break;
 
-                                    case "lessThan":
+                                    case "lt":
                                         if (decimalValue.HasValue)
                                         {
                                             SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue < decimalValue.Value);
                                         }
                                         break;
 
-                                    case "lessThanOrEqualTo":
+                                    case "lte":
                                         if (decimalValue.HasValue)
                                         {
                                             SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue <= decimalValue.Value);
                                         }
                                         break;
 
-                                    case "greaterThan":
+                                    case "gt":
                                         if (decimalValue.HasValue)
                                         {
                                             SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue > decimalValue.Value);
                                         }
                                         break;
 
-                                    case "greaterThanOrEqualTo":
+                                    case "gte":
                                         if (decimalValue.HasValue)
                                         {
                                             SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue >= decimalValue.Value);
                                         }
                                         break;
 
-                                    case "dateIs":
+                                    case "is":
                                         if (dateTimeValue.HasValue)
                                         {
                                             SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date == dateTimeValue.Value.Date);
                                         }
                                         break;
 
-                                    case "dateIsNot":
+                                    case "isNot":
                                         if (dateTimeValue.HasValue)
                                         {
                                             SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date != dateTimeValue.Value.Date);
                                         }
                                         break;
 
-                                    case "dateBefore":
+                                    case "before":
                                         if (dateTimeValue.HasValue)
                                         {
                                             SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date < dateTimeValue.Value.Date);
                                         }
                                         break;
 
-                                    case "dateAfter":
+                                    case "after":
                                         if (dateTimeValue.HasValue)
                                         {
                                             SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date > dateTimeValue.Value.Date);
