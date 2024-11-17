@@ -987,26 +987,43 @@ namespace TLIS_Service.Services
                 
 
                 int count = SitesViewModels.Count();
-              
+
 
                 // التحقق من MultiSortMeta إذا كانت موجودة
-                if (filterRequest.MultiSortMeta != null && filterRequest.MultiSortMeta.Count > 0)
+                // التحقق من وجود إعدادات الفرز في MultiSortMeta
+                if (filterRequest?.MultiSortMeta?.Count > 0)
                 {
+                    // تطبيق الفرز الديناميكي بناءً على الحقول المحددة في MultiSortMeta
                     IOrderedEnumerable<SiteViewModelForGetAll> orderedSites = null;
 
                     foreach (var sortMeta in filterRequest.MultiSortMeta)
                     {
-                        PropertyInfo sortProperty = typeof(SiteViewModelForGetAll).GetProperty(sortMeta.Field, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                        var property = typeof(SiteViewModelForGetAll).GetProperty(sortMeta.Field, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
-                        if (sortProperty != null)
+                        if (property != null)
                         {
-                            orderedSites = sortMeta.Order == 1 ?
-                                SitesViewModels.OrderBy(x => sortProperty.GetValue(x)) :
-                                SitesViewModels.OrderByDescending(x => sortProperty.GetValue(x));
+                            // إذا كانت القائمة غير مرتبة بعد
+                            if (orderedSites == null)
+                            {
+                                orderedSites = sortMeta.Order == 1
+                                    ? SitesViewModels.OrderBy(x => property.GetValue(x))
+                                    : SitesViewModels.OrderByDescending(x => property.GetValue(x));
+                            }
+                            else
+                            {
+                                // إذا كانت القائمة مرتبة مسبقًا، نضيف ترتيبًا ثانويًا
+                                orderedSites = sortMeta.Order == 1
+                                    ? orderedSites.ThenBy(x => property.GetValue(x))
+                                    : orderedSites.ThenByDescending(x => property.GetValue(x));
+                            }
                         }
                     }
 
-                    SitesViewModels = orderedSites?.ToList() ?? SitesViewModels.ToList();
+                    // تحديث النتائج بالترتيب النهائي
+                    if (orderedSites != null)
+                    {
+                        SitesViewModels = orderedSites.ToList();
+                    }
                 }
 
 
