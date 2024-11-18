@@ -884,7 +884,7 @@ namespace TLIS_Service.Services
                                         }
                                         break;
 
-                                    case "startswith":
+                                    case "startsWith":
                                         if (stringValue != null)
                                         {
                                             SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().StartsWith(filterValueLower ?? "") ?? false);
