@@ -38,7 +38,7 @@ namespace TLIS_API.Controllers
             _unitOfWorkService = unitOfWorkService;
             _configuration = configuration;
         }
-        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("GetForAddCivilWithLegInstallation")]
         [ProducesResponseType(200, Type = typeof(ObjectInstAtts))]
         public IActionResult GetAttForAddCivilWithLegs(int CivilLibraryId,string SiteCode)

@@ -14088,7 +14088,118 @@ namespace TLIS_Service.Services
 
             return formattedHeader.ToString();
         }
+       
+        public Response<IEnumerable<TLIlogUsersActionsViewModel>> GetAllLogs(FilterRequest filterRequest = null)
+        {
+            try
+            {
+               
 
+                // استعلام للحصول على جميع البيانات
+                var query = _context.TLIlogUsersActions.AsNoTracking();
+
+                // تطبيق الفلترة إذا تم تمرير FilterRequest
+                if (filterRequest != null && filterRequest.Filters != null && filterRequest.Filters.Count > 0)
+                {
+                    foreach (var filter in filterRequest.Filters)
+                    {
+                        string field = filter.Key;
+
+                        // Serialize filter.Value (Filter object) to JSON string
+                        string filterJsonString = System.Text.Json.JsonSerializer.Serialize(filter.Value);
+
+                        // Parse the JSON string to JsonElement
+                        JsonElement filterValue = System.Text.Json.JsonSerializer.Deserialize<JsonElement>(filterJsonString);
+
+                        // التحقق من القيمة لتجنب الفلاتر الفارغة
+                        if (filterValue.TryGetProperty("Value", out JsonElement valueElement))
+                        {
+                            if (valueElement.ValueKind == JsonValueKind.Null ||
+                                (valueElement.ValueKind == JsonValueKind.String && string.IsNullOrEmpty(valueElement.GetString())))
+                            {
+                                continue; // تخطي الفلتر إذا كانت القيمة Null أو فارغة
+                            }
+                        }
+
+                        if (filterValue.TryGetProperty("MatchMode", out JsonElement matchModeElement))
+                        {
+                            string matchMode = matchModeElement.GetString();
+                            JsonElement value = filterValue.GetProperty("Value");
+
+                            PropertyInfo property = typeof(TLIlogUsersActionsViewModel).GetProperty(field, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+                            if (property != null)
+                            {
+                                string stringValue = value.ValueKind == JsonValueKind.String ? value.GetString() : null;
+                                decimal? decimalValue = value.ValueKind == JsonValueKind.Number ? value.GetDecimal() : (decimal?)null;
+
+                                switch (matchMode)
+                                {
+                                    case "equals":
+                                        if (stringValue != null)
+                                        {
+                                            query = query.Where(x => EF.Property<string>(x, field).ToLower() == stringValue.ToLower());
+                                        }
+                                        else if (decimalValue.HasValue)
+                                        {
+                                            query = query.Where(x => EF.Property<decimal>(x, field) == decimalValue.Value);
+                                        }
+                                        break;
+
+                                    case "contains":
+                                        if (stringValue != null)
+                                        {
+                                            query = query.Where(x => EF.Property<string>(x, field).ToLower().Contains(stringValue.ToLower()));
+                                        }
+                                        break;
+
+                                    case "lt":
+                                        if (decimalValue.HasValue)
+                                        {
+                                            query = query.Where(x => EF.Property<decimal>(x, field) < decimalValue.Value);
+                                        }
+                                        break;
+
+                                    case "gt":
+                                        if (decimalValue.HasValue)
+                                        {
+                                            query = query.Where(x => EF.Property<decimal>(x, field) > decimalValue.Value);
+                                        }
+                                        break;
+
+                                    default:
+                                        throw new InvalidOperationException($"Filter match mode '{matchMode}' is not supported.");
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // تنفيذ الاستعلام
+                var result = query.ToList();
+
+                // تحويل النتائج إلى ViewModel
+                var viewModel = _mapper.Map<IEnumerable<TLIlogUsersActionsViewModel>>(result);
+
+                // الإرجاع
+                return new Response<IEnumerable<TLIlogUsersActionsViewModel>>
+                {
+                    Data = viewModel,
+                    Count = viewModel.Count(),
+                    Succeeded = true
+                };
+            }
+            catch (Exception ex)
+            {
+              
+                return new Response<IEnumerable<TLIlogUsersActionsViewModel>>
+                {
+                    Data = null,
+                    Succeeded = false,
+                    Message = ex.Message
+                };
+            }
+        }
 
 
     }

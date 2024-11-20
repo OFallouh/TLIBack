@@ -648,5 +648,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.GetSiteDetails(SiteCode);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpGet("GetAllLogs")]
+        public IActionResult GetAllLogs([FromBody] FilterRequest request)
+        {
+            var response = _unitOfWorkService.SiteService.GetAllLogs(request);
+            return Ok(response);
+        }
     }
 }

@@ -1915,6 +1915,7 @@ namespace TLIS_DAL.ViewModels
             CreateMap<TLIregion, RegionViewModel>().ReverseMap();
             CreateMap<TLIattActivatedCategory, AttActivatedCategoryViewModel>().ReverseMap();
             CreateMap<TLIarea, AreaViewModel>().ReverseMap();
+            CreateMap<TLIlogUsersActions, TLIlogUsersActionsViewModel>().ReverseMap();
 
 
             CreateMap<TLIdiversityType, DiversityTypeViewModel>().ReverseMap();

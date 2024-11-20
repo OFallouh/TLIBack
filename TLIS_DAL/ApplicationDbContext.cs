@@ -238,7 +238,7 @@ namespace TLIS_DAL
         public virtual DbSet<MV_LOAD_OTHER_VIEW> MV_LOAD_OTHER_VIEW { get; set; }
         public virtual DbSet<INSTALLATION_PLACE> INSTALLATION_PLACE { get; set; }
         public virtual DbSet<MV_MWRFU_VIEW> MV_MWRFU_VIEW { get; set; }
- 
+
       
         protected override void OnModelCreating(ModelBuilder builder)
         {
