@@ -30,7 +30,7 @@ namespace TLIS_Service.IService
 {
     public interface ISiteService
     {
-        Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite, FilterRequest filterRequest = null);
+        Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite, bool ExternalSys, FilterRequest filterRequest = null);
         Response<IEnumerable<SiteViewModelForGetAll>> GetSiteIntegration(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite);
         Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectLists> filters = null);
         Response<SiteInfo> GetSiteInfo(string SiteCode);
@@ -90,5 +90,6 @@ namespace TLIS_Service.IService
                , int first, int rows, int sortOrder, Dictionary<string, dynamic> filters, List<SortMeta> multiSortMeta);
         Task<string> GetSMIS_Site_Test(string UserName, string Password, string ViewName, string Paramater, string RowContent);
         Response<IEnumerable<TLIlogUsersActionsViewModel>> GetAllLogs(FilterRequest filterRequest = null);
+        string ClearAllHistory();
     }
 }

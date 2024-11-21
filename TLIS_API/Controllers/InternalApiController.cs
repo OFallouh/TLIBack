@@ -65,6 +65,7 @@ using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
 using TLIS_Service.Services;
 using static TLIS_API.Helpers.Constants;
+using static TLIS_Service.Services.SiteService;
 
 namespace TLIS_API.Controllers
 {
@@ -3727,6 +3728,50 @@ namespace TLIS_API.Controllers
                 return Unauthorized();
             }
         }
+
+        [HttpPost("GetAllSiteDetails")]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
+        public IActionResult GetAllSiteDetails([FromQuery] bool? isRefresh, [FromQuery] bool? GetItemsCountOnEachSite, [FromBody] FilterRequest request)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.SiteService.GetSites(userId, null, isRefresh, GetItemsCountOnEachSite, true, request);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var userId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                var response = _unitOfWorkService.SiteService.GetSites(userId, null, isRefresh, GetItemsCountOnEachSite, true, request);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
         [HttpPost("GetCivilWithoutLegCapsuleLibraryEnabledAtt")]
         [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetCivilWithoutLegCapsuleLibraryEnabledAtt()
@@ -3898,8 +3943,8 @@ namespace TLIS_API.Controllers
             }
 
         }
-        [HttpPost("AddSolarLibraryEnabledAtt")]
-        public IActionResult AddSolarLibraryEnabledAtt([FromBody] AddSolarLibraryObject addSolarLibrary)
+        [HttpPost("AddSolarLibrary")]
+        public IActionResult AddSolarLibrary([FromBody] AddSolarLibraryObject addSolarLibrary)
         {
             try
             {
@@ -5198,6 +5243,92 @@ namespace TLIS_API.Controllers
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
                 var response = _unitOfWorkService.InternalApiService.GetSolarLibrariesEnabledAtt(connectionString, null, username);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+        }
+        [HttpPost("GetLegsByCivilId")]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
+        public IActionResult GetLegsByCivilId(int CivilId)
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetLegsByCivilId(userId,null, CivilId);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetLegsByCivilId(null,username,CivilId);
+                return Ok(response);
+            }
+            else
+            {
+                return Unauthorized();
+            }
+
+        }
+        [HttpPost("GetSideArmLibraryEnabledAtt")]
+        [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
+        public IActionResult GetSideArmLibraryEnabledAtt()
+        {
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+
+
+            if (authHeader.ToLower().StartsWith("bearer "))
+            {
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetSideArmLibrariesEnabledAtt(connectionString, userId, null);
+                return Ok(response);
+            }
+            else if (authHeader.ToLower().StartsWith("basic "))
+            {
+
+                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                var username = decodedUsernamePassword.Split(':')[0];
+                var password = decodedUsernamePassword.Split(':')[1];
+                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                var response = _unitOfWorkService.InternalApiService.GetSideArmLibrariesEnabledAtt(connectionString, null, username);
                 return Ok(response);
             }
             else

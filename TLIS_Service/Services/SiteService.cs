@@ -696,7 +696,7 @@ namespace TLIS_Service.Services
         //    }
 
         //}
-        public Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite, FilterRequest filterRequest = null)
+        public Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite,bool ExternalSys, FilterRequest filterRequest = null)
         {
             string[] ErrorMessagesWhenReturning = null;
 
@@ -1088,7 +1088,19 @@ namespace TLIS_Service.Services
                         });
                     }
                 }
-
+                TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
+                  .GetWhereFirst(c => c.TableName== "TLIsite");
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+                    };
+                    _context.TLIhistory.Add(tLIhistory);
+                    _context.SaveChanges();
+                }
                 return new Response<IEnumerable<SiteViewModelForGetAll>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, count);
             }
             catch (Exception er)
@@ -14201,6 +14213,54 @@ namespace TLIS_Service.Services
             }
         }
 
+        public string ClearAllHistory()
+        {
+            // Log entry point
+            try
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required,
+                    new TransactionOptions { IsolationLevel = System.Transactions.IsolationLevel.Serializable }))
+                {
+                    try
+                    {
+                        // Clear TLIhistoryDet records
+                        var allHistoryDetails = _context.TLIhistoryDet.ToList();
+                        if (allHistoryDetails.Any())
+                        {
+                            _context.RemoveRange(allHistoryDetails);
+                        }
+
+                        // Clear TLIhistory records
+                        var allHistory = _context.TLIhistory.ToList();
+                        if (allHistory.Any())
+                        {
+                            _context.RemoveRange(allHistory);
+                        }
+
+                        // Commit changes
+                        _context.SaveChanges();
+
+                        // Complete the transaction
+                        transactionScope.Complete();
+
+                        // Log success
+                        return "Succeeded";
+                    }
+                    catch (Exception innerEx)
+                    {
+                        // Log specific exception
+                        // Example: Log.Error(innerEx, "Error while clearing history.");
+                        return $"Error: {innerEx.Message}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log general exception outside transaction scope
+                // Example: Log.Error(ex, "Transaction failed for ClearAllHistory.");
+                return $"Transaction Failed: {ex.Message}";
+            }
+        }
 
     }
 }

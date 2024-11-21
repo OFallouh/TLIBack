@@ -23,6 +23,7 @@ using TLIS_DAL.ViewModels.DynamicAttDTOs;
 using TLIS_DAL.ViewModels.DynamicAttInstValueDTOs;
 using TLIS_DAL.ViewModels.GeneratorDTOs;
 using TLIS_DAL.ViewModels.GeneratorLibraryDTOs;
+using TLIS_DAL.ViewModels.LegDTOs;
 using TLIS_DAL.ViewModels.LoadPartDTOs;
 using TLIS_DAL.ViewModels.MW_BUDTOs;
 using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
@@ -252,6 +253,8 @@ namespace TLIS_Service.IService
         Response<GetForAddDynamicAttribute> GeStaticAttsAndDynamicAttsByTableName(string TabelName, bool IsLibrary, int? CategoryId, int? UserId, string UserName);
         Response<ReturnWithFilters<DynamicAttViewModel>> GetDynamicAttsByTableName(List<FilterObjectList> filters, ParameterPagination parameters, string TableName, int? CategoryId, int? UserId, string UserName);
         Response<CivilLoads> GetLoadsOnSideArm(int SideArmId, int? UserId, string UserName);
+        Response<GetEnableAttribute> GetSideArmLibrariesEnabledAtt(string ConnectionStringint, int? UserId, string UserName);
+        Response<List<LegViewModel>> GetLegsByCivilId(int? UserId, string UserName, int CivilId);
     }
 
 }

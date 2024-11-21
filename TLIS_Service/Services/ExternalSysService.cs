@@ -46,6 +46,8 @@ using static Dapper.SqlMapper;
 using System.Reflection;
 using TLIS_DAL.ViewModels.SiteDTOs;
 using System.Globalization;
+using Oracle.ManagedDataAccess.Client;
+using TLIS_DAL.ViewModels.CivilWithLegLibraryDTOs;
 namespace TLIS_Service.Services
 {
     internal class ExternalSysService : IexternalSysService
@@ -762,5 +764,6 @@ namespace TLIS_Service.Services
             }
 
         }
+      
     }
  }

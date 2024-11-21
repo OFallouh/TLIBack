@@ -159,7 +159,7 @@ namespace TLIS_API.Controllers
                 string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
                 var userId = Convert.ToInt32(userInfo);
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.SiteService.GetSites(userId,null, isRefresh, GetItemsCountOnEachSite, request);
+                var response = _unitOfWorkService.SiteService.GetSites(userId,null, isRefresh, GetItemsCountOnEachSite,false, request);
                 return Ok(response);
 
             }
@@ -171,7 +171,7 @@ namespace TLIS_API.Controllers
                 var username = decodedUsernamePassword.Split(':')[0];
                 var password = decodedUsernamePassword.Split(':')[1];
                 var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.SiteService.GetSites(null, username, isRefresh, GetItemsCountOnEachSite, request);
+                var response = _unitOfWorkService.SiteService.GetSites(null, username, isRefresh, GetItemsCountOnEachSite, false, request);
                 return Ok(response);
             }
             else
@@ -649,7 +649,7 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetAllLogs")]
+        [HttpPost("GetAllLogs")]
         public IActionResult GetAllLogs([FromBody] FilterRequest request)
         {
             var response = _unitOfWorkService.SiteService.GetAllLogs(request);
