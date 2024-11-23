@@ -14213,57 +14213,67 @@ namespace TLIS_Service.Services
             }
         }
 
-        public string ClearAllHistory()
+        public string ClearAllHistory(string connectionString)
         {
-            // Log entry point
+            const int batchSize = 10000; // حجم الدفعة
             try
             {
-                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required,
-                    new TransactionOptions { IsolationLevel = System.Transactions.IsolationLevel.Serializable }))
+                using (var connection = new OracleConnection(connectionString))
                 {
-                    try
+                    connection.Open();
+                    using (var transaction = connection.BeginTransaction()) // بدء معاملة
                     {
-                        // Clear TLIhistoryDet records
-                        var allHistoryDetails = _context.TLIhistoryDet.ToList();
-                        if (allHistoryDetails.Any())
+                        try
                         {
-                            _context.RemoveRange(allHistoryDetails);
-                        }
+                            using (var command = connection.CreateCommand())
+                            {
+                                command.Transaction = transaction;
 
-                        // Clear TLIhistory records
-                        var allHistory = _context.TLIhistory.ToList();
-                        if (allHistory.Any())
+                                // حذف البيانات من TLIhistoryDet على دفعات
+                                while (true)
+                                {
+                                    command.CommandText = $"DELETE FROM \"TLIhistoryDet\" WHERE ROWNUM <= {batchSize}";
+                                    int deletedRows = command.ExecuteNonQuery();
+
+                                    if (deletedRows == 0)
+                                        break; // الخروج إذا لم يتم حذف أي صفوف
+                                }
+
+                                // حذف البيانات من TLIhistory على دفعات
+                                while (true)
+                                {
+                                    command.CommandText = $"DELETE FROM \"TLIhistory\" WHERE ROWNUM <= {batchSize}";
+                                    int deletedRows = command.ExecuteNonQuery();
+
+                                    if (deletedRows == 0)
+                                        break; // الخروج إذا لم يتم حذف أي صفوف
+                                }
+                            }
+
+                            transaction.Commit(); // تأكيد المعاملة
+                        }
+                        catch (Exception)
                         {
-                            _context.RemoveRange(allHistory);
+                            transaction.Rollback(); // إلغاء المعاملة عند حدوث خطأ
+                            throw;
                         }
-
-                        // Commit changes
-                        _context.SaveChanges();
-
-                        // Complete the transaction
-                        transactionScope.Complete();
-
-                        // Log success
-                        return "Succeeded";
                     }
-                    catch (Exception innerEx)
-                    {
-                        // Log specific exception
-                        // Example: Log.Error(innerEx, "Error while clearing history.");
-                        return $"Error: {innerEx.Message}";
-                    }
+                    connection.Close();
                 }
+
+                return "All history cleared successfully.";
             }
             catch (Exception ex)
             {
-                // Log general exception outside transaction scope
-                // Example: Log.Error(ex, "Transaction failed for ClearAllHistory.");
-                return $"Transaction Failed: {ex.Message}";
+                // تسجيل الخطأ أو معالجته
+                return $"Error occurred: {ex.Message}";
             }
         }
 
     }
+
 }
+
 
 
 

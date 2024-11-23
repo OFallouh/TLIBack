@@ -15,7 +15,7 @@ namespace TLIS_DAL.Models
         public int TablesNameId { get; set; }
         public TLItablesNames TablesName { get; set; }
         public string? AttributeName { get; set; }
-        public AttributeType AttributeType { get; set; }
+        public AttributeType? AttributeType { get; set; }
         public string? OldValue { get; set; }
         public string? NewValue { get; set; }
     }

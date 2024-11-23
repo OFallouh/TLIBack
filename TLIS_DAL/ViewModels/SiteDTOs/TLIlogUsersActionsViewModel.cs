@@ -10,7 +10,7 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
     {
         public int Id { get; set; }
         public DateTime Date { get; set; }
-        public int UserId { get; set; }
+        public string UserName { get; set; }
         public string ControllerName { get; set; }
         public string FunctionName { get; set; }
         public string BodyParameters { get; set; }

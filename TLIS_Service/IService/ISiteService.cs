@@ -90,6 +90,6 @@ namespace TLIS_Service.IService
                , int first, int rows, int sortOrder, Dictionary<string, dynamic> filters, List<SortMeta> multiSortMeta);
         Task<string> GetSMIS_Site_Test(string UserName, string Password, string ViewName, string Paramater, string RowContent);
         Response<IEnumerable<TLIlogUsersActionsViewModel>> GetAllLogs(FilterRequest filterRequest = null);
-        string ClearAllHistory();
+        string ClearAllHistory(string connectionString);
     }
 }

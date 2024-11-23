@@ -12,12 +12,17 @@ namespace TLIS_DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public DateTime Date { get; set; }
+     
         public int UserId { get; set; }
+        public TLIuser User { get; set; }
+
         public string ControllerName { get; set; }
         public string FunctionName { get; set; }
 
         [Column(TypeName = "CLOB")]
         public string BodyParameters { get; set; }
+
+        [Column(TypeName = "CLOB")]
         public string HeaderParameters { get; set; }
         public string ResponseStatus { get; set; }
 
