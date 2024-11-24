@@ -89,7 +89,7 @@ namespace TLIS_Service.IService
         Response<List<dynamic>> GetHistory(string TabelName, string? BaseId, string SiteCode, int? UserId, int? ExternalSysId, string ConnectionString
                , int first, int rows, int sortOrder, Dictionary<string, dynamic> filters, List<SortMeta> multiSortMeta);
         Task<string> GetSMIS_Site_Test(string UserName, string Password, string ViewName, string Paramater, string RowContent);
-        Response<IEnumerable<TLIlogUsersActionsViewModel>> GetAllLogs(FilterRequest filterRequest = null);
-        string ClearAllHistory(string connectionString);
+        Response<IEnumerable<TLIlogUsersActionsViewModel>> GetLogsWithPaginationAndSorting(FilterRequest filterRequest);
+        Response<string> ClearAllHistory(string connectionString, string dateFrom, string dateTo);
     }
 }

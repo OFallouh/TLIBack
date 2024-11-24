@@ -46,5 +46,6 @@
   <ItemGroup>
     <Folder Include="Helpers\CustomMedia\" />
     <Folder Include="Logs\" />
+    <Folder Include="NewFolder\" />
   </ItemGroup>
 </Project>

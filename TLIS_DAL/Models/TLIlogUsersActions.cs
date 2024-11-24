@@ -28,5 +28,8 @@ namespace TLIS_DAL.Models
 
         [Column(TypeName = "CLOB")]
         public string Result { get; set; }
+
+        
+
     }
 }

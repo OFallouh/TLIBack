@@ -652,15 +652,15 @@ namespace TLIS_API.Controllers
         [HttpPost("GetAllLogs")]
         public IActionResult GetAllLogs([FromBody] FilterRequest request)
         {
-            var response = _unitOfWorkService.SiteService.GetAllLogs(request);
+            var response = _unitOfWorkService.SiteService.GetLogsWithPaginationAndSorting(request);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("ClearAllHistory")]
-        public IActionResult ClearAllHistory()
+        public IActionResult ClearAllHistory(string dateFrom, string dateTo)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            var response = _unitOfWorkService.SiteService.ClearAllHistory(ConnectionString);
+            var response = _unitOfWorkService.SiteService.ClearAllHistory(ConnectionString, dateFrom, dateTo);
             return Ok(response);
         }
     }

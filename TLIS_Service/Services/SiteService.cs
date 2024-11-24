@@ -81,6 +81,7 @@ using static TLIS_Service.Helpers.Constants;
 using MimeKit.IO.Filters;
 using static TLIS_Service.Services.SiteService;
 using Newtonsoft.Json;
+using System.Globalization;
 
 
 
@@ -14100,110 +14101,110 @@ namespace TLIS_Service.Services
 
             return formattedHeader.ToString();
         }
-       
-        public Response<IEnumerable<TLIlogUsersActionsViewModel>> GetAllLogs(FilterRequest filterRequest = null)
+
+        public Response<IEnumerable<TLIlogUsersActionsViewModel>> GetLogsWithPaginationAndSorting(FilterRequest filterRequest)
         {
             try
             {
-               
-
-                // استعلام للحصول على جميع البيانات
-                var query = _context.TLIlogUsersActions.AsNoTracking();
-
-                // تطبيق الفلترة إذا تم تمرير FilterRequest
-                if (filterRequest != null && filterRequest.Filters != null && filterRequest.Filters.Count > 0)
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string filtersJson = null;
+                if (filterRequest?.Filters != null && filterRequest.Filters.Any())
                 {
-                    foreach (var filter in filterRequest.Filters)
+                    filtersJson = System.Text.Json.JsonSerializer.Serialize(filterRequest.Filters);
+                }
+
+                // قائمة لتخزين النتائج
+                var logs = new List<TLIlogUsersActions>();
+                var logsViewModel = new List<TLIlogUsersActionsViewModel>(); // إنشاء قائمة ViewModel
+
+                using (var connection = new OracleConnection(ConnectionString))
+                {
+                    connection.Open();
+
+                    using (var command = new OracleCommand("GetLogsByFilterPaginationAndSorting", connection))
                     {
-                        string field = filter.Key;
+                        command.CommandType = CommandType.StoredProcedure;
 
-                        // Serialize filter.Value (Filter object) to JSON string
-                        string filterJsonString = System.Text.Json.JsonSerializer.Serialize(filter.Value);
-
-                        // Parse the JSON string to JsonElement
-                        JsonElement filterValue = System.Text.Json.JsonSerializer.Deserialize<JsonElement>(filterJsonString);
-
-                        // التحقق من القيمة لتجنب الفلاتر الفارغة
-                        if (filterValue.TryGetProperty("Value", out JsonElement valueElement))
+                        // إعداد المعاملات
+                        var resultParam = new OracleParameter("result", OracleDbType.RefCursor)
                         {
-                            if (valueElement.ValueKind == JsonValueKind.Null ||
-                                (valueElement.ValueKind == JsonValueKind.String && string.IsNullOrEmpty(valueElement.GetString())))
-                            {
-                                continue; // تخطي الفلتر إذا كانت القيمة Null أو فارغة
-                            }
-                        }
+                            Direction = ParameterDirection.Output
+                        };
+                        command.Parameters.Add(resultParam);
 
-                        if (filterValue.TryGetProperty("MatchMode", out JsonElement matchModeElement))
+                        command.Parameters.Add("filters", OracleDbType.Clob).Value = filtersJson ?? (object)DBNull.Value;
+                        command.Parameters.Add("first", OracleDbType.Int32).Value = filterRequest.First ?? 0;
+                        command.Parameters.Add("rows", OracleDbType.Int32).Value = filterRequest.Rows ?? 10;
+                        command.Parameters.Add("sort_field", OracleDbType.Varchar2).Value = filterRequest.MultiSortMeta?.FirstOrDefault()?.Field ?? "Id";
+                        command.Parameters.Add("sort_order", OracleDbType.Int32).Value = filterRequest.MultiSortMeta?.FirstOrDefault()?.Order ?? 1;
+
+                        using (var reader = command.ExecuteReader())
                         {
-                            string matchMode = matchModeElement.GetString();
-                            JsonElement value = filterValue.GetProperty("Value");
-
-                            PropertyInfo property = typeof(TLIlogUsersActionsViewModel).GetProperty(field, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-
-                            if (property != null)
+                            while (reader.Read())
                             {
-                                string stringValue = value.ValueKind == JsonValueKind.String ? value.GetString() : null;
-                                decimal? decimalValue = value.ValueKind == JsonValueKind.Number ? value.GetDecimal() : (decimal?)null;
-
-                                switch (matchMode)
+                                var log = new TLIlogUsersActions
                                 {
-                                    case "equals":
-                                        if (stringValue != null)
-                                        {
-                                            query = query.Where(x => EF.Property<string>(x, field).ToLower() == stringValue.ToLower());
-                                        }
-                                        else if (decimalValue.HasValue)
-                                        {
-                                            query = query.Where(x => EF.Property<decimal>(x, field) == decimalValue.Value);
-                                        }
-                                        break;
+                                    Id = Convert.ToInt32(reader["Id"]),
+                                    Date = Convert.ToDateTime(reader["Date"]),
+                                    UserId = Convert.ToInt32(reader["UserId"]), // الاحتفاظ بـ UserId
+                                    ControllerName = reader["ControllerName"]?.ToString(),
+                                    FunctionName = reader["FunctionName"]?.ToString(),
+                                    BodyParameters = reader["BodyParameters"]?.ToString(),
+                                    HeaderParameters = reader["HeaderParameters"]?.ToString(),
+                                    ResponseStatus = reader["ResponseStatus"]?.ToString(),
+                                    Result = reader["Result"]?.ToString()
+                                };
 
-                                    case "contains":
-                                        if (stringValue != null)
-                                        {
-                                            query = query.Where(x => EF.Property<string>(x, field).ToLower().Contains(stringValue.ToLower()));
-                                        }
-                                        break;
-
-                                    case "lt":
-                                        if (decimalValue.HasValue)
-                                        {
-                                            query = query.Where(x => EF.Property<decimal>(x, field) < decimalValue.Value);
-                                        }
-                                        break;
-
-                                    case "gt":
-                                        if (decimalValue.HasValue)
-                                        {
-                                            query = query.Where(x => EF.Property<decimal>(x, field) > decimalValue.Value);
-                                        }
-                                        break;
-
-                                    default:
-                                        throw new InvalidOperationException($"Filter match mode '{matchMode}' is not supported.");
-                                }
+                                logs.Add(log);
                             }
                         }
                     }
                 }
 
-                // تنفيذ الاستعلام
-                var result = query.ToList();
+                // الآن سنحتاج إلى استرجاع UserName بناءً على UserId
+                foreach (var log in logs)
+                {
+                    using (var connection = new OracleConnection(ConnectionString))
+                    {
+                        connection.Open();
+                        using (var command = new OracleCommand("SELECT \"UserName\" FROM \"TLIuser\" WHERE \"Id\" = :UserId", connection))
+                        {
+                            command.Parameters.Add(new OracleParameter("UserId", log.UserId));
+                            var userName = command.ExecuteScalar()?.ToString();
+                        
 
-                // تحويل النتائج إلى ViewModel
-                var viewModel = _mapper.Map<IEnumerable<TLIlogUsersActionsViewModel>>(result);
+
+                        // تحويل الكائنات إلى ViewModel هنا
+                        var logViewModel = new TLIlogUsersActionsViewModel
+                            {
+                                Id = log.Id,
+                                Date = log.Date,
+                                UserName = userName, // تعيين UserName هنا في ViewModel
+                                ControllerName = log.ControllerName,
+                                FunctionName = log.FunctionName,
+                                BodyParameters = log.BodyParameters,
+                                HeaderParameters = log.HeaderParameters,
+                                ResponseStatus = log.ResponseStatus,
+                                Result = log.Result
+                            };
+
+                            // إضافة الـ ViewModel إلى قائمة النتائج
+                            logsViewModel.Add(logViewModel);
+                        }
+                    }
+                }
 
                 // الإرجاع
                 return new Response<IEnumerable<TLIlogUsersActionsViewModel>>
                 {
-                    Data = viewModel,
-                    Count = viewModel.Count(),
+                    Data = logsViewModel,
+                    Count = logsViewModel.Count(),
                     Succeeded = true
                 };
             }
             catch (Exception ex)
             {
-              
+                // التعامل مع الأخطاء
                 return new Response<IEnumerable<TLIlogUsersActionsViewModel>>
                 {
                     Data = null,
@@ -14213,11 +14214,40 @@ namespace TLIS_Service.Services
             }
         }
 
-        public string ClearAllHistory(string connectionString)
+
+
+        public Response<string> ClearAllHistory(string connectionString, string dateFrom, string dateTo)
         {
             const int batchSize = 10000; // حجم الدفعة
             try
             {
+                DateTime parsedDateFrom, parsedDateTo;
+
+                // تنسيق التاريخ
+                string[] formats = { "yyyy-MM-dd", "dd-MMM-yy", "d-MMM-yy" };
+
+                // التحقق من تنسيق DateFrom
+                if (!DateTime.TryParseExact(dateFrom, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDateFrom))
+                {
+                   
+                    return new Response<string>(false, null, null, $"Invalid DateFrom format. Received: {dateFrom}", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+
+                // التحقق من تنسيق DateTo
+                if (!DateTime.TryParseExact(dateTo, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDateTo))
+                {
+                 
+                    return new Response<string>(false, null, null, $"Invalid DateTo format. Received: {dateTo}", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+
+                // التأكد من ضبط الوقت على 12:00:00 AM
+                parsedDateFrom = parsedDateFrom.Date;  // يعيد التاريخ فقط بدون الوقت
+                parsedDateTo = parsedDateTo.Date;      // يعيد التاريخ فقط بدون الوقت
+
+                // تنسيق التواريخ ليتم عرضها بدون وقت
+                string formattedDateFrom = parsedDateFrom.ToString("yyyy-MM-dd");
+                string formattedDateTo = parsedDateTo.ToString("yyyy-MM-dd");
+
                 using (var connection = new OracleConnection(connectionString))
                 {
                     connection.Open();
@@ -14232,7 +14262,18 @@ namespace TLIS_Service.Services
                                 // حذف البيانات من TLIhistoryDet على دفعات
                                 while (true)
                                 {
-                                    command.CommandText = $"DELETE FROM \"TLIhistoryDet\" WHERE ROWNUM <= {batchSize}";
+                                    command.CommandText = @"
+                            DELETE FROM ""TLIhistoryDet"" 
+                            WHERE ""HistoryId"" IN (
+                                SELECT ""Id"" FROM ""TLIhistory"" 
+                                WHERE TRUNC(""HistoryDate"") BETWEEN :DateFrom AND :DateTo
+                            )";
+
+                                    // إعداد المعاملات
+                                    command.Parameters.Clear();
+                                    command.Parameters.Add(new OracleParameter("DateFrom", OracleDbType.Date) { Value = parsedDateFrom });
+                                    command.Parameters.Add(new OracleParameter("DateTo", OracleDbType.Date) { Value = parsedDateTo });
+
                                     int deletedRows = command.ExecuteNonQuery();
 
                                     if (deletedRows == 0)
@@ -14242,7 +14283,15 @@ namespace TLIS_Service.Services
                                 // حذف البيانات من TLIhistory على دفعات
                                 while (true)
                                 {
-                                    command.CommandText = $"DELETE FROM \"TLIhistory\" WHERE ROWNUM <= {batchSize}";
+                                    command.CommandText = @"
+                            DELETE FROM ""TLIhistory"" 
+                            WHERE TRUNC(""HistoryDate"") BETWEEN :DateFrom AND :DateTo";
+
+                                    // إعداد المعاملات
+                                    command.Parameters.Clear();
+                                    command.Parameters.Add(new OracleParameter("DateFrom", OracleDbType.Date) { Value = parsedDateFrom });
+                                    command.Parameters.Add(new OracleParameter("DateTo", OracleDbType.Date) { Value = parsedDateTo });
+
                                     int deletedRows = command.ExecuteNonQuery();
 
                                     if (deletedRows == 0)
@@ -14258,17 +14307,18 @@ namespace TLIS_Service.Services
                             throw;
                         }
                     }
-                    connection.Close();
                 }
 
-                return "All history cleared successfully.";
+                return new Response<string>(true, "All history cleared successfully", null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
-            catch (Exception ex)
+            catch (Exception err)
             {
                 // تسجيل الخطأ أو معالجته
-                return $"Error occurred: {ex.Message}";
+                return new Response<string>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+
+
 
     }
 
