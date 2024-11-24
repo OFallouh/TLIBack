@@ -21,7 +21,7 @@ namespace TLIS_Service.IService
         Response<AddDynamicObject> GetDynamicLibraryById(int id, int UserId, bool ExternalSys);
         Response<AddDynamicObject> AddDynamic(AddDynamicObject addDynamicObject, string connectionString, string TabelName, int UserId, int? CategoryId, bool ExternalSys);
         Task<Response<AddDynamicObject>> EditDynamicAttribute(int DynamicAttributeId, AddDynamicObject DynamicAttViewModel, int UserId, string connectionString, bool ExternalSys);
-        Response<GetForAddDynamicAttribute> GeStaticAttsAndDynamicAttsByTableName(string TabelName, bool IsLibrary, int? CategoryId);
+        Response<GetForAddDynamicAttribute> GeStaticAttsAndDynamicAttsByTableName(string TabelName, bool IsLibrary, int? CategoryId, int UserId, bool ExternalSys);
         Response<IEnumerable<AttributeActivatedViewModel>> GetAttributes(string TableName);
         Response<AddDynamicLibAttValueViewModel> AddDynamicAttLibValue(AddDynamicLibAttValueViewModel addDynamicLibAttValueViewModel);
         Response<AddDependencyInstViewModel> AddDynamicAttInst(AddDependencyInstViewModel addDependencyInstViewModel, string ConnectionString);
@@ -40,8 +40,9 @@ namespace TLIS_Service.IService
         Response<List<OutPutString>> GetLayers(string TableName);
         Response<FirstStepAddDependencyViewModel> GetForAddingDynamicAttribute(string TableName);
         Response<DynamicAttViewModel> CheckEditingDynamicAttDataType(int DynamicAttributeId, int NewDataTypeId);
-        Response<getLayersAndAttributesStaticAndDynamic> getLayersAndAttributesStaticAndDynamic(string TabelName, int? CategoryId);
+        Response<getLayersAndAttributesStaticAndDynamic> getLayersAndAttributesStaticAndDynamic(int UserId, string TabelName, int? CategoryId, bool ExternalSys);
         Response<bool> MoveDynamicToAttributeViewManagment();
+
        
     }
 }

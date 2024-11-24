@@ -14318,6 +14318,97 @@ namespace TLIS_Service.Services
             }
         }
 
+        public Response<string> ClearLogHistory(string connectionString, string dateFrom = null, string dateTo = null)
+        {
+            const int batchSize = 10000; // حجم الدفعة
+            try
+            {
+                DateTime? parsedDateFrom = null, parsedDateTo = null;
+
+                // التحقق من وجود الفلاتر والتأكد من صحتها
+                if (!string.IsNullOrEmpty(dateFrom))
+                {
+                    string[] formats = { "yyyy-MM-dd", "dd-MMM-yy", "d-MMM-yy" };
+
+                    // التحقق من تنسيق DateFrom
+                    if (!DateTime.TryParseExact(dateFrom, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime tempDateFrom))
+                    {
+                        return new Response<string>(false, null, null, $"Invalid DateFrom format. Received: {dateFrom}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    parsedDateFrom = tempDateFrom.Date;  // حفظ التاريخ بدون الوقت
+                }
+
+                if (!string.IsNullOrEmpty(dateTo))
+                {
+                    string[] formats = { "yyyy-MM-dd", "dd-MMM-yy", "d-MMM-yy" };
+
+                    // التحقق من تنسيق DateTo
+                    if (!DateTime.TryParseExact(dateTo, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime tempDateTo))
+                    {
+                        return new Response<string>(false, null, null, $"Invalid DateTo format. Received: {dateTo}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    parsedDateTo = tempDateTo.Date;  // حفظ التاريخ بدون الوقت
+                }
+
+                using (var connection = new OracleConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var transaction = connection.BeginTransaction()) // بدء معاملة
+                    {
+                        try
+                        {
+                            using (var command = connection.CreateCommand())
+                            {
+                                command.Transaction = transaction;
+
+                                // إذا كانت الفلاتر موجودة، حذف البيانات وفقًا للتواريخ
+                                if (parsedDateFrom.HasValue && parsedDateTo.HasValue)
+                                {
+                                    command.CommandText = @"
+                            DELETE FROM ""TLIlogUsersActions""
+                            WHERE ""Date"" BETWEEN :DateFrom AND :DateTo";
+
+                                    // إعداد المعاملات
+                                    command.Parameters.Clear();
+                                    command.Parameters.Add(new OracleParameter("DateFrom", OracleDbType.Date) { Value = parsedDateFrom.Value });
+                                    command.Parameters.Add(new OracleParameter("DateTo", OracleDbType.Date) { Value = parsedDateTo.Value });
+                                }
+                                else
+                                {
+                                    // إذا لم تكن هناك فلاتر، حذف جميع السجلات
+                                    command.CommandText = "DELETE FROM \"TLIlogUsersActions\"";
+                                }
+
+                                // تنفيذ الأمر
+                                int deletedRows = command.ExecuteNonQuery();
+
+                                if (deletedRows == 0)
+                                {
+                                    // لا يوجد سجلات تم حذفها
+                                    return new Response<string>(false, null, null, "No records found to delete", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                            }
+
+                            transaction.Commit(); // تأكيد المعاملة
+                        }
+                        catch (Exception)
+                        {
+                            transaction.Rollback(); // إلغاء المعاملة عند حدوث خطأ
+                            throw;
+                        }
+                    }
+                }
+
+                return new Response<string>(true, "Log history cleared successfully", null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception err)
+            {
+                // تسجيل الخطأ أو معالجته
+                return new Response<string>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+
+
 
 
     }

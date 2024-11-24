@@ -571,6 +571,58 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<AddDynamicAttViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+
+        [HttpPost("getLayersAndAttributesStaticAndDynamic")]
+        public IActionResult getLayersAndAttributesStaticAndDynamic([FromBody] AddDynamicObject addDynamicObject, string TabelName, int? CategoryId)
+        {
+            if (ModelState.IsValid)
+            {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
+
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.DynamicAttService.getLayersAndAttributesStaticAndDynamic(userId, TabelName, CategoryId, true);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var UserId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.DynamicAttService.getLayersAndAttributesStaticAndDynamic(UserId, TabelName, CategoryId, true);
+                    return Ok(response);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddDynamicAttViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         [HttpPost("EditDynamicAttLibraryAndInstallation")]
         public async Task<IActionResult> EditDynamicAttLibraryAndInstallation(int DynamicAttributeId, [FromBody] AddDynamicObject addDynamicObject)
         {
@@ -7136,40 +7188,52 @@ namespace TLIS_API.Controllers
         [ProducesResponseType(200, Type = typeof(GetForAddDynamicAttribute))]
         public IActionResult GeStaticAttsAndDynamicAttsByTableName(String TabelName, bool IsLibrary, int? CategoryId)
         {
-            string authHeader = HttpContext.Request.Headers["Authorization"];
-
-            if (authHeader.ToLower().StartsWith("bearer "))
+            if (ModelState.IsValid)
             {
+                string authHeader = HttpContext.Request.Headers["Authorization"];
 
-                var token = authHeader.Substring("Bearer ".Length).Trim();
-                var handler = new JwtSecurityTokenHandler();
-                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+                if (authHeader.ToLower().StartsWith("bearer "))
+                {
 
-                if (jsonToken == null)
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                    if (jsonToken == null)
+                    {
+                        return Unauthorized();
+                    }
+
+                    string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                    var userId = Convert.ToInt32(userInfo);
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var response = _unitOfWorkService.DynamicAttService.getLayersAndAttributesStaticAndDynamic(userId, TabelName, CategoryId, true);
+                    return Ok(response);
+                }
+                else if (authHeader.ToLower().StartsWith("basic "))
+                {
+
+                    var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
+                    var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
+                    var username = decodedUsernamePassword.Split(':')[0];
+                    var password = decodedUsernamePassword.Split(':')[1];
+                    var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                    var UserId = _unitOfWork.DynamicAttRepository.ReturnUserIdToExternalSys(username);
+                    var response = _unitOfWorkService.DynamicAttService.getLayersAndAttributesStaticAndDynamic(UserId, TabelName, CategoryId, true);
+                    return Ok(response);
+                }
+                else
                 {
                     return Unauthorized();
                 }
 
-                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
-                var userId = Convert.ToInt32(userInfo);
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GeStaticAttsAndDynamicAttsByTableName(TabelName, IsLibrary, CategoryId, userId, null);
-                return Ok(response);
-            }
-            else if (authHeader.ToLower().StartsWith("basic "))
-            {
-
-                var encodedUsernamePassword = authHeader.Substring("Basic ".Length).Trim();
-                var decodedUsernamePassword = Encoding.UTF8.GetString(Convert.FromBase64String(encodedUsernamePassword));
-                var username = decodedUsernamePassword.Split(':')[0];
-                var password = decodedUsernamePassword.Split(':')[1];
-                var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                var response = _unitOfWorkService.InternalApiService.GeStaticAttsAndDynamicAttsByTableName(TabelName, IsLibrary, CategoryId, null, username);
-                return Ok(response);
             }
             else
             {
-                return Unauthorized();
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<AddDynamicAttViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
 
         }

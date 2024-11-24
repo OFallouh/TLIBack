@@ -112,6 +112,7 @@ using TLIS_DAL.ViewModels.AreaDTOs;
 using TLIS_DAL.ViewModels.RegionDTOs;
 using TLIS_DAL.ViewModels.SiteStatusDTOs;
 using TLIS_DAL.ViewModels.SideArmTypeDTOs;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 
 namespace TLIS_Service.Services
@@ -8456,7 +8457,7 @@ namespace TLIS_Service.Services
                 return new Response<ReturnWithFilters<DynamicAttViewModel>>(true, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
             }
         }
-        public Response<GetForAddDynamicAttribute> GeStaticAttsAndDynamicAttsByTableName(string TabelName, bool IsLibrary, int? CategoryId)
+        public Response<GetForAddDynamicAttribute> GeStaticAttsAndDynamicAttsByTableName(string TabelName, bool IsLibrary, int? CategoryId,int UserId,bool ExternalSys)
         {
             try
             {
@@ -9507,6 +9508,18 @@ namespace TLIS_Service.Services
                     baseInstAttView.Add(baseInstAttViews6);
                     attributes.Operation = baseInstAttView;
                 }
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
+                }
                 return new Response<GetForAddDynamicAttribute>(true, attributes, null, null, (int)Constants.ApiReturnCode.success);
             }
             catch (Exception err)
@@ -9514,7 +9527,7 @@ namespace TLIS_Service.Services
                 return new Response<GetForAddDynamicAttribute>(false, null, null, err.Message, (int)Constants.ApiReturnCode.fail);
             }
         }
-        public Response<getLayersAndAttributesStaticAndDynamic> getLayersAndAttributesStaticAndDynamic(string TabelName, int? CategoryId)
+        public Response<getLayersAndAttributesStaticAndDynamic> getLayersAndAttributesStaticAndDynamic(int UserId,string TabelName, int? CategoryId,bool ExternalSys)
         {
             try
             {
@@ -16190,6 +16203,18 @@ namespace TLIS_Service.Services
                 baseInstAttView.Add(baseInstAttViews6);
                 attributes.Operation = baseInstAttView;
                 attributes.layers = layers;
+                if (ExternalSys == true)
+                {
+                    TLIhistory tLIhistory = new TLIhistory()
+                    {
+                        TablesNameId = TableNameEntity.Id,
+                        ExternalSysId = UserId,
+                        HistoryTypeId = 4,
+
+                    };
+                    _dbContext.TLIhistory.Add(tLIhistory);
+                    _dbContext.SaveChanges();
+                }
                 return new Response<getLayersAndAttributesStaticAndDynamic>(true, attributes, null, null, (int)Constants.ApiReturnCode.success);
             }
             catch (Exception err)

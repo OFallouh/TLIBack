@@ -91,5 +91,6 @@ namespace TLIS_Service.IService
         Task<string> GetSMIS_Site_Test(string UserName, string Password, string ViewName, string Paramater, string RowContent);
         Response<IEnumerable<TLIlogUsersActionsViewModel>> GetLogsWithPaginationAndSorting(FilterRequest filterRequest);
         Response<string> ClearAllHistory(string connectionString, string dateFrom, string dateTo);
+        Response<string> ClearLogHistory(string connectionString, string dateFrom = null, string dateTo = null);
     }
 }

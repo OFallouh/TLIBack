@@ -663,5 +663,13 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.ClearAllHistory(ConnectionString, dateFrom, dateTo);
             return Ok(response);
         }
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("ClearAllLogHistory")]
+        public IActionResult ClearAllLogHistory(string dateFrom, string dateTo)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.SiteService.ClearLogHistory(ConnectionString, dateFrom, dateTo);
+            return Ok(response);
+        }
     }
 }
