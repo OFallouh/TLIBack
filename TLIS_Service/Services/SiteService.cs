@@ -82,6 +82,7 @@ using MimeKit.IO.Filters;
 using static TLIS_Service.Services.SiteService;
 using Newtonsoft.Json;
 using System.Globalization;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 
 
@@ -14229,24 +14230,18 @@ namespace TLIS_Service.Services
                 // التحقق من تنسيق DateFrom
                 if (!DateTime.TryParseExact(dateFrom, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDateFrom))
                 {
-                   
                     return new Response<string>(false, null, null, $"Invalid DateFrom format. Received: {dateFrom}", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
 
                 // التحقق من تنسيق DateTo
                 if (!DateTime.TryParseExact(dateTo, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDateTo))
                 {
-                 
                     return new Response<string>(false, null, null, $"Invalid DateTo format. Received: {dateTo}", (int)Helpers.Constants.ApiReturnCode.fail);
                 }
 
                 // التأكد من ضبط الوقت على 12:00:00 AM
-                parsedDateFrom = parsedDateFrom.Date;  // يعيد التاريخ فقط بدون الوقت
-                parsedDateTo = parsedDateTo.Date;      // يعيد التاريخ فقط بدون الوقت
-
-                // تنسيق التواريخ ليتم عرضها بدون وقت
-                string formattedDateFrom = parsedDateFrom.ToString("yyyy-MM-dd");
-                string formattedDateTo = parsedDateTo.ToString("yyyy-MM-dd");
+                parsedDateFrom = parsedDateFrom.Date;
+                parsedDateTo = parsedDateTo.Date;
 
                 using (var connection = new OracleConnection(connectionString))
                 {
@@ -14263,11 +14258,12 @@ namespace TLIS_Service.Services
                                 while (true)
                                 {
                                     command.CommandText = @"
-                            DELETE FROM ""TLIhistoryDet"" 
-                            WHERE ""HistoryId"" IN (
-                                SELECT ""Id"" FROM ""TLIhistory"" 
-                                WHERE TRUNC(""HistoryDate"") BETWEEN :DateFrom AND :DateTo
-                            )";
+                                DELETE FROM ""TLIhistoryDet""
+                                WHERE ""HistoryId"" IN (
+                                    SELECT ""Id""
+                                    FROM ""TLIhistory""
+                                    WHERE TRUNC(""HistoryDate"") BETWEEN TRUNC(:DateFrom) AND TRUNC(:DateTo)
+                                )";
 
                                     // إعداد المعاملات
                                     command.Parameters.Clear();
@@ -14284,8 +14280,8 @@ namespace TLIS_Service.Services
                                 while (true)
                                 {
                                     command.CommandText = @"
-                            DELETE FROM ""TLIhistory"" 
-                            WHERE TRUNC(""HistoryDate"") BETWEEN :DateFrom AND :DateTo";
+                                DELETE FROM ""TLIhistory""
+                                WHERE TRUNC(""HistoryDate"") BETWEEN TRUNC(:DateFrom) AND TRUNC(:DateTo)";
 
                                     // إعداد المعاملات
                                     command.Parameters.Clear();
@@ -14301,10 +14297,10 @@ namespace TLIS_Service.Services
 
                             transaction.Commit(); // تأكيد المعاملة
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
                             transaction.Rollback(); // إلغاء المعاملة عند حدوث خطأ
-                            throw;
+                            throw new Exception($"Error during history deletion: {ex.Message}", ex);
                         }
                     }
                 }
