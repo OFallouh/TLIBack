@@ -70,24 +70,36 @@ namespace TLIS_Service.Services
             try
             {
                 string fileName = TableName;
-                //Check if fileDirectory is exists return true or false if false create new directory
+
+                // Check if fileDirectory exists; if not, create it
                 if (!Directory.Exists(fileDirectory))
                 {
                     Directory.CreateDirectory(fileDirectory);
                 }
-                //Create new file path to my file
+
+                // Create new file path
                 var filePath = Path.Combine(fileDirectory, fileName + ".xlsx");
-                //if file path is already exists return true or false if true delete filePath
+
+                // If file exists, delete it
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
                 }
+
                 FileInfo file = new FileInfo(filePath);
-                //take TableName record from TLItablesNames 
+
+                // Get TableName record from TLItablesNames
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableName);
-                //Get activated attributes depened on TableName
-                List<string> TableNameAtts = _unitOfWork.AttributeActivatedRepository.GetAttributeActivated(TableName, null, CategoryId).AsQueryable().Where(x => x.enable == true).Select(x => x.Key).ToList();
-                //Delete Id because this file will import to database (no need to Id)
+
+                // Get activated attributes based on TableName
+                List<string> TableNameAtts = _unitOfWork.AttributeActivatedRepository
+                    .GetAttributeActivated(TableName, null, CategoryId)
+                    .AsQueryable()
+                    .Where(x => x.enable == true)
+                    .Select(x => x.Key)
+                    .ToList();
+
+                // Remove unwanted attributes
                 foreach (var e in TableNameAtts.ToList())
                 {
                     if (e.ToLower().Contains("_name"))
@@ -101,13 +113,17 @@ namespace TLIS_Service.Services
                     }
                 }
                 TableNameAtts.Remove("Id");
+
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
                 using (ExcelPackage package = new ExcelPackage())
                 {
                     var worksheet = package.Workbook.Worksheets.Add(TableName);
-                    //variable specify the first column in excel file
+
+                    // Specify the starting column in Excel
                     int j = 1;
-                    //Get related table depened on table name
+
+                    // Get related tables based on table name
                     var RelatedTables = GetTableNameRelatedTables(TableName);
                     List<string> RelatedTable = new List<string>();
                     string RelatedTab = "";
@@ -117,24 +133,25 @@ namespace TLIS_Service.Services
                         RelatedTable.Add(RelatedTab);
                     }
                     var Table = TableNameAtts.Union(RelatedTable).ToList();
-                    //loop on each property in the table i deal with
+
+                    // Loop through each property in the main table
                     foreach (var TableNameAtt in Table)
                     {
-                        //fill the excel file with attribute name 
-                        //Cells[1, j] number 1 refer to first row and j refer to column
                         worksheet.Cells[1, j].Value = TableNameAtt;
-                        //if peoperty have id that's mean that the property is foreign key and should the user take value from list from database
-                        if (TableNameAtt.Contains("Id") || TableNameAtt.Contains("Suppliers") || TableNameAtt.Contains("Designers") || TableNameAtt.Contains("Manufacturers") || TableNameAtt.Contains("Vendors")|| TableNameAtt.Contains("RFUType") || TableNameAtt.Contains("IntegratedWith") || TableNameAtt.Contains("Contractors") || TableNameAtt.Contains("Conultants"))
+
+                        // Handle dropdown for foreign keys or specific fields
+                        if (TableNameAtt.Contains("Id") || TableNameAtt.Contains("Suppliers") ||
+                            TableNameAtt.Contains("Designers") || TableNameAtt.Contains("Manufacturers") ||
+                            TableNameAtt.Contains("Vendors") || TableNameAtt.Contains("RFUType") ||
+                            TableNameAtt.Contains("IntegratedWith") || TableNameAtt.Contains("Contractors") ||
+                            TableNameAtt.Contains("Conultants"))
                         {
-                            //check if table that the foreign key refer to have values in database
-                            //if (RelatedTables.Find(x => x.Key == TableNameAtt).Value.Count > 0)
-                            if (RelatedTables.Find(x => x.Key == TableNameAtt).Value != null ? RelatedTables.Find(x => x.Key == TableNameAtt).Value.Count > 0 : false)
+                            if (RelatedTables.Find(x => x.Key == TableNameAtt).Value != null ?
+                                RelatedTables.Find(x => x.Key == TableNameAtt).Value.Count > 0 : false)
                             {
-                                //Get values for that table
                                 var records = RelatedTables.Find(x => x.Key == TableNameAtt);
                                 if (records.Value != null)
                                 {
-                                    //Add validation from row number 2 to row number 10000  
                                     var validation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, j, 10000, j].Address);
                                     validation.ShowErrorMessage = true;
                                     validation.ErrorStyle = ExcelDataValidationWarningStyle.warning;
@@ -147,81 +164,96 @@ namespace TLIS_Service.Services
                                 }
                             }
                         }
+                        // Add dropdown for boolean fields
+                        else if (TableNameAtt.ToLower().Contains("bool"))
+                        {
+                            var validation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, j, 10000, j].Address);
+                            validation.ShowErrorMessage = true;
+                            validation.ErrorStyle = ExcelDataValidationWarningStyle.warning;
+                            validation.ErrorTitle = "Invalid Selection";
+                            validation.Error = "Please select either True or False.";
+                            validation.Formula.Values.Add("True");
+                            validation.Formula.Values.Add("False");
+                        }
+
                         j++;
                     }
-                    //Get dynamic attributes depened on table name id and category id if i deal with civil without leg 
-                    var TableNameDynamicAtts = _unitOfWork.DynamicAttRepository.GetDynamicLibAtts(TableNameEntity.Id, CategoryId).AsQueryable().Where(x => !x.disable).ToList();
-                    //loop on each dynamic attribute in dynamic attributes list
+
+                    // Get dynamic attributes
+                    var TableNameDynamicAtts = _unitOfWork.DynamicAttRepository
+                        .GetDynamicLibAtts(TableNameEntity.Id, CategoryId)
+                        .AsQueryable()
+                        .Where(x => !x.disable)
+                        .ToList();
+
+                    // Loop through dynamic attributes
                     foreach (var TableNameDynamicAtt in TableNameDynamicAtts)
                     {
-                   
-                        //j refer to column after last column of activated attributes 
-                        //fill dynamic attributes
                         worksheet.Cells[1, j].Value = TableNameDynamicAtt.Key;
-                        //if dynamic attributed data type is list then should get data for this column from TLIdynamicListValues
-                        if (TableNameDynamicAtt.DataType == "List")
+
+                        if (TableNameDynamicAtt.DataType.ToLower() == "bool")
                         {
-                            //Get value from TLIdynamicListValues
+                            var validation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, j, 10000, j].Address);
+                            validation.ShowErrorMessage = true;
+                            validation.ErrorStyle = ExcelDataValidationWarningStyle.warning;
+                            validation.ErrorTitle = "Invalid Selection";
+                            validation.Error = "Please select either True or False.";
+                            validation.Formula.Values.Add("True");
+                            validation.Formula.Values.Add("False");
+                        }
+                        else if (TableNameDynamicAtt.DataType.ToLower() == "list")
+                        {
                             var values = _unitOfWork.DynamicListValuesRepository.GetWhere(x => x.dynamicAttId == TableNameDynamicAtt.Id).ToList();
                             if (values.Count > 0)
                             {
-                                //Add validation from row number 2 to row number 10000 
                                 var validation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, j, 10000, j].Address);
                                 validation.ShowErrorMessage = true;
                                 validation.ErrorStyle = ExcelDataValidationWarningStyle.warning;
-                                validation.ErrorTitle = "An invalid value was entered";
-                                validation.Error = "Select a value from the list";
-
+                                validation.ErrorTitle = "Invalid Selection";
+                                validation.Error = "Select a value from the list.";
                                 foreach (var value in values)
                                 {
                                     validation.Formula.Values.Add(value.Value);
                                 }
                             }
                         }
-
-                        if (TableNameDynamicAtt.DataType.ToLower() == "datetime")
+                        else if (TableNameDynamicAtt.DataType.ToLower() == "datetime")
                         {
-
-                            // worksheet.Column(j).Style.Numberformat.Format = "MM/dd/yyyy h:mm tt";
                             var validation = worksheet.DataValidations.AddDateTimeValidation(worksheet.Cells[2, j, 1000, j].Address);
                             validation.ShowErrorMessage = true;
                             validation.ErrorStyle = ExcelDataValidationWarningStyle.warning;
-                            validation.ErrorTitle = "An invalid value was entered";
-                            validation.Error = "The date you have enterd is invalid,please use mm/dd/yyyy Hh:Mm:ss AM format";
-                            //Minimum allowed date
+                            validation.ErrorTitle = "Invalid Date";
+                            validation.Error = "The date you have entered is invalid. Please use mm/dd/yyyy Hh:Mm:ss AM format.";
                             validation.Formula.Value = new DateTime(2000, 03, 16, 12, 0, 0);
-                            //Maximum allowed date
                             validation.Formula2.Value = new DateTime(2050, 01, 01, 12, 0, 0);
                             validation.AllowBlank = true;
 
                             worksheet.Cells[2, j].Value = TableNameDynamicAtt.Value;
-
-
                         }
                         else
                         {
                             worksheet.Cells[2, j].Value = TableNameDynamicAtt.Value;
                         }
+
                         j++;
                     }
-                    // Set some document properties
+
+                    // Set document properties
                     package.Workbook.Properties.Title = TableName;
                     package.Workbook.Properties.Author = "DIS";
                     worksheet.Calculate();
                     worksheet.Cells.AutoFitColumns(0);
                     package.SaveAs(file);
-
-
                 }
+
                 return new Response<string>(true, file.DirectoryName, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
-
                 return new Response<string>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
-
         }
+
 
         //public Response<List<int>> ImportFile(string FilePath, string TableName)
         //{
@@ -5243,32 +5275,19 @@ namespace TLIS_Service.Services
                         }
 
                         float spacelibrary_test = 0;
-                        if (dt.Columns.Contains("SpaceLibrary"))
+                       
+                        if (diameter_test == 0)
                         {
-                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
-                            {
-                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                                if (test == false)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                            }
-                            else
-                            {
-                                if (diameter_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Diameter can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-
-                                else
-                                {
-                                    spacelibrary_test = Convert.ToSingle(3.14) * (float)Math.Pow(diameter_test / 2, 2); ;
-                                }
-
-                            }
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Diameter must to be bigger of zero in the Row {j + 2}"));
+                            goto ERROR;
                         }
+                        else
+                        {
+                            spacelibrary_test = Convert.ToSingle(3.14) * (float)Math.Pow(diameter_test / 2, 2); ;
+                        }
+
+                           
+                        
 
                         int polarityTypeId_test = 0;
                         if (dt.Columns.Contains("polarityTypeId"))
