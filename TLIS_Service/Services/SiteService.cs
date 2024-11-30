@@ -8325,32 +8325,59 @@ namespace TLIS_Service.Services
             {
                 var serviceProvider = _services.BuildServiceProvider();
                 var configuration = serviceProvider.GetService<IConfiguration>();
-                string filePath = configuration["SMIS_API_URL"];  // هذا المسار سيكون إلى ملف JSON
+                string apiUrl = configuration["SMIS_API_URL"];  // رابط الـ API
 
-                if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                if (string.IsNullOrEmpty(apiUrl))
                 {
-                    return "الملف غير موجود أو المسار غير صحيح.";
+                    return "رابط الـ API غير موجود أو غير صحيح.";
                 }
 
-                string responseText = await File.ReadAllTextAsync(filePath);
-                var siteDataList = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(responseText);
+                // تكوين الطلب
+                HttpWebRequest request = !string.IsNullOrEmpty(Paramater)
+                    ? (HttpWebRequest)WebRequest.Create($"{apiUrl}{UserName}/{Password}/{ViewName}/'{Paramater}'")
+                    : (HttpWebRequest)WebRequest.Create($"{apiUrl}{UserName}/{Password}/{ViewName}");
+
+                request.Method = "GET";
+
+                if (!string.IsNullOrEmpty(RowContent))
+                {
+                    request.ContentType = "text/plain";
+                    ASCIIEncoding encoding = new ASCIIEncoding();
+                    byte[] bodyText = encoding.GetBytes(RowContent);
+
+                    using (Stream newStream = request.GetRequestStream())
+                    {
+                        newStream.Write(bodyText, 0, bodyText.Length);
+                    }
+                    request.ContentLength = bodyText.Length;
+                }
+
+                // الحصول على الاستجابة من API
+                string smisResponse;
+                using (WebResponse webResponse = await request.GetResponseAsync())
+                {
+                    using (StreamReader reader = new StreamReader(webResponse.GetResponseStream()))
+                    {
+                        smisResponse = await reader.ReadToEndAsync();
+                    }
+                }
+
+                // تحويل النص إلى قائمة من الكائنات
+                var siteDataList = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
 
                 using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
                     foreach (var item in siteDataList)
                     {
-                        // تحقق من وجود الكيانات الفرعية وحفظها بشكل منفصل
                         int areaId = await GetAreaIdAsync(item.Area);
                         string regionCode = await GetRegionCodeAsync(item.RegionCode);
                         int siteStatusId = await GetSiteStatusIdAsync(item.siteStatus);
                         string locationTypeId = await GetLocationTypeIdAsync(item.LocationType);
 
-                        // جلب الكيان الحالي من قاعدة البيانات
                         var existingSite = _unitOfWork.SiteRepository.GetWhereFirst(x => x.SiteCode == item.Sitecode || x.SiteName == item.Sitename);
 
                         if (existingSite != null)
                         {
-                            // تحديث الكيان الحالي
                             existingSite.SiteCode = item.Sitecode;
                             existingSite.SiteName = item.Sitename;
                             existingSite.LocationType = locationTypeId;
@@ -8369,7 +8396,6 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            // إضافة كيان جديد
                             var newSite = new TLIsite
                             {
                                 SiteCode = item.Sitecode,
@@ -8405,6 +8431,7 @@ namespace TLIS_Service.Services
                 return ex.Message;
             }
         }
+
 
         private async Task UpdateSiteAsync(TLIsite site, SiteDataFromOutsiderApiViewModel item)
         {
@@ -8475,10 +8502,10 @@ namespace TLIS_Service.Services
 
         private async Task<int> GetSiteStatusIdAsync(string siteStatus)
         {
-            var existingStatus = await _context.TLIsiteStatus.FirstOrDefaultAsync(x => x.Name == siteStatus);
+            var existingStatus = await _context.TLIsiteStatus.FirstOrDefaultAsync(x => x.Name == "On Air");
             if (existingStatus != null) return existingStatus.Id;
 
-            var newStatus = new TLIsiteStatus { Name = siteStatus };
+            var newStatus = new TLIsiteStatus { Name = "On Air" };
             await _unitOfWork.SiteStatusRepository.AddAsync(newStatus);
             await _unitOfWork.SaveChangesAsync();
             return newStatus.Id;
@@ -8493,48 +8520,6 @@ namespace TLIS_Service.Services
             await _unitOfWork.LocationTypeRepository.AddAsync(newLocationType);
             await _unitOfWork.SaveChangesAsync();
             return newLocationType.Id.ToString();
-        }
-
-
-        public async Task<string> GetSMIS_Site_Test(string UserName, string Password, string ViewName, string Paramater, string RowContent)
-        {
-            try
-            {
-                // إعداد الاتصال بخدمات API من خلال الـ configuration
-                ServiceProvider serviceProvider = _services.BuildServiceProvider();
-                IConfiguration Configuration = serviceProvider.GetService<IConfiguration>();
-
-                // بناء الـ URL بناءً على المعطيات المدخلة
-                HttpWebRequest Request = !string.IsNullOrEmpty(Paramater) ?
-                    (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"] + $"{UserName}/{Password}/{ViewName}/'{Paramater}'") :
-                    (HttpWebRequest)WebRequest.Create(Configuration["SMIS_API_URL"] + $"{UserName}/{Password}/{ViewName}");
-
-                Request.Method = "GET";  // تحديد نوع الطلب
-
-                // إذا كان هناك محتوى في RowContent، نقوم بإضافته في الجسم
-                if (!string.IsNullOrEmpty(RowContent))
-                {
-                    Request.ContentType = "text/plain";
-                    ASCIIEncoding encoding = new ASCIIEncoding();
-                    byte[] BodyText = encoding.GetBytes(RowContent);
-
-                    Stream NewStream = Request.GetRequestStream();
-                    NewStream.Write(BodyText, 0, BodyText.Length);
-                    Request.ContentLength = BodyText.Length;
-                }
-
-                // استلام الاستجابة من الـ API
-                using (WebResponse WebResponse = Request.GetResponse())
-                {
-                    // إذا تم الوصول بنجاح، إرجاع true
-                    return "true";
-                }
-            }
-            catch (Exception ex)
-            {
-                // إذا حدث استثناء (مثل فشل في الاتصال أو استجابة خاطئة من الـ API)، إرجاع رسالة الخطأ أو false
-                return "false";
-            }
         }
 
         public Response<List<RegionViewModel>> GetAllRegion()

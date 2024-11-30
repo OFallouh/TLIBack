@@ -327,14 +327,7 @@ namespace TLIS_API.Controllers
             var response = await _unitOfWorkService.SiteService.GetSMIS_Site(UserName, Password, ViewName, Paramater, RowContent);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpPost("GetSMIS_Site_Test")]
-        [ProducesResponseType(200, Type = typeof(string))]
-        public async Task<IActionResult> GetSMIS_Site_Test(string UserName, string Password, string ViewName, string Paramater, [FromBody] string RowContent)
-        {
-            var response = await _unitOfWorkService.SiteService.GetSMIS_Site_Test(UserName, Password, ViewName, Paramater, RowContent);
-            return Ok(response);
-        }
+   
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetAllSiteStatus")]
         [ProducesResponseType(200, Type = typeof(List<object>))]
