@@ -17,7 +17,7 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
         [JsonProperty("CODE")]
         public string Sitecode { get; set; }
 
-        [JsonProperty("Site Type")]
+        [JsonProperty("SITE_LOCATION")]
         public string LocationType { get; set; }
 
         [JsonProperty("LATITUDE")]
@@ -55,9 +55,6 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
 
         [JsonProperty("ReservedSpace")]
         public float ReservedSpace { get; set; } // (قد تكون غير موجودة في الاستجابة)
-
-        [JsonProperty("SITE_LOCATION")]
-        public string SiteLocation { get; set; } // لم يكن موجودًا في النموذج الأصلي
 
         public DateTime SiteVisiteDate { get; set; } // حقل مضاف لأغراضك
     }
