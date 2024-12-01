@@ -71,16 +71,16 @@ namespace TLIS_Service.Services
             {
                 string fileName = TableName;
 
-                // Check if fileDirectory exists; if not, create it
+                // تحقق مما إذا كان المجلد موجودًا، إذا لم يكن موجودًا قم بإنشائه
                 if (!Directory.Exists(fileDirectory))
                 {
                     Directory.CreateDirectory(fileDirectory);
                 }
 
-                // Create new file path
+                // مسار الملف الجديد
                 var filePath = Path.Combine(fileDirectory, fileName + ".xlsx");
 
-                // If file exists, delete it
+                // إذا كان الملف موجودًا، قم بحذفه
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
@@ -88,37 +88,41 @@ namespace TLIS_Service.Services
 
                 FileInfo file = new FileInfo(filePath);
 
-                // Get TableName record from TLItablesNames
+                // جلب الكيان المرتبط باسم الجدول
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableName);
 
-                // Get activated attributes based on TableName
-                List<string> TableNameAtts = _unitOfWork.AttributeActivatedRepository
+                // جلب الحقول النشطة مع نوع البيانات
+                var TableNameAttsWithDataType = _unitOfWork.AttributeActivatedRepository
                     .GetAttributeActivated(TableName, null, CategoryId)
                     .AsQueryable()
                     .Where(x => x.enable == true)
-                    .Select(x => x.Key)
+                    .Select(x => new { x.Key, x.DataType }) // استخراج الاسم والنوع
                     .ToList();
 
-                // Remove unwanted attributes
-                foreach (var e in TableNameAtts.ToList())
+                // إزالة الحقول غير المرغوبة
+                foreach (var e in TableNameAttsWithDataType.ToList())
                 {
-                    if (e.ToLower().Contains("_name"))
+                    if (e.Key.ToLower().Contains("_name"))
                     {
-                        TableNameAtts.Remove(e);
+                        TableNameAttsWithDataType.Remove(e);
                     }
 
-                    if (TableName == "TLIcivilWithLegLibrary" && e.ToLower() == "NumberOfLegs".ToLower())
+                    if (TableName == "TLIcivilWithLegLibrary" && e.Key.ToLower() == "NumberOfLegs".ToLower())
                     {
-                        TableNameAtts.Remove(e);
+                        TableNameAttsWithDataType.Remove(e);
                     }
+
                     if ((TableName != "TLIcivilWithLegLibrary" || TableName != "TLIcivilWithoutLegLibrary" || TableName != "TLIcivilNonSteelLibrary"
                         || TableName != "TLIcabinetPowerLibrary" || TableName != "TLIcabinetTelecomLibrary") &&
-                            e.ToLower() == "spacelibrary".ToLower())
+                            e.Key.ToLower() == "spacelibrary".ToLower())
                     {
-                        TableNameAtts.Remove(e);
+                        TableNameAttsWithDataType.Remove(e);
                     }
                 }
-                TableNameAtts.Remove("Id");
+                TableNameAttsWithDataType.RemoveAll(x => x.Key.ToLower() == "id");
+
+                // استخراج الحقول فقط
+                var TableNameAtts = TableNameAttsWithDataType.Select(x => x.Key).ToList();
 
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -126,52 +130,15 @@ namespace TLIS_Service.Services
                 {
                     var worksheet = package.Workbook.Worksheets.Add(TableName);
 
-                    // Specify the starting column in Excel
                     int j = 1;
 
-                    // Get related tables based on table name
-                    var RelatedTables = GetTableNameRelatedTables(TableName);
-                    List<string> RelatedTable = new List<string>();
-                    string RelatedTab = "";
-                    foreach (var item in RelatedTables)
+                    // إضافة الأعمدة إلى Excel
+                    foreach (var TableNameAtt in TableNameAttsWithDataType)
                     {
-                        RelatedTab = item.Key;
-                        RelatedTable.Add(RelatedTab);
-                    }
-                    var Table = TableNameAtts.Union(RelatedTable).ToList();
+                        worksheet.Cells[1, j].Value = TableNameAtt.Key;
 
-                    // Loop through each property in the main table
-                    foreach (var TableNameAtt in Table)
-                    {
-                        worksheet.Cells[1, j].Value = TableNameAtt;
-
-                        // Handle dropdown for foreign keys or specific fields
-                        if (TableNameAtt.Contains("Id") || TableNameAtt.Contains("Suppliers") ||
-                            TableNameAtt.Contains("Designers") || TableNameAtt.Contains("Manufacturers") ||
-                            TableNameAtt.Contains("Vendors") || TableNameAtt.Contains("RFUType") ||
-                            TableNameAtt.Contains("IntegratedWith") || TableNameAtt.Contains("Contractors") ||
-                            TableNameAtt.Contains("Conultants"))
-                        {
-                            if (RelatedTables.Find(x => x.Key == TableNameAtt).Value != null ?
-                                RelatedTables.Find(x => x.Key == TableNameAtt).Value.Count > 0 : false)
-                            {
-                                var records = RelatedTables.Find(x => x.Key == TableNameAtt);
-                                if (records.Value != null)
-                                {
-                                    var validation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, j, 10000, j].Address);
-                                    validation.ShowErrorMessage = true;
-                                    validation.ErrorStyle = ExcelDataValidationWarningStyle.warning;
-                                    validation.ErrorTitle = "An invalid value was entered";
-                                    validation.Error = "Select a value from the list";
-                                    foreach (var value in records.Value)
-                                    {
-                                        validation.Formula.Values.Add(value.Value);
-                                    }
-                                }
-                            }
-                        }
-                        // Add dropdown for boolean fields
-                        else if (TableNameAtt.ToLower().Contains("bool"))
+                        // تحقق إذا كان النوع bool وأضف الخيارات True و False
+                        if (TableNameAtt.DataType.ToLower() == "bool")
                         {
                             var validation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, j, 10000, j].Address);
                             validation.ShowErrorMessage = true;
@@ -181,6 +148,8 @@ namespace TLIS_Service.Services
                             validation.Formula.Values.Add("True");
                             validation.Formula.Values.Add("False");
                         }
+
+                        // يمكن إضافة معالجات لأنواع أخرى هنا
 
                         j++;
                     }
