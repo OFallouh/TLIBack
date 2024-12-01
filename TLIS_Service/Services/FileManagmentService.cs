@@ -111,6 +111,12 @@ namespace TLIS_Service.Services
                     {
                         TableNameAtts.Remove(e);
                     }
+                    if ((TableName != "TLIcivilWithLegLibrary" || TableName != "TLIcivilWithoutLegLibrary" || TableName != "TLIcivilNonSteelLibrary"
+                        || TableName != "TLIcabinetPowerLibrary" || TableName != "TLIcabinetTelecomLibrary") &&
+                            e.ToLower() == "spacelibrary".ToLower())
+                    {
+                        TableNameAtts.Remove(e);
+                    }
                 }
                 TableNameAtts.Remove("Id");
 
@@ -3875,36 +3881,24 @@ namespace TLIS_Service.Services
                         }
 
                         float spacelibrary_test = 0;
-                        if (dt.Columns.Contains("SpaceLibrary"))
+                      
+                        if (length_test == 0)
                         {
-                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
-                            {
-                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                                if (test == false)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                            }
-                            else
-                            {
-                                if (length_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                if (width_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                else
-                                {
-                                    spacelibrary_test = length_test * width_test;
-                                }
-
-                            }
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
                         }
+                        if (width_test == 0)
+                        {
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
+                        }
+                        else
+                        {
+                            spacelibrary_test = length_test * width_test;
+                        }
+
+                            
+                        
 
                         List<dynamic> DynamicAttList = new List<dynamic>();
                         if (ActColumns > 0)
@@ -4548,36 +4542,24 @@ namespace TLIS_Service.Services
                         }
 
                         float spacelibrary_test = 0;
-                        if (dt.Columns.Contains("SpaceLibrary"))
+                      
+                        if (length_test == 0)
                         {
-                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
-                            {
-                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                                if (test == false)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                            }
-                            else
-                            {
-                                if (length_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                if (width_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                else
-                                {
-                                    spacelibrary_test = length_test * width_test;
-                                }
-
-                            }
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
                         }
+                        if (width_test == 0)
+                        {
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
+                        }
+                        else
+                        {
+                            spacelibrary_test = length_test * width_test;
+                        }
+
+                            
+                        
 
                         int diversityTypeId_test = 0;
                         if (dt.Columns.Contains("diversityTypeId"))
@@ -5988,36 +5970,24 @@ namespace TLIS_Service.Services
                         }
 
                         float spacelibrary_test = 0;
-                        if (dt.Columns.Contains("SpaceLibrary"))
+                        
+                        if (height_test == 0)
                         {
-                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
-                            {
-                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                                if (test == false)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                            }
-                            else
-                            {
-                                if (height_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"height can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                if (width_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                else
-                                {
-                                    spacelibrary_test = height_test * width_test;
-                                }
-
-                            }
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"height must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
                         }
+                        if (width_test == 0)
+                        {
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
+                        }
+                        else
+                        {
+                            spacelibrary_test = height_test * width_test;
+                        }
+
+                            
+                        
 
                         int parityId_test = 0;
                         if (dt.Columns.Contains("parityId"))
@@ -6663,36 +6633,24 @@ namespace TLIS_Service.Services
                         }
 
                         float spacelibrary_test = 0;
-                        if (dt.Columns.Contains("SpaceLibrary"))
+                   
+                        if (length_test == 0)
                         {
-                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
-                            {
-                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                                if (test == false)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                            }
-                            else
-                            {
-                                if (length_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                if (width_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Width can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                else
-                                {
-                                    spacelibrary_test = length_test * width_test;
-                                }
-
-                            }
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
                         }
+                        if (width_test == 0)
+                        {
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Width must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
+                        }
+                        else
+                        {
+                            spacelibrary_test = length_test * width_test;
+                        }
+
+                            
+                        
 
                         string frequencyband_test = null;
                         if (dt.Columns.Contains("frequency_band"))
@@ -7348,36 +7306,24 @@ namespace TLIS_Service.Services
                         }
 
                         float spacelibrary_test = 0;
-                        if (dt.Columns.Contains("SpaceLibrary"))
+                      
+                        if (length_test == 0)
                         {
-                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
-                            {
-                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                                if (test == false)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                            }
-                            else
-                            {
-                                if (length_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                if (width_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                else
-                                {
-                                    spacelibrary_test = length_test * width_test;
-                                }
-
-                            }
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
                         }
+                        if (width_test == 0)
+                        {
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width must to be bigger of zero in the roww {j + 2}"));
+                            goto ERROR;
+                        }
+                        else
+                        {
+                            spacelibrary_test = length_test * width_test;
+                        }
+
+                            
+                        
                         int RFUType_test = 0;
 
                         if (dt.Columns.Contains("RFUType"))
@@ -8155,36 +8101,24 @@ namespace TLIS_Service.Services
                         }
 
                         float spacelibrary_test = 0;
-                        if (dt.Columns.Contains("SpaceLibrary"))
+                       
+                        if (length_test == 0)
                         {
-                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
-                            {
-                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                                if (test == false)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                            }
-                            else
-                            {
-                                if (length_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                if (width_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                else
-                                {
-                                    spacelibrary_test = length_test * width_test;
-                                }
-
-                            }
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
                         }
+                        if (width_test == 0)
+                        {
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
+                        }
+                        else
+                        {
+                            spacelibrary_test = length_test * width_test;
+                        }
+
+                            
+                        
 
                         List<dynamic> DynamicAttList = new List<dynamic>();
                         if (ActColumns > 0)
@@ -8829,36 +8763,24 @@ namespace TLIS_Service.Services
                         }
 
                         float spacelibrary_test = 0;
-                        if (dt.Columns.Contains("SpaceLibrary"))
+                       
+                        if (length_test == 0)
                         {
-                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
-                            {
-                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                                if (test == false)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                            }
-                            else
-                            {
-                                if (length_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                if (width_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                else
-                                {
-                                    spacelibrary_test = length_test * width_test;
-                                }
-
-                            }
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
                         }
+                        if (width_test == 0)
+                        {
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
+                        }
+                        else
+                        {
+                            spacelibrary_test = length_test * width_test;
+                        }
+
+                            
+                        
 
                         List<dynamic> DynamicAttList = new List<dynamic>();
                         if (ActColumns > 0)
@@ -9456,36 +9378,24 @@ namespace TLIS_Service.Services
                         }
 
                         float spacelibrary_test = 0;
-                        if (dt.Columns.Contains("SpaceLibrary"))
+                       
+                        if (length_test == 0)
                         {
-                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
-                            {
-                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                                if (test == false)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                            }
-                            else
-                            {
-                                if (length_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                if (width_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                else
-                                {
-                                    spacelibrary_test = length_test * width_test;
-                                }
-
-                            }
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
                         }
+                        if (width_test == 0)
+                        {
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
+                        }
+                        else
+                        {
+                            spacelibrary_test = length_test * width_test;
+                        }
+
+                            
+                        
 
 
 
@@ -10122,36 +10032,24 @@ namespace TLIS_Service.Services
                         }
 
                         float spacelibrary_test = 0;
-                        if (dt.Columns.Contains("SpaceLibrary"))
+                      
+                        if (length_test == 0)
                         {
-                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
-                            {
-                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                                if (test == false)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                            }
-                            else
-                            {
-                                if (length_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                if (width_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                else
-                                {
-                                    spacelibrary_test = length_test * width_test;
-                                }
-
-                            }
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length must to be bigger of zero in the row{j + 2}"));
+                            goto ERROR;
                         }
+                        if (width_test == 0)
+                        {
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"width must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
+                        }
+                        else
+                        {
+                            spacelibrary_test = length_test * width_test;
+                        }
+
+                            
+                        
 
                         List<dynamic> DynamicAttList = new List<dynamic>();
                         if (ActColumns > 0)
@@ -12196,36 +12094,24 @@ namespace TLIS_Service.Services
                         }
 
                         float spacelibrary_test = 0;
-                        if (dt.Columns.Contains("SpaceLibrary"))
+                      
+                        if (Length_test == 0)
                         {
-                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
-                            {
-                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                                if (test == false)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                            }
-                            else
-                            {
-                                if (Length_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                if (Width_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Width can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                else
-                                {
-                                    spacelibrary_test = Length_test * Width_test;
-                                }
-
-                            }
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
                         }
+                        if (Width_test == 0)
+                        {
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Width must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
+                        }
+                        else
+                        {
+                            spacelibrary_test = Length_test * Width_test;
+                        }
+
+                            
+                       
 
 
 
@@ -12900,36 +12786,24 @@ namespace TLIS_Service.Services
 
 
                         float spacelibrary_test = 0;
-                        if (dt.Columns.Contains("SpaceLibrary"))
+                        
+                        if (Length_test == 0)
                         {
-                            if (!string.IsNullOrEmpty(dt.Rows[j]["SpaceLibrary"].ToString()))
-                            {
-                                test = float.TryParse(dt.Rows[j]["SpaceLibrary"].ToString(), out spacelibrary_test);
-                                if (test == false)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"SpaceLibrary Wrong Input DataType In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                            }
-                            else
-                            {
-                                if (Length_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                if (Width_test == 0)
-                                {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Width can not to be null In The Row {j + 2}"));
-                                    goto ERROR;
-                                }
-                                else
-                                {
-                                    spacelibrary_test = Length_test * Width_test;
-                                }
-
-                            }
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"length must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
                         }
+                        if (Width_test == 0)
+                        {
+                            UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"Width must to be bigger of zero in the row {j + 2}"));
+                            goto ERROR;
+                        }
+                        else
+                        {
+                            spacelibrary_test = Length_test * Width_test;
+                        }
+
+                            
+                        
 
                         List<dynamic> DynamicAttList = new List<dynamic>();
                         if (ActColumns > 0)

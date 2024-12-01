@@ -8451,10 +8451,6 @@ namespace TLIS_Service.Services
             }
         }
 
-
-
-
-
         private async Task UpdateSiteAsync(TLIsite site, SiteDataFromOutsiderApiViewModel item)
         {
             site.SiteCode = item.Sitecode;
