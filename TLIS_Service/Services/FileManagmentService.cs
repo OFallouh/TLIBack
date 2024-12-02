@@ -144,15 +144,50 @@ namespace TLIS_Service.Services
                     foreach (var TableNameAtt in Table)
                     {
                         worksheet.Cells[1, j].Value = TableNameAtt;
-
-                        // تحقق من نوع الحقل من جدول AttributeActivatedRepository
                         var attributeType = _unitOfWork.AttributeActivatedRepository
-                            .GetAttributeActivated(TableName, null, CategoryId)
-                            .AsQueryable()
-                            .FirstOrDefault(x => x.Key == TableNameAtt)?.DataType;
+                           .GetAttributeActivated(TableName, null, CategoryId)
+                           .AsQueryable()
+                           .FirstOrDefault(x => x.Key == TableNameAtt)?.DataType;
 
                         // إذا كان النوع bool، أضف قائمة منسدلة
                         if (attributeType?.ToLower() == "bool")
+                        {
+                            var validation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, j, 10000, j].Address);
+                            validation.ShowErrorMessage = true;
+                            validation.ErrorStyle = ExcelDataValidationWarningStyle.warning;
+                            validation.ErrorTitle = "Invalid Selection";
+                            validation.Error = "Please select either True or False.";
+                            validation.Formula.Values.Add("True");
+                            validation.Formula.Values.Add("False");
+                        }
+
+                        // Handle dropdown for foreign keys or specific fields
+                        if (TableNameAtt.Contains("Id") || TableNameAtt.Contains("Suppliers") ||
+                            TableNameAtt.Contains("Designers") || TableNameAtt.Contains("Manufacturers") ||
+                            TableNameAtt.Contains("Vendors") || TableNameAtt.Contains("RFUType") ||
+                            TableNameAtt.Contains("IntegratedWith") || TableNameAtt.Contains("Contractors") ||
+                            TableNameAtt.Contains("Conultants"))
+                        {
+                            if (RelatedTables.Find(x => x.Key == TableNameAtt).Value != null ?
+                                RelatedTables.Find(x => x.Key == TableNameAtt).Value.Count > 0 : false)
+                            {
+                                var records = RelatedTables.Find(x => x.Key == TableNameAtt);
+                                if (records.Value != null)
+                                {
+                                    var validation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, j, 10000, j].Address);
+                                    validation.ShowErrorMessage = true;
+                                    validation.ErrorStyle = ExcelDataValidationWarningStyle.warning;
+                                    validation.ErrorTitle = "An invalid value was entered";
+                                    validation.Error = "Select a value from the list";
+                                    foreach (var value in records.Value)
+                                    {
+                                        validation.Formula.Values.Add(value.Value);
+                                    }
+                                }
+                            }
+                        }
+                        // Add dropdown for boolean fields
+                        else if (TableNameAtt.ToLower().Contains("bool"))
                         {
                             var validation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, j, 10000, j].Address);
                             validation.ShowErrorMessage = true;
@@ -240,6 +275,8 @@ namespace TLIS_Service.Services
                 return new Response<string>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+
+
 
 
         //public Response<List<int>> ImportFile(string FilePath, string TableName)
