@@ -71,16 +71,16 @@ namespace TLIS_Service.Services
             {
                 string fileName = TableName;
 
-                // تحقق مما إذا كان المجلد موجودًا، إذا لم يكن موجودًا قم بإنشائه
+                // Check if fileDirectory exists; if not, create it
                 if (!Directory.Exists(fileDirectory))
                 {
                     Directory.CreateDirectory(fileDirectory);
                 }
 
-                // مسار الملف الجديد
+                // Create new file path
                 var filePath = Path.Combine(fileDirectory, fileName + ".xlsx");
 
-                // إذا كان الملف موجودًا، قم بحذفه
+                // If file exists, delete it
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
@@ -88,41 +88,37 @@ namespace TLIS_Service.Services
 
                 FileInfo file = new FileInfo(filePath);
 
-                // جلب الكيان المرتبط باسم الجدول
+                // Get TableName record from TLItablesNames
                 TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == TableName);
 
-                // جلب الحقول النشطة مع نوع البيانات
-                var TableNameAttsWithDataType = _unitOfWork.AttributeActivatedRepository
+                // Get activated attributes based on TableName
+                List<string> TableNameAtts = _unitOfWork.AttributeActivatedRepository
                     .GetAttributeActivated(TableName, null, CategoryId)
                     .AsQueryable()
                     .Where(x => x.enable == true)
-                    .Select(x => new { x.Key, x.DataType }) // استخراج الاسم والنوع
+                    .Select(x => x.Key)
                     .ToList();
 
-                // إزالة الحقول غير المرغوبة
-                foreach (var e in TableNameAttsWithDataType.ToList())
+                // Remove unwanted attributes
+                foreach (var e in TableNameAtts.ToList())
                 {
-                    if (e.Key.ToLower().Contains("_name"))
+                    if (e.ToLower().Contains("_name"))
                     {
-                        TableNameAttsWithDataType.Remove(e);
+                        TableNameAtts.Remove(e);
                     }
 
-                    if (TableName == "TLIcivilWithLegLibrary" && e.Key.ToLower() == "NumberOfLegs".ToLower())
+                    if (TableName == "TLIcivilWithLegLibrary" && e.ToLower() == "NumberOfLegs".ToLower())
                     {
-                        TableNameAttsWithDataType.Remove(e);
+                        TableNameAtts.Remove(e);
                     }
-
                     if ((TableName != "TLIcivilWithLegLibrary" || TableName != "TLIcivilWithoutLegLibrary" || TableName != "TLIcivilNonSteelLibrary"
                         || TableName != "TLIcabinetPowerLibrary" || TableName != "TLIcabinetTelecomLibrary") &&
-                            e.Key.ToLower() == "spacelibrary".ToLower())
+                            e.ToLower() == "spacelibrary".ToLower())
                     {
-                        TableNameAttsWithDataType.Remove(e);
+                        TableNameAtts.Remove(e);
                     }
                 }
-                TableNameAttsWithDataType.RemoveAll(x => x.Key.ToLower() == "id");
-
-                // استخراج الحقول فقط
-                var TableNameAtts = TableNameAttsWithDataType.Select(x => x.Key).ToList();
+                TableNameAtts.Remove("Id");
 
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -130,15 +126,33 @@ namespace TLIS_Service.Services
                 {
                     var worksheet = package.Workbook.Worksheets.Add(TableName);
 
+                    // Specify the starting column in Excel
                     int j = 1;
 
-                    // إضافة الأعمدة إلى Excel
-                    foreach (var TableNameAtt in TableNameAttsWithDataType)
+                    // Get related tables based on table name
+                    var RelatedTables = GetTableNameRelatedTables(TableName);
+                    List<string> RelatedTable = new List<string>();
+                    string RelatedTab = "";
+                    foreach (var item in RelatedTables)
                     {
-                        worksheet.Cells[1, j].Value = TableNameAtt.Key;
+                        RelatedTab = item.Key;
+                        RelatedTable.Add(RelatedTab);
+                    }
+                    var Table = TableNameAtts.Union(RelatedTable).ToList();
 
-                        // تحقق إذا كان النوع bool وأضف الخيارات True و False
-                        if (TableNameAtt.DataType.ToLower() == "bool")
+                    // Loop through each property in the main table
+                    foreach (var TableNameAtt in Table)
+                    {
+                        worksheet.Cells[1, j].Value = TableNameAtt;
+
+                        // تحقق من نوع الحقل من جدول AttributeActivatedRepository
+                        var attributeType = _unitOfWork.AttributeActivatedRepository
+                            .GetAttributeActivated(TableName, null, CategoryId)
+                            .AsQueryable()
+                            .FirstOrDefault(x => x.Key == TableNameAtt)?.DataType;
+
+                        // إذا كان النوع bool، أضف قائمة منسدلة
+                        if (attributeType?.ToLower() == "bool")
                         {
                             var validation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, j, 10000, j].Address);
                             validation.ShowErrorMessage = true;
@@ -148,8 +162,6 @@ namespace TLIS_Service.Services
                             validation.Formula.Values.Add("True");
                             validation.Formula.Values.Add("False");
                         }
-
-                        // يمكن إضافة معالجات لأنواع أخرى هنا
 
                         j++;
                     }
