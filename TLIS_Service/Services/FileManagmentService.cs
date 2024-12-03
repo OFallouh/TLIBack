@@ -212,18 +212,8 @@ namespace TLIS_Service.Services
                     foreach (var TableNameDynamicAtt in TableNameDynamicAtts)
                     {
                         worksheet.Cells[1, j].Value = TableNameDynamicAtt.Key;
-
-                        if (TableNameDynamicAtt.DataType.ToLower() == "bool")
-                        {
-                            var validation = worksheet.DataValidations.AddListValidation(worksheet.Cells[2, j, 10000, j].Address);
-                            validation.ShowErrorMessage = true;
-                            validation.ErrorStyle = ExcelDataValidationWarningStyle.warning;
-                            validation.ErrorTitle = "Invalid Selection";
-                            validation.Error = "Please select either True or False.";
-                            validation.Formula.Values.Add("True");
-                            validation.Formula.Values.Add("False");
-                        }
-                        else if (TableNameDynamicAtt.DataType.ToLower() == "list")
+  
+                        if (TableNameDynamicAtt.DataType.ToLower() == "list")
                         {
                             var values = _unitOfWork.DynamicListValuesRepository.GetWhere(x => x.dynamicAttId == TableNameDynamicAtt.Id).ToList();
                             if (values.Count > 0)

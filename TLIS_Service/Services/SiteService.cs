@@ -8319,128 +8319,217 @@ namespace TLIS_Service.Services
         //        return ex.Message;
         //    }
         //}
+        //public async Task<string> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, string RowContent)
+        //{
+        //    try
+        //    {
+        //        var serviceProvider = _services.BuildServiceProvider();
+        //        var configuration = serviceProvider.GetService<IConfiguration>();
+        //        string apiUrl = configuration["SMIS_API_URL"]; // رابط الـ API
+
+        //        if (string.IsNullOrEmpty(apiUrl))
+        //        {
+        //            return "رابط الـ API غير موجود أو غير صحيح.";
+        //        }
+
+        //        // تكوين الطلب
+        //        HttpWebRequest request = !string.IsNullOrEmpty(Paramater)
+        //            ? (HttpWebRequest)WebRequest.Create($"{apiUrl}{UserName}/{Password}/{ViewName}/'{Paramater}'")
+        //            : (HttpWebRequest)WebRequest.Create($"{apiUrl}{UserName}/{Password}/{ViewName}");
+
+        //        request.Method = "GET";
+
+        //        if (!string.IsNullOrEmpty(RowContent))
+        //        {
+        //            request.ContentType = "text/plain";
+        //            ASCIIEncoding encoding = new ASCIIEncoding();
+        //            byte[] bodyText = encoding.GetBytes(RowContent);
+
+        //            using (Stream newStream = request.GetRequestStream())
+        //            {
+        //                newStream.Write(bodyText, 0, bodyText.Length);
+        //            }
+        //            request.ContentLength = bodyText.Length;
+        //        }
+
+        //        // الحصول على الاستجابة من API
+        //        string smisResponse;
+        //        using (WebResponse webResponse = await request.GetResponseAsync())
+        //        {
+        //            using (StreamReader reader = new StreamReader(webResponse.GetResponseStream()))
+        //            {
+        //                smisResponse = await reader.ReadToEndAsync();
+        //            }
+        //        }
+
+        //        // تحويل النص إلى قائمة من الكائنات
+        //        var siteDataList = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
+
+        //        int batchSize = 100; // حجم الدفعة
+        //        var transactionOptions = new TransactionOptions
+        //        {
+        //            IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted, // تحديد المساحة بشكل صريح
+        //            Timeout = TimeSpan.FromMinutes(10) // زيادة المهلة
+        //        };
+
+        //        for (int i = 0; i < siteDataList.Count; i += batchSize)
+        //        {
+        //            var batch = siteDataList.Skip(i).Take(batchSize).ToList();
+
+        //            using (var transaction = new TransactionScope(TransactionScopeOption.Required, transactionOptions, TransactionScopeAsyncFlowOption.Enabled))
+        //            {
+        //                foreach (var item in batch)
+        //                {
+        //                    try
+        //                    {
+        //                        int areaId = await GetAreaIdAsync(item.Area);
+        //                        string regionCode = await GetRegionCodeAsync(item.RegionCode);
+        //                        int siteStatusId = await GetSiteStatusIdAsync(item.siteStatus);
+        //                        string locationTypeId = await GetLocationTypeIdAsync(item.LocationType);
+
+        //                        var existingSite = _unitOfWork.SiteRepository.GetWhereFirst(x => x.SiteCode == item.Sitecode || x.SiteName == item.Sitename);
+
+        //                        if (existingSite != null)
+        //                        {
+        //                            existingSite.SiteCode = item.Sitecode;
+        //                            existingSite.SiteName = item.Sitename;
+        //                            existingSite.LocationType = locationTypeId;
+        //                            existingSite.Latitude = item.Latitude;
+        //                            existingSite.Longitude = item.Longitude;
+        //                            existingSite.Zone = item.Zone;
+        //                            existingSite.SubArea = item.Subarea;
+        //                            existingSite.STATUS_DATE = item.Statusdate;
+        //                            existingSite.CREATE_DATE = item.Createddate;
+        //                            existingSite.LocationHieght = item.LocationHieght ?? 0;
+        //                            existingSite.AreaId = areaId;
+        //                            existingSite.RegionCode = regionCode;
+                                   
+        //                            await _unitOfWork.SaveChangesAsync();
+        //                        }
+        //                        else
+        //                        {
+        //                            var newSite = new TLIsite
+        //                            {
+        //                                SiteCode = item.Sitecode,
+        //                                SiteName = item.Sitename,
+        //                                Latitude = item.Latitude,
+        //                                Longitude = item.Longitude,
+        //                                Zone = item.Zone,
+        //                                SubArea = item.Subarea,
+        //                                STATUS_DATE = item.Statusdate,
+        //                                CREATE_DATE = item.Createddate,
+        //                                LocationHieght = item.LocationHieght ?? 0,
+        //                                RentedSpace = 0,
+        //                                ReservedSpace = 0,
+        //                                SiteVisiteDate = DateTime.Now,
+        //                                AreaId = areaId,
+        //                                RegionCode = regionCode,
+        //                                siteStatusId = siteStatusId,
+        //                                LocationType = locationTypeId
+        //                            };
+
+        //                            await _unitOfWork.SiteRepository.AddAsync(newSite);
+        //                            await _unitOfWork.SaveChangesAsync();
+        //                        }
+        //                    }
+        //                    catch (Exception ex)
+        //                    {
+        //                        // تسجيل الخطأ ومتابعة معالجة باقي السجلات
+        //                        Console.WriteLine($"Error processing site {item.Sitecode}: {ex.Message}");
+        //                    }
+        //                }
+
+        //                transaction.Complete();
+        //            }
+        //        }
+
+        //        return "تمت العملية بنجاح";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return ex.Message;
+        //    }
+        //}
+     
+
+
         public async Task<string> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, string RowContent)
         {
             try
             {
                 var serviceProvider = _services.BuildServiceProvider();
                 var configuration = serviceProvider.GetService<IConfiguration>();
-                string apiUrl = configuration["SMIS_API_URL"]; // رابط الـ API
+                string filePath = configuration["SMIS_API_URL"];  // هذا المسار سيكون إلى ملف JSON
 
-                if (string.IsNullOrEmpty(apiUrl))
+                if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
                 {
-                    return "رابط الـ API غير موجود أو غير صحيح.";
+                    return "الملف غير موجود أو المسار غير صحيح.";
                 }
 
-                // تكوين الطلب
-                HttpWebRequest request = !string.IsNullOrEmpty(Paramater)
-                    ? (HttpWebRequest)WebRequest.Create($"{apiUrl}{UserName}/{Password}/{ViewName}/'{Paramater}'")
-                    : (HttpWebRequest)WebRequest.Create($"{apiUrl}{UserName}/{Password}/{ViewName}");
+                string responseText = await File.ReadAllTextAsync(filePath);
+                var siteDataList = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(responseText);
 
-                request.Method = "GET";
-
-                if (!string.IsNullOrEmpty(RowContent))
+                using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    request.ContentType = "text/plain";
-                    ASCIIEncoding encoding = new ASCIIEncoding();
-                    byte[] bodyText = encoding.GetBytes(RowContent);
-
-                    using (Stream newStream = request.GetRequestStream())
+                    foreach (var item in siteDataList)
                     {
-                        newStream.Write(bodyText, 0, bodyText.Length);
-                    }
-                    request.ContentLength = bodyText.Length;
-                }
+                        // تحقق من وجود الكيانات الفرعية وحفظها بشكل منفصل
+                        int areaId = await GetAreaIdAsync(item.Area);
+                        string regionCode = await GetRegionCodeAsync(item.RegionCode);
+                        int siteStatusId = await GetSiteStatusIdAsync(item.siteStatus);
+                        string locationTypeId = await GetLocationTypeIdAsync(item.LocationType);
 
-                // الحصول على الاستجابة من API
-                string smisResponse;
-                using (WebResponse webResponse = await request.GetResponseAsync())
-                {
-                    using (StreamReader reader = new StreamReader(webResponse.GetResponseStream()))
-                    {
-                        smisResponse = await reader.ReadToEndAsync();
-                    }
-                }
+                        // جلب الكيان الحالي من قاعدة البيانات
+                        var existingSite = _unitOfWork.SiteRepository.GetWhereFirst(x => x.SiteCode == item.Sitecode || x.SiteName == item.Sitename);
 
-                // تحويل النص إلى قائمة من الكائنات
-                var siteDataList = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
-
-                int batchSize = 100; // حجم الدفعة
-                var transactionOptions = new TransactionOptions
-                {
-                    IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted, // تحديد المساحة بشكل صريح
-                    Timeout = TimeSpan.FromMinutes(10) // زيادة المهلة
-                };
-
-                for (int i = 0; i < siteDataList.Count; i += batchSize)
-                {
-                    var batch = siteDataList.Skip(i).Take(batchSize).ToList();
-
-                    using (var transaction = new TransactionScope(TransactionScopeOption.Required, transactionOptions, TransactionScopeAsyncFlowOption.Enabled))
-                    {
-                        foreach (var item in batch)
+                        if (existingSite != null)
                         {
-                            try
-                            {
-                                int areaId = await GetAreaIdAsync(item.Area);
-                                string regionCode = await GetRegionCodeAsync(item.RegionCode);
-                                int siteStatusId = await GetSiteStatusIdAsync(item.siteStatus);
-                                string locationTypeId = await GetLocationTypeIdAsync(item.LocationType);
+                            // تحديث الكيان الحالي
+                            existingSite.SiteCode = item.Sitecode;
+                            existingSite.SiteName = item.Sitename;
+                            existingSite.LocationType = locationTypeId;
+                            existingSite.Latitude = item.Latitude;
+                            existingSite.Longitude = item.Longitude;
+                            existingSite.Zone = item.Zone;
+                            existingSite.SubArea = item.Subarea;
+                            existingSite.STATUS_DATE = item.Statusdate;
+                            existingSite.CREATE_DATE = item.Createddate;
+                            existingSite.LocationHieght = item.LocationHieght ?? 0;
+                            existingSite.AreaId = areaId;
+                            existingSite.RegionCode = regionCode;
+                            existingSite.siteStatusId = siteStatusId;
 
-                                var existingSite = _unitOfWork.SiteRepository.GetWhereFirst(x => x.SiteCode == item.Sitecode || x.SiteName == item.Sitename);
-
-                                if (existingSite != null)
-                                {
-                                    existingSite.SiteCode = item.Sitecode;
-                                    existingSite.SiteName = item.Sitename;
-                                    existingSite.LocationType = locationTypeId;
-                                    existingSite.Latitude = item.Latitude;
-                                    existingSite.Longitude = item.Longitude;
-                                    existingSite.Zone = item.Zone;
-                                    existingSite.SubArea = item.Subarea;
-                                    existingSite.STATUS_DATE = item.Statusdate;
-                                    existingSite.CREATE_DATE = item.Createddate;
-                                    existingSite.LocationHieght = item.LocationHieght ?? 0;
-                                    existingSite.AreaId = areaId;
-                                    existingSite.RegionCode = regionCode;
-                                   
-                                    await _unitOfWork.SaveChangesAsync();
-                                }
-                                else
-                                {
-                                    var newSite = new TLIsite
-                                    {
-                                        SiteCode = item.Sitecode,
-                                        SiteName = item.Sitename,
-                                        Latitude = item.Latitude,
-                                        Longitude = item.Longitude,
-                                        Zone = item.Zone,
-                                        SubArea = item.Subarea,
-                                        STATUS_DATE = item.Statusdate,
-                                        CREATE_DATE = item.Createddate,
-                                        LocationHieght = item.LocationHieght ?? 0,
-                                        RentedSpace = 0,
-                                        ReservedSpace = 0,
-                                        SiteVisiteDate = DateTime.Now,
-                                        AreaId = areaId,
-                                        RegionCode = regionCode,
-                                        siteStatusId = siteStatusId,
-                                        LocationType = locationTypeId
-                                    };
-
-                                    await _unitOfWork.SiteRepository.AddAsync(newSite);
-                                    await _unitOfWork.SaveChangesAsync();
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                // تسجيل الخطأ ومتابعة معالجة باقي السجلات
-                                Console.WriteLine($"Error processing site {item.Sitecode}: {ex.Message}");
-                            }
+                            await _unitOfWork.SaveChangesAsync();
                         }
+                        else
+                        {
+                            // إضافة كيان جديد
+                            var newSite = new TLIsite
+                            {
+                                SiteCode = item.Sitecode,
+                                SiteName = item.Sitename,
+                                Latitude = item.Latitude,
+                                Longitude = item.Longitude,
+                                Zone = item.Zone,
+                                SubArea = item.Subarea,
+                                STATUS_DATE = item.Statusdate,
+                                CREATE_DATE = item.Createddate,
+                                LocationHieght = item.LocationHieght ?? 0,
+                                RentedSpace = 0,
+                                ReservedSpace = 0,
+                                SiteVisiteDate = DateTime.Now,
+                                AreaId = areaId,
+                                RegionCode = regionCode,
+                                siteStatusId = siteStatusId,
+                                LocationType = locationTypeId
+                            };
 
-                        transaction.Complete();
+                            await _unitOfWork.SiteRepository.AddAsync(newSite);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
                     }
+
+                    transaction.Complete();
                 }
 
                 return "تمت العملية بنجاح";
@@ -8450,7 +8539,6 @@ namespace TLIS_Service.Services
                 return ex.Message;
             }
         }
-
         private async Task UpdateSiteAsync(TLIsite site, SiteDataFromOutsiderApiViewModel item)
         {
             site.SiteCode = item.Sitecode;
@@ -14117,9 +14205,10 @@ namespace TLIS_Service.Services
                     filtersJson = System.Text.Json.JsonSerializer.Serialize(filterRequest.Filters);
                 }
 
-                // قائمة لتخزين النتائج
                 var logs = new List<TLIlogUsersActions>();
-                var logsViewModel = new List<TLIlogUsersActionsViewModel>(); // إنشاء قائمة ViewModel
+                var logsViewModel = new List<TLIlogUsersActionsViewModel>();
+
+                int totalCount = 0;
 
                 using (var connection = new OracleConnection(ConnectionString))
                 {
@@ -14136,6 +14225,12 @@ namespace TLIS_Service.Services
                         };
                         command.Parameters.Add(resultParam);
 
+                        var totalCountParam = new OracleParameter("total_count", OracleDbType.Int32)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        command.Parameters.Add(totalCountParam);
+
                         command.Parameters.Add("filters", OracleDbType.Clob).Value = filtersJson ?? (object)DBNull.Value;
                         command.Parameters.Add("first", OracleDbType.Int32).Value = filterRequest.First ?? 0;
                         command.Parameters.Add("rows", OracleDbType.Int32).Value = filterRequest.Rows ?? 10;
@@ -14150,7 +14245,7 @@ namespace TLIS_Service.Services
                                 {
                                     Id = Convert.ToInt32(reader["Id"]),
                                     Date = Convert.ToDateTime(reader["Date"]),
-                                    UserId = Convert.ToInt32(reader["UserId"]), // الاحتفاظ بـ UserId
+                                    UserId = Convert.ToInt32(reader["UserId"]),
                                     ControllerName = reader["ControllerName"]?.ToString(),
                                     FunctionName = reader["FunctionName"]?.ToString(),
                                     BodyParameters = reader["BodyParameters"]?.ToString(),
@@ -14162,10 +14257,11 @@ namespace TLIS_Service.Services
                                 logs.Add(log);
                             }
                         }
+
+                        totalCount = Convert.ToInt32(totalCountParam.Value);
                     }
                 }
 
-                // الآن سنحتاج إلى استرجاع UserName بناءً على UserId
                 foreach (var log in logs)
                 {
                     using (var connection = new OracleConnection(ConnectionString))
@@ -14175,15 +14271,12 @@ namespace TLIS_Service.Services
                         {
                             command.Parameters.Add(new OracleParameter("UserId", log.UserId));
                             var userName = command.ExecuteScalar()?.ToString();
-                        
 
-
-                        // تحويل الكائنات إلى ViewModel هنا
-                        var logViewModel = new TLIlogUsersActionsViewModel
+                            var logViewModel = new TLIlogUsersActionsViewModel
                             {
                                 Id = log.Id,
                                 Date = log.Date,
-                                UserName = userName, // تعيين UserName هنا في ViewModel
+                                UserName = userName,
                                 ControllerName = log.ControllerName,
                                 FunctionName = log.FunctionName,
                                 BodyParameters = log.BodyParameters,
@@ -14192,23 +14285,20 @@ namespace TLIS_Service.Services
                                 Result = log.Result
                             };
 
-                            // إضافة الـ ViewModel إلى قائمة النتائج
                             logsViewModel.Add(logViewModel);
                         }
                     }
                 }
 
-                // الإرجاع
                 return new Response<IEnumerable<TLIlogUsersActionsViewModel>>
                 {
                     Data = logsViewModel,
-                    Count = logsViewModel.Count(),
+                    Count = totalCount,
                     Succeeded = true
                 };
             }
             catch (Exception ex)
             {
-                // التعامل مع الأخطاء
                 return new Response<IEnumerable<TLIlogUsersActionsViewModel>>
                 {
                     Data = null,
@@ -14217,6 +14307,7 @@ namespace TLIS_Service.Services
                 };
             }
         }
+
 
 
 
