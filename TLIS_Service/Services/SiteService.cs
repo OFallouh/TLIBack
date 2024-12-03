@@ -8460,17 +8460,47 @@ namespace TLIS_Service.Services
             {
                 var serviceProvider = _services.BuildServiceProvider();
                 var configuration = serviceProvider.GetService<IConfiguration>();
-                string filePath = configuration["SMIS_API_URL"]; // هذا المسار سيكون إلى ملف JSON
+                string apiUrl = configuration["SMIS_API_URL"]; // رابط الـ API
 
-                if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                if (string.IsNullOrEmpty(apiUrl))
                 {
-                    return "الملف غير موجود أو المسار غير صحيح.";
+                    return "رابط الـ API غير موجود أو غير صحيح.";
                 }
 
-                string responseText = await File.ReadAllTextAsync(filePath);
-                var siteDataList = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(responseText);
+                // تكوين الطلب
+                HttpWebRequest request = !string.IsNullOrEmpty(Paramater)
+                    ? (HttpWebRequest)WebRequest.Create($"{apiUrl}{UserName}/{Password}/{ViewName}/'{Paramater}'")
+                    : (HttpWebRequest)WebRequest.Create($"{apiUrl}{UserName}/{Password}/{ViewName}");
 
-                // تقسيم البيانات إلى دفعات
+                request.Method = "GET";
+
+                if (!string.IsNullOrEmpty(RowContent))
+                {
+                    request.ContentType = "text/plain";
+                    ASCIIEncoding encoding = new ASCIIEncoding();
+                    byte[] bodyText = encoding.GetBytes(RowContent);
+
+                    using (Stream newStream = request.GetRequestStream())
+                    {
+                        newStream.Write(bodyText, 0, bodyText.Length);
+                    }
+                    request.ContentLength = bodyText.Length;
+                }
+
+                // الحصول على الاستجابة من API
+                string smisResponse;
+                using (WebResponse webResponse = await request.GetResponseAsync())
+                {
+                    using (StreamReader reader = new StreamReader(webResponse.GetResponseStream()))
+                    {
+                        smisResponse = await reader.ReadToEndAsync();
+                    }
+                }
+
+                // تحويل النص إلى قائمة من الكائنات
+                var siteDataList = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
+
+                //تقسيم البيانات إلى دفعات
                 int batchSize = 2500; // عدد العناصر في كل دفعة
                 int totalBatches = (int)Math.Ceiling((double)siteDataList.Count / batchSize);
 
