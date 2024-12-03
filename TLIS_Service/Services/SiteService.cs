@@ -8471,7 +8471,7 @@ namespace TLIS_Service.Services
                 var siteDataList = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(responseText);
 
                 // تقسيم البيانات إلى دفعات
-                int batchSize = 1000; // عدد العناصر في كل دفعة
+                int batchSize = 2500; // عدد العناصر في كل دفعة
                 int totalBatches = (int)Math.Ceiling((double)siteDataList.Count / batchSize);
 
                 for (int batchIndex = 0; batchIndex < totalBatches; batchIndex++)
@@ -14156,7 +14156,7 @@ namespace TLIS_Service.Services
 
                 workbook.SaveAs(filePath);
             }
-
+            GetSMIS_Site
             return filePath;
         }
 
