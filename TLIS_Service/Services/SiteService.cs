@@ -9351,19 +9351,20 @@ namespace TLIS_Service.Services
 
                             if (value != null)
                             {
+                                // تحويل الاسم إلى حروف كبيرة لتوحيد المقارنة
                                 switch (matchMode)
                                 {
                                     case FilterMatchMode.STARTS_WITH:
                                     case FilterMatchMode.CONTAINS:
                                     case FilterMatchMode.NOT_CONTAINS:
                                     case FilterMatchMode.ENDS_WITH:
-                                        filterConditions.Add($"\"{field}\" LIKE :{field}");
+                                        filterConditions.Add($"UPPER(\"{field}\") LIKE UPPER(:{field})");
                                         break;
                                     case FilterMatchMode.EQUALS:
-                                        filterConditions.Add($"\"{field}\" = :{field}");
+                                        filterConditions.Add($"UPPER(\"{field}\") = UPPER(:{field})");
                                         break;
                                     case FilterMatchMode.NOT_EQUALS:
-                                        filterConditions.Add($"\"{field}\" <> :{field}");
+                                        filterConditions.Add($"UPPER(\"{field}\") <> UPPER(:{field})");
                                         break;
                                     case FilterMatchMode.LESS_THAN:
                                         filterConditions.Add($"\"{field}\" < :{field}");
@@ -9390,6 +9391,7 @@ namespace TLIS_Service.Services
                                         filterConditions.Add($"TRUNC(\"{field}\") > TRUNC(TO_DATE(:{field}, 'YYYY-MM-DD'))");
                                         break;
                                 }
+
                             }
                         }
                     }
