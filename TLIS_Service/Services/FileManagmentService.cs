@@ -446,11 +446,11 @@ namespace TLIS_Service.Services
                                 ActivatedAtts.Remove("NumberOfLegs");
                             }
                             if ((TableName != "TLIcivilWithLegLibrary" && TableName != "TLIcivilWithoutLegLibrary" && TableName != "TLIcivilNonSteelLibrary"
-                            && TableName != "TLIcabinetPowerLibrary" && TableName != "TLIcabinetTelecomLibrary"))
-                           
+                               && TableName != "TLIcabinetPowerLibrary" && TableName != "TLIcabinetTelecomLibrary"))
                             {
-                                ActivatedAtts.Remove("spacelibrary");
+                                ActivatedAtts.RemoveAll(att => string.Equals(att, "spacelibrary", StringComparison.OrdinalIgnoreCase));
                             }
+
                             List<string> MissedAttributes = new List<string>();
                             //Get activated attributes that exist in database and not found in excel sheet
                             MissedAttributes = ActivatedAtts.Except(SheetColumn).ToList();

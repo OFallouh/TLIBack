@@ -645,7 +645,7 @@ namespace TLIS_API.Controllers
         [HttpPost("GetAllLogs")]
         public IActionResult GetAllLogs([FromBody] FilterRequest request)
         {
-            var response = _unitOfWorkService.SiteService.GetLogsWithPaginationAndSorting(request);
+            var response = _unitOfWorkService.SiteService.GetFilteredLogs(request);
             return Ok(response);
         }
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]

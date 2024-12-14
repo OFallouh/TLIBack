@@ -84,6 +84,7 @@ using Newtonsoft.Json;
 using System.Globalization;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using Oracle.ManagedDataAccess.Types;
+using System.Linq.Expressions;
 
 
 
@@ -14232,125 +14233,160 @@ namespace TLIS_Service.Services
 
             return formattedHeader.ToString();
         }
-
-        public Response<IEnumerable<TLIlogUsersActionsViewModel>> GetLogsWithPaginationAndSorting(FilterRequest filterRequest)
+        public async Task<Response<IEnumerable<TLIlogUsersActionsViewModel>>> GetFilteredLogs(FilterRequest filterRequest)
         {
             try
             {
-                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-                string filtersJson = null;
+                var query = _context.TLIlogUsersActions.AsQueryable();
 
-                if (filterRequest?.Filters != null && filterRequest.Filters.Any())
+                // Get total count before filtering
+                var totalCount = query.Count();
+
+                // Apply filters
+                query = ApplyFilter(query, filterRequest);
+
+                // Get filtered count
+                var filteredCount = query.Count();
+
+                // Apply pagination
+                if (filterRequest.First.HasValue && filterRequest.Rows.HasValue)
                 {
-                    // تمرير الفلاتر بدون تعديل لحالة الأحرف
-                    filtersJson = System.Text.Json.JsonSerializer.Serialize(filterRequest.Filters);
+                    query = query.Skip(filterRequest.First.Value).Take(filterRequest.Rows.Value);
                 }
 
-                var logs = new List<TLIlogUsersActions>();
-                var logsViewModel = new List<TLIlogUsersActionsViewModel>();
-                int totalCount = 0;
-
-                using (var connection = new OracleConnection(ConnectionString))
+                // Map data to ViewModel
+                var result = query.Select(q => new TLIlogUsersActionsViewModel
                 {
-                    connection.Open();
+                    Id = q.Id,
+                    Date = q.Date,
+                    UserName = q.User.UserName,
+                    ControllerName = q.ControllerName,
+                    FunctionName = q.FunctionName,
+                    BodyParameters = q.BodyParameters,
+                    HeaderParameters = q.HeaderParameters,
+                    ResponseStatus = q.ResponseStatus,
+                    Result = q.Result
+                }).ToList();
 
-                    using (var command = new OracleCommand("GetLogsByFilterPaginationAndSorting", connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-
-                        // إعداد المعاملات
-                        var resultParam = new OracleParameter("result", OracleDbType.RefCursor)
-                        {
-                            Direction = ParameterDirection.Output
-                        };
-                        command.Parameters.Add(resultParam);
-
-                        var totalCountParam = new OracleParameter("total_count", OracleDbType.Int32)
-                        {
-                            Direction = ParameterDirection.Output
-                        };
-                        command.Parameters.Add(totalCountParam);
-
-                        command.Parameters.Add("filters", OracleDbType.Clob).Value = filtersJson ?? (object)DBNull.Value;
-                        command.Parameters.Add("first", OracleDbType.Int32).Value = filterRequest.First ?? 0;
-                        command.Parameters.Add("rows", OracleDbType.Int32).Value = filterRequest.Rows ?? 10;
-                        command.Parameters.Add("sort_field", OracleDbType.Varchar2).Value = filterRequest.MultiSortMeta?.FirstOrDefault()?.Field ?? "Id";
-                        command.Parameters.Add("sort_order", OracleDbType.Int32).Value = filterRequest.MultiSortMeta?.FirstOrDefault()?.Order ?? 1;
-
-                        using (var reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                var log = new TLIlogUsersActions
-                                {
-                                    Id = Convert.ToInt32(reader["Id"]),
-                                    Date = Convert.ToDateTime(reader["Date"]),
-                                    UserId = Convert.ToInt32(reader["UserId"]),
-                                    ControllerName = reader["ControllerName"]?.ToString(),
-                                    FunctionName = reader["FunctionName"]?.ToString(),
-                                    BodyParameters = reader["BodyParameters"]?.ToString(),
-                                    HeaderParameters = reader["HeaderParameters"]?.ToString(),
-                                    ResponseStatus = reader["ResponseStatus"]?.ToString(),
-                                    Result = reader["Result"]?.ToString()
-                                };
-
-                                logs.Add(log);
-                            }
-                        }
-
-                        totalCount = ((OracleDecimal)totalCountParam.Value).ToInt32();
-                    }
-                }
-
-                foreach (var log in logs)
-                {
-                    using (var connection = new OracleConnection(ConnectionString))
-                    {
-                        connection.Open();
-                        using (var command = new OracleCommand("SELECT \"UserName\" FROM \"TLIuser\" WHERE \"Id\" = :UserId", connection))
-                        {
-                            // استخدام حالة الأحرف الأصلية
-                            command.Parameters.Add(new OracleParameter("UserId", log.UserId));
-                            var userName = command.ExecuteScalar()?.ToString();
-
-                            var logViewModel = new TLIlogUsersActionsViewModel
-                            {
-                                Id = log.Id,
-                                Date = log.Date,
-                                UserName = userName,
-                                ControllerName = log.ControllerName,
-                                FunctionName = log.FunctionName,
-                                BodyParameters = log.BodyParameters,
-                                HeaderParameters = log.HeaderParameters,
-                                ResponseStatus = log.ResponseStatus,
-                                Result = log.Result
-                            };
-
-                            logsViewModel.Add(logViewModel);
-                        }
-                    }
-                }
-
-                return new Response<IEnumerable<TLIlogUsersActionsViewModel>>
-                {
-                    Data = logsViewModel,
-                    Count = totalCount,
-                    Succeeded = true
-                };
+              
+                return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(false, result, null, null, totalCount, (int)Helpers.Constants.ApiReturnCode.success);
             }
-            catch (Exception ex)
+            catch (Exception err)
             {
-                return new Response<IEnumerable<TLIlogUsersActionsViewModel>>
-                {
-                    Data = null,
-                    Succeeded = false,
-                    Message = ex.Message
-                };
+           
+                return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+        private IQueryable<T> ApplyFilter<T>(
+         IQueryable<T> query,
+         FilterRequest filterRequest)
+        {
+            if (filterRequest == null || filterRequest.Filters == null || !filterRequest.Filters.Any())
+                return query;
 
+            foreach (var filter in filterRequest.Filters)
+            {
+                string fieldName = filter.Key;
+                var filterValue = filter.Value.Value;
+                var matchMode = filter.Value.MatchMode;
 
+                // التحقق إذا كانت القيمة من نوع JsonElement
+                if (filterValue is JsonElement jsonElement)
+                {
+                    if (jsonElement.ValueKind == JsonValueKind.Null || string.IsNullOrEmpty(jsonElement.GetString()))
+                    {
+                        // إذا كانت القيمة null أو فارغة، يتم تجاهل هذا الفلتر
+                        continue;
+                    }
 
+                    // تحويل JsonElement إلى القيمة الفعلية إذا كانت صالحة
+                    filterValue = jsonElement.GetString();
+                }
+
+                // التحقق من إذا كانت القيمة null أو فارغة بعد التحويل
+                if (filterValue == null || string.IsNullOrEmpty(filterValue.ToString()))
+                {
+                    // تجاهل الفلاتر التي تحتوي على قيم فارغة أو null
+                    continue;
+                }
+
+                if (fieldName.ToLower() == "controllername" || fieldName.ToLower() == "functionname")
+                {
+                    query = ApplyStringFilter(query, fieldName, filterValue, matchMode);
+                }
+                else if (fieldName.ToLower() == "date")
+                {
+                    query = ApplyDateFilter(query, filterValue, matchMode);
+                }
+                else if (fieldName.ToLower() == "username")
+                {
+                    query = ApplyStringFilter(query, "User.UserName", filterValue, matchMode);
+                }
+            }
+
+            return query;
+        }
+        private IQueryable<T> ApplyStringFilter<T>(
+         IQueryable<T> query,
+         string fieldName,
+         object filterValue,
+         string matchMode)
+        {
+            if (filterValue == null) return query;
+
+            string filterText = filterValue.ToString();
+            if (string.IsNullOrEmpty(filterText)) return query;
+
+            var parameter = Expression.Parameter(typeof(T), "x");
+            var property = Expression.PropertyOrField(parameter, fieldName);
+            var constant = Expression.Constant(filterText.ToLower()); // تحويل النص إلى أحرف صغيرة
+
+            // تحويل الخاصية أيضا إلى أحرف صغيرة لكي تكون المقارنة غير حساسة لحالة الأحرف
+            var propertyLower = Expression.Call(property, "ToLower", null);
+
+            Expression body = matchMode switch
+            {
+                FilterMatchMode.STARTS_WITH => Expression.Call(propertyLower, "StartsWith", null, constant),
+                FilterMatchMode.CONTAINS => Expression.Call(propertyLower, "Contains", null, constant),
+                FilterMatchMode.NOT_CONTAINS => Expression.Not(Expression.Call(propertyLower, "Contains", null, constant)),
+                FilterMatchMode.ENDS_WITH => Expression.Call(propertyLower, "EndsWith", null, constant),
+                FilterMatchMode.EQUALS => Expression.Equal(propertyLower, constant),
+                FilterMatchMode.NOT_EQUALS => Expression.NotEqual(propertyLower, constant),
+                _ => null
+            };
+
+            if (body == null) return query;
+
+            var predicate = Expression.Lambda<Func<T, bool>>(body, parameter);
+            return query.Where(predicate);
+        }
+        private IQueryable<T> ApplyDateFilter<T>(
+            IQueryable<T> query,
+            object filterValue,
+            string matchMode)
+        {
+            if (filterValue == null) return query;
+
+            if (!DateTime.TryParse(filterValue.ToString(), out var filterDate)) return query;
+
+            var parameter = Expression.Parameter(typeof(T), "x");
+            var property = Expression.PropertyOrField(parameter, "Date");
+            var constant = Expression.Constant(filterDate);
+
+            Expression body = matchMode switch
+            {
+                FilterMatchMode.DATE_IS => Expression.Equal(property, constant),
+                FilterMatchMode.DATE_IS_NOT => Expression.NotEqual(property, constant),
+                FilterMatchMode.DATE_BEFORE => Expression.LessThan(property, constant),
+                FilterMatchMode.DATE_AFTER => Expression.GreaterThan(property, constant),
+                _ => null
+            };
+
+            if (body == null) return query;
+
+            var predicate = Expression.Lambda<Func<T, bool>>(body, parameter);
+            return query.Where(predicate);
+        }
         public Response<string> ClearAllHistory(string connectionString, string dateFrom, string dateTo)
         {
             const int batchSize = 10000; // حجم الدفعة
