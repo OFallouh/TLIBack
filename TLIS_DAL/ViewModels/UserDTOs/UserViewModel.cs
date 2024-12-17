@@ -23,6 +23,7 @@ namespace TLIS_DAL.ViewModels.UserDTOs
         public int UserType { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }
+        public bool IsFirstLogin { get; set; }
         public string ConfirmationCode { get; set; }
         public bool ValidateAccount { get; set; }
         public string WorkFlowMode { get; set; }

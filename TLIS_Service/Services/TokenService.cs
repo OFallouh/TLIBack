@@ -161,6 +161,15 @@ namespace TLIS_Service.Services
 
                                 if (user != null)
                                 {
+
+                                    
+                                    if (User.IsFirstLogin)
+                                    {
+                                        User.IsFirstLogin = false;
+                                        _unitOfWork.UserRepository.Update(User);
+                                        _unitOfWork.SaveChanges();
+                                    }
+
                                     var tokenString = BuildToken(user, secretKey);
                                     var clientIpAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
                                     var session=_context.TLIsession.FirstOrDefault(x=>x.UserId==user.Id &&x.IP== clientIpAddress);

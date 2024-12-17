@@ -142,7 +142,7 @@ namespace TLIS_Service.Services
              ""Deleted"", ""ValidateAccount"")
             VALUES 
             (:FirstName, :MiddleName, :LastName, :Email, :MobileNumber, :UserName, 
-             :Password, :UserType, :Active, 
+             :Password, :UserType, :Active, , :IsFirstLogin, 
              :Deleted, :ValidateAccount)
             RETURNING ""Id"" INTO :UserId";
 
@@ -162,6 +162,7 @@ namespace TLIS_Service.Services
                 command.Parameters.Add(new OracleParameter("Active", OracleDbType.Int32)).Value = 1;
                 command.Parameters.Add(new OracleParameter("Deleted", OracleDbType.Int32)).Value = 0;
                 command.Parameters.Add(new OracleParameter("ValidateAccount", OracleDbType.Int32)).Value = 1;
+                command.Parameters.Add(new OracleParameter("IsFirstLogin", OracleDbType.Int32)).Value = 1;
 
 
                 var userIdParam = new OracleParameter("UserId", OracleDbType.Decimal)
@@ -337,6 +338,7 @@ namespace TLIS_Service.Services
                                     user.Email = principal.EmailAddress;
                                     user.MobileNumber = principal.VoiceTelephoneNumber;
                                     user.UserName = principal.SamAccountName;
+                                    user.IsFirstLogin=true;
                                     var tliuser = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == UserName && !x.Deleted);
                                     if (tliuser != null)
                                     {

@@ -32,6 +32,7 @@ namespace TLIS_DAL.Models
         public bool Active { get; set; }
         [Required]
         public bool Deleted { get; set; }
+        public bool IsFirstLogin { get; set; }
         public string ConfirmationCode { get; set; }
         public bool ValidateAccount { get; set; } = true;
         public IEnumerable<TLIuserPermission> userPermissions { get; set; }
