@@ -10,6 +10,7 @@ using TLIS_DAL.ViewModels.NewPermissionsDTOs.Permissions;
 using TLIS_DAL.ViewModels.PermissionDTOs;
 using TLIS_DAL.ViewModels.UserDTOs;
 using TLIS_DAL.ViewModels.wf;
+using static TLIS_Service.Services.SiteService;
 using static TLIS_Service.Services.UserService;
 
 namespace TLIS_Service.IService
@@ -17,7 +18,7 @@ namespace TLIS_Service.IService
     public interface IUserService
     {
         bool GetSession(int UserId, string Ip);
-        Task<Response<UserViewModel>> AddInternalUser(string UserName, List<string> Permissions, string domain,int UserId);
+        Task<Response<UserViewModel>> AddInternalUser(string UserName, List<string> Permissions, string domain, int UserId);
         Response<List<UserViewModel>> GetUsersByGroupName(string GroupName, string domain);
         Task<Response<UserViewModel>> AddExternalUser(AddUserViewModel model, string domain, int UserId);
         Response<bool> ValidateUserInAdAndDb(string UserName, string domain);
@@ -25,9 +26,9 @@ namespace TLIS_Service.IService
         Task<Response<List<UserViewModel>>> GetAllExternalUsers(string UserName, ParameterPagination parameter);
         Task<Response<UserViewModel>> GetUserById(int Id);
         Task<Response<UserViewModel>> Updateuser(EditUserViewModel model, int UserId);
-        Task<Response<UserViewModel>> DeactivateUser(int UserId,int userid);
+        Task<Response<UserViewModel>> DeactivateUser(int UserId, int userid);
         Response<List<UserViewModel>> GetAll(List<FilterObjectList> filters, ParameterPagination parameter);
-        Task<Response<ChangePasswordViewModel>> ChangePassword(ChangePasswordViewModel View);
+        //Task<Response<ChangePasswordViewModel>> ChangePassword(ChangePasswordViewModel View);
         Task<Response<ForgetPassword>> ForgetPassword(ForgetPassword password);
         Response<bool?> CheckPasswordExpiryDate(int Id);
         Response<string> SendConfirmationCode(string UserEmail, int? UserId);
@@ -40,6 +41,9 @@ namespace TLIS_Service.IService
         Response<string> DeletePassword();
         Task<CallTLIResponse> GetEmailByUserId(int UserId);
         Task<CallTLIResponse> GetNameByUserId(int UserId);
-
+        new Response<string> ChangePassword(int UserId, string NewPassword);
+        new Response<string> ResetPassword(int UserId, string NewPassword);
+        Task<Response<IEnumerable<TLISercurityLogsDto>>> GetSecurityLogs(FilterRequest filterRequest);
+        Response<string> AddAnAuthorizedAccessToSecurityLog(int userId, string Title, string Message);
     }
 }

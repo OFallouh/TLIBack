@@ -40,7 +40,11 @@ using System.Data;
 using Oracle.ManagedDataAccess.Types;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static TLIS_Service.Helpers.Constants;
-
+using DocumentFormat.OpenXml.InkML;
+using static TLIS_Service.Services.SiteService;
+using System.Text.Json;
+using TLIS_DAL.ViewModels.SiteDTOs;
+using System.Linq.Expressions;
 namespace TLIS_Service.Services
 {
     public class UserService : IUserService
@@ -66,7 +70,7 @@ namespace TLIS_Service.Services
         //Function to add external user 
         //usually external user type is 2
 
-        public async Task<Response<UserViewModel>> AddExternalUser(AddUserViewModel model, string domain,int UserId)
+        public async Task<Response<UserViewModel>> AddExternalUser(AddUserViewModel model, string domain, int UserId)
         {
             var connectionString = _configuration["ConnectionStrings:ActiveConnection"];
 
@@ -96,7 +100,7 @@ namespace TLIS_Service.Services
                             {
                                 await InsertGroupsAsync(connection, userId, model.Groups);
                             }
-                            
+
                             var TabelNameUser = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIuser").Id;
                             TLIhistory AddTablesHistory = new TLIhistory
                             {
@@ -106,7 +110,7 @@ namespace TLIS_Service.Services
                                 UserId = UserId
                             };
 
-                       
+
                             await _dbContext.TLIhistory.AddAsync(AddTablesHistory);
                             await _dbContext.SaveChangesAsync();
                             transaction.Commit();
@@ -144,7 +148,7 @@ namespace TLIS_Service.Services
 
             using (var command = new OracleCommand(query, connection))
             {
-              
+
                 command.Parameters.Add(new OracleParameter("FirstName", OracleDbType.Varchar2)).Value = (object)model.FirstName ?? DBNull.Value;
                 command.Parameters.Add(new OracleParameter("MiddleName", OracleDbType.Varchar2)).Value = (object)model.MiddleName ?? DBNull.Value;
                 command.Parameters.Add(new OracleParameter("LastName", OracleDbType.Varchar2)).Value = (object)model.LastName ?? DBNull.Value;
@@ -154,12 +158,12 @@ namespace TLIS_Service.Services
                 command.Parameters.Add(new OracleParameter("Password", OracleDbType.Varchar2)).Value = (object)model.Password ?? DBNull.Value;
                 command.Parameters.Add(new OracleParameter("UserType", OracleDbType.Int32)).Value = model.UserType;
 
-               
-                command.Parameters.Add(new OracleParameter("Active", OracleDbType.Int32)).Value = 1;
-                command.Parameters.Add(new OracleParameter("Deleted", OracleDbType.Int32)).Value = 0; 
-                command.Parameters.Add(new OracleParameter("ValidateAccount", OracleDbType.Int32)).Value = 1; 
 
-           
+                command.Parameters.Add(new OracleParameter("Active", OracleDbType.Int32)).Value = 1;
+                command.Parameters.Add(new OracleParameter("Deleted", OracleDbType.Int32)).Value = 0;
+                command.Parameters.Add(new OracleParameter("ValidateAccount", OracleDbType.Int32)).Value = 1;
+
+
                 var userIdParam = new OracleParameter("UserId", OracleDbType.Decimal)
                 {
                     Direction = ParameterDirection.Output
@@ -168,7 +172,7 @@ namespace TLIS_Service.Services
 
                 await command.ExecuteNonQueryAsync();
 
-              
+
                 var userIdDecimal = (OracleDecimal)userIdParam.Value;
                 return userIdDecimal.ToInt32();
 
@@ -294,7 +298,7 @@ namespace TLIS_Service.Services
 
         //Function to add internal userpublic 
         //usually internal user type is 1
-        public async Task<Response<UserViewModel>> AddInternalUser(string UserName, List<String> Permissions, string domain,int UserId)
+        public async Task<Response<UserViewModel>> AddInternalUser(string UserName, List<String> Permissions, string domain, int UserId)
         {
             try
             {
@@ -306,7 +310,7 @@ namespace TLIS_Service.Services
                     using (var transaction = connection.BeginTransaction())
                     {
 
-                     
+
                         using (PrincipalContext context = new PrincipalContext(ContextType.Domain, domain, null, ContextOptions.SimpleBind, null, null))
                         {
                             //TLIuser CheckUser = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName.ToLower() == UserName.ToLower());
@@ -341,14 +345,14 @@ namespace TLIS_Service.Services
                                     user.Domain = null;
                                     user.AdGUID = principal.Guid.ToString();
                                     user.UserType = 1;
-                                    await _unitOfWork.UserRepository.AddAsyncWithH(UserId,null,user);
+                                    await _unitOfWork.UserRepository.AddAsyncWithH(UserId, null, user);
                                     await _unitOfWork.SaveChangesAsync();
 
                                     if (Permissions != null)
                                     {
                                         await InsertPermissionsAsync(connection, user.Id, Permissions);
                                     }
-                                 
+
                                 }
                                 else
                                 {
@@ -368,18 +372,18 @@ namespace TLIS_Service.Services
         }
 
         //Function enable or disable user depened on user status
-        public async Task<Response<UserViewModel>> DeactivateUser(int UserId,int userid)
+        public async Task<Response<UserViewModel>> DeactivateUser(int UserId, int userid)
         {
             try
             {
                 TLIuser OldUser = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault
                     (x => x.Id == UserId && !x.Deleted);
-                if(OldUser==null)
-                    return new Response<UserViewModel>(true, null, null,"This user is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                if (OldUser == null)
+                    return new Response<UserViewModel>(true, null, null, "This user is not found", (int)Helpers.Constants.ApiReturnCode.fail);
 
                 TLIuser User = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && !x.Deleted);
                 User.Active = !(User.Active);
-                _unitOfWork.UserRepository.UpdateWithH(userid,null, OldUser, User,false);
+                _unitOfWork.UserRepository.UpdateWithH(userid, null, OldUser, User, false);
                 await _unitOfWork.SaveChangesAsync();
                 return new Response<UserViewModel>();
             }
@@ -573,19 +577,19 @@ namespace TLIS_Service.Services
             {
                 var newPermissionsViewModelsUser = new List<string>();
                 UserViewModel User = _mapper.Map<UserViewModel>(_unitOfWork.UserRepository.GetWhereFirst(x => x.Id == Id && !x.Deleted));
-                List <PermissionsGroup> Group = new List<PermissionsGroup>();
- 
+                List<PermissionsGroup> Group = new List<PermissionsGroup>();
+
                 if (User != null)
                 {
-                    User.WorkFlowMode= _configuration["WorkFlowMode"].ToString();
+                    User.WorkFlowMode = _configuration["WorkFlowMode"].ToString();
                     List<string> UserPermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x =>
                     x.UserId == Id && x.Active == true && x.Delete == false).Select(x => x.PageUrl).ToList();
                     List<int> GroupUserId = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == Id && x.Active && !x.Deleted).Select(x => x.groupId).ToList();
                     List<int?> ParentGroup = GetParentGroup(GroupUserId);
                     foreach (var item in ParentGroup)
                     {
-                        List<int> RoleGroup = _unitOfWork.GroupRoleRepository.GetWhere(x => x.groupId==item && !x.Deleted && x.Active).Select(x => x.roleId).ToList();
-                        List<string> Rolepermissions = _unitOfWork.RolePermissionsRepository.GetWhere( x=> RoleGroup.Any(y=>y==x.RoleId)&&!x.Delete && x.Active).Select(x => x.PageUrl).ToList();
+                        List<int> RoleGroup = _unitOfWork.GroupRoleRepository.GetWhere(x => x.groupId == item && !x.Deleted && x.Active).Select(x => x.roleId).ToList();
+                        List<string> Rolepermissions = _unitOfWork.RolePermissionsRepository.GetWhere(x => RoleGroup.Any(y => y == x.RoleId) && !x.Delete && x.Active).Select(x => x.PageUrl).ToList();
                         TLIgroup ObjGroupName = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == item);
                         string GroupName = ObjGroupName?.Name;
                         Group.Add(new PermissionsGroup()
@@ -593,7 +597,7 @@ namespace TLIS_Service.Services
                             GroupId = item,
                             GroupName = GroupName,
                             PermissionsOfGroup = Rolepermissions
-                        }) ;
+                        });
                     }
                     User.Groups = await _unitOfWork.GroupUserRepository.GetAllAsQueryable().AsNoTracking()
                         .Where(x => x.userId == User.Id && x.Active && !x.Deleted).Select(g => new GroupNamesViewModel(g.groupId, g.group.Name)).ToListAsync();
@@ -663,7 +667,7 @@ namespace TLIS_Service.Services
         }
 
         //Function to update user and his permissions
-        public async Task<Response<UserViewModel>> Updateuser(EditUserViewModel model,int UserId)
+        public async Task<Response<UserViewModel>> Updateuser(EditUserViewModel model, int UserId)
         {
             string OldP = null;
             string NewP = null;
@@ -679,7 +683,7 @@ namespace TLIS_Service.Services
                         if (model.UserType == 2)
                         {
                             var OldUserInfo = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == model.Id);
-                            if(OldUserInfo ==null)
+                            if (OldUserInfo == null)
                                 return new Response<UserViewModel>(false, null, null, $"This User is not found", (int)Helpers.Constants.ApiReturnCode.fail);
                             var UserName = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName.ToLower() == model.UserName.ToLower() && x.Id != model.Id);
                             if (UserName != null)
@@ -711,7 +715,7 @@ namespace TLIS_Service.Services
                             }
                             UserEntity.Active = OldUserInfo.Active;
                             UserEntity.Deleted = false;
-                            _unitOfWork.UserRepository.UpdateWithH(UserId, null, OldUserInfo, UserEntity,false);
+                            _unitOfWork.UserRepository.UpdateWithH(UserId, null, OldUserInfo, UserEntity, false);
                             await _unitOfWork.SaveChangesAsync();
 
                             List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
@@ -746,7 +750,7 @@ namespace TLIS_Service.Services
                             }
 
                             await _unitOfWork.SaveChangesAsync();
-                         
+
                         }
                         else if (model.UserType == 1)
                         {
@@ -757,7 +761,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.UserPermissionssRepository.RemoveRangeItems(DeletePermissions);
                             await _unitOfWork.SaveChangesAsync();
 
-                             if (model.permissions != null)
+                            if (model.permissions != null)
                             {
                                 await InsertPermissionsAsync(connection, model.Id, model.permissions);
                             }
@@ -783,7 +787,7 @@ namespace TLIS_Service.Services
                             }
 
                             await _unitOfWork.SaveChangesAsync();
-                          
+
                         }
                         transaction.Commit();
                         return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
@@ -794,7 +798,7 @@ namespace TLIS_Service.Services
                     }
                 }
             }
-        
+
         }
 
         //Function to check if the user not exist in active directory and database
@@ -934,25 +938,25 @@ namespace TLIS_Service.Services
                     userWithoutGroupViewModel.Add(new UserWithoutGroupViewModel()
                     {
                         Id = item.Id,
-                        FirstName=item.FirstName,
-                        MiddleName=item.MiddleName,
-                        LastName=item.LastName,
-                        Email=item.Email,
-                        MobileNumber=item.MobileNumber,
-                        UserName=item.UserName,
-                        Password=item.Password,
-                        Domain=item.Domain,
-                        AdGUID=item.AdGUID,
-                        UserType=item.UserType,
-                        Active=item.Active,
-                        Deleted=item.Deleted,
-                        ConfirmationCode=item.ConfirmationCode,
-                        ValidateAccount=item.ValidateAccount,
-                        Permissions = _unitOfWork.UserPermissionssRepository.GetWhere(x =>x.UserId==item.Id).Select(x=>x.PageUrl).ToList()
+                        FirstName = item.FirstName,
+                        MiddleName = item.MiddleName,
+                        LastName = item.LastName,
+                        Email = item.Email,
+                        MobileNumber = item.MobileNumber,
+                        UserName = item.UserName,
+                        Password = item.Password,
+                        Domain = item.Domain,
+                        AdGUID = item.AdGUID,
+                        UserType = item.UserType,
+                        Active = item.Active,
+                        Deleted = item.Deleted,
+                        ConfirmationCode = item.ConfirmationCode,
+                        ValidateAccount = item.ValidateAccount,
+                        Permissions = _unitOfWork.UserPermissionssRepository.GetWhere(x => x.UserId == item.Id).Select(x => x.PageUrl).ToList()
 
                     });
                 }
-                
+
                 return new Response<List<UserWithoutGroupViewModel>>(true, userWithoutGroupViewModel, null, null, (int)Helpers.Constants.ApiReturnCode.success, userWithoutGroupViewModel.Count());
             }
             catch (Exception err)
@@ -960,16 +964,16 @@ namespace TLIS_Service.Services
 
                 return new Response<List<UserWithoutGroupViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
-            
 
-        }    
+
+        }
         public Response<string> EncryptAllUserPassword(string UserName)
         {
             using (TransactionScope scope = new TransactionScope())
             {
                 try
                 {
-                    var AllUser = _unitOfWork.UserRepository.GetWhere(x=>x.Password == null);
+                    var AllUser = _unitOfWork.UserRepository.GetWhere(x => x.Password == null);
                     foreach (var item in AllUser)
                     {
                         item.Password = "Password123@";
@@ -1047,13 +1051,13 @@ namespace TLIS_Service.Services
         public List<int?> GetParentGroup(List<int> GroupId)
         {
             List<int?> Childs = new List<int?>();
-            List<int?> currentGroup = _unitOfWork.GroupRepository.GetWhere(x => GroupId.Any(y=>y==x.Id) && !x.Deleted && x.Active).Select(x => x.Id).Cast<int?>().ToList();
+            List<int?> currentGroup = _unitOfWork.GroupRepository.GetWhere(x => GroupId.Any(y => y == x.Id) && !x.Deleted && x.Active).Select(x => x.Id).Cast<int?>().ToList();
             List<TLIgroup> Group = _unitOfWork.GroupRepository.GetWhere(x => x.Active && !x.Deleted).ToList();
             while (currentGroup.Count != 0)
             {
                 Childs.AddRange(currentGroup);
 
-                currentGroup = Group.Where(x => currentGroup.Any(y => y == x.Id && x.ParentId !=null)).Select(x => x.ParentId).ToList();
+                currentGroup = Group.Where(x => currentGroup.Any(y => y == x.Id && x.ParentId != null)).Select(x => x.ParentId).ToList();
             }
             return Childs;
         }
@@ -1068,7 +1072,7 @@ namespace TLIS_Service.Services
                     _unitOfWork.UserRepository.Update(item);
                     _unitOfWork.SaveChanges();
                 }
-                return new Response< string>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                return new Response<string>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
 
             }
             catch (Exception ex)
@@ -1105,7 +1109,7 @@ namespace TLIS_Service.Services
             CallTLIResponse callTLIResponse = new CallTLIResponse();
             try
             {
-              
+
                 var UserName = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && x.Active && !x.Deleted);
                 if (UserName != null)
                 {
@@ -1114,7 +1118,7 @@ namespace TLIS_Service.Services
                 else
                 {
                     callTLIResponse.errorMessage = "This User Is Not Active";
-                } 
+                }
             }
             catch (Exception err)
             {
@@ -1133,8 +1137,8 @@ namespace TLIS_Service.Services
 
 
         }
-    
-        public bool GetSession(int UserId,string Ip)
+
+        public bool GetSession(int UserId, string Ip)
         {
             var SessionInfo = _dbContext.TLIsession.FirstOrDefault(x => x.UserId == UserId && x.IP == Ip && x.LoginDate < DateTime.Now);
             if (SessionInfo != null)
@@ -1146,6 +1150,316 @@ namespace TLIS_Service.Services
                 return false;
             }
         }
+
+
+        public new Response<string> ChangePassword(int UserId, string NewPassword)
+        {
+
+            var UserInfo = _dbContext.TLIuser.FirstOrDefault(x => x.Id == UserId);
+
+            if (UserInfo != null)
+            {
+
+                UserInfo.Password = NewPassword; // تأكد أن حقل "Password" موجود في الكيان
+                _dbContext.SaveChanges(); // حفظ التغييرات
+
+                // إرجاع استجابة النجاح
+                return new Response<string>(
+                    true,
+                    "Password changed successfully.", // رسالة النجاح
+                    null,
+                    null,
+                    (int)Helpers.Constants.ApiReturnCode.success
+                );
+            }
+            else
+            {
+                // إرجاع استجابة الفشل
+                return new Response<string>(
+                    false,
+                    "User not found.", // رسالة الفشل
+                    null,
+                    null,
+                    (int)Helpers.Constants.ApiReturnCode.fail
+                );
+            }
+        }
+
+        public new Response<string> ResetPassword(int UserId, string NewPassword)
+        {
+            // التحقق من إدخال كلمة المرور الجديدة
+            if (string.IsNullOrWhiteSpace(NewPassword))
+            {
+                return new Response<string>(
+                    false,
+                    "New password cannot be empty.", // رسالة خطأ في حال كلمة المرور فارغة
+                    null,
+                    null,
+                    (int)Helpers.Constants.ApiReturnCode.fail
+                );
+            }
+
+            // البحث عن المستخدم في قاعدة البيانات
+            var UserInfo = _dbContext.TLIuser.FirstOrDefault(x => x.Id == UserId);
+
+            if (UserInfo != null)
+            {
+
+                UserInfo.Password = NewPassword;
+                // حفظ التغييرات
+                _dbContext.SaveChanges();
+
+                // إرجاع استجابة النجاح
+                return new Response<string>(
+                    true,
+                    "Password reset successfully.", // رسالة النجاح
+                    null,
+                    null,
+                    (int)Helpers.Constants.ApiReturnCode.success
+                );
+            }
+            else
+            {
+                // إرجاع استجابة الفشل
+                return new Response<string>(
+                    false,
+                    "User not found.", // رسالة الفشل
+                    null,
+                    null,
+                    (int)Helpers.Constants.ApiReturnCode.fail
+                );
+            }
+        }
+
+        public new Response<string> AddAnAuthorizedAccessToSecurityLog(int userId, string Title,string Message)
+        {
+            using (TransactionScope scope = new TransactionScope())
+            {
+                try
+                {
+                    TLISecurityLogs tLISercurityLogs = new TLISecurityLogs()
+                    {
+                        Date = DateTime.Now,
+                        UserId = userId,
+                        Message = Message,
+                        Title = Title,
+                        ControllerName ="User",
+                        FunctionName = Title,
+                    };
+                    _dbContext.TLISecurityLogs.Add(tLISercurityLogs);
+                    _dbContext.SaveChanges();
+
+                    scope.Complete();
+                    return new Response<string>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                catch (Exception err)
+                {
+
+                    return new Response<string>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }    
+               
+            }
+        }
+
+
+        public async Task<Response<IEnumerable<TLISercurityLogsDto>>> GetSecurityLogs(FilterRequest filterRequest)
+        {
+            try
+            {
+                var query = _dbContext.TLISecurityLogs.AsQueryable();
+
+                // Get total count before filtering
+                var totalCount = query.Count();
+
+                // Apply filters
+                query = ApplyFilter(query, filterRequest);
+
+                // Get filtered count
+                var filteredCount = query.Count();
+
+                // Apply pagination
+                if (filterRequest.First.HasValue && filterRequest.Rows.HasValue)
+                {
+                    query = query.Skip(filterRequest.First.Value).Take(filterRequest.Rows.Value);
+                }
+
+                // Map data to ViewModel
+                var result = await query.Select(q => new TLISercurityLogsDto
+                {
+                    Id = q.Id,
+                    Date = q.Date,
+                    UserName = q.User.UserName,
+                    ControllerName = q.ControllerName,
+                    FunctionName = q.FunctionName,
+                    UserType = q.User.UserType == 0 ? "InternalUser" : "ExternalUser", // Convert int to string
+                    ResponseStatus = q.ResponseStatus,
+                    Message = q.Message
+                }).ToListAsync();
+
+                return new Response<IEnumerable<TLISercurityLogsDto>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
+            }
+            catch (Exception err)
+            {
+                return new Response<IEnumerable<TLISercurityLogsDto>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+
+        private IQueryable<T> ApplyFilter<T>(
+         IQueryable<T> query,
+         FilterRequest filterRequest)
+        {
+            if (filterRequest == null || filterRequest.Filters == null || !filterRequest.Filters.Any())
+                return query;
+
+            foreach (var filter in filterRequest.Filters)
+            {
+                string fieldName = filter.Key;
+                var filterValue = filter.Value.Value;
+                var matchMode = filter.Value.MatchMode;
+
+                // التحقق إذا كانت القيمة من نوع JsonElement
+                if (filterValue is JsonElement jsonElement)
+                {
+                    if (jsonElement.ValueKind == JsonValueKind.Null || string.IsNullOrEmpty(jsonElement.GetString()))
+                    {
+                        // إذا كانت القيمة null أو فارغة، يتم تجاهل هذا الفلتر
+                        continue;
+                    }
+
+                    // تحويل JsonElement إلى القيمة الفعلية إذا كانت صالحة
+                    filterValue = jsonElement.GetString();
+                }
+
+                // التحقق من إذا كانت القيمة null أو فارغة بعد التحويل
+                if (filterValue == null || string.IsNullOrEmpty(filterValue.ToString()))
+                {
+                    // تجاهل الفلاتر التي تحتوي على قيم فارغة أو null
+                    continue;
+                }
+
+                if (fieldName.ToLower() == "controllername" || fieldName.ToLower() == "functionname" || fieldName.ToLower() == "message" || fieldName.ToLower() == "title")
+                {
+                    query = ApplyStringFilter(query, fieldName, filterValue, matchMode);
+                }
+                else if (fieldName.ToLower() == "date")
+                {
+                    query = ApplyDateFilter(query, filterValue, matchMode);
+                }
+                else if (fieldName.ToLower() == "username")
+                {
+                    query = ApplyStringFilter(query, "User.UserName", filterValue, matchMode);
+                }
+                else if (fieldName.ToLower() == "usertype")
+                {
+                    query = ApplyIntFilter(query, fieldName, filterValue, matchMode);
+                }
+
+            }
+
+            return query;
+        }
+        private IQueryable<T> ApplyIntFilter<T>(
+            IQueryable<T> query,
+            string fieldName,
+            object filterValue,
+            string matchMode)
+        {
+            if (filterValue == null || !int.TryParse(filterValue.ToString(), out var filterIntValue)) return query;
+
+            var parameter = Expression.Parameter(typeof(T), "x");
+            var property = Expression.PropertyOrField(parameter, fieldName);
+            var constant = Expression.Constant(filterIntValue);
+
+            Expression body = matchMode switch
+            {
+                FilterMatchMode.EQUALS => Expression.Equal(property, constant),
+                FilterMatchMode.NOT_EQUALS => Expression.NotEqual(property, constant),
+                FilterMatchMode.GREATER_THAN => Expression.GreaterThan(property, constant),
+                FilterMatchMode.LESS_THAN => Expression.LessThan(property, constant),
+            
+                _ => null
+            };
+
+            if (body == null) return query;
+
+            var predicate = Expression.Lambda<Func<T, bool>>(body, parameter);
+            return query.Where(predicate);
+        }
+
+        private IQueryable<T> ApplyStringFilter<T>(
+         IQueryable<T> query,
+         string fieldName,
+         object filterValue,
+         string matchMode)
+        {
+            if (filterValue == null) return query;
+
+            string filterText = filterValue.ToString();
+            if (string.IsNullOrEmpty(filterText)) return query;
+
+            var parameter = Expression.Parameter(typeof(T), "x");
+            var property = Expression.PropertyOrField(parameter, fieldName);
+            var constant = Expression.Constant(filterText.ToLower()); // تحويل النص إلى أحرف صغيرة
+
+            // تحويل الخاصية أيضا إلى أحرف صغيرة لكي تكون المقارنة غير حساسة لحالة الأحرف
+            var propertyLower = Expression.Call(property, "ToLower", null);
+
+            Expression body = matchMode switch
+            {
+                FilterMatchMode.STARTS_WITH => Expression.Call(propertyLower, "StartsWith", null, constant),
+                FilterMatchMode.CONTAINS => Expression.Call(propertyLower, "Contains", null, constant),
+                FilterMatchMode.NOT_CONTAINS => Expression.Not(Expression.Call(propertyLower, "Contains", null, constant)),
+                FilterMatchMode.ENDS_WITH => Expression.Call(propertyLower, "EndsWith", null, constant),
+                FilterMatchMode.EQUALS => Expression.Equal(propertyLower, constant),
+                FilterMatchMode.NOT_EQUALS => Expression.NotEqual(propertyLower, constant),
+                _ => null
+            };
+
+            if (body == null) return query;
+
+            var predicate = Expression.Lambda<Func<T, bool>>(body, parameter);
+            return query.Where(predicate);
+        }
+        private IQueryable<T> ApplyDateFilter<T>(
+            IQueryable<T> query,
+            object filterValue,
+            string matchMode)
+        {
+            if (filterValue == null) return query;
+
+            if (!DateTime.TryParse(filterValue.ToString(), out var filterDate)) return query;
+
+            var parameter = Expression.Parameter(typeof(T), "x");
+            var property = Expression.PropertyOrField(parameter, "Date");
+            var constant = Expression.Constant(filterDate);
+
+            Expression body = matchMode switch
+            {
+                FilterMatchMode.DATE_IS => Expression.Equal(property, constant),
+                FilterMatchMode.DATE_IS_NOT => Expression.NotEqual(property, constant),
+                FilterMatchMode.DATE_BEFORE => Expression.LessThan(property, constant),
+                FilterMatchMode.DATE_AFTER => Expression.GreaterThan(property, constant),
+                _ => null
+            };
+
+            if (body == null) return query;
+
+            var predicate = Expression.Lambda<Func<T, bool>>(body, parameter);
+            return query.Where(predicate);
+        }
+
+        // مثال لطريقة تشفير كلمة المرور
+        private string EncryptPassword(string password)
+        {
+            // يمكنك استبدال هذا التشفير بخوارزمية أكثر أمانًا مثل BCrypt
+            using (var sha256 = SHA256.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(password);
+                var hash = sha256.ComputeHash(bytes);
+                return Convert.ToBase64String(hash);
+            }
+        }
+
 
         //private string CryptPassword(string password)
         //{

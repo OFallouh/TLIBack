@@ -35,15 +35,15 @@ namespace TLIS_Service.IService
         Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectLists> filters = null);
         Response<SiteInfo> GetSiteInfo(string SiteCode);
         Response<List<RecalculatSpaceOnSite>> RecalculateSite();
-        List<dynamic> ExecuteStoredProcedureAndQueryDynamicView(string ConnectionString, string sitecode, string encodedFilter,int? Cause);
-        Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel, int? TaskId,int UserId);
+        List<dynamic> ExecuteStoredProcedureAndQueryDynamicView(string ConnectionString, string sitecode, string encodedFilter, int? Cause);
+        Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel, int? TaskId, int UserId);
         Response<EditSiteViewModel> EditSite(EditSiteViewModel EditSiteViewModel, int? TaskId, int UserId);
         Response<List<AreaViewModel>> GetAllAreasForSiteOperation();
         Response<List<SiteStatusViewModel>> GetAllSiteStatusForSiteOperation();
         Response<List<RegionViewModel>> GetAllRegionsForSiteOperation();
         Response<List<LocationTypeViewModel>> GetAllLocationTypesForSiteOperation();
         Task<Response<SiteViewModel>> UpdateRentedSpace(string SiteCode, float RentedSpaceValue, int installationSpace);
-         Response<List<KeyValuePair<string, float>>> GetSpaceDetails(string SiteCode);
+        Response<List<KeyValuePair<string, float>>> GetSpaceDetails(string SiteCode);
         Response<SiteViewModel> GetSiteMainSpaces(string SiteCode);
         Response<List<ListSiteStatusViewModel>> GetAllSiteStatus();//ParameterPagination parameterPagination, List<FilterObjectList> filters
         Response<ListSiteStatusViewModel> GetSiteStatusbyId(int SiteStatusId);
@@ -82,7 +82,7 @@ namespace TLIS_Service.IService
         List<SiteViewModel> GetAllSitesWithoutPaginationForWorkFlow();
         Response<UsedSitesViewModel> GetUsedSitesCount();
         Response<ItemsOnSite> GetItemsOnSite(string SiteCode);
-        Response<IEnumerable<SiteDTO>> GetAllSitesWithoutPagination( bool? GetItemsCountOnEachSite);
+        Response<IEnumerable<SiteDTO>> GetAllSitesWithoutPagination(bool? GetItemsCountOnEachSite);
         Response<string> GetConfigurationTables(string SiteCode, string TableNameInstallation, int? CategoryId, string ConnectionString);
         Response<SiteDetailsObject> GetSiteDetails(string siteCode);
         Response<SiteDetailsObject> EditSiteDetalis(SiteDetailsObject siteDetailsObject, int? TaskId, int UserId);
@@ -91,5 +91,7 @@ namespace TLIS_Service.IService
         Task<Response<IEnumerable<TLIlogUsersActionsViewModel>>> GetFilteredLogs(FilterRequest filterRequest);
         Response<string> ClearAllHistory(string connectionString, string dateFrom, string dateTo);
         Response<string> ClearLogHistory(string connectionString, string dateFrom = null, string dateTo = null);
+
+    
     }
 }

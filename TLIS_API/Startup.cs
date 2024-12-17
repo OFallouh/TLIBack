@@ -120,6 +120,7 @@ namespace TLIS_API
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<LogFilterAttribute>();
+            services.AddScoped<SecurityLogFilter>();
             services.AddScoped<ExternalSystemFilter>();
             services.AddScoped<WorkFlowMiddleware>();
             services.AddScoped<MiddlewareLibraryAndUserManagment>();

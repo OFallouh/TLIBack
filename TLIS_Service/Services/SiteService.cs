@@ -14257,7 +14257,7 @@ namespace TLIS_Service.Services
                 }
 
                 // Map data to ViewModel
-                var result = query.Select(q => new TLIlogUsersActionsViewModel
+                var result = await query.Select(q => new TLIlogUsersActionsViewModel
                 {
                     Id = q.Id,
                     Date = q.Date,
@@ -14268,14 +14268,16 @@ namespace TLIS_Service.Services
                     HeaderParameters = q.HeaderParameters,
                     ResponseStatus = q.ResponseStatus,
                     Result = q.Result
-                }).ToList();
+                }).ToListAsync();
 
-              
-                return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(false, result, null, null, totalCount, (int)Helpers.Constants.ApiReturnCode.success);
+
+
+                return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
+
             }
             catch (Exception err)
             {
-           
+
                 return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }

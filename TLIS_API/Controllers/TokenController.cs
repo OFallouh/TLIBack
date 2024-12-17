@@ -24,6 +24,7 @@ using Microsoft.Extensions.Hosting;
 using System.Security.Principal;
 using Microsoft.AspNetCore.Http;
 using TLIS_DAL.ViewModels.MW_PortDTOs;
+using TLIS_API.Middleware;
 
 namespace TLIS_API.Controllers
 {
@@ -121,6 +122,7 @@ namespace TLIS_API.Controllers
 
         //--------------------------------------------------Login----------------------------
         [AllowAnonymous]
+        [ServiceFilter(typeof(SecurityLogFilter))]
         [HttpPost]
         [Route("Login")]
         [ProducesResponseType(200, Type = typeof(UserViewModel))]
