@@ -697,24 +697,9 @@ namespace TLIS_Service.Services
                             UserEntity.Password = null;
 
                             string OldPassword = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == model.Id)?.Password;
-                            if (!string.IsNullOrEmpty(model.Password))
-                            {
-                                OldP = Decrypt(OldPassword);
-                                NewP = Decrypt(model.Password);
-                                if (NewP != OldP)
-                                {
-                                    UserEntity.Password = model.Password;
-                                    UserEntity.ChangedPasswordDate = DateTime.Now;
-                                }
-                                else
-                                {
-                                    UserEntity.Password = OldPassword;
-                                }
-                            }
-                            else
-                            {
-                                UserEntity.Password = OldPassword;
-                            }
+                          
+                            UserEntity.Password = OldPassword;
+                            
                             UserEntity.Active = OldUserInfo.Active;
                             UserEntity.Deleted = false;
                             _unitOfWork.UserRepository.UpdateWithH(UserId, null, OldUserInfo, UserEntity, false);

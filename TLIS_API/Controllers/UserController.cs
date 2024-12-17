@@ -351,16 +351,36 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("ChangePassword")]
         [ProducesResponseType(200, Type = typeof(Response<string>))]
-        public IActionResult ChangePassword(int UserId, string NewPassword)
+        public IActionResult ChangePassword(string NewPassword)
         {
-            var response = _unitOfWorkService.UserService.ChangePassword(UserId, NewPassword);
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var domain = _configuration["Domain"];
+            var response = _unitOfWorkService.UserService.ChangePassword(userId, NewPassword);
             return Ok(response);
         }
         [ServiceFilter(typeof(SecurityLogFilter))]
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("ResetPassword")]
         [ProducesResponseType(200, Type = typeof(Response<string>))]
-        public IActionResult ResetPassword(int UserId, string NewPassword)
+        public IActionResult ResetPassword( string NewPassword)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -386,10 +406,11 @@ namespace TLIS_API.Controllers
         }
         [ServiceFilter(typeof(SecurityLogFilter))]
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("GetAllSecurityLogs")]
+        [HttpPost("GetAllSecurityLogs")]
         [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
         public IActionResult GetSecurityLogs([FromBody] FilterRequest request)
         {
+
             var response = _unitOfWorkService.UserService.GetSecurityLogs(request);
             return Ok(response);
         }
@@ -397,8 +418,28 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("AddAnAuthorizedAccessToSecurityLog")]
         [ProducesResponseType(200, Type = typeof(Response<string>))]
-        public IActionResult AddAnAuthorizedAccessToSecurityLog(int userId, string Title, string Message)
+        public IActionResult AddAnAuthorizedAccessToSecurityLog( string Title, string Message)
         {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            string authHeader = HttpContext.Request.Headers["Authorization"];
+
+            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+            {
+                return Unauthorized();
+            }
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken == null)
+            {
+                return Unauthorized();
+            }
+
+            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+            var userId = Convert.ToInt32(userInfo);
+            var domain = _configuration["Domain"];
             var response = _unitOfWorkService.UserService.AddAnAuthorizedAccessToSecurityLog(userId, Title, Message);
             return Ok(response);
         }

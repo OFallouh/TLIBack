@@ -84,6 +84,7 @@ namespace TLIS_API.Middleware
 
                 // 4. Function Name..
                 NewLog.FunctionName = Controller_Function_Name[0].ToString();
+                NewLog.Title = Controller_Function_Name[0].ToString();
 
                 // 5. Body Parameters..
                 IDictionary<string, object> Parameters = MyParametersList.Where(x =>
@@ -107,13 +108,13 @@ namespace TLIS_API.Middleware
                     {
                         dynamic DynamicObject = new ExpandoObject();
                         DynamicObject = json.Value;
-                        if (!string.IsNullOrEmpty(DynamicObject.Errors))
+                        if (!DynamicObject.Succeeded)
                         {
                             // 7. Response Status..
                             NewLog.ResponseStatus = "Failed";
 
                             // 8. Result...
-                            NewLog.Message = DynamicObject.Errors;
+                            NewLog.Message = Newtonsoft.Json.JsonConvert.SerializeObject(DynamicObject.Message);
                         }
                         else
                         {
@@ -121,7 +122,7 @@ namespace TLIS_API.Middleware
                             NewLog.ResponseStatus = "Success";
 
                             // 8. Result...
-                            NewLog.Message = Newtonsoft.Json.JsonConvert.SerializeObject(DynamicObject);
+                            NewLog.Message = Newtonsoft.Json.JsonConvert.SerializeObject(DynamicObject.Data);
                         }
                     }
                 }
