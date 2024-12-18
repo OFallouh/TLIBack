@@ -351,29 +351,10 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("ChangePassword")]
         [ProducesResponseType(200, Type = typeof(Response<string>))]
-        public IActionResult ChangePassword(string NewPassword)
+        public IActionResult ChangePassword(int UserId, string NewPassword)
         {
-            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
-            string authHeader = HttpContext.Request.Headers["Authorization"];
-
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
-            {
-                return Unauthorized();
-            }
-
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-
-            if (jsonToken == null)
-            {
-                return Unauthorized();
-            }
-
-            string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
-            var userId = Convert.ToInt32(userInfo);
-            var domain = _configuration["Domain"];
-            var response = _unitOfWorkService.UserService.ChangePassword(userId, NewPassword);
+           
+            var response = _unitOfWorkService.UserService.ChangePassword(UserId, NewPassword);
             return Ok(response);
         }
         [ServiceFilter(typeof(SecurityLogFilter))]
@@ -412,6 +393,15 @@ namespace TLIS_API.Controllers
         {
 
             var response = _unitOfWorkService.UserService.GetSecurityLogs(request);
+            return Ok(response);
+        }
+        [ServiceFilter(typeof(LogFilterAttribute))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("ClearAllHistory")]
+        public IActionResult ClearAllHistory(string dateFrom, string dateTo)
+        {
+            var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+            var response = _unitOfWorkService.SiteService.ClearAllHistory(ConnectionString, dateFrom, dateTo);
             return Ok(response);
         }
         [ServiceFilter(typeof(SecurityLogFilter))]

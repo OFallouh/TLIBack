@@ -417,10 +417,6 @@ namespace TLIS_Service.Services
                 return new Response<SiteDetailsObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-
-
-
-
         public Response<List<AreaViewModel>> GetAllAreasForSiteOperation()
         {
             try
@@ -14579,7 +14575,7 @@ namespace TLIS_Service.Services
         }
 
 
-
+      
 
     }
 

@@ -45,6 +45,7 @@ using static TLIS_Service.Services.SiteService;
 using System.Text.Json;
 using TLIS_DAL.ViewModels.SiteDTOs;
 using System.Linq.Expressions;
+using System.Globalization;
 namespace TLIS_Service.Services
 {
     public class UserService : IUserService
@@ -1253,7 +1254,7 @@ namespace TLIS_Service.Services
         {
             try
             {
-                var query = _dbContext.TLISecurityLogs.AsQueryable();
+                var query = _dbContext.TLISecurityLogs.Include(x => x.User).AsQueryable();
 
                 // Get total count before filtering
                 var totalCount = query.Count();
@@ -1269,7 +1270,6 @@ namespace TLIS_Service.Services
                 {
                     query = query.Skip(filterRequest.First.Value).Take(filterRequest.Rows.Value);
                 }
-
                 // Map data to ViewModel
                 var result = await query.Select(q => new TLISercurityLogsDto
                 {
@@ -1374,10 +1374,10 @@ namespace TLIS_Service.Services
         }
 
         private IQueryable<T> ApplyStringFilter<T>(
-         IQueryable<T> query,
-         string fieldName,
-         object filterValue,
-         string matchMode)
+            IQueryable<T> query,
+            string fieldName,
+            object filterValue,
+            string matchMode)
         {
             if (filterValue == null) return query;
 
@@ -1385,10 +1385,22 @@ namespace TLIS_Service.Services
             if (string.IsNullOrEmpty(filterText)) return query;
 
             var parameter = Expression.Parameter(typeof(T), "x");
-            var property = Expression.PropertyOrField(parameter, fieldName);
-            var constant = Expression.Constant(filterText.ToLower()); // تحويل النص إلى أحرف صغيرة
+            Expression property;
 
-            // تحويل الخاصية أيضا إلى أحرف صغيرة لكي تكون المقارنة غير حساسة لحالة الأحرف
+            // Handle navigation properties (e.g., User.UserName)
+            if (fieldName.Contains("."))
+            {
+                var properties = fieldName.Split('.');
+                property = properties.Aggregate((Expression)parameter, Expression.PropertyOrField);
+            }
+            else
+            {
+                property = Expression.PropertyOrField(parameter, fieldName);
+            }
+
+            var constant = Expression.Constant(filterText.ToLower());
+
+            // Convert property to lowercase for case-insensitive comparison
             var propertyLower = Expression.Call(property, "ToLower", null);
 
             Expression body = matchMode switch
@@ -1447,7 +1459,95 @@ namespace TLIS_Service.Services
             }
         }
 
+        public Response<string> ClearLogSecurity(string connectionString, string dateFrom = null, string dateTo = null)
+        {
+            const int batchSize = 10000; // حجم الدفعة
+            try
+            {
+                DateTime? parsedDateFrom = null, parsedDateTo = null;
 
+                // التحقق من وجود الفلاتر والتأكد من صحتها
+                if (!string.IsNullOrEmpty(dateFrom))
+                {
+                    string[] formats = { "yyyy-MM-dd", "dd-MMM-yy", "d-MMM-yy" };
+
+                    // التحقق من تنسيق DateFrom
+                    if (!DateTime.TryParseExact(dateFrom, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime tempDateFrom))
+                    {
+                        return new Response<string>(false, null, null, $"Invalid DateFrom format. Received: {dateFrom}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    parsedDateFrom = tempDateFrom.Date;  // حفظ التاريخ بدون الوقت
+                }
+
+                if (!string.IsNullOrEmpty(dateTo))
+                {
+                    string[] formats = { "yyyy-MM-dd", "dd-MMM-yy", "d-MMM-yy" };
+
+                    // التحقق من تنسيق DateTo
+                    if (!DateTime.TryParseExact(dateTo, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime tempDateTo))
+                    {
+                        return new Response<string>(false, null, null, $"Invalid DateTo format. Received: {dateTo}", (int)Helpers.Constants.ApiReturnCode.fail);
+                    }
+                    parsedDateTo = tempDateTo.Date;  // حفظ التاريخ بدون الوقت
+                }
+
+                using (var connection = new OracleConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var transaction = connection.BeginTransaction()) // بدء معاملة
+                    {
+                        try
+                        {
+                            using (var command = connection.CreateCommand())
+                            {
+                                command.Transaction = transaction;
+
+                                // إذا كانت الفلاتر موجودة، حذف البيانات وفقًا للتواريخ
+                                if (parsedDateFrom.HasValue && parsedDateTo.HasValue)
+                                {
+                                    command.CommandText = @"
+                            DELETE FROM ""TLISecurityLogs""
+                            WHERE ""Date"" BETWEEN :DateFrom AND :DateTo";
+
+                                    // إعداد المعاملات
+                                    command.Parameters.Clear();
+                                    command.Parameters.Add(new OracleParameter("DateFrom", OracleDbType.Date) { Value = parsedDateFrom.Value });
+                                    command.Parameters.Add(new OracleParameter("DateTo", OracleDbType.Date) { Value = parsedDateTo.Value });
+                                }
+                                else
+                                {
+                                    // إذا لم تكن هناك فلاتر، حذف جميع السجلات
+                                    command.CommandText = "DELETE FROM \"TLISecurityLogs\"";
+                                }
+
+                                // تنفيذ الأمر
+                                int deletedRows = command.ExecuteNonQuery();
+
+                                if (deletedRows == 0)
+                                {
+                                    // لا يوجد سجلات تم حذفها
+                                    return new Response<string>(false, null, null, "No records found to delete", (int)Helpers.Constants.ApiReturnCode.fail);
+                                }
+                            }
+
+                            transaction.Commit(); // تأكيد المعاملة
+                        }
+                        catch (Exception)
+                        {
+                            transaction.Rollback(); // إلغاء المعاملة عند حدوث خطأ
+                            throw;
+                        }
+                    }
+                }
+
+                return new Response<string>(true, "Log security cleared successfully", null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception err)
+            {
+                // تسجيل الخطأ أو معالجته
+                return new Response<string>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
         //private string CryptPassword(string password)
         //{
         //    byte[] plaintext = Encoding.UTF8.GetBytes(password);

@@ -45,5 +45,6 @@ namespace TLIS_Service.IService
         new Response<string> ResetPassword(int UserId, string NewPassword);
         Task<Response<IEnumerable<TLISercurityLogsDto>>> GetSecurityLogs(FilterRequest filterRequest);
         Response<string> AddAnAuthorizedAccessToSecurityLog(int userId, string Title, string Message);
+        Response<string> ClearLogSecurity(string connectionString, string dateFrom = null, string dateTo = null);
     }
 }
