@@ -39,6 +39,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using System.Numerics;
 using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.InkML;
+using TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs;
 
 
 namespace TLIS_Service.Services
@@ -1453,10 +1454,10 @@ namespace TLIS_Service.Services
 
                         }
 
-                        if (dt.Columns.Contains("Contractors"))
+                        if (dt.Columns.Contains("Contractor"))
                         {
                             DropDownListFilters Contractorstest = RelatedTables.FirstOrDefault(x =>
-                                                       x.Key == "Contractors").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Contractors"].ToString());
+                                                       x.Key == "Contractor").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Contractor"].ToString());
                             if (Contractorstest != null)
                             {
 
@@ -1485,10 +1486,10 @@ namespace TLIS_Service.Services
 
                         }
 
-                        if (dt.Columns.Contains("Conultants"))
+                        if (dt.Columns.Contains("Consultant"))
                         {
                             DropDownListFilters Conultantstest = RelatedTables.FirstOrDefault(x =>
-                                                       x.Key == "Conultants").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Conultants"].ToString());
+                                                       x.Key == "Consultant").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Consultant"].ToString());
                             if (Conultantstest != null)
                             {
                                 addLogisticalitem = new TLIlogisticalitem()
@@ -2151,7 +2152,57 @@ namespace TLIS_Service.Services
                             }
                         }
                     }
+                    List<int?> sortedIds = new List<int?>();
 
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
+                                {
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                   
 
                     foreach (var DynamicAtt in DynamicAtts)
                     {
@@ -2160,6 +2211,12 @@ namespace TLIS_Service.Services
                             if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
 
                             {
+
+                                var sortedDynamicAttributes = DynamicAtts
+                                .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                .ToList();
+
+
                                 var DynamicAttrName = _dbContext.TLIdynamicAtt.FirstOrDefault(x => x.Id == DynamicAtt.Item1);
                                 var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, civilWithLegLibraryList[0]).Message;
                                 if (Message != "Success")
@@ -2924,22 +2981,81 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
-                    {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                        {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                            {
+                    List<int?> sortedIds = new List<int?>();
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, civilWithoutLegLibraryist[0]).Message;
-                                if (Message != "Success")
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, civilWithoutLegLibraryist[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
                                 }
 
                             }
-
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -3587,22 +3703,81 @@ namespace TLIS_Service.Services
                         }
                         _dbContext.SaveChanges();
                     }
-                    foreach (var DynamicAtt in DynamicAtts)
-                    {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                        {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                            {
+                    List<int?> sortedIds = new List<int?>();
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, civilNonSteelLibraryList[0]).Message;
-                                if (Message != "Success")
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, civilNonSteelLibraryList[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
                                 }
 
                             }
-
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -4194,22 +4369,81 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
-                    {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                        {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                            {
+                    List<int?> sortedIds = new List<int?>();
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, loadOtherLibraryList[0]).Message;
-                                if (Message != "Success")
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, loadOtherLibraryList[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
                                 }
 
                             }
-
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -4930,22 +5164,81 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
-                    {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                        {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                            {
+                    List<int?> sortedIds = new List<int?>();
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwBULibraryList[0]).Message;
-                                if (Message != "Success")
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwBULibraryList[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
                                 }
 
                             }
-
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -5654,22 +5947,81 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
-                    {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                        {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                            {
+                    List<int?> sortedIds = new List<int?>();
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwDishLibraryList[0]).Message;
-                                if (Message != "Success")
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwDishLibraryList[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
                                 }
 
                             }
-
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -6337,22 +6689,80 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
                     {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
                         {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
                             {
-
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwODULibraryList[0]).Message;
-                                if (Message != "Success")
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
                                 }
-
                             }
+                        }
+                    }
 
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwODULibraryList[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
+                                }
+                            }
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -6965,23 +7375,81 @@ namespace TLIS_Service.Services
                         }
                     }
                     _dbContext.SaveChanges();
+                    List<int?> sortedIds = new List<int?>();
 
-                    foreach (var DynamicAtt in DynamicAtts)
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
                     {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                        {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                            {
+                        ints.Add(item.Item1);
+                    }
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwOtherLibraryList[0]).Message;
-                                if (Message != "Success")
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwOtherLibraryList[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
                                 }
 
                             }
-
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -7756,22 +8224,80 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
                     {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
                         {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
                             {
-
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwRFULibraryList[0]).Message;
-                                if (Message != "Success")
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
                                 }
-
                             }
+                        }
+                    }
 
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, mwRFULibraryList[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
+                                }
+                            }
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -8467,22 +8993,81 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
-                    {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                        {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                            {
+                    List<int?> sortedIds = new List<int?>();
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, powerLibraryist[0]).Message;
-                                if (Message != "Success")
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, powerLibraryist[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
                                 }
 
                             }
-
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -9093,22 +9678,81 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
-                    {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                        {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                            {
+                    List<int?> sortedIds = new List<int?>();
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, radioAntennaLibraryist[0]).Message;
-                                if (Message != "Success")
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, radioAntennaLibraryist[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
                                 }
 
                             }
-
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -9705,22 +10349,81 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
-                    {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                        {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                            {
+                    List<int?> sortedIds = new List<int?>();
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, radioOtherLibraryist[0]).Message;
-                                if (Message != "Success")
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, radioOtherLibraryist[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
                                 }
 
                             }
-
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -10385,22 +11088,80 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
                     {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
                         {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
                             {
-
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, radioRRULibraryist[0]).Message;
-                                if (Message != "Success")
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
                                 }
-
                             }
+                        }
+                    }
 
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, radioRRULibraryist[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
+                                }
+                            }
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -11148,22 +11909,80 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
                     {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
                         {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
                             {
-
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, cabinetPowerLibraryist[0]).Message;
-                                if (Message != "Success")
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
                                 }
-
                             }
+                        }
+                    }
 
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, cabinetPowerLibraryist[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
+                                }
+                            }
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -11799,22 +12618,81 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
-                    {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                        {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                            {
+                    List<int?> sortedIds = new List<int?>();
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, cabinetTelecomLibraryist[0]).Message;
-                                if (Message != "Success")
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, cabinetTelecomLibraryist[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
                                 }
 
                             }
-
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -12428,22 +13306,81 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
-                    {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                        {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                            {
+                    List<int?> sortedIds = new List<int?>();
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, generatorLibraryist[0]).Message;
-                                if (Message != "Success")
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, generatorLibraryist[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
                                 }
 
                             }
-
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -13139,22 +14076,81 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
-                    {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
-                        {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
-                            {
+                    List<int?> sortedIds = new List<int?>();
 
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, solarLibraryist[0]).Message;
-                                if (Message != "Success")
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
+                        {
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
+                            {
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, solarLibraryist[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
                                 }
 
                             }
-
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
@@ -13730,22 +14726,80 @@ namespace TLIS_Service.Services
                     }
                     _dbContext.SaveChanges();
 
-                    foreach (var DynamicAtt in DynamicAtts)
+                    List<int?> sortedIds = new List<int?>();
+
+
+                    List<int?> ints = new List<int?>();
+
+
+                    foreach (var item in DynamicAtts)
                     {
-                        for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                        ints.Add(item.Item1);
+                    }
+
+
+                    foreach (var item in DynamicAtts)
+                    {
+                        var DynamicAtt = _unitOfWork.DynamicAttRepository.GetWhereFirst(x => x.Id == item.Item1);
+                        var AttributeViewManagmentId = _unitOfWork.AttributeViewManagmentRepository.GetIncludeWhereFirst(
+                            x => x.DynamicAttId == item.Item1, x => x.DynamicAtt);
+
+
+                        if (DynamicAtt.Type == 2 || DynamicAtt.Type == 3)
                         {
-                            if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+                            var Rule = _unitOfWork.RuleRepository.GetWhereAndInclude(
+                                x => x.dynamicAttId == item.Item1, x => x.AttributeViewManagment).ToList();
+
+
+                            foreach (var itemRule in Rule)
                             {
-
-                                var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, sideArmLibraryist[0]).Message;
-                                if (Message != "Success")
+                                if (itemRule.AttributeViewManagmentId != null)
                                 {
-                                    UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
-                                    goto ERROR;
+
+                                    if (ints.Contains(itemRule.AttributeViewManagment.DynamicAttId))
+                                    {
+
+                                        sortedIds.Add(itemRule.AttributeViewManagment.DynamicAttId);
+                                    }
                                 }
-
                             }
+                        }
+                    }
 
+
+                    foreach (var item in ints)
+                    {
+                        if (!sortedIds.Contains(item))
+                        {
+
+                            sortedIds.Add(item);
+                        }
+                    }
+
+                    if (DynamicAtts.Count > 0)
+                    {
+                        var sortedDynamicAttributes = DynamicAtts
+                                   .OrderBy(item => sortedIds.IndexOf(item.Item1))
+                                   .ToList();
+
+
+                        foreach (var DynamicAtt in sortedDynamicAttributes)
+                        {
+                            for (int k = 0; k < DynamicAtt.Item3.Count; k++)
+                            {
+                                if (!String.IsNullOrEmpty(DynamicAtt.Item3[k].ToString()))
+
+                                {
+
+                                    var Message = _unitOfWork.CivilWithLegsRepository.CheckDynamicValidationAndDependenceDynamic(DynamicAtt.Item1, DynamicAtt.Item3[k], Convert.ToInt32(InsertedIds[k]), tLIhistory.Id, sideArmLibraryist[0]).Message;
+                                    if (Message != "Success")
+                                    {
+                                        UnsavedRows.Add(new KeyValuePair<int, string>(k + 2, Message + ' ' + $"in the Colum Name{ColName} in the Row Number {k + 2} "));
+                                        goto ERROR;
+                                    }
+
+                                }
+                            }
                         }
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();

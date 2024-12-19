@@ -249,9 +249,9 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetAllExternalUsers")]
         [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
-        public async Task<IActionResult> GetAllExternalUsers(string UserName, [FromQuery] ParameterPagination parameter)
+        public async Task<IActionResult> GetAllExternalUsers( [FromBody] FilterRequest filterRequest)
         {
-            var response = await _unitOfWorkService.UserService.GetAllExternalUsers(UserName, parameter);
+            var response = await _unitOfWorkService.UserService.GetAllExternalUsers(filterRequest);
             return Ok(response);
         }
         [ServiceFilter(typeof(LogFilterAttribute))]
@@ -278,9 +278,9 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetAllInternalUsers")]
         [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
-        public async Task<IActionResult> GetAllInternalUsers(string UserName, [FromQuery] ParameterPagination parameter)
+        public async Task<IActionResult> GetAllInternalUsers( [FromBody] FilterRequest filterRequest)
         {
-            var response = await _unitOfWorkService.UserService.GetAllInternalUsers(UserName, parameter);
+            var response = await _unitOfWorkService.UserService.GetAllInternalUsers(filterRequest);
             return Ok(response);
         }
         [ServiceFilter(typeof(LogFilterAttribute))]

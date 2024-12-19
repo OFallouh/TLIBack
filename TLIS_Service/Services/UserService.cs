@@ -418,49 +418,105 @@ namespace TLIS_Service.Services
         }
 
         //Function to get all external users
-        public async Task<Response<List<UserViewModel>>> GetAllExternalUsers(string UserName, ParameterPagination parameter)
+        public async Task<Response<List<UserViewModel>>> GetAllExternalUsers(FilterRequest filterRequest)
         {
             try
             {
-                List<TLIuser> ExternalUsers = new List<TLIuser>();
-                if (string.IsNullOrEmpty(UserName))
-                    ExternalUsers = _unitOfWork.UserRepository.GetWhere(x => !x.Deleted && x.UserType == 2).OrderBy(x => x.UserName).ToList();
-                else
-                    ExternalUsers = _unitOfWork.UserRepository.GetWhere(x => !x.Deleted && x.UserType == 2 && x.UserName.ToLower().StartsWith(UserName.ToLower()))
-                        .OrderBy(x => x.UserName).ToList();
+                // تحضير الاستعلام
+                var query = _unitOfWork.UserRepository.GetWhere(x => !x.Deleted && x.UserType == 2).AsQueryable();
+                var totalCount = query.Count();
+                // تطبيق الفلاتر
+                query = ApplyFilterUser(query, filterRequest);
 
-                List<UserViewModel> UsersViewModels = _mapper.Map<List<UserViewModel>>(ExternalUsers);
-
-                foreach (UserViewModel User in UsersViewModels)
+                // حساب عدد المستخدمين قبل التصفية
+ 
+                // تطبيق pagination إذا كانت موجودة
+                if (filterRequest.First.HasValue && filterRequest.Rows.HasValue)
                 {
-                    List<int> PermissionsIds = _unitOfWork.UserPermissionRepository.GetWhere(x =>
-                        x.userId == User.Id).Select(x => x.permissionId).Distinct().ToList();
+                    query = query.Skip(filterRequest.First.Value).Take(filterRequest.Rows.Value);
+                }
 
-                    List<PermissionViewModel> Permissions = _mapper.Map<List<PermissionViewModel>>(_unitOfWork.PermissionRepository.GetWhere(x =>
-                        PermissionsIds.Contains(x.Id) && x.Active).ToList());
+                // تحويل البيانات إلى ViewModel
+                var externalUsers = query.OrderBy(x => x.UserName).ToList();
+                List<UserViewModel> usersViewModels = _mapper.Map<List<UserViewModel>>(externalUsers);
+
+                // إضافة صلاحيات وجروبات للمستخدمين
+                foreach (UserViewModel user in usersViewModels)
+                {
+                    List<int> permissionsIds = _unitOfWork.UserPermissionRepository.GetWhere(x => x.userId == user.Id)
+                        .Select(x => x.permissionId).Distinct().ToList();
+
+                    List<PermissionViewModel> permissions = _mapper.Map<List<PermissionViewModel>>(_unitOfWork.PermissionRepository.GetWhere(x =>
+                        permissionsIds.Contains(x.Id) && x.Active).ToList());
 
                     // User.Permissions = Permissions;
 
-                    List<int> GroupsIds = _unitOfWork.GroupUserRepository.GetWhere(x =>
-                        x.userId == User.Id).Select(x => x.groupId).Distinct().ToList();
+                    List<int> groupsIds = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == user.Id)
+                        .Select(x => x.groupId).Distinct().ToList();
 
-                    List<GroupNamesViewModel> GroupsNames = _mapper.Map<List<GroupNamesViewModel>>(_unitOfWork.GroupRepository.GetWhere(x =>
-                        GroupsIds.Contains(x.Id) && x.Active && !x.Deleted).ToList());
+                    List<GroupNamesViewModel> groupsNames = _mapper.Map<List<GroupNamesViewModel>>(_unitOfWork.GroupRepository.GetWhere(x =>
+                        groupsIds.Contains(x.Id) && x.Active && !x.Deleted).ToList());
 
-                    User.Groups = GroupsNames;
+                    user.Groups = groupsNames;
                 }
 
-                int Count = UsersViewModels.Count();
-                UsersViewModels = UsersViewModels.Skip((parameter.PageNumber - 1) * parameter.PageSize)
-                    .Take(parameter.PageSize).AsQueryable().OrderBy(x => x.UserName).ToList();
-
-                return new Response<List<UserViewModel>>(true, UsersViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<List<UserViewModel>>(true, usersViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
             }
             catch (Exception err)
             {
                 return new Response<List<UserViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+
+        private IQueryable<T> ApplyFilterUser<T>(
+         IQueryable<T> query,
+         FilterRequest filterRequest)
+        {
+            if (filterRequest == null || filterRequest.Filters == null || !filterRequest.Filters.Any())
+                return query;
+
+            foreach (var filter in filterRequest.Filters)
+            {
+                string fieldName = filter.Key;
+                var filterValue = filter.Value.Value;
+                var matchMode = filter.Value.MatchMode;
+
+                // التحقق إذا كانت القيمة من نوع JsonElement
+                if (filterValue is JsonElement jsonElement)
+                {
+                    if (jsonElement.ValueKind == JsonValueKind.Null || string.IsNullOrEmpty(jsonElement.GetString()))
+                    {
+                        // إذا كانت القيمة null أو فارغة، يتم تجاهل هذا الفلتر
+                        continue;
+                    }
+
+                    // تحويل JsonElement إلى القيمة الفعلية إذا كانت صالحة
+                    filterValue = jsonElement.GetString();
+                }
+
+                // التحقق من إذا كانت القيمة null أو فارغة بعد التحويل
+                if (filterValue == null || string.IsNullOrEmpty(filterValue.ToString()))
+                {
+                    // تجاهل الفلاتر التي تحتوي على قيم فارغة أو null
+                    continue;
+                }
+
+                if (fieldName.ToLower() == "username" || fieldName.ToLower() == "email" )
+                {
+                    query = ApplyStringFilter(query, fieldName, filterValue, matchMode);
+                }
+                else if (fieldName.ToLower() == "active")
+                {
+                    query = ApplyBoolFilter(query, fieldName, filterValue, matchMode);
+                }
+
+            }
+
+            return query;
+        }
+     
+
+
         public Response<List<UserViewModel>> GetExternalUsersByName(string UserName, ParameterPagination parameterPagination)
         {
             try
@@ -487,20 +543,28 @@ namespace TLIS_Service.Services
             }
         }
         //Function to get all internal users
-        public async Task<Response<List<UserViewModel>>> GetAllInternalUsers(string UserName, ParameterPagination parameter)
+        public async Task<Response<List<UserViewModel>>> GetAllInternalUsers(FilterRequest filterRequest)
         {
             try
             {
-                List<TLIuser> ExternalUsers = new List<TLIuser>();
-                if (string.IsNullOrEmpty(UserName))
-                    ExternalUsers = _unitOfWork.UserRepository.GetWhere(x => !x.Deleted && x.UserType == 1).OrderBy(x => x.UserName).ToList();
-                else
-                    ExternalUsers = _unitOfWork.UserRepository.GetWhere(x => !x.Deleted && x.UserType == 1 && x.UserName.ToLower().StartsWith(UserName.ToLower()))
-                        .OrderBy(x => x.UserName).ToList();
+                // تحضير الاستعلام
+                var query = _unitOfWork.UserRepository.GetWhere(x => !x.Deleted && x.UserType == 1).AsQueryable();
+                var totalCount = query.Count();
+                // تطبيق الفلاتر
+                query = ApplyFilterUser(query, filterRequest);
 
-                List<UserViewModel> UsersViewModels = _mapper.Map<List<UserViewModel>>(ExternalUsers);
 
-                foreach (UserViewModel User in UsersViewModels)
+                // تطبيق pagination إذا كانت موجودة
+                if (filterRequest.First.HasValue && filterRequest.Rows.HasValue)
+                {
+                    query = query.Skip(filterRequest.First.Value).Take(filterRequest.Rows.Value);
+                }
+
+                // تحويل البيانات إلى ViewModel
+                var externalUsers = query.OrderBy(x => x.UserName).ToList();
+                List<UserViewModel> usersViewModels = _mapper.Map<List<UserViewModel>>(externalUsers);
+
+                foreach (UserViewModel User in usersViewModels)
                 {
                     List<int> PermissionsIds = _unitOfWork.UserPermissionRepository.GetWhere(x =>
                         x.userId == User.Id).Select(x => x.permissionId).Distinct().ToList();
@@ -519,11 +583,9 @@ namespace TLIS_Service.Services
                     User.Groups = GroupsNames;
                 }
 
-                int Count = UsersViewModels.Count();
-                UsersViewModels = UsersViewModels.Skip((parameter.PageNumber - 1) * parameter.PageSize)
-                    .Take(parameter.PageSize).AsQueryable().OrderBy(x => x.UserName).ToList();
+        
 
-                return new Response<List<UserViewModel>>(true, UsersViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, Count);
+                return new Response<List<UserViewModel>>(true, usersViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
             }
             catch (Exception err)
             {
@@ -1446,6 +1508,54 @@ namespace TLIS_Service.Services
             var predicate = Expression.Lambda<Func<T, bool>>(body, parameter);
             return query.Where(predicate);
         }
+        private IQueryable<T> ApplyBoolFilter<T>(
+          IQueryable<T> query,
+          string fieldName,
+          object filterValue,
+          string matchMode)
+        {
+            if (filterValue == null) return query;
+
+            // تحويل القيمة إلى Boolean إذا كانت صالحة
+            bool filterBoolValue;
+            if (!bool.TryParse(filterValue.ToString(), out filterBoolValue))
+            {
+                // إذا كانت القيمة غير صالحة كـ Boolean، نتجاهل الفلتر
+                return query;
+            }
+
+            var parameter = Expression.Parameter(typeof(T), "x");
+            Expression property;
+
+            // التعامل مع الخصائص الملاحية (مثل User.IsActive)
+            if (fieldName.Contains("."))
+            {
+                var properties = fieldName.Split('.');
+                property = properties.Aggregate((Expression)parameter, Expression.PropertyOrField);
+            }
+            else
+            {
+                property = Expression.PropertyOrField(parameter, fieldName);
+            }
+
+            var constant = Expression.Constant(filterBoolValue);
+
+            // إنشاء التعبير الشرطي بناءً على نوع المطابقة (matchMode)
+            Expression body = matchMode switch
+            {
+                FilterMatchMode.EQUALS => Expression.Equal(property, constant),
+                FilterMatchMode.NOT_EQUALS => Expression.NotEqual(property, constant),
+                _ => null
+            };
+
+            if (body == null) return query;
+
+            var predicate = Expression.Lambda<Func<T, bool>>(body, parameter);
+            return query.Where(predicate);
+        }
+
+
+
 
         // مثال لطريقة تشفير كلمة المرور
         private string EncryptPassword(string password)
