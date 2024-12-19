@@ -40,6 +40,7 @@ using System.Numerics;
 using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.InkML;
 using TLIS_DAL.ViewModels.CivilWithoutLegLibraryDTOs;
+using TLIS_DAL.ViewModels.MW_BULibraryDTOs;
 
 
 namespace TLIS_Service.Services
@@ -4786,6 +4787,11 @@ namespace TLIS_Service.Services
                             if (test == false)
                             {
                                 UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"NumOfRFU Wrong Input Value In The Row {j + 2}"));
+                                goto ERROR;
+                            } 
+                            if (NumOfRFUs_test > 4)
+                            {
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"NumOfRFU can not be bigger from fourw {j + 2}"));
                                 goto ERROR;
                             }
                         }
