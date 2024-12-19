@@ -1455,10 +1455,10 @@ namespace TLIS_Service.Services
 
                         }
 
-                        if (dt.Columns.Contains("Contractor"))
+                        if (dt.Columns.Contains("Contractors"))
                         {
                             DropDownListFilters Contractorstest = RelatedTables.FirstOrDefault(x =>
-                                                       x.Key == "Contractor").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Contractor"].ToString());
+                                                       x.Key == "Contractors").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Contractors"].ToString());
                             if (Contractorstest != null)
                             {
 
@@ -1487,10 +1487,10 @@ namespace TLIS_Service.Services
 
                         }
 
-                        if (dt.Columns.Contains("Consultant"))
+                        if (dt.Columns.Contains("Conultants"))
                         {
                             DropDownListFilters Conultantstest = RelatedTables.FirstOrDefault(x =>
-                                                       x.Key == "Consultant").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Consultant"].ToString());
+                                                       x.Key == "Conultants").Value.FirstOrDefault(x => x.Value == dt.Rows[j]["Conultants"].ToString());
                             if (Conultantstest != null)
                             {
                                 addLogisticalitem = new TLIlogisticalitem()
@@ -10265,7 +10265,7 @@ namespace TLIS_Service.Services
                     {
                         OracleCommand InventoryCmd = connection.CreateCommand();
                         InventoryCmd.CommandType = CommandType.Text;
-                        InventoryCmd.CommandText = $"Select \"Id\" From \"TLIradioAntennaLibrary\" where \"TLIradioAntennaLibrary\".\"Id\" > {LastId.Id}";
+                        InventoryCmd.CommandText = $"Select \"Id\" From \"TLIradioOtherLibrary\" where \"TLIradioOtherLibrary\".\"Id\" > {LastId.Id}";
                         OracleDataReader Reader = InventoryCmd.ExecuteReader();
                         if (Reader.HasRows)
                         {
@@ -10279,7 +10279,7 @@ namespace TLIS_Service.Services
                     {
                         OracleCommand InventoryCmd = connection.CreateCommand();
                         InventoryCmd.CommandType = CommandType.Text;
-                        InventoryCmd.CommandText = $"Select \"Id\" From \"TLIradioAntennaLibrary\"";
+                        InventoryCmd.CommandText = $"Select \"Id\" From \"TLIradioOtherLibrary\"";
                         OracleDataReader Reader = InventoryCmd.ExecuteReader();
                         if (Reader.HasRows)
                         {
@@ -10314,9 +10314,9 @@ namespace TLIS_Service.Services
                             SpaceLibrary = SpaceLibraries[i],
 
                         });
+
                     }
-
-
+                           
                     foreach (int recordId in InsertedIds)
                     {
                         var RecordName = radioOtherLibraryist.FirstOrDefault(x => x.Id == recordId);
@@ -10404,7 +10404,7 @@ namespace TLIS_Service.Services
                             sortedIds.Add(item);
                         }
                     }
-
+                    
                     if (DynamicAtts.Count > 0)
                     {
                         var sortedDynamicAttributes = DynamicAtts
@@ -10431,6 +10431,7 @@ namespace TLIS_Service.Services
 
                             }
                         }
+                       
                         //List<string> StringValues = new List<string>();
                         //List<double> DoubleValues = new List<double>();
                         //List<DateTime> DateTimeValues = new List<DateTime>();
