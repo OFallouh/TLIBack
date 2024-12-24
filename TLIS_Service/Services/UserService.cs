@@ -382,19 +382,41 @@ namespace TLIS_Service.Services
                 TLIuser OldUser = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault
                     (x => x.Id == UserId && !x.Deleted);
                 if (OldUser == null)
-                    return new Response<UserViewModel>(true, null, null, "This user is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                {
+                    return new Response<UserViewModel>(
+                        true,
+                        null,
+                        null,
+                        "User not found",
+                        (int)Helpers.Constants.ApiReturnCode.fail
+                    );
+                }
 
                 TLIuser User = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == UserId && !x.Deleted);
                 User.Active = !(User.Active);
                 _unitOfWork.UserRepository.UpdateWithH(userid, null, OldUser, User, false);
                 await _unitOfWork.SaveChangesAsync();
-                return new Response<UserViewModel>();
+
+                return new Response<UserViewModel>(
+                    false,
+                    null,
+                    null,
+                    User.Active ? "User activated successfully" : "User deactivated successfully",
+                    (int)Helpers.Constants.ApiReturnCode.success
+                );
             }
             catch (Exception err)
             {
-                return new Response<UserViewModel>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<UserViewModel>(
+                    true,
+                    null,
+                    null,
+                    $"An error occurred while updating the user's status: {err.Message}",
+                    (int)Helpers.Constants.ApiReturnCode.fail
+                );
             }
         }
+
 
         //Function to GetAll active users
         public Response<List<UserViewModel>> GetAll(List<FilterObjectList> filters, ParameterPagination parameter)
@@ -1216,9 +1238,9 @@ namespace TLIS_Service.Services
                 // إرجاع استجابة النجاح
                 return new Response<string>(
                     true,
-                    "Password changed successfully.", // رسالة النجاح
+                   null, // رسالة النجاح
                     null,
-                    null,
+                      "Password changed successfully.",
                     (int)Helpers.Constants.ApiReturnCode.success
                 );
             }
@@ -1227,9 +1249,9 @@ namespace TLIS_Service.Services
                 // إرجاع استجابة الفشل
                 return new Response<string>(
                     false,
-                    "User not found.", // رسالة الفشل
+                   null, // رسالة الفشل
                     null,
-                    null,
+                     "User not found.",
                     (int)Helpers.Constants.ApiReturnCode.fail
                 );
             }
@@ -1242,9 +1264,9 @@ namespace TLIS_Service.Services
             {
                 return new Response<string>(
                     false,
-                    "New password cannot be empty.", // رسالة خطأ في حال كلمة المرور فارغة
+                   null, // رسالة خطأ في حال كلمة المرور فارغة
                     null,
-                    null,
+                     "New password cannot be empty.",
                     (int)Helpers.Constants.ApiReturnCode.fail
                 );
             }
@@ -1262,9 +1284,9 @@ namespace TLIS_Service.Services
                 // إرجاع استجابة النجاح
                 return new Response<string>(
                     true,
-                    "Password reset successfully.", // رسالة النجاح
+                 null, // رسالة النجاح
                     null,
-                    null,
+                       "Password reset successfully.",
                     (int)Helpers.Constants.ApiReturnCode.success
                 );
             }
@@ -1273,43 +1295,43 @@ namespace TLIS_Service.Services
                 // إرجاع استجابة الفشل
                 return new Response<string>(
                     false,
-                    "User not found.", // رسالة الفشل
+                   null, // رسالة الفشل
                     null,
-                    null,
+                     "User not found.",
                     (int)Helpers.Constants.ApiReturnCode.fail
                 );
             }
         }
 
-        public new Response<string> AddAnAuthorizedAccessToSecurityLog(int userId, string Title,string Message)
+        public new Response<string> AddAnAuthorizedAccessToSecurityLog(int userId, string title, string message)
         {
             using (TransactionScope scope = new TransactionScope())
             {
                 try
                 {
-                    TLISecurityLogs tLISercurityLogs = new TLISecurityLogs()
+                    TLISecurityLogs tLISecurityLogs = new TLISecurityLogs()
                     {
                         Date = DateTime.Now,
                         UserId = userId,
-                        Message = Message,
-                        Title = Title,
-                        ControllerName ="User",
-                        FunctionName = Title,
+                        Message = message,
+                        Title = title,
+                        ControllerName = "User",
+                        FunctionName = title,
                     };
-                    _dbContext.TLISecurityLogs.Add(tLISercurityLogs);
+
+                    _dbContext.TLISecurityLogs.Add(tLISecurityLogs);
                     _dbContext.SaveChanges();
 
                     scope.Complete();
-                    return new Response<string>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                    return new Response<string>(true, null, null, "Log entry successfully added.", (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
                 {
-
-                    return new Response<string>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
-                }    
-               
+                    return new Response<string>(false, null, null, $"Failed to add log entry: {err.Message}", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
             }
         }
+
 
 
         public async Task<Response<IEnumerable<TLISercurityLogsDto>>> GetSecurityLogs(FilterRequest filterRequest)

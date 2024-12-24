@@ -121,15 +121,15 @@ namespace TLIS_Service.Services
 
             return response;
         }
-      
+
         public Response<string> Login(LoginViewModel login, string secretKey, string domain, string domainGroup)
         {
             Response<string> response = null;
             UserViewModel user = null;
             login.Wedcto = Decrypt(login.Wedcto);
-            login.Yuqrgh= Decrypt(login.Yuqrgh);
+            login.Yuqrgh = Decrypt(login.Yuqrgh);
             login.beresd = Decrypt(login.beresd);
-            int Trycount= Convert.ToInt32(login.Yuqrgh);
+            int Trycount = Convert.ToInt32(login.Yuqrgh);
             TLIuser User = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName.ToLower() == login.Wedcto.ToLower() && !x.Deleted && x.Active);
             if (User != null && User.UserType == 1)
             {
@@ -139,18 +139,17 @@ namespace TLIS_Service.Services
                     var usernotfound = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName.ToLower() == login.Wedcto.ToLower());
                     if (usernotfound == null)
                     {
-                        return response = new Response<string>(false, null, null, $"This User Is Not Found In TLI + {login.Wedcto}", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                        return response = new Response<string>(false, null, null, $"This user is not found in TLI: {login.Wedcto}.", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
                     else if (usernotfound != null && usernotfound.Active == false)
                     {
-                        return response = new Response<string>(false, null, null, $"This Account Is Blocked In TLI + {login.Wedcto}", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                        return response = new Response<string>(false, null, null, $"This account is blocked in TLI: {login.Wedcto}.", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
                     else if (IsPasswordValid(login.Wedcto.ToLower(), login.beresd) == true)
                     {
                         principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, login.Wedcto);
                         if (principal != null && principal.SamAccountName.Equals(login.Wedcto, StringComparison.OrdinalIgnoreCase))
                         {
-
                             GroupPrincipal group = GroupPrincipal.FindByIdentity(context, domainGroup);
 
                             //add check with TLI group 
@@ -161,8 +160,6 @@ namespace TLIS_Service.Services
 
                                 if (user != null)
                                 {
-
-                                    
                                     if (User.IsFirstLogin)
                                     {
                                         User.IsFirstLogin = false;
@@ -172,19 +169,19 @@ namespace TLIS_Service.Services
 
                                     var tokenString = BuildToken(user, secretKey);
                                     var clientIpAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
-                                    var session=_context.TLIsession.FirstOrDefault(x=>x.UserId==user.Id &&x.IP== clientIpAddress);
+                                    var session = _context.TLIsession.FirstOrDefault(x => x.UserId == user.Id && x.IP == clientIpAddress);
                                     if (session == null)
                                     {
                                         TLIsession tLIsession = new TLIsession()
                                         {
                                             UserId = user.Id,
                                             Token = tokenString,
-                                            IP= clientIpAddress,
-                                            LoginDate = DateTime.Now 
+                                            IP = clientIpAddress,
+                                            LoginDate = DateTime.Now
                                         };
                                         _context.TLIsession.Add(tLIsession);
                                         _context.SaveChanges();
-                                       
+
                                     }
                                     else
                                     {
@@ -198,22 +195,23 @@ namespace TLIS_Service.Services
                                         _context.TLIsession.Update(tLIsession);
                                         _context.SaveChanges();
                                     }
-                                    return response = new Response<string>(true, tokenString, null, null, (int)Helpers.Constants.ApiReturnCode.success);
-                            }   }
+                                    return response = new Response<string>(true, tokenString, null, "Login successful.", (int)Helpers.Constants.ApiReturnCode.success);
+                                }
+                            }
                         }
 
-                    } 
+                    }
                     else if (Trycount == 3)
                     {
                         User.Active = false;
                         _unitOfWork.UserRepository.Update(User);
                         _unitOfWork.SaveChanges();
-                        return response = new Response<string>(false, null, null, "You have entered the wrong password 3 times,the account is blocked ,Please contact the Administrator", (int)Helpers.Constants.ApiReturnCode.uncompleted);
- 
+                        return response = new Response<string>(false, null, null, "You have entered the wrong password 3 times. The account is blocked. Please contact the administrator.", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+
                     }
                     else
                     {
-                      return  response = new Response<string>(false, null, null, "This username or password is not correct", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                        return response = new Response<string>(false, null, null, "The username or password is incorrect.", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
                 }
             }
@@ -221,7 +219,7 @@ namespace TLIS_Service.Services
             {
                 if (string.IsNullOrEmpty(login.beresd))
                 {
-                   return response = new Response<string>(false, null, null, "The Password coudn't be empty", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                    return response = new Response<string>(false, null, null, "The password cannot be empty.", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                 }
                 var OldPass = Decrypt(User.Password);
                 bool verified = (OldPass == login.beresd);
@@ -233,11 +231,11 @@ namespace TLIS_Service.Services
                         User.Active = false;
                         _unitOfWork.UserRepository.Update(User);
                         _unitOfWork.SaveChanges();
-                       return response = new Response<string>(false, null, null, "You have entered the wrong password 3 times,the account is blocked ,Please contact the Administrator", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                        return response = new Response<string>(false, null, null, "You have entered the wrong password 3 times. The account is blocked. Please contact the administrator.", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
                     else
                     {
-                        return response = new Response<string>(false, null, null, "Your Password Is Not Correct", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                        return response = new Response<string>(false, null, null, "Your password is not correct.", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
 
                 }
@@ -246,7 +244,7 @@ namespace TLIS_Service.Services
                     DateTime date = (DateTime)User.ChangedPasswordDate;
                     if (date.AddDays(90) < DateTime.Now)
                     {
-                        return response = new Response<string>(false, null, null, "You have to change your password, your password is out of date", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                        return response = new Response<string>(false, null, null, "You must change your password. It has expired.", (int)Helpers.Constants.ApiReturnCode.uncompleted);
                     }
                 }
                 if (verified.Equals(true))
@@ -258,7 +256,7 @@ namespace TLIS_Service.Services
                         var tokenString = BuildToken(user, secretKey);
                         var clientIpAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
                         var session = _context.TLIsession.FirstOrDefault(x => x.UserId == user.Id);
-                    
+
                         if (session == null)
                         {
                             TLIsession tLIsession = new TLIsession()
@@ -283,19 +281,20 @@ namespace TLIS_Service.Services
                             };
                             _context.TLIsession.Update(tLIsession);
                             _context.SaveChanges();
-                            
-                           
+
+
                         }
-                        return response = new Response<string>(true, tokenString, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                        return response = new Response<string>(true, tokenString, null, "Login successful.", (int)Helpers.Constants.ApiReturnCode.success);
                     }
                 }
             }
             else
             {
-                return response = new Response<string>(false, null, null, "The User Is Not Found", (int)Helpers.Constants.ApiReturnCode.uncompleted);
+                return response = new Response<string>(false, null, null, "The user is not found.", (int)Helpers.Constants.ApiReturnCode.uncompleted);
             }
             return response;
         }
+
         public Response<string> Logout(int UserId)
         {
             var session = _context.TLIsession.FirstOrDefault(x => x.UserId == UserId);

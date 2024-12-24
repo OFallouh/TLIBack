@@ -8330,44 +8330,57 @@ namespace TLIS_Service.Services
                     return "رابط الـ API غير موجود أو غير صحيح.";
                 }
 
-                // تكوين الطلب
-                HttpWebRequest request = !string.IsNullOrEmpty(Paramater)
-                    ? (HttpWebRequest)WebRequest.Create($"{apiUrl}{UserName}/{Password}/{ViewName}/'{Paramater}'")
-                    : (HttpWebRequest)WebRequest.Create($"{apiUrl}{UserName}/{Password}/{ViewName}");
+                int pageSize = 1000; // عدد السجلات في كل صفحة
+                int currentPage = 1;
+                List<SiteDataFromOutsiderApiViewModel> siteDataList = new List<SiteDataFromOutsiderApiViewModel>();
 
-                request.Method = "GET";
-
-                if (!string.IsNullOrEmpty(RowContent))
+                while (true)
                 {
-                    request.ContentType = "text/plain";
-                    ASCIIEncoding encoding = new ASCIIEncoding();
-                    byte[] bodyText = encoding.GetBytes(RowContent);
+                    string url = !string.IsNullOrEmpty(Paramater)
+                        ? $"{apiUrl}{UserName}/{Password}/{ViewName}/'{Paramater}'?page={currentPage}&pageSize={pageSize}"
+                        : $"{apiUrl}{UserName}/{Password}/{ViewName}?page={currentPage}&pageSize={pageSize}";
 
-                    using (Stream newStream = request.GetRequestStream())
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    request.Method = "GET";
+
+                    if (!string.IsNullOrEmpty(RowContent))
                     {
-                        newStream.Write(bodyText, 0, bodyText.Length);
-                    }
-                    request.ContentLength = bodyText.Length;
-                }
+                        request.ContentType = "text/plain";
+                        ASCIIEncoding encoding = new ASCIIEncoding();
+                        byte[] bodyText = encoding.GetBytes(RowContent);
 
-                // الحصول على الاستجابة من API
-                string smisResponse;
-                using (WebResponse webResponse = await request.GetResponseAsync())
-                {
-                    using (StreamReader reader = new StreamReader(webResponse.GetResponseStream()))
+                        using (Stream newStream = request.GetRequestStream())
+                        {
+                            newStream.Write(bodyText, 0, bodyText.Length);
+                        }
+                        request.ContentLength = bodyText.Length;
+                    }
+
+                    string smisResponse;
+                    using (WebResponse webResponse = await request.GetResponseAsync())
                     {
-                        smisResponse = await reader.ReadToEndAsync();
+                        using (StreamReader reader = new StreamReader(webResponse.GetResponseStream()))
+                        {
+                            smisResponse = await reader.ReadToEndAsync();
+                        }
                     }
-                }
 
-                // تحويل النص إلى قائمة من الكائنات
-                var siteDataList = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
+                    var batchData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
+
+                    if (batchData == null || batchData.Count == 0)
+                    {
+                        break; // توقف إذا لم تعد هناك بيانات
+                    }
+
+                    siteDataList.AddRange(batchData);
+                    currentPage++; // الانتقال للصفحة التالية
+                }
 
                 int batchSize = 2500; // حجم الدفعة
                 var transactionOptions = new TransactionOptions
                 {
-                    IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted, // تحديد المساحة بشكل صريح
-                    Timeout = TimeSpan.FromMinutes(10) // زيادة المهلة
+                    IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted,
+                    Timeout = TimeSpan.FromMinutes(10)
                 };
 
                 for (int i = 0; i < siteDataList.Count; i += batchSize)
@@ -8432,7 +8445,6 @@ namespace TLIS_Service.Services
                             }
                             catch (Exception ex)
                             {
-                                // تسجيل الخطأ ومتابعة معالجة باقي السجلات
                                 Console.WriteLine($"Error processing site {item.Sitecode}: {ex.Message}");
                             }
                         }

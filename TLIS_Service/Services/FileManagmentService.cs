@@ -4791,7 +4791,8 @@ namespace TLIS_Service.Services
                             } 
                             if (NumOfRFUs_test > 4)
                             {
-                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"NumOfRFU can not be bigger from fourw {j + 2}"));
+                                UnsavedRows.Add(new KeyValuePair<int, string>(j + 2, $"NumOfRFU cannot be greater than four in row {j + 2}"));
+
                                 goto ERROR;
                             }
                         }
