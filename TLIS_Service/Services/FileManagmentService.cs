@@ -15101,7 +15101,7 @@ namespace TLIS_Service.Services
                 else
                 {
                     cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\", \"IsImg\", \"documenttypeId\", \"fileSize\", \"SiteCode\", \"Description\", \"Description2\", \"UnAttached\")" +
-                       $" VALUES ('{FullFileName}', '{FilePath}', {(Record.HasValue ? Record.Value.ToString() : "NULL")}, {TableNamesEntity.Id}, {IsImage}, NULL, {FileSizePerMega}, '{SiteCode}, '', '', 0)";
+                       $" VALUES ('{FullFileName}', '{FilePath}', {(Record.HasValue ? Record.Value.ToString() : "NULL")}, {TableNamesEntity.Id}, {IsImage}, NULL, {FileSizePerMega}, '{SiteCode}', '', '', 0)";
                 }
 
 
