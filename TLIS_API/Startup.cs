@@ -43,6 +43,7 @@ using NLog.Extensions.Logging;
 using TLIS_API.Middleware.ActionFilters;
 using Microsoft.Extensions.Hosting;
 using TLIS_API.Middleware.WorkFlow;
+using TLIS_API.BackGroundServices;
 
 namespace TLIS_API
 {
@@ -61,7 +62,7 @@ namespace TLIS_API
             this.Configuration = configuration;
             this.service = service;
         }
-
+      
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -69,7 +70,7 @@ namespace TLIS_API
             services.AddControllers();
             services.AddSingleton(Configuration);
             services.AddMemoryCache();
-
+            services.AddHostedService<BackGroundSMISServices>();
             //services.AddDbContext<ApplicationDbContext>(options =>
             //{
             //    options.UseOracle(Configuration["ConnectionStrings:ActiveConnection"], b => b.MigrationsAssembly("TLIS_API"));
