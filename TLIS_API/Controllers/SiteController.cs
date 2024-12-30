@@ -33,7 +33,7 @@ using static TLIS_Service.Services.SiteService;
 namespace TLIS_API.Controllers
 {
 
-    [ServiceFilter(typeof(LogFilterAttribute))]
+    //[ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
     public class SiteController : Controller
@@ -319,7 +319,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.GetSiteStatusbyId(SiteStatusId);
             return Ok(response);
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetSMIS_Site")]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, [FromBody] string RowContent)
