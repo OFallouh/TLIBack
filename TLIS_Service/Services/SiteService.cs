@@ -8398,7 +8398,10 @@ namespace TLIS_Service.Services
                                 int siteStatusId = await GetSiteStatusIdAsync(item.siteStatus);
                                 string locationTypeId = await GetLocationTypeIdAsync(item.LocationType);
 
-                                var existingSite = _unitOfWork.SiteRepository.GetWhereFirst(x => x.SiteCode == item.Sitecode || x.SiteName == item.Sitename);
+                                var existingSite = _unitOfWork.SiteRepository.GetWhereFirst(x =>
+                                  x.SiteCode.Replace(" ", "").ToLower() == item.Sitecode.Replace(" ", "").ToLower() ||
+                                  x.SiteName.Replace(" ", "").ToLower() == item.Sitename.Replace(" ", "").ToLower());
+
 
                                 if (existingSite != null)
                                 {
@@ -9363,6 +9366,8 @@ namespace TLIS_Service.Services
                                 switch (matchMode)
                                 {
                                     case FilterMatchMode.STARTS_WITH:
+                                        filterConditions.Add($"UPPER(\"{field}\") LIKE UPPER(:{field} || '%')");
+                                        break;
                                     case FilterMatchMode.CONTAINS:
                                     case FilterMatchMode.NOT_CONTAINS:
                                     case FilterMatchMode.ENDS_WITH:
@@ -14247,7 +14252,8 @@ namespace TLIS_Service.Services
         {
             try
             {
-                var query = _context.TLIlogUsersActions.AsQueryable();
+                var xx = _context.TLIlogUsersActions.Include(x=>x.User).ToList();
+                var query = _context.TLIlogUsersActions.Include(x=>x.User).AsQueryable();
 
                 // Get total count before filtering
                 var totalCount = query.Count();
@@ -14332,6 +14338,7 @@ namespace TLIS_Service.Services
                 }
                 else if (fieldName.ToLower() == "username")
                 {
+                   
                     query = ApplyStringFilter(query, "User.UserName", filterValue, matchMode);
                 }
             }
@@ -14339,10 +14346,10 @@ namespace TLIS_Service.Services
             return query;
         }
         private IQueryable<T> ApplyStringFilter<T>(
-         IQueryable<T> query,
-         string fieldName,
-         object filterValue,
-         string matchMode)
+          IQueryable<T> query,
+          string fieldName,
+          object filterValue,
+          string matchMode)
         {
             if (filterValue == null) return query;
 
@@ -14350,10 +14357,17 @@ namespace TLIS_Service.Services
             if (string.IsNullOrEmpty(filterText)) return query;
 
             var parameter = Expression.Parameter(typeof(T), "x");
-            var property = Expression.PropertyOrField(parameter, fieldName);
-            var constant = Expression.Constant(filterText.ToLower()); // تحويل النص إلى أحرف صغيرة
 
-            // تحويل الخاصية أيضا إلى أحرف صغيرة لكي تكون المقارنة غير حساسة لحالة الأحرف
+            // التحقق إذا كانت الخاصية تنقلية (Navigation Property)
+            var propertyParts = fieldName.Split('.'); // تقسيم اسم الخاصية إلى أجزاء
+            Expression property = parameter;
+
+            foreach (var part in propertyParts)
+            {
+                property = Expression.PropertyOrField(property, part); // التنقل بين الخصائص
+            }
+
+            var constant = Expression.Constant(filterText.ToLower()); // تحويل النص إلى أحرف صغيرة
             var propertyLower = Expression.Call(property, "ToLower", null);
 
             Expression body = matchMode switch
@@ -14372,6 +14386,7 @@ namespace TLIS_Service.Services
             var predicate = Expression.Lambda<Func<T, bool>>(body, parameter);
             return query.Where(predicate);
         }
+
         private IQueryable<T> ApplyDateFilter<T>(
             IQueryable<T> query,
             object filterValue,

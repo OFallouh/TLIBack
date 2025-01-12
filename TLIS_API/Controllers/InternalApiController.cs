@@ -6645,9 +6645,6 @@ namespace TLIS_API.Controllers
         public IActionResult DismantleCivilWithLegsInstallation(string SiteCode, int CivilId, int? TaskId)
         {
             string authHeader = HttpContext.Request.Headers["Authorization"];
-
-
-
             if (authHeader.ToLower().StartsWith("bearer "))
             {
 

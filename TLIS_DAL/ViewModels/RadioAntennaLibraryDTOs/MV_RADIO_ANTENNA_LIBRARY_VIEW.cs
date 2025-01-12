@@ -22,12 +22,10 @@ namespace TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs
         public float SpaceLibrary { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }
+
         public Dictionary<string, object> GenerateOutputData()
         {
             Dictionary<string, object> outputData = new Dictionary<string, object>();
-
-            outputData.Add("dynamicKeyProperties", null);
-            outputData.Add("dynamicValueProperties", null);
             outputData.Add("key", Key);
             outputData.Add("value", INPUTVALUE);
             outputData.Add("id", Id);
@@ -42,13 +40,13 @@ namespace TLIS_DAL.ViewModels.RadioAntennaLibraryDTOs
             outputData.Add("Notes", Notes);
             outputData.Add("SpaceLibrary", SpaceLibrary);
 
-            // Add dynamic property if "key" has a value
-            if (!string.IsNullOrEmpty(Key))
+            if (!string.IsNullOrEmpty(Key) && !outputData.ContainsKey(Key))  // Check if Key already exists
             {
                 outputData.Add(Key, INPUTVALUE);
             }
 
             return outputData;
         }
+
     }
 }

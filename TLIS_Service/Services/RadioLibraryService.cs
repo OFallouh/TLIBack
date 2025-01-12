@@ -1737,21 +1737,29 @@ namespace TLIS_Service.Services
                 {
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                
+
                     var attActivated = db.TLIattributeViewManagment
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
                         .Where(x => x.Enable && x.EditableManagmentView.View == "RadioAntennaLibrary"
-                        && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
-                         .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
-                            .ThenBy(x => x.attribute == null)
-                            .ThenBy(x => x.attribute)
-                            .ToList();
+                            && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new
+                        {
+                            attribute = x.AttributeActivated.Key,
+                            dynamic = x.DynamicAtt.Key,
+                            dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString()
+                        })
+                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("model"))
+                        .ThenBy(x => x.attribute == null)
+                        .ThenBy(x => x.attribute)
+                        .ToList();
+
                     getEnableAttribute.Type = attActivated;
+
                     List<string> propertyNamesStatic = new List<string>();
                     Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+
                     foreach (var key in attActivated)
                     {
                         if (key.attribute != null)
@@ -1766,7 +1774,6 @@ namespace TLIS_Service.Services
                             {
                                 propertyNamesStatic.Add(name);
                             }
-
                         }
                         else
                         {
@@ -1774,43 +1781,105 @@ namespace TLIS_Service.Services
                             string datatype = key.dataType;
                             propertyNamesDynamic.Add(name, datatype);
                         }
-
                     }
+
                     if (propertyNamesDynamic.Count == 0)
                     {
-                        var query = db.MV_RADIO_ANTENNA_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
-                       .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
-                        int count = query.Count();
+                        // استخدام LINQ بدلاً من ADO.NET هنا
+                        var query = db.MV_RADIO_ANTENNA_LIBRARY_VIEW
+                            .Where(x => !x.Deleted)
+                            .AsEnumerable()
+                            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
 
+                        int count = query.Count();
                         getEnableAttribute.Model = query;
+
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
                     else
                     {
-                        var query = db.MV_RADIO_ANTENNA_LIBRARY_VIEW.Where(x => !x.Deleted).AsEnumerable()
-                    .GroupBy(x => new
-                    {
-                        Id = x.Id,
-                        Model = x.Model,
-                        Notes = x.Notes,
-                        FrequencyBand = x.FrequencyBand,
-                        Weight = x.Weight,
-                        Width = x.Width,
-                        Depth = x.Depth,
-                        Active = x.Active,
-                        Deleted = x.Deleted,
-                        Length = x.Length,
-                        SpaceLibrary = x.SpaceLibrary,          
+                        // 2. إنشاء استعلام SELECT من الفيو مع تصفية على الـ Deleted باستخدام OracleCommand
+                        string xx = "SELECT * FROM MV_RADIO_ANTENNA_LIBRARY_VIEW WHERE \"Deleted\" = 0";
 
-                    }).OrderBy(x => x.Key.Model)
-                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
-                        int count = query.Count();
+                        using (OracleCommand command = new OracleCommand(xx, connection))
+                        {
+                            using (OracleDataReader reader = command.ExecuteReader())
+                            {
+                                var query = new List<dynamic>(); // تخزين البيانات هنا باستخدام dynamic
 
-                        getEnableAttribute.Model = query;
-                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                                while (reader.Read())
+                                {
+                                    var item = new
+                                    {
+                                        Id = reader["Id"],
+                                        Model = reader["Model"],
+                                        FrequencyBand = reader["FrequencyBand"],
+                                        Weight = reader["Weight"],
+                                        Width = reader["Width"],
+                                        Depth = reader["Depth"],
+                                        Length = reader["Length"],
+                                        Notes = reader["Notes"],
+                                        SpaceLibrary = reader["SpaceLibrary"],
+                                        Active = reader["Active"],
+                                        Key = reader["Key"],
+                                        Deleted = reader["Deleted"],
+                                        INPUTVALUE = reader["INPUTVALUE"],
+                                    };
+
+                                    query.Add(item);
+                                }
+
+                                var dynamicQuery = query
+           // تجميع بناءً على الـ Id فقط
+           .GroupBy(x => new
+           {
+               x.Id,
+               x.Model,
+               x.FrequencyBand,
+               x.Weight,
+               x.Width,
+               x.Depth,
+               x.Length,
+               x.Notes,
+               x.SpaceLibrary,
+               x.Active,
+               x.Deleted
+           })
+           .Select(g => new
+           {
+               key = new
+               {
+                   Id = g.Key.Id,
+                   Model = g.Key.Model,
+                   FrequencyBand = g.Key.FrequencyBand,
+                   Weight = g.Key.Weight,
+                   Width = g.Key.Width,
+                   Depth = g.Key.Depth,
+                   Length = g.Key.Length,
+                   Notes = g.Key.Notes,
+                   SpaceLibrary = g.Key.SpaceLibrary,
+                   Active = g.Key.Active,
+               
+                   Deleted = g.Key.Deleted
+               },
+               // دمج القيم المتغيرة مثل INPUTVALUE
+                    value = g
+                    .Select(x => new { x.Key, x.INPUTVALUE })
+                    .GroupBy(x => x.Key)
+                    .ToDictionary(
+                        grp => string.Join(",", grp.Select(x => x.Key?.ToString() ?? "")),
+                        grp => string.Join(",", grp.Select(x => x.INPUTVALUE?.ToString() ?? ""))
+                    )
+                   })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
+                    .ToList();
+                                int count = dynamicQuery.Count();
+
+                                getEnableAttribute.Model = dynamicQuery;
+                                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                            }
+                        }
                     }
-
                 }
                 catch (Exception err)
                 {
@@ -1818,6 +1887,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
+
         //Function take 2 parameters
         //specify the table i deal with
         //map object to ViewModel
