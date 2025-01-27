@@ -2807,6 +2807,17 @@ namespace TLIS_Service.Services
                     ,x=>x.allCivilInst.civilWithoutLeg);
                     if (CivilLoads != null)
                     {
+                        var RelatedtoSideArm = _unitOfWork.CivilLoadsRepository.GetWhere(
+                          x =>
+                              (x.sideArmId == SideArmViewModel.installationAttributes.Id
+                               || x.sideArm2Id == SideArmViewModel.installationAttributes.Id)
+                              &&
+                              (x.allLoadInstId != null && !x.Dismantle)
+                        );
+
+                        if(RelatedtoSideArm.Count>0)
+                            return new Response<EditSidearmInstallationObject>(false, null, null,
+                                                       "This SideArm is used so we cannot change installation configuration", (int)ApiReturnCode.fail);
                         TLIsideArm SideArm = _mapper.Map<TLIsideArm>(SideArmViewModel.installationAttributes);
                         TLIsideArm SideArmInst = _unitOfWork.SideArmRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == SideArm.Id);
                         

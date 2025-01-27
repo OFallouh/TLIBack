@@ -108,7 +108,18 @@ namespace TLIS_Service.Services
                             {
                                 TLIcivilWithLegLibrary CivilWithLegEntites = _mapper.Map<TLIcivilWithLegLibrary>(AddCivilWithLegsLibraryObject.attributesActivatedLibrary);
 
-                                
+                                var supportTypeDesignedId = _unitOfWork.SupportTypeDesignedRepository.GetWhereFirst(x => x.Id == CivilWithLegEntites.supportTypeDesignedId);
+                                if (supportTypeDesignedId == null)
+                                    return new Response<AddCivilWithLegsLibraryObject>(false, null, null, "supportTypeDesignedId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                var sectionsLegTypeId = _unitOfWork.SectionsLegTypeRepository.GetWhereFirst(x => x.Id == CivilWithLegEntites.sectionsLegTypeId);
+                                if (sectionsLegTypeId == null)
+                                    return new Response<AddCivilWithLegsLibraryObject>(false, null, null, "sectionsLegTypeId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                                var structureTypeId = _unitOfWork.StructureTypeRepository.GetWhereFirst(x => x.Id == CivilWithLegEntites.structureTypeId);
+                                if (structureTypeId == null)
+                                    return new Response<AddCivilWithLegsLibraryObject>(false, null, null, "structureTypeId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
                                 var logisticalObject = _unitOfWork.LogistcalRepository.GetByID(AddCivilWithLegsLibraryObject.logisticalItems.Vendor);
                                 var vendor = logisticalObject?.Name;
 
@@ -218,6 +229,9 @@ namespace TLIS_Service.Services
                             var vendor = logisticalObject?.Name;
 
                             var structureType = db.TLIstructureType.FirstOrDefault(x => x.Id == CivilWithoutLegEntites.structureTypeId);
+                            if(structureType == null)
+                                return new Response<AddCivilWithoutLegsLibraryObject>(false, null, null, "structureType is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                            
                             var structureTypeName = structureType?.Name;
                             if (CivilWithoutLegEntites.SpaceLibrary == 0)
                             {
@@ -355,6 +369,10 @@ namespace TLIS_Service.Services
 
                             TLIcivilNonSteelLibrary CivilNonSteelEntites = _mapper.Map<TLIcivilNonSteelLibrary>(AddCivilNonSteelLibraryObject.attributesActivatedLibrary);
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
+
+                            var civilNonSteelTypeId = _unitOfWork.CivilNonSteelTypeRepository.GetWhereFirst(x => x.Id == CivilNonSteelEntites.civilNonSteelTypeId);
+                            if (civilNonSteelTypeId == null)
+                                return new Response<AddCivilNonSteelLibraryObject>(true, null, null, "civilNonSteelTypeId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
 
                             if (CivilNonSteelEntites.SpaceLibrary == 0)
                             {

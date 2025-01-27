@@ -2633,6 +2633,22 @@ namespace TLIS_Service.Services
                     {
                         TLIcivilWithLegs civilWithLegs = _mapper.Map<TLIcivilWithLegs>(AddCivilWithLegsViewModel.installationAttributes);
 
+                        var locationTypeId = _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == civilWithLegs.locationTypeId);
+                        if (locationTypeId == null)
+                            return new Response<ObjectInstAtts>(true, null, null, "locationTypeId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        var baseTypeId = _unitOfWork.BaseTypeRepository.GetWhereFirst(x => x.Id == civilWithLegs.baseTypeId);
+                        if (baseTypeId == null)
+                            return new Response<ObjectInstAtts>(true, null, null, "baseTypeId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        var OwnerId = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == civilWithLegs.OwnerId);
+                        if (OwnerId == null)
+                            return new Response<ObjectInstAtts>(true, null, null, "OwnerId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        var SupportTypeImplementedId = _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == civilWithLegs.SupportTypeImplementedId);
+                        if (SupportTypeImplementedId == null)
+                            return new Response<ObjectInstAtts>(true, null, null, "SupportTypeImplementedId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
                         if (AddCivilWithLegsViewModel.civilSiteDate.ReservedSpace == true)
                         {
                             if (civilWithLegs.SpaceInstallation==0)
@@ -2905,7 +2921,9 @@ namespace TLIS_Service.Services
                     if (CvilWithoutlegsLibrary != null)
                     {
                         TLIcivilWithoutLeg civilwithoutlegs = _mapper.Map<TLIcivilWithoutLeg>(addCivilWithoutLegViewModel.installationAttributes);
-
+                        var OwnerId = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == civilwithoutlegs.OwnerId);
+                        if (OwnerId == null)
+                            return new Response<ObjectInstAtts>(true, null, null, "OwnerId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
                         if (addCivilWithoutLegViewModel.civilSiteDate.ReservedSpace == true)
                         {
                             if (civilwithoutlegs.SpaceInstallation == 0)
@@ -3133,7 +3151,6 @@ namespace TLIS_Service.Services
 
                     var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(c => c.TableName == TableName);
                     string ErrorMessage = string.Empty;
-                    string ownername = null;
                     var civilnonsteellibrary = _unitOfWork.CivilNonSteelLibraryRepository.GetWhereFirst(x => x.Id == addCivilNonSteelObject.civilType.CivilNonSteelLibraryId
                     && x.Active);
                     if (civilnonsteellibrary != null)
@@ -3284,6 +3301,23 @@ namespace TLIS_Service.Services
                    
                     TableNameId = _unitOfWork.TablesNamesRepository.GetWhereSelectFirst(x => x.TableName == "TLIcivilWithLegs", x => new { x.Id }).Id;
                     TLIcivilWithLegs civilWithLegsEntity = _mapper.Map<TLIcivilWithLegs>(editCivilWithLegsInstallationObject.installationAttributes);
+
+                    var locationTypeId = _unitOfWork.LocationTypeRepository.GetWhereFirst(x => x.Id == civilWithLegsEntity.locationTypeId);
+                    if (locationTypeId == null)
+                        return new Response<ObjectInstAtts>(true, null, null, "locationTypeId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    var baseTypeId = _unitOfWork.BaseTypeRepository.GetWhereFirst(x => x.Id == civilWithLegsEntity.baseTypeId);
+                    if (baseTypeId == null)
+                        return new Response<ObjectInstAtts>(true, null, null, "baseTypeId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    var OwnerId = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == civilWithLegsEntity.OwnerId);
+                    if (OwnerId == null)
+                        return new Response<ObjectInstAtts>(true, null, null, "OwnerId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                    var SupportTypeImplementedId = _unitOfWork.SupportTypeImplementedRepository.GetWhereFirst(x => x.Id == civilWithLegsEntity.SupportTypeImplementedId);
+                    if (SupportTypeImplementedId == null)
+                        return new Response<ObjectInstAtts>(true, null, null, "SupportTypeImplementedId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
 
                     var CivilWithLegInst = _unitOfWork.CivilWithLegsRepository.GetAllAsQueryable().AsNoTracking().Include(x => x.CivilWithLegsLib).ThenInclude(x=>x.structureType)
                         .FirstOrDefault(x => x.Id == editCivilWithLegsInstallationObject.installationAttributes.Id);
@@ -3683,6 +3717,11 @@ namespace TLIS_Service.Services
                     TableNameId = _unitOfWork.TablesNamesRepository.GetWhereSelectFirst(x => x.TableName == "TLIcivilWithoutLeg", x => new { x.Id }).Id;
 
                     TLIcivilWithoutLeg civilWithoutLegsEntity = _mapper.Map<TLIcivilWithoutLeg>(editCivilWithoutLegsInstallationObject.installationAttributes);
+
+                    var OwnerId = _unitOfWork.OwnerRepository.GetWhereFirst(x => x.Id == civilWithoutLegsEntity.OwnerId);
+                    if (OwnerId == null)
+                        return new Response<ObjectInstAtts>(true, null, null, "OwnerId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
                     var CivilWithoutLegInst = _unitOfWork.CivilWithoutLegRepository.GetAllAsQueryable().AsNoTracking()
                         .Include(x => x.CivilWithoutlegsLib).FirstOrDefault(x => x.Id == editCivilWithoutLegsInstallationObject.installationAttributes.Id);
 

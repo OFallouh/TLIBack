@@ -7402,6 +7402,18 @@ namespace TLIS_Service.Services
                             {
                                 AddMWDishInstallationObject AddMW_Dish = _mapper.Map<AddMWDishInstallationObject>(MWInstallationViewModel);
                                 TLImwDish mwDish = _mapper.Map<TLImwDish>(AddMW_Dish.installationAttributes);
+
+
+                                var PolarityOnLocationId = _unitOfWork.PolarityOnLocationRepository.GetWhereFirst(x => x.Id == mwDish.PolarityOnLocationId);
+                                if (PolarityOnLocationId == null)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "PolarityOnLocationId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+
+                                var ItemConnectToId = _unitOfWork.ItemConnectToRepository.GetWhereFirst(x => x.Id == mwDish.ItemConnectToId);
+                                if (ItemConnectToId == null)
+                                    return new Response<GetForAddMWDishInstallationObject>(false, null, null, "ItemConnectToId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+
                                 var MWDishLibrary = _unitOfWork.MW_DishLibraryRepository.GetWhereFirst(x => x.Id == AddMW_Dish.installationConfig.MwDishLibraryId
                                 && !x.Deleted && x.Active);
                                 if (MWDishLibrary == null)
@@ -10103,6 +10115,16 @@ namespace TLIS_Service.Services
                     TLIcivilSiteDate AllcivilinstId = null;
                     TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwDish.ToString().ToLower()).Id;
                     TLImwDish mwDish = _mapper.Map<TLImwDish>(MWInstallationViewModel.installationAttributes);
+
+                    var PolarityOnLocationId = _unitOfWork.PolarityOnLocationRepository.GetWhereFirst(x => x.Id == mwDish.PolarityOnLocationId);
+                    if (PolarityOnLocationId == null)
+                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "PolarityOnLocationId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+
+                    var ItemConnectToId = _unitOfWork.ItemConnectToRepository.GetWhereFirst(x => x.Id == mwDish.ItemConnectToId);
+                    if (ItemConnectToId == null)
+                        return new Response<GetForAddMWDishInstallationObject>(false, null, null, "ItemConnectToId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
                     TLIcivilLoads MWDishInst = _dbContext.TLIcivilLoads.AsNoTracking()
                         .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwDish).Include(x => x.allLoadInst.mwDish.MwDishLibrary).Include(x => x.allCivilInst)
                         .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)

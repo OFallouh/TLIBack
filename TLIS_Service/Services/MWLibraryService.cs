@@ -3933,7 +3933,18 @@ namespace TLIS_Service.Services
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
                             
                            TLImwDishLibrary MW_DishLibraryEntity = _mapper.Map<TLImwDishLibrary>(addMWDishLibraryObject.AttributesActivatedLibrary);
-                               
+
+
+                            var polarityTypeId = _unitOfWork.PolarityTypeRepository.GetWhereFirst(x => x.Id == MW_DishLibraryEntity.polarityTypeId);
+                            if (polarityTypeId == null)
+                                return new Response<AddMWDishLibraryObject>(false, null, null, "polarityTypeId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+
+                            var asTypeId = _unitOfWork.AsTypeRepository.GetWhereFirst(x => x.Id == MW_DishLibraryEntity.asTypeId);
+                            if (asTypeId == null)
+                                return new Response<AddMWDishLibraryObject>(false, null, null, "asTypeId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+
                             if (MW_DishLibraryEntity.diameter <= 0)
                             {
                                 return new Response<AddMWDishLibraryObject>(false, null, null, "diameter must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4180,7 +4191,12 @@ namespace TLIS_Service.Services
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
 
                             TLImwBULibrary MW_BULibraryEntity = _mapper.Map<TLImwBULibrary>(addMWBULibraryObject.AttributesActivatedLibrary);
-                           
+
+
+                            var diversityTypeId = _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == MW_BULibraryEntity.diversityTypeId);
+                            if (diversityTypeId == null)
+                                return new Response<AddMWBULibraryObject>(false, null, null, "diversityTypeId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
                             if (MW_BULibraryEntity.Length <= 0)
                             {
                                 return new Response<AddMWBULibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -4551,6 +4567,15 @@ namespace TLIS_Service.Services
                             var TableNameEntity = _unitOfWork.TablesNamesRepository.GetWhereFirst(l => l.TableName == TableName);
 
                             TLImwRFULibrary MW_RFULibraryEntity = _mapper.Map<TLImwRFULibrary>(addMWRFULibraryObject.AttributesActivatedLibrary);
+                            var diversityTypeId = _unitOfWork.DiversityTypeRepository.GetWhereFirst(x => x.Id == MW_RFULibraryEntity.diversityTypeId);
+                            if (diversityTypeId == null)
+                                return new Response<AddMWRFULibraryObject>(false, null, null, "diversityTypeId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                            var boardTypeId = _unitOfWork.BoardTypeRepository.GetWhereFirst(x => x.Id == MW_RFULibraryEntity.boardTypeId);
+                            if (boardTypeId == null)
+                                return new Response<AddMWRFULibraryObject>(false, null, null, "boardTypeId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+
                             if (MW_RFULibraryEntity.Length <= 0)
                             {
                                 return new Response<AddMWRFULibraryObject>(false, null, null, "Length must bigger of zero", (int)Helpers.Constants.ApiReturnCode.fail);
