@@ -8317,13 +8317,14 @@ namespace TLIS_Service.Services
         //        return ex.Message;
         //    }
         //}
-        public async Task<string> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, string RowContent)
+        public async Task<string> GetSMIS_Site(string userName, string password, string viewName, string parameter, string rowContent)
         {
             try
             {
+                // الحصول على رابط الـ API من الإعدادات
                 var serviceProvider = _services.BuildServiceProvider();
                 var configuration = serviceProvider.GetService<IConfiguration>();
-                string apiUrl = configuration["SMIS_API_URL"]; // رابط الـ API
+                string apiUrl = configuration["SMIS_API_URL"];
 
                 if (string.IsNullOrEmpty(apiUrl))
                 {
@@ -8332,127 +8333,43 @@ namespace TLIS_Service.Services
 
                 int pageSize = 1000; // عدد السجلات في كل صفحة
                 int currentPage = 1;
-                List<SiteDataFromOutsiderApiViewModel> siteDataList = new List<SiteDataFromOutsiderApiViewModel>();
 
                 while (true)
                 {
-                    string url = !string.IsNullOrEmpty(Paramater)
-                        ? $"{apiUrl}{UserName}/{Password}/{ViewName}/'{Paramater}'?page={currentPage}&pageSize={pageSize}"
-                        : $"{apiUrl}{UserName}/{Password}/{ViewName}?page={currentPage}&pageSize={pageSize}";
+                    // تكوين رابط الطلب بناءً على المعلمات
+                    string url = !string.IsNullOrEmpty(parameter)
+                        ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'?page={currentPage}&pageSize={pageSize}"
+                        : $"{apiUrl}{userName}/{password}/{viewName}?page={currentPage}&pageSize={pageSize}";
 
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                    request.Method = "GET";
-
-                    if (!string.IsNullOrEmpty(RowContent))
+                    // إرسال الطلب باستخدام HttpClient
+                    using (var httpClient = new HttpClient())
                     {
-                        request.ContentType = "text/plain";
-                        ASCIIEncoding encoding = new ASCIIEncoding();
-                        byte[] bodyText = encoding.GetBytes(RowContent);
-
-                        using (Stream newStream = request.GetRequestStream())
+                        if (!string.IsNullOrEmpty(rowContent))
                         {
-                            newStream.Write(bodyText, 0, bodyText.Length);
-                        }
-                        request.ContentLength = bodyText.Length;
-                    }
-
-                    string smisResponse;
-                    using (WebResponse webResponse = await request.GetResponseAsync())
-                    {
-                        using (StreamReader reader = new StreamReader(webResponse.GetResponseStream()))
-                        {
-                            smisResponse = await reader.ReadToEndAsync();
-                        }
-                    }
-
-                    var batchData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
-
-                    if (batchData == null || batchData.Count == 0)
-                    {
-                        break; // توقف إذا لم تعد هناك بيانات
-                    }
-
-                    siteDataList.AddRange(batchData);
-                    currentPage++; // الانتقال للصفحة التالية
-                }
-
-                int batchSize = 2500; // حجم الدفعة
-                var transactionOptions = new TransactionOptions
-                {
-                    IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted,
-                    Timeout = TimeSpan.FromMinutes(10)
-                };
-
-                for (int i = 0; i < siteDataList.Count; i += batchSize)
-                {
-                    var batch = siteDataList.Skip(i).Take(batchSize).ToList();
-
-                    using (var transaction = new TransactionScope(TransactionScopeOption.Required, transactionOptions, TransactionScopeAsyncFlowOption.Enabled))
-                    {
-                        foreach (var item in batch)
-                        {
-                            try
-                            {
-                                int areaId = await GetAreaIdAsync(item.Area);
-                                string regionCode = await GetRegionCodeAsync(item.RegionCode);
-                                int siteStatusId = await GetSiteStatusIdAsync(item.siteStatus);
-                                string locationTypeId = await GetLocationTypeIdAsync(item.LocationType);
-
-                                var existingSite = _unitOfWork.SiteRepository.GetWhereFirst(x =>
-                                  x.SiteCode.Replace(" ", "").ToLower() == item.Sitecode.Replace(" ", "").ToLower() ||
-                                  x.SiteName.Replace(" ", "").ToLower() == item.Sitename.Replace(" ", "").ToLower());
-
-
-                                if (existingSite != null)
-                                {
-                                    existingSite.SiteCode = item.Sitecode;
-                                    existingSite.SiteName = item.Sitename;
-                                    existingSite.LocationType = locationTypeId;
-                                    existingSite.Latitude = item.Latitude;
-                                    existingSite.Longitude = item.Longitude;
-                                    existingSite.Zone = item.Zone;
-                                    existingSite.SubArea = item.Subarea;
-                                    existingSite.STATUS_DATE = item.Statusdate;
-                                    existingSite.CREATE_DATE = item.Createddate;
-                                    existingSite.LocationHieght = item.LocationHieght ?? 0;
-                                    existingSite.AreaId = areaId;
-                                    existingSite.RegionCode = regionCode;
-
-                                    await _unitOfWork.SaveChangesAsync();
-                                }
-                                else
-                                {
-                                    var newSite = new TLIsite
-                                    {
-                                        SiteCode = item.Sitecode,
-                                        SiteName = item.Sitename,
-                                        Latitude = item.Latitude,
-                                        Longitude = item.Longitude,
-                                        Zone = item.Zone,
-                                        SubArea = item.Subarea,
-                                        STATUS_DATE = item.Statusdate,
-                                        CREATE_DATE = item.Createddate,
-                                        LocationHieght = item.LocationHieght ?? 0,
-                                        RentedSpace = 0,
-                                        ReservedSpace = 0,
-                                        SiteVisiteDate = DateTime.Now,
-                                        AreaId = areaId,
-                                        RegionCode = regionCode,
-                                        siteStatusId = siteStatusId,
-                                        LocationType = locationTypeId
-                                    };
-
-                                    await _unitOfWork.SiteRepository.AddAsync(newSite);
-                                    await _unitOfWork.SaveChangesAsync();
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Error processing site {item.Sitecode}: {ex.Message}");
-                            }
+                            httpClient.DefaultRequestHeaders.Add("Content-Type", "text/plain");
                         }
 
-                        transaction.Complete();
+                        var response = await httpClient.GetAsync(url);
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
+                        }
+
+                        string smisResponse = await response.Content.ReadAsStringAsync();
+                        var batchData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
+
+                        if (batchData == null || batchData.Count == 0)
+                        {
+                            break; // لا مزيد من البيانات
+                        }
+
+                        // معالجة البيانات
+                        foreach (var item in batchData)
+                        {
+                            await ProcessSiteDataAsync(item);
+                        }
+
+                        currentPage++; // الانتقال للصفحة التالية
                     }
                 }
 
@@ -8460,9 +8377,74 @@ namespace TLIS_Service.Services
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return $"حدث خطأ: {ex.Message}";
             }
         }
+
+        private async Task ProcessSiteDataAsync(SiteDataFromOutsiderApiViewModel item)
+        {
+            try
+            {
+                int areaId = await GetAreaIdAsync(item.Area);
+                string regionCode = await GetRegionCodeAsync(item.RegionCode);
+                int siteStatusId = await GetSiteStatusIdAsync(item.siteStatus);
+                string locationTypeId = await GetLocationTypeIdAsync(item.LocationType);
+
+                var existingSite = _unitOfWork.SiteRepository.GetWhereFirst(x =>
+                    x.SiteCode.Replace(" ", "").ToLower() == item.Sitecode.Replace(" ", "").ToLower() ||
+                    x.SiteName.Replace(" ", "").ToLower() == item.Sitename.Replace(" ", "").ToLower());
+
+                if (existingSite != null)
+                {
+                    // تحديث الموقع الحالي
+                    existingSite.SiteCode = item.Sitecode;
+                    existingSite.SiteName = item.Sitename;
+                    existingSite.LocationType = locationTypeId;
+                    existingSite.Latitude = item.Latitude;
+                    existingSite.Longitude = item.Longitude;
+                    existingSite.Zone = item.Zone;
+                    existingSite.SubArea = item.Subarea;
+                    existingSite.STATUS_DATE = item.Statusdate;
+                    existingSite.CREATE_DATE = item.Createddate;
+                    existingSite.LocationHieght = item.LocationHieght ?? 0;
+                    existingSite.AreaId = areaId;
+                    existingSite.RegionCode = regionCode;
+
+                    await _unitOfWork.SaveChangesAsync();
+                }
+                else
+                {
+                    // إضافة موقع جديد
+                    var newSite = new TLIsite
+                    {
+                        SiteCode = item.Sitecode,
+                        SiteName = item.Sitename,
+                        Latitude = item.Latitude,
+                        Longitude = item.Longitude,
+                        Zone = item.Zone,
+                        SubArea = item.Subarea,
+                        STATUS_DATE = item.Statusdate,
+                        CREATE_DATE = item.Createddate,
+                        LocationHieght = item.LocationHieght ?? 0,
+                        RentedSpace = 0,
+                        ReservedSpace = 0,
+                        SiteVisiteDate = DateTime.Now,
+                        AreaId = areaId,
+                        RegionCode = regionCode,
+                        siteStatusId = siteStatusId,
+                        LocationType = locationTypeId
+                    };
+
+                    await _unitOfWork.SiteRepository.AddAsync(newSite);
+                    await _unitOfWork.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error processing site {item.Sitecode}: {ex.Message}");
+            }
+        }
+
 
 
 
