@@ -8328,7 +8328,7 @@ namespace TLIS_Service.Services
                 string apiUrl = configuration["SMIS_API_URL"];
                 var connectionString = configuration["ActiveConnection"];
 
-                if (string.IsNullOrEmpty(connectionString))
+                if (string.IsNullOrEmpty(apiUrl))
                 {
                     return "رابط الـ API غير موجود أو غير صحيح.";
                 }
