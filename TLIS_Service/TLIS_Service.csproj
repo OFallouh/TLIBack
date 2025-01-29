@@ -58,6 +58,7 @@
     <Folder Include="Services\NewFolder4\" />
     <Folder Include="Services\NewFolder5\" />
     <Folder Include="Services\NewFolder6\" />
+    <Folder Include="Services\NewFolder7\" />
     <Folder Include="Services\NewFolder\" />
   </ItemGroup>
 </Project>

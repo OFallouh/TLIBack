@@ -8321,7 +8321,6 @@ namespace TLIS_Service.Services
         {
             try
             {
-                // الحصول على رابط الـ API من الإعدادات
                 var serviceProvider = _services.BuildServiceProvider();
                 var configuration = serviceProvider.GetService<IConfiguration>();
                 string apiUrl = configuration["SMIS_API_URL"];
@@ -8331,47 +8330,43 @@ namespace TLIS_Service.Services
                     return "رابط الـ API غير موجود أو غير صحيح.";
                 }
 
-                int pageSize = 1000; // عدد السجلات في كل صفحة
+                int pageSize = 1000;
                 int currentPage = 1;
+
+                using var httpClient = new HttpClient();
+                if (!string.IsNullOrEmpty(rowContent))
+                {
+                    httpClient.DefaultRequestHeaders.Add("Content-Type", "text/plain");
+                }
+
+                var allData = new List<SiteDataFromOutsiderApiViewModel>();
 
                 while (true)
                 {
-                    // تكوين رابط الطلب بناءً على المعلمات
                     string url = !string.IsNullOrEmpty(parameter)
                         ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'?page={currentPage}&pageSize={pageSize}"
                         : $"{apiUrl}{userName}/{password}/{viewName}?page={currentPage}&pageSize={pageSize}";
 
-                    // إرسال الطلب باستخدام HttpClient
-                    using (var httpClient = new HttpClient())
+                    var response = await httpClient.GetAsync(url);
+                    if (!response.IsSuccessStatusCode)
                     {
-                        if (!string.IsNullOrEmpty(rowContent))
-                        {
-                            httpClient.DefaultRequestHeaders.Add("Content-Type", "text/plain");
-                        }
-
-                        var response = await httpClient.GetAsync(url);
-                        if (!response.IsSuccessStatusCode)
-                        {
-                            return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
-                        }
-
-                        string smisResponse = await response.Content.ReadAsStringAsync();
-                        var batchData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
-
-                        if (batchData == null || batchData.Count == 0)
-                        {
-                            break; // لا مزيد من البيانات
-                        }
-
-                        // معالجة البيانات
-                        foreach (var item in batchData)
-                        {
-                            await ProcessSiteDataAsync(item);
-                        }
-
-                        currentPage++; // الانتقال للصفحة التالية
+                        return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
                     }
+
+                    string smisResponse = await response.Content.ReadAsStringAsync();
+                    var batchData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
+
+                    if (batchData == null || batchData.Count == 0)
+                    {
+                        break;
+                    }
+
+                    allData.AddRange(batchData);
+                    currentPage++;
                 }
+
+                // معالجة البيانات باستخدام Parallel.ForEachAsync لتحسين الأداء
+                await Parallel.ForEachAsync(allData, async (item, _) => await ProcessSiteDataAsync(item));
 
                 return "تمت العملية بنجاح";
             }
@@ -8385,18 +8380,27 @@ namespace TLIS_Service.Services
         {
             try
             {
-                int areaId = await GetAreaIdAsync(item.Area);
-                string regionCode = await GetRegionCodeAsync(item.RegionCode);
-                int siteStatusId = await GetSiteStatusIdAsync(item.siteStatus);
-                string locationTypeId = await GetLocationTypeIdAsync(item.LocationType);
+                var areaTask = GetAreaIdAsync(item.Area);
+                var regionTask = GetRegionCodeAsync(item.RegionCode);
+                var siteStatusTask = GetSiteStatusIdAsync(item.siteStatus);
+                var locationTypeTask = GetLocationTypeIdAsync(item.LocationType);
+
+                await Task.WhenAll(areaTask, regionTask, siteStatusTask, locationTypeTask);
+
+                int areaId = await areaTask;
+                string regionCode = await regionTask;
+                int siteStatusId = await siteStatusTask;
+                string locationTypeId = await locationTypeTask;
+
+                string siteCodeNormalized = item.Sitecode?.Trim().ToLower();
+                string siteNameNormalized = item.Sitename?.Trim().ToLower();
 
                 var existingSite = _unitOfWork.SiteRepository.GetWhereFirst(x =>
-                    x.SiteCode.Replace(" ", "").ToLower() == item.Sitecode.Replace(" ", "").ToLower() ||
-                    x.SiteName.Replace(" ", "").ToLower() == item.Sitename.Replace(" ", "").ToLower());
+                    x.SiteCode.Trim().ToLower() == siteCodeNormalized ||
+                    x.SiteName.Trim().ToLower() == siteNameNormalized);
 
                 if (existingSite != null)
                 {
-                    // تحديث الموقع الحالي
                     existingSite.SiteCode = item.Sitecode;
                     existingSite.SiteName = item.Sitename;
                     existingSite.LocationType = locationTypeId;
@@ -8409,12 +8413,9 @@ namespace TLIS_Service.Services
                     existingSite.LocationHieght = item.LocationHieght ?? 0;
                     existingSite.AreaId = areaId;
                     existingSite.RegionCode = regionCode;
-
-                    await _unitOfWork.SaveChangesAsync();
                 }
                 else
                 {
-                    // إضافة موقع جديد
                     var newSite = new TLIsite
                     {
                         SiteCode = item.Sitecode,
@@ -8436,7 +8437,6 @@ namespace TLIS_Service.Services
                     };
 
                     await _unitOfWork.SiteRepository.AddAsync(newSite);
-                    await _unitOfWork.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
@@ -8444,6 +8444,8 @@ namespace TLIS_Service.Services
                 Console.WriteLine($"Error processing site {item.Sitecode}: {ex.Message}");
             }
         }
+
+
 
 
 
