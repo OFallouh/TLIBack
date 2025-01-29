@@ -8326,7 +8326,8 @@ namespace TLIS_Service.Services
                 var serviceProvider = _services.BuildServiceProvider();
                 var configuration = serviceProvider.GetService<IConfiguration>();
                 string apiUrl = configuration["SMIS_API_URL"];
-                var connectionString = configuration.GetConnectionString["ActiveConnection"];
+                var connectionString = configuration.GetConnectionString("ActiveConnection");
+
 
                 if (string.IsNullOrEmpty(apiUrl))
                 {
