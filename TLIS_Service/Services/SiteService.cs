@@ -8317,6 +8317,8 @@ namespace TLIS_Service.Services
         //        return ex.Message;
         //    }
         //}
+
+
         public async Task<string> GetSMIS_Site(string userName, string password, string viewName, string parameter, string rowContent)
         {
             try
@@ -8324,8 +8326,9 @@ namespace TLIS_Service.Services
                 var serviceProvider = _services.BuildServiceProvider();
                 var configuration = serviceProvider.GetService<IConfiguration>();
                 string apiUrl = configuration["SMIS_API_URL"];
+                var connectionString = configuration["ActiveConnection"];
 
-                if (string.IsNullOrEmpty(apiUrl))
+                if (string.IsNullOrEmpty(connectionString))
                 {
                     return "رابط الـ API غير موجود أو غير صحيح.";
                 }
@@ -8333,42 +8336,41 @@ namespace TLIS_Service.Services
                 int pageSize = 1000;
                 int currentPage = 1;
 
-                using var httpClient = new HttpClient();
-                if (!string.IsNullOrEmpty(rowContent))
-                {
-                    httpClient.DefaultRequestHeaders.Add("Content-Type", "text/plain");
-                }
-
                 var allData = new List<SiteDataFromOutsiderApiViewModel>();
 
-                while (true)
+                using (var connection = new OracleConnection(connectionString))
                 {
-                    string url = !string.IsNullOrEmpty(parameter)
-                        ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'?page={currentPage}&pageSize={pageSize}"
-                        : $"{apiUrl}{userName}/{password}/{viewName}?page={currentPage}&pageSize={pageSize}";
-
-                    var response = await httpClient.GetAsync(url);
-                    if (!response.IsSuccessStatusCode)
+                    await connection.OpenAsync();
+                    using var httpClient = new HttpClient();
+                    while (true)
                     {
-                        return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
+                        string url = !string.IsNullOrEmpty(parameter)
+                            ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'?page={currentPage}&pageSize={pageSize}"
+                            : $"{apiUrl}{userName}/{password}/{viewName}?page={currentPage}&pageSize={pageSize}";
+
+                        var response = await httpClient.GetAsync(url);
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
+                        }
+
+                        string smisResponse = await response.Content.ReadAsStringAsync();
+                        var batchData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
+
+                        if (batchData == null || batchData.Count == 0)
+                        {
+                            break;
+                        }
+
+                        allData.AddRange(batchData);
+                        currentPage++;
                     }
 
-                    string smisResponse = await response.Content.ReadAsStringAsync();
-                    var batchData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
+                    // معالجة البيانات باستخدام Parallel.ForEachAsync لتحسين الأداء
+                    await Parallel.ForEachAsync(allData, async (item, _) => await ProcessSiteDataAsync(connection, item));
 
-                    if (batchData == null || batchData.Count == 0)
-                    {
-                        break;
-                    }
-
-                    allData.AddRange(batchData);
-                    currentPage++;
+                    return "تمت العملية بنجاح";
                 }
-
-                // باستخدام ADO.NET لتحسين الأداء
-                await Task.WhenAll(allData.Select(item => ProcessSiteDataWithAdoAsync(item)));
-
-                return "تمت العملية بنجاح";
             }
             catch (Exception ex)
             {
@@ -8376,36 +8378,89 @@ namespace TLIS_Service.Services
             }
         }
 
-        private async Task ProcessSiteDataWithAdoAsync(SiteDataFromOutsiderApiViewModel item)
+        private async Task ProcessSiteDataAsync(OracleConnection connection, SiteDataFromOutsiderApiViewModel item)
         {
             try
             {
-                var areaId = await GetAreaIdWithAdoAsync(item.Area);
-                var regionCode = await GetRegionCodeWithAdoAsync(item.RegionCode);
-                var siteStatusId = await GetSiteStatusIdWithAdoAsync(item.siteStatus);
-                var locationTypeId = await GetLocationTypeIdWithAdoAsync(item.LocationType);
+                var areaId = await GetAreaIdAsync(connection, item.Area);
+                var regionCode = await GetRegionCodeAsync(connection, item.RegionCode);
+                var siteStatusId = await GetSiteStatusIdAsync(connection, item.siteStatus);
+                var locationTypeId = await GetLocationTypeIdAsync(connection, item.LocationType);
 
                 string siteCodeNormalized = item.Sitecode?.Trim().ToLower();
                 string siteNameNormalized = item.Sitename?.Trim().ToLower();
 
-                using var connection = new SqlConnection("your_connection_string_here");
-                await connection.OpenAsync();
-
-                var existingSiteQuery = "SELECT TOP 1 * FROM \"TLIsite\" WHERE LOWER(\"SiteCode\") = @SiteCode OR LOWER(\"SiteName\") = @SiteName";
-                using var command = new SqlCommand(existingSiteQuery, connection);
-                command.Parameters.AddWithValue("@SiteCode", siteCodeNormalized);
-                command.Parameters.AddWithValue("@SiteName", siteNameNormalized);
-
-                var reader = await command.ExecuteReaderAsync();
-                if (reader.HasRows)
+                string selectQuery = $"SELECT * FROM \"TLIsite\" WHERE \"SiteCode\" = '{siteCodeNormalized}' OR \"SiteName\" = '{siteNameNormalized}'";
+                using (var command = new OracleCommand(selectQuery, connection))
                 {
-                    reader.Read();
-                    var siteId = reader["SiteId"];
-                    await UpdateSiteWithAdoAsync(connection, item, areaId, regionCode, siteStatusId, locationTypeId, siteId);
-                }
-                else
-                {
-                    await InsertNewSiteWithAdoAsync(connection, item, areaId, regionCode, siteStatusId, locationTypeId);
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                // هنا نحدث السجل الموجود
+                                var updateQuery = $"UPDATE \"TLIsite\" SET " +
+                                                  $"\"SiteCode\" = :SiteCode, " +
+                                                  $"\"SiteName\" = :SiteName, " +
+                                                  $"\"LocationType\" = :LocationType, " +
+                                                  $"\"Latitude\" = :Latitude, " +
+                                                  $"\"Longitude\" = :Longitude, " +
+                                                  $"\"Zone\" = :Zone, " +
+                                                  $"\"SubArea\" = :SubArea, " +
+                                                  $"\"STATUS_DATE\" = :StatusDate, " +
+                                                  $"\"CREATE_DATE\" = :CreateDate, " +
+                                                  $"\"LocationHieght\" = :LocationHieght, " +
+                                                  $"\"AreaId\" = :AreaId, " +
+                                                  $"\"RegionCode\" = :RegionCode " +
+                                                  $"WHERE \"SiteCode\" = :SiteCode OR \"SiteName\" = :SiteName";
+
+                                using (var updateCommand = new OracleCommand(updateQuery, connection))
+                                {
+                                    updateCommand.Parameters.Add(":SiteCode", OracleDbType.Varchar2).Value = item.Sitecode;
+                                    updateCommand.Parameters.Add(":SiteName", OracleDbType.Varchar2).Value = item.Sitename;
+                                    updateCommand.Parameters.Add(":LocationType", OracleDbType.Varchar2).Value = locationTypeId;
+                                    updateCommand.Parameters.Add(":Latitude", OracleDbType.Double).Value = item.Latitude;
+                                    updateCommand.Parameters.Add(":Longitude", OracleDbType.Double).Value = item.Longitude;
+                                    updateCommand.Parameters.Add(":Zone", OracleDbType.Varchar2).Value = item.Zone;
+                                    updateCommand.Parameters.Add(":SubArea", OracleDbType.Varchar2).Value = item.Subarea;
+                                    updateCommand.Parameters.Add(":StatusDate", OracleDbType.Date).Value = item.Statusdate;
+                                    updateCommand.Parameters.Add(":CreateDate", OracleDbType.Date).Value = item.Createddate;
+                                    updateCommand.Parameters.Add(":LocationHieght", OracleDbType.Double).Value = item.LocationHieght ?? 0;
+                                    updateCommand.Parameters.Add(":AreaId", OracleDbType.Int32).Value = areaId;
+                                    updateCommand.Parameters.Add(":RegionCode", OracleDbType.Varchar2).Value = regionCode;
+
+                                    await updateCommand.ExecuteNonQueryAsync();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // إضافة سجل جديد
+                            var insertQuery = "INSERT INTO \"TLIsite\" (\"SiteCode\", \"SiteName\", \"Latitude\", \"Longitude\", \"Zone\", \"SubArea\", " +
+                                              "\"STATUS_DATE\", \"CREATE_DATE\", \"LocationHieght\", \"AreaId\", \"RegionCode\", \"siteStatusId\", \"LocationType\") " +
+                                              "VALUES (:SiteCode, :SiteName, :Latitude, :Longitude, :Zone, :SubArea, :StatusDate, :CreateDate, :LocationHieght, :AreaId, :RegionCode, :SiteStatusId, :LocationType)";
+
+                            using (var insertCommand = new OracleCommand(insertQuery, connection))
+                            {
+                                insertCommand.Parameters.Add(":SiteCode", OracleDbType.Varchar2).Value = item.Sitecode;
+                                insertCommand.Parameters.Add(":SiteName", OracleDbType.Varchar2).Value = item.Sitename;
+                                insertCommand.Parameters.Add(":Latitude", OracleDbType.Double).Value = item.Latitude;
+                                insertCommand.Parameters.Add(":Longitude", OracleDbType.Double).Value = item.Longitude;
+                                insertCommand.Parameters.Add(":Zone", OracleDbType.Varchar2).Value = item.Zone;
+                                insertCommand.Parameters.Add(":SubArea", OracleDbType.Varchar2).Value = item.Subarea;
+                                insertCommand.Parameters.Add(":StatusDate", OracleDbType.Date).Value = item.Statusdate;
+                                insertCommand.Parameters.Add(":CreateDate", OracleDbType.Date).Value = item.Createddate;
+                                insertCommand.Parameters.Add(":LocationHieght", OracleDbType.Double).Value = item.LocationHieght ?? 0;
+                                insertCommand.Parameters.Add(":AreaId", OracleDbType.Int32).Value = areaId;
+                                insertCommand.Parameters.Add(":RegionCode", OracleDbType.Varchar2).Value = regionCode;
+                                insertCommand.Parameters.Add(":SiteStatusId", OracleDbType.Int32).Value = siteStatusId;
+                                insertCommand.Parameters.Add(":LocationType", OracleDbType.Varchar2).Value = locationTypeId;
+
+                                await insertCommand.ExecuteNonQueryAsync();
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -8414,136 +8469,113 @@ namespace TLIS_Service.Services
             }
         }
 
-        private async Task<int> GetAreaIdWithAdoAsync(string areaName)
+        private async Task<int> GetAreaIdAsync(OracleConnection connection, string areaName)
         {
-            using var connection = new SqlConnection("your_connection_string_here");
-            await connection.OpenAsync();
-
-            var query = "SELECT \"Id\" FROM \"TLIarea\" WHERE \"AreaName\" = @AreaName";
-            using var command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@AreaName", areaName);
-
-            var result = await command.ExecuteScalarAsync();
-            if (result != null)
+            string query = $"SELECT \"Id\" FROM \"TLIarea\" WHERE \"AreaName\" = :AreaName";
+            using (var command = new OracleCommand(query, connection))
             {
-                return Convert.ToInt32(result);
-            }
-            else
-            {
-                var insertQuery = "INSERT INTO \"TLIarea\" (\"AreaName\") VALUES (@AreaName); SELECT SCOPE_IDENTITY();";
-                using var insertCommand = new SqlCommand(insertQuery, connection);
-                insertCommand.Parameters.AddWithValue("@AreaName", areaName);
-                return Convert.ToInt32(await insertCommand.ExecuteScalarAsync());
-            }
-        }
+                command.Parameters.Add(":AreaName", OracleDbType.Varchar2).Value = areaName;
 
-        private async Task<string> GetRegionCodeWithAdoAsync(string regionCode)
-        {
-            using var connection = new SqlConnection("your_connection_string_here");
-            await connection.OpenAsync();
+                var result = await command.ExecuteScalarAsync();
+                if (result != null) return Convert.ToInt32(result);
 
-            var query = "SELECT \"RegionCode\" FROM \"TLIregion\" WHERE \"RegionCode\" = @RegionCode";
-            using var command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@RegionCode", regionCode);
+                // Insert if not found
+                var insertQuery = "INSERT INTO \"TLIarea\" (\"AreaName\") VALUES (:AreaName) RETURNING \"Id\" INTO :AreaId";
+                using (var insertCommand = new OracleCommand(insertQuery, connection))
+                {
+                    insertCommand.Parameters.Add(":AreaName", OracleDbType.Varchar2).Value = areaName;
+                    var areaIdParam = new OracleParameter(":AreaId", OracleDbType.Int32) { Direction = ParameterDirection.Output };
+                    insertCommand.Parameters.Add(areaIdParam);
 
-            var result = await command.ExecuteScalarAsync();
-            return result?.ToString();
-        }
-
-        private async Task<int> GetSiteStatusIdWithAdoAsync(string siteStatus)
-        {
-            using var connection = new SqlConnection("your_connection_string_here");
-            await connection.OpenAsync();
-
-            var query = "SELECT \"Id\" FROM \"TLIsiteStatus\" WHERE \"Name\" = @SiteStatus";
-            using var command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@SiteStatus", siteStatus);
-
-            var result = await command.ExecuteScalarAsync();
-            if (result != null)
-            {
-                return Convert.ToInt32(result);
-            }
-            else
-            {
-                var insertQuery = "INSERT INTO \"TLIsiteStatus\" (\"Name\") VALUES (@SiteStatus); SELECT SCOPE_IDENTITY();";
-                using var insertCommand = new SqlCommand(insertQuery, connection);
-                insertCommand.Parameters.AddWithValue("@SiteStatus", siteStatus);
-                return Convert.ToInt32(await insertCommand.ExecuteScalarAsync());
+                    await insertCommand.ExecuteNonQueryAsync();
+                    return Convert.ToInt32(areaIdParam.Value);
+                }
             }
         }
 
-        private async Task<string> GetLocationTypeIdWithAdoAsync(string locationType)
+        private async Task<string> GetRegionCodeAsync(OracleConnection connection, string regionCode)
         {
-            using var connection = new SqlConnection("your_connection_string_here");
-            await connection.OpenAsync();
+            string query = "SELECT \"RegionCode\" FROM \"TLIregion\" WHERE \"RegionCode\" = :regionCode";
+            using (var cmd = new OracleCommand(query, connection))
+            {
+                cmd.Parameters.Add(new OracleParameter(":regionCode", regionCode));
 
-            var query = "SELECT \"Id\" FROM \"TLIlocationType\" WHERE \"Name\" = @LocationType";
-            using var command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@LocationType", locationType);
+                var result = await cmd.ExecuteScalarAsync();
+                if (result != null)
+                {
+                    return result.ToString();
+                }
 
-            var result = await command.ExecuteScalarAsync();
-            return result?.ToString();
+                string insertQuery = "INSERT INTO \"TLIregion\" (\"RegionCode\") VALUES (:regionCode) RETURNING \"RegionCode\" INTO :newRegionCode";
+                using (var insertCmd = new OracleCommand(insertQuery, connection))
+                {
+                    var newRegionCodeParam = new OracleParameter(":newRegionCode", OracleDbType.Varchar2, 50) { Direction = ParameterDirection.Output };
+                    insertCmd.Parameters.Add(new OracleParameter(":regionCode", regionCode));
+                    insertCmd.Parameters.Add(newRegionCodeParam);
+
+                    await insertCmd.ExecuteNonQueryAsync();
+                    return newRegionCodeParam.Value.ToString();
+                }
+            }
         }
 
-        private async Task UpdateSiteWithAdoAsync(SqlConnection connection, SiteDataFromOutsiderApiViewModel item, int areaId, string regionCode, int siteStatusId, string locationTypeId, object siteId)
+        private async Task<int> GetSiteStatusIdAsync(OracleConnection conn, string siteStatus)
         {
-            var query = @"UPDATE ""TLIsite"" 
-                  SET ""SiteCode"" = @SiteCode, ""SiteName"" = @SiteName, ""LocationType"" = @LocationType, 
-                      ""Latitude"" = @Latitude, ""Longitude"" = @Longitude, ""Zone"" = @Zone, 
-                      ""SubArea"" = @SubArea, ""STATUS_DATE"" = @StatusDate, ""CREATE_DATE"" = @CreateDate,
-                      ""LocationHieght"" = @LocationHieght, ""AreaId"" = @AreaId, ""RegionCode"" = @RegionCode
-                  WHERE ""SiteId"" = @SiteId";
+            await conn.OpenAsync();
 
-            using var command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@SiteCode", item.Sitecode);
-            command.Parameters.AddWithValue("@SiteName", item.Sitename);
-            command.Parameters.AddWithValue("@LocationType", locationTypeId);
-            command.Parameters.AddWithValue("@Latitude", item.Latitude);
-            command.Parameters.AddWithValue("@Longitude", item.Longitude);
-            command.Parameters.AddWithValue("@Zone", item.Zone);
-            command.Parameters.AddWithValue("@SubArea", item.Subarea);
-            command.Parameters.AddWithValue("@StatusDate", item.Statusdate);
-            command.Parameters.AddWithValue("@CreateDate", item.Createddate);
-            command.Parameters.AddWithValue("@LocationHieght", item.LocationHieght ?? 0);
-            command.Parameters.AddWithValue("@AreaId", areaId);
-            command.Parameters.AddWithValue("@RegionCode", regionCode);
-            command.Parameters.AddWithValue("@SiteId", siteId);
+            // Query to check if the site status exists
+            string query = "SELECT \"Id\" FROM \"TLIsiteStatus\" WHERE \"Name\" = :siteStatus";
+            using (var cmd = new OracleCommand(query, conn))
+            {
+                cmd.Parameters.Add(new OracleParameter(":siteStatus", siteStatus));
 
-            await command.ExecuteNonQueryAsync();
+                var result = await cmd.ExecuteScalarAsync();
+                if (result != null)
+                {
+                    return Convert.ToInt32(result);
+                }
+
+                // Insert the new status and retrieve the ID
+                string insertQuery = "INSERT INTO \"TLIsiteStatus\" (\"Name\") VALUES (:siteStatus) RETURNING \"Id\" INTO :newId";
+                using (var insertCmd = new OracleCommand(insertQuery, conn))
+                {
+                    var newIdParam = new OracleParameter(":newId", OracleDbType.Int32) { Direction = ParameterDirection.Output };
+                    insertCmd.Parameters.Add(new OracleParameter(":siteStatus", siteStatus));
+                    insertCmd.Parameters.Add(newIdParam);
+
+                    await insertCmd.ExecuteNonQueryAsync();
+                    return Convert.ToInt32(newIdParam.Value);
+                }
+            }
         }
 
-        private async Task InsertNewSiteWithAdoAsync(SqlConnection connection, SiteDataFromOutsiderApiViewModel item, int areaId, string regionCode, int siteStatusId, string locationTypeId)
+        private async Task<int> GetLocationTypeIdAsync(OracleConnection conn, string locationType)
         {
-            var query = @"INSERT INTO ""TLIsite"" 
-                  (""SiteCode"", ""SiteName"", ""Latitude"", ""Longitude"", ""Zone"", ""SubArea"", 
-                   ""STATUS_DATE"", ""CREATE_DATE"", ""LocationHieght"", ""RentedSpace"", ""ReservedSpace"", 
-                   ""SiteVisiteDate"", ""AreaId"", ""RegionCode"", ""siteStatusId"", ""LocationType"")
-                  VALUES 
-                  (@SiteCode, @SiteName, @Latitude, @Longitude, @Zone, @SubArea, 
-                   @StatusDate, @CreateDate, @LocationHieght, @RentedSpace, @ReservedSpace, 
-                   @SiteVisiteDate, @AreaId, @RegionCode, @siteStatusId, @LocationType)";
+            string query = $"SELECT \"Id\" FROM \"TLIlocationType\" WHERE \"Name\" = :locationType";
+            using (var cmd = new OracleCommand(query, conn))
+            {
+                cmd.Parameters.Add(new OracleParameter(":locationType", locationType));
 
-            using var command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@SiteCode", item.Sitecode);
-            command.Parameters.AddWithValue("@SiteName", item.Sitename);
-            command.Parameters.AddWithValue("@Latitude", item.Latitude);
-            command.Parameters.AddWithValue("@Longitude", item.Longitude);
-            command.Parameters.AddWithValue("@Zone", item.Zone);
-            command.Parameters.AddWithValue("@SubArea", item.Subarea);
-            command.Parameters.AddWithValue("@StatusDate", item.Statusdate);
-            command.Parameters.AddWithValue("@CreateDate", item.Createddate);
-            command.Parameters.AddWithValue("@LocationHieght", item.LocationHieght ?? 0);
-            command.Parameters.AddWithValue("@RentedSpace", 0);
-            command.Parameters.AddWithValue("@ReservedSpace", 0);
-            command.Parameters.AddWithValue("@SiteVisiteDate", DateTime.Now);
-            command.Parameters.AddWithValue("@AreaId", areaId);
-            command.Parameters.AddWithValue("@RegionCode", regionCode);
-            command.Parameters.AddWithValue("@siteStatusId", siteStatusId);
-            command.Parameters.AddWithValue("@LocationType", locationTypeId);
+                var result = await cmd.ExecuteScalarAsync();
+                if (result != null) return Convert.ToInt32(result);
 
-            await command.ExecuteNonQueryAsync();
+                string insertQuery = "INSERT INTO \"TLIlocationType\" (\"Name\") VALUES (:locationType) RETURNING \"Id\" INTO :newId";
+                using (var insertCmd = new OracleCommand(insertQuery, conn))
+                {
+                    var newIdParam = new OracleParameter(":newId", OracleDbType.Int32) { Direction = ParameterDirection.Output };
+                    insertCmd.Parameters.Add(new OracleParameter(":locationType", locationType));
+                    insertCmd.Parameters.Add(newIdParam);
+
+                    await insertCmd.ExecuteNonQueryAsync();
+                    return Convert.ToInt32(newIdParam.Value);
+                }
+            }
         }
+
+
+
+
+        // بقية الوظائف مماثلة، يتم استخدام ADO.NET لاسترجاع/إدخال/تحديث البيانات في قاعدة البيانات
 
 
         //public async Task<string> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, string RowContent)
@@ -8671,7 +8703,9 @@ namespace TLIS_Service.Services
         //}
 
 
-     
+
+
+
         public Response<List<RegionViewModel>> GetAllRegion()
         {
             try
