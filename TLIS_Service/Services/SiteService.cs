@@ -8365,8 +8365,8 @@ namespace TLIS_Service.Services
                     currentPage++;
                 }
 
-                // معالجة البيانات باستخدام Parallel.ForEachAsync لتحسين الأداء
-                await Parallel.ForEachAsync(allData, async (item, _) => await ProcessSiteDataAsync(item));
+                // باستخدام ADO.NET لتحسين الأداء
+                await Task.WhenAll(allData.Select(item => ProcessSiteDataWithAdoAsync(item)));
 
                 return "تمت العملية بنجاح";
             }
@@ -8376,67 +8376,36 @@ namespace TLIS_Service.Services
             }
         }
 
-        private async Task ProcessSiteDataAsync(SiteDataFromOutsiderApiViewModel item)
+        private async Task ProcessSiteDataWithAdoAsync(SiteDataFromOutsiderApiViewModel item)
         {
             try
             {
-                var areaTask = GetAreaIdAsync(item.Area);
-                var regionTask = GetRegionCodeAsync(item.RegionCode);
-                var siteStatusTask = GetSiteStatusIdAsync(item.siteStatus);
-                var locationTypeTask = GetLocationTypeIdAsync(item.LocationType);
-
-                await Task.WhenAll(areaTask, regionTask, siteStatusTask, locationTypeTask);
-
-                int areaId = await areaTask;
-                string regionCode = await regionTask;
-                int siteStatusId = await siteStatusTask;
-                string locationTypeId = await locationTypeTask;
+                var areaId = await GetAreaIdWithAdoAsync(item.Area);
+                var regionCode = await GetRegionCodeWithAdoAsync(item.RegionCode);
+                var siteStatusId = await GetSiteStatusIdWithAdoAsync(item.siteStatus);
+                var locationTypeId = await GetLocationTypeIdWithAdoAsync(item.LocationType);
 
                 string siteCodeNormalized = item.Sitecode?.Trim().ToLower();
                 string siteNameNormalized = item.Sitename?.Trim().ToLower();
 
-                var existingSite = _unitOfWork.SiteRepository.GetWhereFirst(x =>
-                    x.SiteCode.Trim().ToLower() == siteCodeNormalized ||
-                    x.SiteName.Trim().ToLower() == siteNameNormalized);
+                using var connection = new SqlConnection("your_connection_string_here");
+                await connection.OpenAsync();
 
-                if (existingSite != null)
+                var existingSiteQuery = "SELECT TOP 1 * FROM \"TLIsite\" WHERE LOWER(\"SiteCode\") = @SiteCode OR LOWER(\"SiteName\") = @SiteName";
+                using var command = new SqlCommand(existingSiteQuery, connection);
+                command.Parameters.AddWithValue("@SiteCode", siteCodeNormalized);
+                command.Parameters.AddWithValue("@SiteName", siteNameNormalized);
+
+                var reader = await command.ExecuteReaderAsync();
+                if (reader.HasRows)
                 {
-                    existingSite.SiteCode = item.Sitecode;
-                    existingSite.SiteName = item.Sitename;
-                    existingSite.LocationType = locationTypeId;
-                    existingSite.Latitude = item.Latitude;
-                    existingSite.Longitude = item.Longitude;
-                    existingSite.Zone = item.Zone;
-                    existingSite.SubArea = item.Subarea;
-                    existingSite.STATUS_DATE = item.Statusdate;
-                    existingSite.CREATE_DATE = item.Createddate;
-                    existingSite.LocationHieght = item.LocationHieght ?? 0;
-                    existingSite.AreaId = areaId;
-                    existingSite.RegionCode = regionCode;
+                    reader.Read();
+                    var siteId = reader["SiteId"];
+                    await UpdateSiteWithAdoAsync(connection, item, areaId, regionCode, siteStatusId, locationTypeId, siteId);
                 }
                 else
                 {
-                    var newSite = new TLIsite
-                    {
-                        SiteCode = item.Sitecode,
-                        SiteName = item.Sitename,
-                        Latitude = item.Latitude,
-                        Longitude = item.Longitude,
-                        Zone = item.Zone,
-                        SubArea = item.Subarea,
-                        STATUS_DATE = item.Statusdate,
-                        CREATE_DATE = item.Createddate,
-                        LocationHieght = item.LocationHieght ?? 0,
-                        RentedSpace = 0,
-                        ReservedSpace = 0,
-                        SiteVisiteDate = DateTime.Now,
-                        AreaId = areaId,
-                        RegionCode = regionCode,
-                        siteStatusId = siteStatusId,
-                        LocationType = locationTypeId
-                    };
-
-                    await _unitOfWork.SiteRepository.AddAsync(newSite);
+                    await InsertNewSiteWithAdoAsync(connection, item, areaId, regionCode, siteStatusId, locationTypeId);
                 }
             }
             catch (Exception ex)
@@ -8445,9 +8414,136 @@ namespace TLIS_Service.Services
             }
         }
 
+        private async Task<int> GetAreaIdWithAdoAsync(string areaName)
+        {
+            using var connection = new SqlConnection("your_connection_string_here");
+            await connection.OpenAsync();
 
+            var query = "SELECT \"Id\" FROM \"TLIarea\" WHERE \"AreaName\" = @AreaName";
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@AreaName", areaName);
 
+            var result = await command.ExecuteScalarAsync();
+            if (result != null)
+            {
+                return Convert.ToInt32(result);
+            }
+            else
+            {
+                var insertQuery = "INSERT INTO \"TLIarea\" (\"AreaName\") VALUES (@AreaName); SELECT SCOPE_IDENTITY();";
+                using var insertCommand = new SqlCommand(insertQuery, connection);
+                insertCommand.Parameters.AddWithValue("@AreaName", areaName);
+                return Convert.ToInt32(await insertCommand.ExecuteScalarAsync());
+            }
+        }
 
+        private async Task<string> GetRegionCodeWithAdoAsync(string regionCode)
+        {
+            using var connection = new SqlConnection("your_connection_string_here");
+            await connection.OpenAsync();
+
+            var query = "SELECT \"RegionCode\" FROM \"TLIregion\" WHERE \"RegionCode\" = @RegionCode";
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@RegionCode", regionCode);
+
+            var result = await command.ExecuteScalarAsync();
+            return result?.ToString();
+        }
+
+        private async Task<int> GetSiteStatusIdWithAdoAsync(string siteStatus)
+        {
+            using var connection = new SqlConnection("your_connection_string_here");
+            await connection.OpenAsync();
+
+            var query = "SELECT \"Id\" FROM \"TLIsiteStatus\" WHERE \"Name\" = @SiteStatus";
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@SiteStatus", siteStatus);
+
+            var result = await command.ExecuteScalarAsync();
+            if (result != null)
+            {
+                return Convert.ToInt32(result);
+            }
+            else
+            {
+                var insertQuery = "INSERT INTO \"TLIsiteStatus\" (\"Name\") VALUES (@SiteStatus); SELECT SCOPE_IDENTITY();";
+                using var insertCommand = new SqlCommand(insertQuery, connection);
+                insertCommand.Parameters.AddWithValue("@SiteStatus", siteStatus);
+                return Convert.ToInt32(await insertCommand.ExecuteScalarAsync());
+            }
+        }
+
+        private async Task<string> GetLocationTypeIdWithAdoAsync(string locationType)
+        {
+            using var connection = new SqlConnection("your_connection_string_here");
+            await connection.OpenAsync();
+
+            var query = "SELECT \"Id\" FROM \"TLIlocationType\" WHERE \"Name\" = @LocationType";
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@LocationType", locationType);
+
+            var result = await command.ExecuteScalarAsync();
+            return result?.ToString();
+        }
+
+        private async Task UpdateSiteWithAdoAsync(SqlConnection connection, SiteDataFromOutsiderApiViewModel item, int areaId, string regionCode, int siteStatusId, string locationTypeId, object siteId)
+        {
+            var query = @"UPDATE ""TLIsite"" 
+                  SET ""SiteCode"" = @SiteCode, ""SiteName"" = @SiteName, ""LocationType"" = @LocationType, 
+                      ""Latitude"" = @Latitude, ""Longitude"" = @Longitude, ""Zone"" = @Zone, 
+                      ""SubArea"" = @SubArea, ""STATUS_DATE"" = @StatusDate, ""CREATE_DATE"" = @CreateDate,
+                      ""LocationHieght"" = @LocationHieght, ""AreaId"" = @AreaId, ""RegionCode"" = @RegionCode
+                  WHERE ""SiteId"" = @SiteId";
+
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@SiteCode", item.Sitecode);
+            command.Parameters.AddWithValue("@SiteName", item.Sitename);
+            command.Parameters.AddWithValue("@LocationType", locationTypeId);
+            command.Parameters.AddWithValue("@Latitude", item.Latitude);
+            command.Parameters.AddWithValue("@Longitude", item.Longitude);
+            command.Parameters.AddWithValue("@Zone", item.Zone);
+            command.Parameters.AddWithValue("@SubArea", item.Subarea);
+            command.Parameters.AddWithValue("@StatusDate", item.Statusdate);
+            command.Parameters.AddWithValue("@CreateDate", item.Createddate);
+            command.Parameters.AddWithValue("@LocationHieght", item.LocationHieght ?? 0);
+            command.Parameters.AddWithValue("@AreaId", areaId);
+            command.Parameters.AddWithValue("@RegionCode", regionCode);
+            command.Parameters.AddWithValue("@SiteId", siteId);
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        private async Task InsertNewSiteWithAdoAsync(SqlConnection connection, SiteDataFromOutsiderApiViewModel item, int areaId, string regionCode, int siteStatusId, string locationTypeId)
+        {
+            var query = @"INSERT INTO ""TLIsite"" 
+                  (""SiteCode"", ""SiteName"", ""Latitude"", ""Longitude"", ""Zone"", ""SubArea"", 
+                   ""STATUS_DATE"", ""CREATE_DATE"", ""LocationHieght"", ""RentedSpace"", ""ReservedSpace"", 
+                   ""SiteVisiteDate"", ""AreaId"", ""RegionCode"", ""siteStatusId"", ""LocationType"")
+                  VALUES 
+                  (@SiteCode, @SiteName, @Latitude, @Longitude, @Zone, @SubArea, 
+                   @StatusDate, @CreateDate, @LocationHieght, @RentedSpace, @ReservedSpace, 
+                   @SiteVisiteDate, @AreaId, @RegionCode, @siteStatusId, @LocationType)";
+
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@SiteCode", item.Sitecode);
+            command.Parameters.AddWithValue("@SiteName", item.Sitename);
+            command.Parameters.AddWithValue("@Latitude", item.Latitude);
+            command.Parameters.AddWithValue("@Longitude", item.Longitude);
+            command.Parameters.AddWithValue("@Zone", item.Zone);
+            command.Parameters.AddWithValue("@SubArea", item.Subarea);
+            command.Parameters.AddWithValue("@StatusDate", item.Statusdate);
+            command.Parameters.AddWithValue("@CreateDate", item.Createddate);
+            command.Parameters.AddWithValue("@LocationHieght", item.LocationHieght ?? 0);
+            command.Parameters.AddWithValue("@RentedSpace", 0);
+            command.Parameters.AddWithValue("@ReservedSpace", 0);
+            command.Parameters.AddWithValue("@SiteVisiteDate", DateTime.Now);
+            command.Parameters.AddWithValue("@AreaId", areaId);
+            command.Parameters.AddWithValue("@RegionCode", regionCode);
+            command.Parameters.AddWithValue("@siteStatusId", siteStatusId);
+            command.Parameters.AddWithValue("@LocationType", locationTypeId);
+
+            await command.ExecuteNonQueryAsync();
+        }
 
 
         //public async Task<string> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, string RowContent)
@@ -8574,95 +8670,8 @@ namespace TLIS_Service.Services
         //    }
         //}
 
-        private async Task UpdateSiteAsync(TLIsite site, SiteDataFromOutsiderApiViewModel item)
-        {
-            site.SiteCode = item.Sitecode;
-            site.SiteName = item.Sitename;
-            site.LocationType = await GetLocationTypeIdAsync(item.LocationType);
-            site.Latitude = item.Latitude;
-            site.Longitude = item.Longitude;
-            site.Zone = item.Zone;
-            site.SubArea = item.Subarea;
-            site.STATUS_DATE = item.Statusdate;
-            site.CREATE_DATE = item.Createddate;
-            site.LocationHieght = item.LocationHieght ?? 0;
-            site.AreaId = await GetAreaIdAsync(item.Area);
-            site.RegionCode = await GetRegionCodeAsync(item.RegionCode);
-            site.siteStatusId = await GetSiteStatusIdAsync(item.siteStatus);
 
-            await _unitOfWork.SaveChangesAsync();
-        }
-
-        private async Task AddNewSiteAsync(SiteDataFromOutsiderApiViewModel item)
-        {
-            var newSite = new TLIsite
-            {
-                SiteCode = item.Sitecode,
-                SiteName = item.Sitename,
-                Latitude = item.Latitude,
-                Longitude = item.Longitude,
-                Zone = item.Zone,
-                SubArea = item.Subarea,
-                STATUS_DATE = item.Statusdate,
-                CREATE_DATE = item.Createddate,
-                LocationHieght = item.LocationHieght ?? 0,
-                RentedSpace = 0,
-                ReservedSpace = 0,
-                SiteVisiteDate = DateTime.Now,
-                AreaId = await GetAreaIdAsync(item.Area),
-                RegionCode = await GetRegionCodeAsync(item.RegionCode),
-                siteStatusId = await GetSiteStatusIdAsync(item.siteStatus),
-                LocationType = await GetLocationTypeIdAsync(item.LocationType)
-            };
-
-            await _unitOfWork.SiteRepository.AddAsync(newSite);
-            await _unitOfWork.SaveChangesAsync();
-        }
-
-        private async Task<int> GetAreaIdAsync(string areaName)
-        {
-            var existingArea = await _context.TLIarea.FirstOrDefaultAsync(x => x.AreaName == areaName);
-            if (existingArea != null) return existingArea.Id;
-
-            var newArea = new TLIarea { AreaName = areaName };
-            await _unitOfWork.AreaRepository.AddAsync(newArea);
-            await _unitOfWork.SaveChangesAsync();
-            return newArea.Id;
-        }
-
-        private async Task<string> GetRegionCodeAsync(string regionCode)
-        {
-            var existingRegion = await _context.TLIregion.FirstOrDefaultAsync(x => x.RegionCode == regionCode);
-            if (existingRegion != null) return existingRegion.RegionCode;
-
-            var newRegion = new TLIregion { RegionCode = regionCode };
-            await _context.TLIregion.AddAsync(newRegion);
-            await _context.SaveChangesAsync();
-            return newRegion.RegionCode;
-        }
-
-        private async Task<int> GetSiteStatusIdAsync(string siteStatus)
-        {
-            var existingStatus = await _context.TLIsiteStatus.FirstOrDefaultAsync(x => x.Name == "On Air");
-            if (existingStatus != null) return existingStatus.Id;
-
-            var newStatus = new TLIsiteStatus { Name = "On Air" };
-            await _unitOfWork.SiteStatusRepository.AddAsync(newStatus);
-            await _unitOfWork.SaveChangesAsync();
-            return newStatus.Id;
-        }
-
-        private async Task<string> GetLocationTypeIdAsync(string locationType)
-        {
-            var existingLocationType = await _context.TLIlocationType.FirstOrDefaultAsync(x => x.Name == locationType);
-            if (existingLocationType != null) return existingLocationType.Id.ToString();
-
-            var newLocationType = new TLIlocationType { Name = locationType };
-            await _unitOfWork.LocationTypeRepository.AddAsync(newLocationType);
-            await _unitOfWork.SaveChangesAsync();
-            return newLocationType.Id.ToString();
-        }
-
+     
         public Response<List<RegionViewModel>> GetAllRegion()
         {
             try
