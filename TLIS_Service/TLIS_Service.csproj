@@ -60,6 +60,7 @@
     <Folder Include="Services\NewFolder6\" />
     <Folder Include="Services\NewFolder7\" />
     <Folder Include="Services\NewFolder8\" />
+    <Folder Include="Services\NewFolder9\" />
     <Folder Include="Services\NewFolder\" />
   </ItemGroup>
 </Project>
