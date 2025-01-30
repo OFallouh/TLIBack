@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using TLIS_DAL;
 using TLIS_Repository.Base;
@@ -82,9 +83,10 @@ namespace TLIS_Service.ServiceBase
         private readonly IMemoryCache _memoryCache;
         IMapper _mapper;
         IServiceProvider Services;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         public UnitOfWorkService(IUnitOfWork unitOfWork, IConfiguration config, IServiceCollection services, ApplicationDbContext _context,
-            IHostingEnvironment hostingEnvironment, IMapper mapper,IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor, IMemoryCache memoryCache)
+            IHostingEnvironment hostingEnvironment, IMapper mapper,IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor, IMemoryCache memoryCache, IHttpClientFactory httpClientFactory)
         {
             db = _context;
             _config = config;
@@ -95,6 +97,7 @@ namespace TLIS_Service.ServiceBase
             Services=serviceProvider;
             _httpContextAccessor = httpContextAccessor;
             _memoryCache = memoryCache;
+            _httpClientFactory = httpClientFactory;
         }
         public UnitOfWorkService(IUnitOfWork unitOfWork, IConfiguration config)
         {
@@ -139,7 +142,7 @@ namespace TLIS_Service.ServiceBase
             get
             {
                 if (_siteService == null)
-                    _siteService = new SiteService(_unitOfWork, _services, db,_mapper, Services, _config);
+                    _siteService = new SiteService(_unitOfWork, _services, db,_mapper, Services, _config, _memoryCache, _httpClientFactory);
 
                 return _siteService;
             }

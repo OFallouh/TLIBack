@@ -116,6 +116,9 @@ namespace TLIS_API
             services.AddSwaggerGen();
             // Add cors
             services.AddCors();
+
+            services.AddHttpClient(); // تسجيل IHttpClientFactory
+
             services.AddHttpContextAccessor();
             services.AddScoped<IUnitOfWorkService, UnitOfWorkService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();

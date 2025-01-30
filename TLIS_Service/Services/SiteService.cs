@@ -104,13 +104,16 @@ namespace TLIS_Service.Services
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMemoryCache _memoryCache;
         private readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(100); // مدة التخزين المؤقت
-        public SiteService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper, IServiceProvider serviceو, IConfiguration configuration)
+        public SiteService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper, IServiceProvider serviceو, IConfiguration configuration, IMemoryCache MemoryCache, IHttpClientFactory httpClientFactory)
+
         {
             _context = context;
             _unitOfWork = unitOfWork;
             _services = services;
             _mapper = mapper;
             _configuration = configuration;
+            _memoryCache = MemoryCache;
+            _httpClientFactory = httpClientFactory;
         }
         public Response<AddSiteViewModel> AddSite(AddSiteViewModel AddSiteViewModel, int? TaskId, int UserId)
         {
