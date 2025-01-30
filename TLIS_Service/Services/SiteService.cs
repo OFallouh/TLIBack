@@ -8353,31 +8353,29 @@ namespace TLIS_Service.Services
                 using (var connection = new OracleConnection(connectionString))
                 {
                     await connection.OpenAsync();
-                    var httpClient = _httpClientFactory.CreateClient();
+                   var httpClient = _httpClientFactory.CreateClient();
 
-                    while (true)
+                    
+                    string url = !string.IsNullOrEmpty(parameter)
+                        ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'?page={currentPage}&pageSize={pageSize}"
+                        : $"{apiUrl}{userName}/{password}/{viewName}?page={currentPage}&pageSize={pageSize}";
+
+                    var response = await httpClient.GetAsync(url);
+                    if (!response.IsSuccessStatusCode)
                     {
-                        string url = !string.IsNullOrEmpty(parameter)
-                            ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'?page={currentPage}&pageSize={pageSize}"
-                            : $"{apiUrl}{userName}/{password}/{viewName}?page={currentPage}&pageSize={pageSize}";
-
-                        var response = await httpClient.GetAsync(url);
-                        if (!response.IsSuccessStatusCode)
-                        {
-                            return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
-                        }
-
-                        string smisResponse = await response.Content.ReadAsStringAsync();
-                        var batchData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
-
-                        if (batchData == null || batchData.Count == 0)
-                        {
-                            break;
-                        }
-
-                        allData.AddRange(batchData);
-                        currentPage++;
+                        return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
                     }
+
+                    string smisResponse = await response.Content.ReadAsStringAsync();
+                    var allData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
+
+                    if (allData == null || allData.Count == 0)
+                    {
+                        break;
+                    }
+
+                     
+                    
 
                     // تحويل البيانات إلى JSON للتخزين المؤقت
                     string finalResult = JsonConvert.SerializeObject(allData);
