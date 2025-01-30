@@ -8346,19 +8346,17 @@ namespace TLIS_Service.Services
                     return "رابط الـ API غير موجود أو غير صحيح.";
                 }
 
-                int pageSize = 1000;
-                int currentPage = 1;
-                var allData = new List<SiteDataFromOutsiderApiViewModel>();
-
+        
+              
                 using (var connection = new OracleConnection(connectionString))
                 {
                     await connection.OpenAsync();
                    var httpClient = _httpClientFactory.CreateClient();
 
-                    
+
                     string url = !string.IsNullOrEmpty(parameter)
-                        ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'?page={currentPage}&pageSize={pageSize}"
-                        : $"{apiUrl}{userName}/{password}/{viewName}?page={currentPage}&pageSize={pageSize}";
+                    ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'"
+                    : $"{apiUrl}{userName}/{password}/{viewName}";
 
                     var response = await httpClient.GetAsync(url);
                     if (!response.IsSuccessStatusCode)
@@ -8371,11 +8369,15 @@ namespace TLIS_Service.Services
 
                     if (allData == null || allData.Count == 0)
                     {
-                        break;
+                        return "لا توجد بيانات";
                     }
 
-                     
-                    
+                    // التعامل مع البيانات بعد الحصول عليها دفعة واحدة
+                    // مثلاً: return allData;
+
+
+
+
 
                     // تحويل البيانات إلى JSON للتخزين المؤقت
                     string finalResult = JsonConvert.SerializeObject(allData);
