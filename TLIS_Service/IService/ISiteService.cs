@@ -91,7 +91,7 @@ namespace TLIS_Service.IService
         Task<Response<IEnumerable<TLIlogUsersActionsViewModel>>> GetFilteredLogs(FilterRequest filterRequest);
         Response<string> ClearAllHistory(string connectionString, string dateFrom, string dateTo);
         Response<string> ClearLogHistory(string connectionString, string dateFrom = null, string dateTo = null);
-   
+  
 
 
     }

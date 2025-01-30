@@ -85,6 +85,7 @@ using System.Globalization;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using Oracle.ManagedDataAccess.Types;
 using System.Linq.Expressions;
+using Microsoft.Extensions.Caching.Memory;
 
 
 
@@ -100,6 +101,9 @@ namespace TLIS_Service.Services
         public static List<TLIsite> _MySites;
         IServiceProvider Services;
         private readonly IConfiguration _configuration;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IMemoryCache _memoryCache;
+        private readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(100); // مدة التخزين المؤقت
         public SiteService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper, IServiceProvider serviceو, IConfiguration configuration)
         {
             _context = context;
@@ -8323,11 +8327,16 @@ namespace TLIS_Service.Services
         {
             try
             {
-                var serviceProvider = _services.BuildServiceProvider();
-                var configuration = serviceProvider.GetService<IConfiguration>();
-                string apiUrl = configuration["SMIS_API_URL"];
-                var connectionString = configuration.GetConnectionString("ActiveConnection");
+                string cacheKey = $"SMIS_{viewName}_{parameter}"; // مفتاح الكاش حسب المدخلات
 
+                // التحقق إذا كانت البيانات موجودة في الكاش
+                if (_memoryCache.TryGetValue(cacheKey, out string cachedData))
+                {
+                    return cachedData; // إرجاع البيانات المخزنة في الكاش
+                }
+
+                string apiUrl = _configuration["SMIS_API_URL"];
+                string connectionString = _configuration.GetConnectionString("ActiveConnection");
 
                 if (string.IsNullOrEmpty(apiUrl))
                 {
@@ -8336,13 +8345,13 @@ namespace TLIS_Service.Services
 
                 int pageSize = 1000;
                 int currentPage = 1;
-
                 var allData = new List<SiteDataFromOutsiderApiViewModel>();
 
                 using (var connection = new OracleConnection(connectionString))
                 {
                     await connection.OpenAsync();
-                    using var httpClient = new HttpClient();
+                    var httpClient = _httpClientFactory.CreateClient();
+
                     while (true)
                     {
                         string url = !string.IsNullOrEmpty(parameter)
@@ -8367,15 +8376,18 @@ namespace TLIS_Service.Services
                         currentPage++;
                     }
 
-                    // معالجة البيانات باستخدام Parallel.ForEachAsync لتحسين الأداء
-                    await Parallel.ForEachAsync(allData, async (item, _) => await ProcessSiteDataAsync(connection, item));
+                    // تحويل البيانات إلى JSON للتخزين المؤقت
+                    string finalResult = JsonConvert.SerializeObject(allData);
 
-                    return "تمت العملية بنجاح";
+                    // تخزين البيانات في الكاش
+                    _memoryCache.Set(cacheKey, finalResult, CacheExpiration);
+
+                    return finalResult;
                 }
             }
             catch (Exception ex)
             {
-                return $"حدث خطأ: {ex.Message}";
+                return $"خطأ: {ex.Message}";
             }
         }
 
