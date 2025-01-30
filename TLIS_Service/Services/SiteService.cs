@@ -8375,7 +8375,9 @@ namespace TLIS_Service.Services
                     // التعامل مع البيانات بعد الحصول عليها دفعة واحدة
                     // مثلاً: return allData;
 
-                    await Parallel.ForEachAsync(allData, async (item, _) => await ProcessSiteDataAsync(connection, item));
+                    var tasks = allData.Select(item => ProcessSiteDataAsync(connection, item));
+                    await Task.WhenAll(tasks);
+
                     // تحويل البيانات إلى JSON للتخزين المؤقت
                     string finalResult = JsonConvert.SerializeObject(allData);
 
