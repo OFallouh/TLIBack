@@ -8539,9 +8539,6 @@ namespace TLIS_Service.Services
 
         private async Task<int> GetSiteStatusIdAsync(OracleConnection conn, string siteStatus)
         {
-          
-
-            // Query to check if the site status exists
             string query = "SELECT \"Id\" FROM \"TLIsiteStatus\" WHERE \"Name\" = :siteStatus";
             using (var cmd = new OracleCommand(query, conn))
             {
@@ -8550,6 +8547,11 @@ namespace TLIS_Service.Services
                 var result = await cmd.ExecuteScalarAsync();
                 if (result != null)
                 {
+                    // التعامل مع OracleDecimal بشكل صحيح
+                    if (result is OracleDecimal decimalResult)
+                    {
+                        return decimalResult.ToInt32();
+                    }
                     return Convert.ToInt32(result);
                 }
 
@@ -8575,7 +8577,7 @@ namespace TLIS_Service.Services
                 cmd.Parameters.Add(new OracleParameter(":locationType", locationType));
 
                 var result = await cmd.ExecuteScalarAsync();
-                if (result != null) return Convert.ToInt32(result);
+                if (result != null) return Convert.ToInt32(((OracleDecimal)result).Value);
 
                 string insertQuery = "INSERT INTO \"TLIlocationType\" (\"Name\") VALUES (:locationType) RETURNING \"Id\" INTO :newId";
                 using (var insertCmd = new OracleCommand(insertQuery, conn))
