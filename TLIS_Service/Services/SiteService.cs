@@ -8400,9 +8400,24 @@ namespace TLIS_Service.Services
         {
             try
             {
+                int siteStatusId = 0;
                 var areaId = await GetAreaIdAsync(connection, item.Area);
                 var regionCode = await GetRegionCodeAsync(connection, item.RegionCode);
-                var siteStatusId = await GetSiteStatusIdAsync(connection, item.siteStatus);
+                var siteStatus = _context.TLIsiteStatus.FirstOrDefault(x=>x.Name.ToLower()=="on air");
+                if (siteStatus != null)
+                {
+                     siteStatusId = siteStatus.Id;
+                }
+                else 
+                {
+                    TLIsiteStatus tLIsiteStatus = new TLIsiteStatus()
+                    {
+                        Name = "ON Air"
+                    };
+                    _context.TLIsiteStatus.Add(tLIsiteStatus);
+                    _context.SaveChanges();
+                    siteStatusId = tLIsiteStatus.Id;
+                }
                 var locationTypeId = await GetLocationTypeIdAsync(connection, item.LocationType);
 
                 string siteCodeNormalized = item.Sitecode?.Trim().ToLower();
@@ -8419,19 +8434,20 @@ namespace TLIS_Service.Services
                             {
                                 // هنا نحدث السجل الموجود
                                 var updateQuery = $"UPDATE \"TLIsite\" SET " +
-                                                  $"\"SiteCode\" = :SiteCode, " +
-                                                  $"\"SiteName\" = :SiteName, " +
-                                                  $"\"LocationType\" = :LocationType, " +
-                                                  $"\"Latitude\" = :Latitude, " +
-                                                  $"\"Longitude\" = :Longitude, " +
-                                                  $"\"Zone\" = :Zone, " +
-                                                  $"\"SubArea\" = :SubArea, " +
-                                                  $"\"STATUS_DATE\" = :StatusDate, " +
-                                                  $"\"CREATE_DATE\" = :CreateDate, " +
-                                                  $"\"LocationHieght\" = :LocationHieght, " +
-                                                  $"\"AreaId\" = :AreaId, " +
-                                                  $"\"RegionCode\" = :RegionCode " +
-                                                  $"WHERE \"SiteCode\" = :SiteCode OR \"SiteName\" = :SiteName";
+                                     $"\"SiteCode\" = :SiteCode, " +
+                                     $"\"SiteName\" = :SiteName, " +
+                                     $"\"LocationType\" = :LocationType, " +
+                                     $"\"Latitude\" = :Latitude, " +
+                                     $"\"Longitude\" = :Longitude, " +
+                                     $"\"Zone\" = :Zone, " +
+                                     $"\"SubArea\" = :SubArea, " +
+                                     $"\"STATUS_DATE\" = :StatusDate, " +
+                                     $"\"CREATE_DATE\" = :CreateDate, " +
+                                     $"\"LocationHieght\" = :LocationHieght, " +
+                                     $"\"AreaId\" = :AreaId, " +
+                                     $"\"RegionCode\" = :RegionCode, " +
+                                     $"\"siteStatusId\" = :siteStatusId " +
+                                     $"WHERE \"SiteCode\" = :SiteCode AND \"SiteName\" = :SiteName";
 
                                 using (var updateCommand = new OracleCommand(updateQuery, connection))
                                 {
@@ -8447,6 +8463,8 @@ namespace TLIS_Service.Services
                                     updateCommand.Parameters.Add(":LocationHieght", OracleDbType.Double).Value = item.LocationHieght ?? 0;
                                     updateCommand.Parameters.Add(":AreaId", OracleDbType.Int32).Value = areaId;
                                     updateCommand.Parameters.Add(":RegionCode", OracleDbType.Varchar2).Value = regionCode;
+                                    updateCommand.Parameters.Add(":siteStatusId", OracleDbType.Varchar2).Value = siteStatusId;
+
 
                                     await updateCommand.ExecuteNonQueryAsync();
                                 }
@@ -8533,38 +8551,6 @@ namespace TLIS_Service.Services
 
                     await insertCmd.ExecuteNonQueryAsync();
                     return newRegionCodeParam.Value.ToString();
-                }
-            }
-        }
-
-        private async Task<int> GetSiteStatusIdAsync(OracleConnection conn, string siteStatus)
-        {
-            string query = "SELECT \"Id\" FROM \"TLIsiteStatus\" WHERE \"Name\" = :siteStatus";
-            using (var cmd = new OracleCommand(query, conn))
-            {
-                cmd.Parameters.Add(new OracleParameter(":siteStatus", siteStatus));
-
-                var result = await cmd.ExecuteScalarAsync();
-                if (result != null)
-                {
-                    // التعامل مع OracleDecimal بشكل صحيح
-                    if (result is OracleDecimal decimalResult)
-                    {
-                        return decimalResult.ToInt32();
-                    }
-                    return Convert.ToInt32(result);
-                }
-
-                // Insert the new status and retrieve the ID
-                string insertQuery = "INSERT INTO \"TLIsiteStatus\" (\"Name\") VALUES (:siteStatus) RETURNING \"Id\" INTO :newId";
-                using (var insertCmd = new OracleCommand(insertQuery, conn))
-                {
-                    var newIdParam = new OracleParameter(":newId", OracleDbType.Int32) { Direction = ParameterDirection.Output };
-                    insertCmd.Parameters.Add(new OracleParameter(":siteStatus", siteStatus));
-                    insertCmd.Parameters.Add(newIdParam);
-
-                    await insertCmd.ExecuteNonQueryAsync();
-                    return Convert.ToInt32(newIdParam.Value);
                 }
             }
         }
