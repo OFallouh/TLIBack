@@ -52,6 +52,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Services\NewFolder10\" />
     <Folder Include="Services\NewFolder1\" />
     <Folder Include="Services\NewFolder2\" />
     <Folder Include="Services\NewFolder3\" />

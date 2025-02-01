@@ -8539,7 +8539,7 @@ namespace TLIS_Service.Services
 
         private async Task<int> GetSiteStatusIdAsync(OracleConnection conn, string siteStatus)
         {
-            await conn.OpenAsync();
+          
 
             // Query to check if the site status exists
             string query = "SELECT \"Id\" FROM \"TLIsiteStatus\" WHERE \"Name\" = :siteStatus";
