@@ -8402,6 +8402,7 @@ namespace TLIS_Service.Services
             try
             {
                 string cacheKey = $"SMIS_{viewName}_{parameter}";
+                string apiUrl = _configuration["SMIS_API_URL"];
                 string connectionString = _configuration.GetConnectionString("ActiveConnection");
 
                 if (_memoryCache.TryGetValue(cacheKey, out string cachedData))
