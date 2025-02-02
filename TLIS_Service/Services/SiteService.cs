@@ -8419,37 +8419,43 @@ namespace TLIS_Service.Services
 
                     var httpClient = _httpClientFactory.CreateClient();
 
-
-                    string url = !string.IsNullOrEmpty(parameter)
-                    ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'"
-                    : $"{apiUrl}{userName}/{password}/{viewName}";
-
-                    var response = await httpClient.GetAsync(url);
-                    if (!response.IsSuccessStatusCode)
+                    if (userName != null)
                     {
-                        return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
+                        string url = !string.IsNullOrEmpty(parameter)
+                        ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'"
+                        : $"{apiUrl}{userName}/{password}/{viewName}";
+
+                        var response = await httpClient.GetAsync(url);
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
+                        }
+
+                        string smisResponse = await response.Content.ReadAsStringAsync();
+                        var allData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
+
+                        if (allData == null || allData.Count == 0)
+                        {
+                            return "لا توجد بيانات";
+                        }
+
+                        // تنفيذ المهام بالتوازي مع التأكد من المعاملة
+                        var tasks = allData.Select(item => ProcessSiteDataAsync(connection, transaction, item));
+                        await Task.WhenAll(tasks); // تنفيذ العمليات المتوازية
+
+                        // تأكيد المعاملة إذا كانت جميع العمليات ناجحة
+                        transaction.Commit();
+
+                        // تحويل البيانات إلى JSON
+                        string finalResult = JsonConvert.SerializeObject(allData);
+
+                        _memoryCache.Set(cacheKey, finalResult, CacheExpiration);
+                        return finalResult;
                     }
-
-                    string smisResponse = await response.Content.ReadAsStringAsync();
-                    var allData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
-
-                    if (allData == null || allData.Count == 0)
+                    else
                     {
-                        return "لا توجد بيانات";
+                        return "";
                     }
-
-                    // تنفيذ المهام بالتوازي مع التأكد من المعاملة
-                    var tasks = allData.Select(item => ProcessSiteDataAsync(connection, transaction, item));
-                    await Task.WhenAll(tasks); // تنفيذ العمليات المتوازية
-
-                    // تأكيد المعاملة إذا كانت جميع العمليات ناجحة
-                    transaction.Commit();
-
-                    // تحويل البيانات إلى JSON
-                    string finalResult = JsonConvert.SerializeObject(allData);
-
-                    _memoryCache.Set(cacheKey, finalResult, CacheExpiration);
-                    return finalResult;
                 }
             }
             catch (Exception ex)
