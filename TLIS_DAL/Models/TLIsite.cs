@@ -26,8 +26,8 @@ namespace TLIS_DAL.Models
         public int siteStatusId { get; set; }
         public TLIsiteStatus siteStatus { get; set; }
         [Required]
-        public float RentedSpace { get; set; }
-        public float ReservedSpace { get; set; }
+        public float RentedSpace { get; set; } = 0;
+        public float ReservedSpace { get; set; } = 0;
         public DateTime SiteVisiteDate { get; set; }
         public string Zone { get; set; }
         public string SubArea { get; set; }
