@@ -8410,30 +8410,24 @@ namespace TLIS_Service.Services
                         return cachedData;
                     }
 
-                    //var httpClient = _httpClientFactory.CreateClient();
-                    //string url = !string.IsNullOrEmpty(parameter)
-                    //    ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'"
-                    //    : $"{apiUrl}{userName}/{password}/{viewName}";
+                    var httpClient = _httpClientFactory.CreateClient();
+                    string url = !string.IsNullOrEmpty(parameter)
+                        ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'"
+                        : $"{apiUrl}{userName}/{password}/{viewName}";
 
-                    //var response = await httpClient.GetAsync(url);
-                    //if (!response.IsSuccessStatusCode)
-                    //{
-                    //    return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
-                    //}
-                    string filePath = @"C:\Users\hp\Desktop\pp.txt"; // مسار الملف المحلي
-                    if (!File.Exists(filePath))
+                    var response = await httpClient.GetAsync(url);
+                    if (!response.IsSuccessStatusCode)
                     {
-                        return "الملف غير موجود.";
+                        return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
                     }
-                    string smisResponse = await File.ReadAllTextAsync(filePath);
 
+                    string smisResponse = await response.Content.ReadAsStringAsync();
                     var allData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
 
                     if (allData == null || allData.Count == 0)
                     {
-                        return "لا توجد بيانات في الملف.";
+                        return "لا توجد بيانات";
                     }
-                   
 
                     // تنفيذ المهام بالتوازي
                     var tasks = allData.Select(item => ProcessSiteDataAsync(item));
