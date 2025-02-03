@@ -8397,7 +8397,7 @@ namespace TLIS_Service.Services
         //}
         public async Task<string> GetSMIS_Site(string userName, string password, string viewName, string parameter, string rowContent)
         {
-            using (TransactionScope transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            using (TransactionScope transaction = new TransactionScope())
             {
                 try
                 {
@@ -8410,24 +8410,30 @@ namespace TLIS_Service.Services
                         return cachedData;
                     }
 
-                    var httpClient = _httpClientFactory.CreateClient();
-                    string url = !string.IsNullOrEmpty(parameter)
-                        ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'"
-                        : $"{apiUrl}{userName}/{password}/{viewName}";
+                    //var httpClient = _httpClientFactory.CreateClient();
+                    //string url = !string.IsNullOrEmpty(parameter)
+                    //    ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'"
+                    //    : $"{apiUrl}{userName}/{password}/{viewName}";
 
-                    var response = await httpClient.GetAsync(url);
-                    if (!response.IsSuccessStatusCode)
+                    //var response = await httpClient.GetAsync(url);
+                    //if (!response.IsSuccessStatusCode)
+                    //{
+                    //    return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
+                    //}
+                    string filePath = @"C:\Users\hp\Desktop\pp.txt"; // مسار الملف المحلي
+                    if (!File.Exists(filePath))
                     {
-                        return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
+                        return "الملف غير موجود.";
                     }
+                    string smisResponse = await File.ReadAllTextAsync(filePath);
 
-                    string smisResponse = await response.Content.ReadAsStringAsync();
                     var allData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
 
                     if (allData == null || allData.Count == 0)
                     {
-                        return "لا توجد بيانات";
+                        return "لا توجد بيانات في الملف.";
                     }
+                   
 
                     // تنفيذ المهام بالتوازي
                     var tasks = allData.Select(item => ProcessSiteDataAsync(item));
