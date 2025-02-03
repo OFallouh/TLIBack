@@ -8397,109 +8397,68 @@ namespace TLIS_Service.Services
         //}
         public async Task<string> GetSMIS_Site(string userName, string password, string viewName, string parameter, string rowContent)
         {
-            OracleTransaction transaction = null;
-
-            try
+            using (TransactionScope transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                string cacheKey = $"SMIS_{viewName}_{parameter}";
-                string apiUrl = _configuration["SMIS_API_URL"];
-                string connectionString = _configuration.GetConnectionString("ActiveConnection");
-
-                if (_memoryCache.TryGetValue(cacheKey, out string cachedData))
+                try
                 {
-                    return cachedData;
-                }
+                    string cacheKey = $"SMIS_{viewName}_{parameter}";
+                    string apiUrl = _configuration["SMIS_API_URL"];
+                    string connectionString = _configuration.GetConnectionString("ActiveConnection");
 
-                using (var connection = new OracleConnection(connectionString))
-                {
-                    await connection.OpenAsync();
-
-                    // بدء المعاملة
-                    transaction = connection.BeginTransaction();
+                    if (_memoryCache.TryGetValue(cacheKey, out string cachedData))
+                    {
+                        return cachedData;
+                    }
 
                     var httpClient = _httpClientFactory.CreateClient();
-
-                    if (userName != null)
-                    {
-                        string url = !string.IsNullOrEmpty(parameter)
+                    string url = !string.IsNullOrEmpty(parameter)
                         ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'"
                         : $"{apiUrl}{userName}/{password}/{viewName}";
 
-                        var response = await httpClient.GetAsync(url);
-                        if (!response.IsSuccessStatusCode)
-                        {
-                            return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
-                        }
-
-                        string smisResponse = await response.Content.ReadAsStringAsync();
-                        var allData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
-
-                        if (allData == null || allData.Count == 0)
-                        {
-                            return "لا توجد بيانات";
-                        }
-
-                        // تنفيذ المهام بالتوازي مع التأكد من المعاملة
-                        var tasks = allData.Select(item => ProcessSiteDataAsync(connection, transaction, item));
-                        await Task.WhenAll(tasks); // تنفيذ العمليات المتوازية
-
-                        // تأكيد المعاملة إذا كانت جميع العمليات ناجحة
-                        transaction.Commit();
-
-                        // تحويل البيانات إلى JSON
-                        string finalResult = JsonConvert.SerializeObject(allData);
-
-                        _memoryCache.Set(cacheKey, finalResult, CacheExpiration);
-                        return finalResult;
-                    }
-                    else
+                    var response = await httpClient.GetAsync(url);
+                    if (!response.IsSuccessStatusCode)
                     {
-                        return "";
+                        return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
                     }
+
+                    string smisResponse = await response.Content.ReadAsStringAsync();
+                    var allData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
+
+                    if (allData == null || allData.Count == 0)
+                    {
+                        return "لا توجد بيانات";
+                    }
+
+                    // تنفيذ المهام بالتوازي
+                    var tasks = allData.Select(item => ProcessSiteDataAsync(item));
+                    await Task.WhenAll(tasks);
+
+                    // تحويل البيانات إلى JSON
+                    string finalResult = JsonConvert.SerializeObject(allData);
+                    _memoryCache.Set(cacheKey, finalResult, CacheExpiration);
+
+                    transaction.Complete();
+                    return "تمت العملية بنجاح ✅";
                 }
-            }
-            catch (Exception ex)
-            {
-                // إذا حدث خطأ، التراجع عن المعاملة
-                transaction?.Rollback();
-                return $"خطأ: {ex.Message}";
+                catch (Exception ex)
+                {
+                    return $"خطأ أثناء تنفيذ العملية ❌: {ex.Message}";
+                }
             }
         }
 
-        private async Task ProcessSiteDataAsync(OracleConnection connection, OracleTransaction transaction, SiteDataFromOutsiderApiViewModel item)
+        private async Task ProcessSiteDataAsync(SiteDataFromOutsiderApiViewModel item)
         {
             try
             {
-                int siteStatusId = 0;
+                int siteStatusId = await GetSiteStatusIdAsync();
+                int areaId = await GetAreaIdAsync(item.Area);
+                int locationTypeId = await GetLocationTypeIdAsync(item.LocationType);
+                string regionCode = item.RegionCode != null ? await GetRegionCodeAsync(item.RegionCode) : null;
 
-                var areaIdTask = GetAreaIdAsync(connection, item.Area);
-                var regionCodeTask = GetRegionCodeAsync(connection, item.RegionCode);
-                var siteStatusTask = _context.TLIsiteStatus.FirstOrDefaultAsync(x => x.Name.ToLower() == "on air");
-                var locationTypeIdTask = GetLocationTypeIdAsync(connection, item.LocationType);
-
-                await Task.WhenAll(areaIdTask, regionCodeTask, siteStatusTask, locationTypeIdTask);
-
-                var areaId = await areaIdTask;
-                var regionCode = await regionCodeTask;
-                var siteStatus = await siteStatusTask;
-                var locationTypeId = await locationTypeIdTask;
-
-                if (siteStatus == null)
-                {
-                    TLIsiteStatus tLIsiteStatus = new TLIsiteStatus()
-                    {
-                        Name = "ON Air"
-                    };
-                    _context.TLIsiteStatus.Add(tLIsiteStatus);
-                    _context.SaveChanges();
-                    siteStatusId = tLIsiteStatus.Id;
-                }
-                else
-                {
-                    siteStatusId = siteStatus.Id;
-                }
-
-                var existingSite = _unitOfWork.SiteRepository.GetWhereFirst(x => x.SiteCode.Replace(" ", "").ToLower() == item.Sitecode.Replace(" ", "").ToLower());
+                var existingSite =  _unitOfWork.SiteRepository.GetWhereFirst(
+                    x => x.SiteCode.Replace(" ", "").ToLower() == item.Sitecode.Replace(" ", "").ToLower()
+                );
 
                 if (existingSite != null)
                 {
@@ -8547,88 +8506,77 @@ namespace TLIS_Service.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error processing site {item.Sitecode}: {ex.Message}");
-                throw; // إعادة رمي الاستثناء لتتوقف المعاملة
+                Console.WriteLine($"❌ خطأ أثناء معالجة الموقع {item.Sitecode}: {ex.Message}");
+                throw;
             }
         }
 
-
-        private async Task<int> GetAreaIdAsync(OracleConnection connection, string areaName)
+        private async Task<int> GetSiteStatusIdAsync()
         {
-            string query = $"SELECT \"Id\" FROM \"TLIarea\" WHERE \"AreaName\" = :AreaName";
-            using (var command = new OracleCommand(query, connection))
+            var siteStatus = await _context.TLIsiteStatus.FirstOrDefaultAsync(x => x.Name.ToLower() == "on air");
+
+            if (siteStatus == null)
             {
-                command.Parameters.Add(":AreaName", OracleDbType.Varchar2).Value = areaName;
-
-                var result = await command.ExecuteScalarAsync();
-                if (result != null) return Convert.ToInt32(result);
-
-                // Insert if not found
-                var insertQuery = "INSERT INTO \"TLIarea\" (\"AreaName\") VALUES (:AreaName) RETURNING \"Id\" INTO :AreaId";
-                using (var insertCommand = new OracleCommand(insertQuery, connection))
-                {
-                    insertCommand.Parameters.Add(":AreaName", OracleDbType.Varchar2).Value = areaName;
-                    var areaIdParam = new OracleParameter(":AreaId", OracleDbType.Int32) { Direction = ParameterDirection.Output };
-                    insertCommand.Parameters.Add(areaIdParam);
-
-                    await insertCommand.ExecuteNonQueryAsync();
-                    return Convert.ToInt32(areaIdParam.Value);
-                }
+                var newStatus = new TLIsiteStatus { Name = "ON Air" };
+                _context.TLIsiteStatus.Add(newStatus);
+                await _context.SaveChangesAsync();
+                return newStatus.Id;
             }
+
+            return siteStatus.Id;
         }
 
-        private async Task<string> GetRegionCodeAsync(OracleConnection connection, string regionCode)
+        private async Task<int> GetAreaIdAsync(string areaName)
         {
-            string query = "SELECT \"RegionCode\" FROM \"TLIregion\" WHERE \"RegionCode\" = :regionCode";
-            using (var cmd = new OracleCommand(query, connection))
+            var area = await _context.TLIarea.FirstOrDefaultAsync(x => x.AreaName.ToLower() == areaName.ToLower());
+
+            if (area != null)
             {
-                cmd.Parameters.Add(new OracleParameter(":regionCode", regionCode));
-
-                var result = await cmd.ExecuteScalarAsync();
-                if (result != null)
-                {
-                    return result.ToString();
-                }
-
-                string insertQuery = "INSERT INTO \"TLIregion\" (\"RegionCode\") VALUES (:regionCode) RETURNING \"RegionCode\" INTO :newRegionCode";
-                using (var insertCmd = new OracleCommand(insertQuery, connection))
-                {
-                    var newRegionCodeParam = new OracleParameter(":newRegionCode", OracleDbType.Varchar2, 50) { Direction = ParameterDirection.Output };
-                    insertCmd.Parameters.Add(new OracleParameter(":regionCode", regionCode));
-                    insertCmd.Parameters.Add(newRegionCodeParam);
-
-                    await insertCmd.ExecuteNonQueryAsync();
-                    return newRegionCodeParam.Value.ToString();
-                }
+                return area.Id;
             }
+
+            var newArea = new TLIarea { AreaName = areaName };
+            _context.TLIarea.Add(newArea);
+            await _context.SaveChangesAsync();
+            return newArea.Id;
         }
 
-        private async Task<int> GetLocationTypeIdAsync(OracleConnection conn, string locationType)
+        private async Task<string> GetRegionCodeAsync(string regionCode)
         {
-            string query = $"SELECT \"Id\" FROM \"TLIlocationType\" WHERE \"Name\" = :locationType";
-            using (var cmd = new OracleCommand(query, conn))
+            var region = await _context.TLIregion.FirstOrDefaultAsync(x => x.RegionCode.ToLower() == regionCode.ToLower());
+
+            if (region != null)
             {
-                cmd.Parameters.Add(new OracleParameter(":locationType", locationType));
-
-                var result = await cmd.ExecuteScalarAsync();
-                if (result != null)
-                {
-                    // التعامل مع القيمة كـ long بدلاً من OracleDecimal
-                    return Convert.ToInt32(result);
-                }
-
-                string insertQuery = "INSERT INTO \"TLIlocationType\" (\"Name\") VALUES (:locationType) RETURNING \"Id\" INTO :newId";
-                using (var insertCmd = new OracleCommand(insertQuery, conn))
-                {
-                    var newIdParam = new OracleParameter(":newId", OracleDbType.Int32) { Direction = ParameterDirection.Output };
-                    insertCmd.Parameters.Add(new OracleParameter(":locationType", locationType));
-                    insertCmd.Parameters.Add(newIdParam);
-
-                    await insertCmd.ExecuteNonQueryAsync();
-                    return Convert.ToInt32(newIdParam.Value);
-                }
+                return region.RegionCode;
             }
+
+            var newRegion = new TLIregion { RegionCode = regionCode };
+            _context.TLIregion.Add(newRegion);
+            await _context.SaveChangesAsync();
+            return newRegion.RegionCode;
         }
+
+        private async Task<int> GetLocationTypeIdAsync(string locationType)
+        {
+            var location = await _context.TLIlocationType.FirstOrDefaultAsync(x => x.Name.ToLower() == locationType.ToLower());
+
+            if (location != null)
+            {
+                return location.Id;
+            }
+
+            var newLocation = new TLIlocationType
+            {
+                Name = locationType,
+                Deleted = false,
+                Disable = false
+            };
+
+            _context.TLIlocationType.Add(newLocation);
+            await _context.SaveChangesAsync();
+            return newLocation.Id;
+        }
+
 
 
 
