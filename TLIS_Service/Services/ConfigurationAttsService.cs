@@ -13467,9 +13467,25 @@ namespace TLIS_Service.Services
                         _unitOfWork.OwnerRepository.AddWithHistory(UserId, tLIowner);
                         _unitOfWork.SaveChanges();
                     }
+                    
+                    else if (ConfigrationTables.TLIsubType.ToString() == ListName)
+                    {
+                        var subType = _unitOfWork.SubTypeRepository
+                           .GetWhere(x => x.Name.ToLower() == NewName.ToLower()).ToList();
+                        if (subType.Count > 0)
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this subTypename is already exist ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        TLIsubType tLIsubType = new TLIsubType()
+                        {
+                            Name = NewName,
+                            Delete = false,
+                            Disable = false,
+                        };
+                        _unitOfWork.SubTypeRepository.AddWithHistory(UserId, tLIsubType);
+                        _unitOfWork.SaveChanges();
+                    }
                     else
                     {
-                        return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called owner ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called owner and subType ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else if (TabelName == "TLIcabinetPower" || TabelName == "TLIcabinetTelecom")
@@ -13583,12 +13599,45 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not change status the owner name{OldEntity.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not modify the owner name {OldEntity.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
+                    else if (ConfigrationTables.TLIsubType.ToString() == ListName)
+                    {
+                        TLIsubType OldEntity = _unitOfWork.SubTypeRepository
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
+                        if (OldEntity == null)
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this subType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        var subTypeName = _unitOfWork.SubTypeRepository
+                               .GetWhere(x => x.Name.ToLower() == NewName.ToLower() && x.Id != RecordId).ToList();
+                        if (subTypeName.Count > 0)
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this subTypeName is already exist ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        var ChecksubTypeInCivil = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLeg.subTypeId == RecordId 
+                             && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel,
+                            x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg);
+
+             
+
+                        if (ChecksubTypeInCivil == null )
+                        {
+
+                            TLIsubType NewEntity = _unitOfWork.SubTypeRepository
+                                .GetWhereFirst(x => x.Id == RecordId);
+
+                            NewEntity.Name = NewName;
+
+                            _unitOfWork.SubTypeRepository.UpdateWithH(UserId, null, OldEntity, NewEntity, false);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not modify the owner name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else
                     {
-                        return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called owner ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the lists called owner and subType", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else if (TabelName == "TLIcabinetPower" || TabelName == "TLIcabinetTelecom")
@@ -13621,7 +13670,7 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not change status the renewableCabinetType name{OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not modify the renewableCabinetType name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else
@@ -13660,7 +13709,7 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not change status the parity  name{OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not modify the parity  name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else
@@ -13732,12 +13781,42 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the owner name{OldEntity.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the owner name {OldEntity.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
-                    } 
+                    }
+                    if (ConfigrationTables.TLIsubType.ToString() == ListName)
+                    {
+                        TLIsubType OldEntity = _unitOfWork.SubTypeRepository
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
+                        if (OldEntity == null)
+                            return new Response<List<TableAffected>>(false, null, null, $"this SubType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        var ChecksubTypeInCivil = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLeg.subTypeId == RecordId 
+                            &&!x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel,
+                            x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg);
+
+              
+
+                        if (ChecksubTypeInCivil == null)
+                        {
+
+                            TLIsubType NewEntity = _unitOfWork.SubTypeRepository
+                                .GetWhereFirst(x => x.Id == RecordId);
+
+                            NewEntity.Disable = !(OldEntity.Disable);
+
+                            _unitOfWork.SubTypeRepository.UpdateWithH(UserId, null, OldEntity, NewEntity, false);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the subType name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
                     else
                     {
-                        return new Response<List<TableAffected>>(false, null, null, "You cannot modify any item in any list except the list called owner ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<List<TableAffected>>(false, null, null, "You cannot modify any item in any list except the lists called owner and subType ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else if (TabelName == "TLIcabinetPower" || TabelName == "TLIcabinetTelecom")
@@ -13767,7 +13846,7 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the renewableCabinetType name{OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the renewableCabinetType name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else
@@ -13802,7 +13881,7 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the parity  name{OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the parity  name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else
@@ -13874,13 +13953,42 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return new Response<List<TableAffected>>(false, null, null, $"can not delete the owner name{OldEntity.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<List<TableAffected>>(false, null, null, $"can not delete the owner name {OldEntity.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
+                    else if (ConfigrationTables.TLIsubType.ToString() == ListName)
+                    {
+                        TLIsubType OldEntity = _unitOfWork.SubTypeRepository
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
+                        if (OldEntity == null)
+                            return new Response<List<TableAffected>>(false, null, null, $"this subType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
 
+                        var ChecksubTypeInCivil = _unitOfWork.CivilSiteDateRepository
+                            .GetIncludeWhereFirst(x => x.allCivilInst.civilWithoutLeg.subTypeId == RecordId
+                            && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel,
+                            x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithoutLeg);
+
+                       
+
+                        if (ChecksubTypeInCivil == null )
+                        {
+
+                            TLIsubType NewEntity = _unitOfWork.SubTypeRepository
+                                .GetWhereFirst(x => x.Id == RecordId);
+
+                            NewEntity.Delete = true;
+
+                            _unitOfWork.SubTypeRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new Response<List<TableAffected>>(false, null, null, $"can not delete the SubType name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
                     else
                     {
-                        return new Response<List<TableAffected>>(false, null, null, "You cannot delete any item in any list except the list called owner ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<List<TableAffected>>(false, null, null, "You cannot delete any item in any list except the lists called owner and SubType", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else if (TabelName == "TLIcabinetPower" || TabelName == "TLIcabinetTelecom")
@@ -13910,7 +14018,7 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return new Response<List<TableAffected>>(false, null, null, $"can not delete the renewableCabinetType name{OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<List<TableAffected>>(false, null, null, $"can not delete the renewableCabinetType name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else
@@ -13945,7 +14053,7 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return new Response<List<TableAffected>>(false, null, null, $"can not delete the parity  name{OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<List<TableAffected>>(false, null, null, $"can not delete the parity  name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else

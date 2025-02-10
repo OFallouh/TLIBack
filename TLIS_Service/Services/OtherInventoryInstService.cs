@@ -3410,156 +3410,6 @@ namespace TLIS_Service.Services
                 }
             }
         }
-        public Response<GetEnableAttribute> GetSolarWithEnableAtt(string? SiteCode, string ConnectionString)
-        {
-            using (var connection = new OracleConnection(ConnectionString))
-            {
-                try
-                {
-                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
-                    connection.Open();
-                    //string storedProcedureName = "create_dynamic_pivot_withleg ";
-                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
-                    //{
-                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
-                    //    procedureCommand.ExecuteNonQuery();
-                    //}
-                    var attActivated = _dbContext.TLIattributeViewManagment
-                        .Include(x => x.EditableManagmentView)
-                        .Include(x => x.AttributeActivated)
-                        .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "SolarInstallation" &&
-                        ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
-                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
-                            .ThenBy(x => x.attribute == null)
-                            .ThenBy(x => x.attribute)
-                            .ToList();
-                    getEnableAttribute.Type = attActivated;
-                    List<string> propertyNamesStatic = new List<string>();
-                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
-                    foreach (var key in attActivated)
-                    {
-                        if (key.attribute != null)
-                        {
-                            string name = key.attribute;
-                            if (name != "Id" && name.EndsWith("Id"))
-                            {
-                                string fk = name.Remove(name.Length - 2);
-                                propertyNamesStatic.Add(fk);
-                            }
-                            else
-                            {
-                                propertyNamesStatic.Add(name);
-                            }
-
-                        }
-                        else
-                        {
-                            string name = key.dynamic;
-                            string datatype = key.dataType;
-                            propertyNamesDynamic.Add(name, datatype);
-                        }
-
-                    }
-                    propertyNamesStatic.Add("SITECODE");
-                    if (SiteCode == null)
-                    {
-                        if (propertyNamesDynamic.Count == 0)
-                        {
-                            var query = _dbContext.MV_SOLAR_VIEW.Where(x =>
-                            !x.Dismantle).AsEnumerable()
-                            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
-                            int count = query.Count();
-
-                            getEnableAttribute.Model = query;
-                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
-                        }
-                        else
-                        {
-                            var query = _dbContext.MV_SOLAR_VIEW.Where(x =>
-                              !x.Dismantle).AsEnumerable()
-                        .GroupBy(x => new
-                        {
-                            Id = x.Id,
-                            Name = x.Name,
-                            SITECODE = x.SITECODE,
-                            PVPanelBrandAndWattage = x.PVPanelBrandAndWattage,
-                            PVArrayAzimuth = x.PVArrayAzimuth,
-                            PVArrayAngel = x.PVArrayAngel,
-                            SpaceInstallation = x.SpaceInstallation,
-                            VisibleStatus = x.VisibleStatus,
-                            Prefix = x.Prefix,
-                            PowerLossRatio = x.PowerLossRatio,
-                            NumberOfSSU = x.NumberOfSSU,
-                            NumberOfLightingRod = x.NumberOfLightingRod,
-                            NumberOfInstallPVs = x.NumberOfInstallPVs,
-                            LocationDescription = x.LocationDescription,
-                            ExtenstionDimension = x.ExtenstionDimension,
-                            Extension = x.Extension,
-                            SOLARLIBRARY = x.SOLARLIBRARY,
-                            CABINET = x.CABINET,
-                            Dismantle = x.Dismantle,
-
-                        }).OrderBy(x => x.Key.Name)
-                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
-                            int count = query.Count();
-                            getEnableAttribute.Model = query;
-                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
-                        }
-                    }
-                    if (propertyNamesDynamic.Count == 0)
-                    {
-                        var query = _dbContext.MV_SOLAR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
-                        && !x.Dismantle).AsEnumerable()
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
-                        int count = query.Count();
-
-                        getEnableAttribute.Model = query;
-                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
-                    }
-                    else
-                    {
-                        var query = _dbContext.MV_SOLAR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
-                         && !x.Dismantle).AsEnumerable()
-                    .GroupBy(x => new
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        SITECODE = x.SITECODE,
-                        PVPanelBrandAndWattage = x.PVPanelBrandAndWattage,
-                        PVArrayAzimuth = x.PVArrayAzimuth,
-                        PVArrayAngel = x.PVArrayAngel,
-                        SpaceInstallation = x.SpaceInstallation,
-                        VisibleStatus = x.VisibleStatus,
-                        Prefix = x.Prefix,
-                        PowerLossRatio = x.PowerLossRatio,
-                        NumberOfSSU = x.NumberOfSSU,
-                        NumberOfLightingRod = x.NumberOfLightingRod,
-                        NumberOfInstallPVs = x.NumberOfInstallPVs,
-                        LocationDescription = x.LocationDescription,
-                        ExtenstionDimension = x.ExtenstionDimension,
-                        Extension = x.Extension,
-                        SOLARLIBRARY = x.SOLARLIBRARY,
-                        CABINET = x.CABINET,
-                        Dismantle = x.Dismantle,
-
-                    }).OrderBy(x => x.Key.Name)
-                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
-                        int count = query.Count();
-                        getEnableAttribute.Model = query;
-                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
-                    }
-
-                }
-                catch (Exception err)
-                {
-                    return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
-                }
-            }
-        }
         public Response<GetEnableAttribute> GetCabinetPowerWithEnableAtt(string? SiteCode, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
@@ -3682,6 +3532,159 @@ namespace TLIS_Service.Services
                         CABINETPOWERLIBRARY = x.CABINETPOWERLIBRARY,
                         RENEWABLECABINETTYPE = x.RENEWABLECABINETTYPE,
                         Dismantle = x.Dismantle,
+                    }).OrderBy(x => x.Key.Name)
+                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+
+                }
+                catch (Exception err)
+                {
+                    return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+            }
+        }
+        public Response<GetEnableAttribute> GetSolarWithEnableAtt(string? SiteCode, string ConnectionString)
+        {
+            using (var connection = new OracleConnection(ConnectionString))
+            {
+                try
+                {
+                    GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+                    connection.Open();
+                    //string storedProcedureName = "create_dynamic_pivot_withleg ";
+                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+                    //{
+                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
+                    //    procedureCommand.ExecuteNonQuery();
+                    //}
+                    var attActivated = _dbContext.TLIattributeViewManagment
+                        .Include(x => x.EditableManagmentView)
+                        .Include(x => x.AttributeActivated)
+                        .Include(x => x.DynamicAtt)
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "SolarInstallation" &&
+                        ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                        .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+                            .ThenBy(x => x.attribute == null)
+                            .ThenBy(x => x.attribute)
+                            .ToList();
+                    getEnableAttribute.Type = attActivated;
+                    List<string> propertyNamesStatic = new List<string>();
+                    Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+                    foreach (var key in attActivated)
+                    {
+                        if (key.attribute != null)
+                        {
+                            string name = key.attribute;
+                            if (name != "Id" && name.EndsWith("Id"))
+                            {
+                                string fk = name.Remove(name.Length - 2);
+                                propertyNamesStatic.Add(fk);
+                            }
+                            else
+                            {
+                                propertyNamesStatic.Add(name);
+                            }
+
+
+                        }
+                        else
+                        {
+                            string name = key.dynamic;
+                            string datatype = key.dataType;
+                            propertyNamesDynamic.Add(name, datatype);
+                        }
+
+                    }
+                    propertyNamesStatic.Add("SITECODE");
+
+                    if (SiteCode == null)
+                    {
+                        if (propertyNamesDynamic.Count == 0)
+                        {
+                            var query = _dbContext.MV_SOLAR_VIEW.Where(x =>
+                            !x.Dismantle).AsEnumerable()
+                            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                            int count = query.Count();
+
+                            getEnableAttribute.Model = query;
+                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        }
+                        else
+                        {
+                            var query = _dbContext.MV_SOLAR_VIEW.Where(x =>
+                              !x.Dismantle).AsEnumerable()
+                        .GroupBy(x => new
+                        {
+
+                            Id = x.Id,
+                            Name = x.Name,
+                            SITECODE = x.SITECODE,
+                            PVPanelBrandAndWattage = x.PVPanelBrandAndWattage,
+                            PVArrayAzimuth = x.PVArrayAzimuth,
+                            PVArrayAngel = x.PVArrayAngel,
+                            SpaceInstallation = x.SpaceInstallation,
+                            VisibleStatus = x.VisibleStatus,
+                            Prefix = x.Prefix,
+                            PowerLossRatio = x.PowerLossRatio,
+                            NumberOfSSU = x.NumberOfSSU,
+                            NumberOfLightingRod = x.NumberOfLightingRod,
+                            NumberOfInstallPVs = x.NumberOfInstallPVs,
+                            LocationDescription = x.LocationDescription,
+                            ExtenstionDimension = x.ExtenstionDimension,
+                            Extension = x.Extension,
+                            SOLARLIBRARY = x.SOLARLIBRARY,
+                            CABINET = x.CABINET,
+                            Dismantle = x.Dismantle,
+
+                        }).OrderBy(x => x.Key.Name)
+                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+                            int count = query.Count();
+                            getEnableAttribute.Model = query;
+                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                        }
+                    }
+                    if (propertyNamesDynamic.Count == 0)
+                    {
+                        var query = _dbContext.MV_SOLAR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                        && !x.Dismantle).AsEnumerable()
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                        int count = query.Count();
+
+                        getEnableAttribute.Model = query;
+                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                    }
+                    else
+                    {
+                        var query = _dbContext.MV_SOLAR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+                         && !x.Dismantle).AsEnumerable()
+                    .GroupBy(x => new
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        SITECODE = x.SITECODE,
+                        PVPanelBrandAndWattage = x.PVPanelBrandAndWattage,
+                        PVArrayAzimuth = x.PVArrayAzimuth,
+                        PVArrayAngel = x.PVArrayAngel,
+                        SpaceInstallation = x.SpaceInstallation,
+                        VisibleStatus = x.VisibleStatus,
+                        Prefix = x.Prefix,
+                        PowerLossRatio = x.PowerLossRatio,
+                        NumberOfSSU = x.NumberOfSSU,
+                        NumberOfLightingRod = x.NumberOfLightingRod,
+                        NumberOfInstallPVs = x.NumberOfInstallPVs,
+                        LocationDescription = x.LocationDescription,
+                        ExtenstionDimension = x.ExtenstionDimension,
+                        Extension = x.Extension,
+                        SOLARLIBRARY = x.SOLARLIBRARY,
+                        CABINET = x.CABINET,
+                        Dismantle = x.Dismantle,
+
                     }).OrderBy(x => x.Key.Name)
                     .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
                     .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
