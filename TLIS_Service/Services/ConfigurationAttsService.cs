@@ -13784,7 +13784,7 @@ namespace TLIS_Service.Services
                             return new Response<List<TableAffected>>(false, null, null, $"can not change status the owner name {OldEntity.OwnerName} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
-                    if (ConfigrationTables.TLIsubType.ToString() == ListName)
+                    else if (ConfigrationTables.TLIsubType.ToString() == ListName)
                     {
                         TLIsubType OldEntity = _unitOfWork.SubTypeRepository
                               .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
