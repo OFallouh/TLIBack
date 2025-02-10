@@ -2762,7 +2762,10 @@ namespace TLIS_Service.Services
                             if (CheckName.Count >0 )
                                 return new Response<AddGeneratorInstallationObject>(true, null, null, $"This name {Generator.Name} is already exists", (int)ApiReturnCode.fail);
 
-                            var CheckSerialNumber = _dbContext.MV_GENERATOR_VIEW.FirstOrDefault(x => x.SerialNumber == Generator.SerialNumber);
+                            var CheckSerialNumber = _dbContext.TLIotherInSite.Include(x=>x.allOtherInventoryInst).ThenInclude(x=>x.generator)
+                                .FirstOrDefault(x => x.allOtherInventoryInst.generator.SerialNumber.ToLower()
+                                == Generator.SerialNumber.ToLower() && !x.Dismantle);
+                        
                             if (CheckSerialNumber != null)
                                 return new Response<AddGeneratorInstallationObject>(true, null, null, $"The serial number {Generator.SerialNumber} is already exists", (int)ApiReturnCode.fail);
                             Generator.GeneratorLibraryId = addGeneratorInstallationObject.GeneratorType.GeneratorLibraryId;
@@ -3946,6 +3949,13 @@ namespace TLIS_Service.Services
 
                             if (CheckName != null)
                                 return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The name {Generator.Name} is already exists", (int)ApiReturnCode.fail);
+
+                            var CheckSerialNumber = _dbContext.TLIotherInSite.Include(x => x.allOtherInventoryInst).ThenInclude(x => x.generator)
+                               .FirstOrDefault(x => x.allOtherInventoryInst.generator.SerialNumber.ToLower()
+                               == Generator.SerialNumber.ToLower() && x.allOtherInventoryInst.generatorId != Generator.Id && !x.Dismantle);
+
+                            if (CheckSerialNumber != null)
+                                return new Response<GetForAddOtherInventoryInstallationObject>(true, null, null, $"The serial number {Generator.SerialNumber} is already exists", (int)ApiReturnCode.fail);
 
                             if (GeneratorInst.ReservedSpace == true && GeneratorModel.OtherInSite.ReservedSpace == true)
                             {
