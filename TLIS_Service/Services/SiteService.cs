@@ -8395,6 +8395,7 @@ namespace TLIS_Service.Services
         //        return $"خطأ: {ex.Message}";
         //    }
         //}
+
         public async Task<string> GetSMIS_Site(string userName, string password, string viewName, string parameter, string rowContent)
         {
             using (TransactionScope transaction = new TransactionScope())
@@ -8405,6 +8406,7 @@ namespace TLIS_Service.Services
                     string apiUrl = _configuration["SMIS_API_URL"];
                     string connectionString = _configuration.GetConnectionString("ActiveConnection");
 
+                    // استخدام الـ Cache لتقليل الوصول المتكرر لـ API
                     if (_memoryCache.TryGetValue(cacheKey, out string cachedData))
                     {
                         return cachedData;
@@ -8429,7 +8431,7 @@ namespace TLIS_Service.Services
                         return "لا توجد بيانات";
                     }
 
-                    // تنفيذ المهام بالتوازي
+                    // تنفيذ العمليات بشكل متوازي
                     var tasks = allData.Select(item => ProcessSiteDataAsync(item));
                     await Task.WhenAll(tasks);
 
@@ -8451,12 +8453,21 @@ namespace TLIS_Service.Services
         {
             try
             {
-                int siteStatusId = await GetSiteStatusIdAsync();
-                int areaId = await GetAreaIdAsync(item.Area);
-                int locationTypeId = await GetLocationTypeIdAsync(item.LocationType);
-                string regionCode = item.RegionCode != null ? await GetRegionCodeAsync(item.RegionCode) : null;
+                // استخدم Cache لتخزين المعرفات
+                var siteStatusIdTask = GetSiteStatusIdAsync();
+                var areaIdTask = GetAreaIdAsync(item.Area);
+                var locationTypeIdTask = GetLocationTypeIdAsync(item.LocationType);
+                var regionCodeTask = item.RegionCode != null ? GetRegionCodeAsync(item.RegionCode) : Task.FromResult<string>(null);
 
-                var existingSite =  _unitOfWork.SiteRepository.GetWhereFirst(
+                // الحصول على القيم بشكل متوازي
+                await Task.WhenAll(siteStatusIdTask, areaIdTask, locationTypeIdTask, regionCodeTask);
+
+                int siteStatusId = siteStatusIdTask.Result;
+                int areaId = areaIdTask.Result;
+                int locationTypeId = locationTypeIdTask.Result;
+                string regionCode = regionCodeTask.Result;
+
+                var existingSite = _unitOfWork.SiteRepository.GetWhereFirst(
                     x => x.SiteCode.Replace(" ", "").ToLower() == item.Sitecode.Replace(" ", "").ToLower()
                 );
 
@@ -8513,23 +8524,33 @@ namespace TLIS_Service.Services
 
         private async Task<int> GetSiteStatusIdAsync()
         {
-            var siteStatus = await _context.TLIsiteStatus.FirstOrDefaultAsync(x => x.Name.ToLower() == "on air");
+            // استخدام Cache لتخزين النتائج
+            string cacheKey = "SiteStatus_ON_AIR";
+            if (_memoryCache.TryGetValue(cacheKey, out int siteStatusId))
+            {
+                return siteStatusId;
+            }
 
+            var siteStatus = await _context.TLIsiteStatus.FirstOrDefaultAsync(x => x.Name.ToLower() == "on air");
             if (siteStatus == null)
             {
                 var newStatus = new TLIsiteStatus { Name = "ON Air" };
                 _context.TLIsiteStatus.Add(newStatus);
                 await _context.SaveChangesAsync();
-                return newStatus.Id;
+                siteStatusId = newStatus.Id;
+                _memoryCache.Set(cacheKey, siteStatusId, TimeSpan.FromMinutes(10));
+            }
+            else
+            {
+                siteStatusId = siteStatus.Id;
             }
 
-            return siteStatus.Id;
+            return siteStatusId;
         }
 
         private async Task<int> GetAreaIdAsync(string areaName)
         {
             var area = await _context.TLIarea.FirstOrDefaultAsync(x => x.AreaName.ToLower() == areaName.ToLower());
-
             if (area != null)
             {
                 return area.Id;
@@ -8544,7 +8565,6 @@ namespace TLIS_Service.Services
         private async Task<string> GetRegionCodeAsync(string regionCode)
         {
             var region = await _context.TLIregion.FirstOrDefaultAsync(x => x.RegionCode.ToLower() == regionCode.ToLower());
-
             if (region != null)
             {
                 return region.RegionCode;
@@ -8559,7 +8579,6 @@ namespace TLIS_Service.Services
         private async Task<int> GetLocationTypeIdAsync(string locationType)
         {
             var location = await _context.TLIlocationType.FirstOrDefaultAsync(x => x.Name.ToLower() == locationType.ToLower());
-
             if (location != null)
             {
                 return location.Id;
@@ -8576,6 +8595,7 @@ namespace TLIS_Service.Services
             await _context.SaveChangesAsync();
             return newLocation.Id;
         }
+
 
 
 

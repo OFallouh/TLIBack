@@ -13632,7 +13632,7 @@ namespace TLIS_Service.Services
                         }
                         else
                         {
-                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not modify the owner name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not modify the subType name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
                     else
