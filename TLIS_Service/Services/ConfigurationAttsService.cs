@@ -12342,7 +12342,7 @@ namespace TLIS_Service.Services
                         Name = x.Name,
                         TableName = TableName,
                         Disable = x.Disable,
-                        Manage = false
+                        Manage = true
                     }).ToList();
                 }
                 else if (ConfigrationTables.TLIcivilNonSteelType.ToString() == TableName)
