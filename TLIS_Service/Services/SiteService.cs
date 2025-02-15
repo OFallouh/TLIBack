@@ -103,7 +103,7 @@ namespace TLIS_Service.Services
         private readonly IConfiguration _configuration;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IMemoryCache _memoryCache;
-        private readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(100); // مدة التخزين المؤقت
+        private readonly TimeSpan CacheExpiration = TimeSpan.FromDays(365); // مدة التخزين المؤقت
         public SiteService(IUnitOfWork unitOfWork, IServiceCollection services, ApplicationDbContext context, IMapper mapper, IServiceProvider serviceو, IConfiguration configuration, IMemoryCache MemoryCache, IHttpClientFactory httpClientFactory)
 
         {
@@ -14306,8 +14306,8 @@ namespace TLIS_Service.Services
         {
             try
             {
-                var xx = _context.TLIlogUsersActions.Include(x=>x.User).ToList();
-                var query = _context.TLIlogUsersActions.Include(x=>x.User).AsQueryable();
+                // استخدم Materialized View بدلاً من الجدول الأساسي
+                var query = _context.MV_TLILOGUSERSACTIONS.AsQueryable();
 
                 // Get total count before filtering
                 var totalCount = query.Count();
@@ -14329,7 +14329,7 @@ namespace TLIS_Service.Services
                 {
                     Id = q.Id,
                     Date = q.Date,
-                    UserName = q.User.UserName,
+                    UserName = q.UserName, // تم استبدال User.UserName ليتم جلبها مباشرة
                     ControllerName = q.ControllerName,
                     FunctionName = q.FunctionName,
                     BodyParameters = q.BodyParameters,
@@ -14338,17 +14338,14 @@ namespace TLIS_Service.Services
                     Result = q.Result
                 }).ToListAsync();
 
-
-
                 return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
-
             }
             catch (Exception err)
             {
-
                 return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+
         private IQueryable<T> ApplyFilter<T>(
          IQueryable<T> query,
          FilterRequest filterRequest)
