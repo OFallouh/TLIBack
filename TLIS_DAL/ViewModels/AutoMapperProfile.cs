@@ -332,6 +332,12 @@ namespace TLIS_DAL.ViewModels
 
 
             CreateMap<TLIrenewableCabinetType, OwnerViewModel>().ReverseMap();
+            CreateMap<MV_TLIsite, SiteViewModelForGetAll>().
+              ForMember(c => c.Status, c => c.MapFrom(s => s.SiteStatus)).
+              ForMember(c => c.Area, c => c.MapFrom(s => s.AreaName)).
+              ForMember(c => c.Region, c => c.MapFrom(s => s.RegionName)).
+              ForMember(c => c.CityName, c => c.MapFrom(s => s.Zone))
+                  .ReverseMap();
             CreateMap<TLIsideArmType, OwnerViewModel>().ReverseMap();
             CreateMap<TLIsideArm, installationAttributesSideArms>().ReverseMap();
             CreateMap<TLIsideArm, SideArmViewDto>().ReverseMap();
