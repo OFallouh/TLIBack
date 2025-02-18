@@ -83,11 +83,7 @@ namespace TLIS_Service.Services
 
                     using (var transaction = connection.BeginTransaction())
                     {
-                        // التحقق من صحة المستخدم
-                        var validationResponse = ValidateUserInAdAndDb(model.UserName, domain);
-                        if (validationResponse.Data)
-                        {
-                            // إدراج المستخدم
+                        
                             var userId = await InsertUserAsync(connection, model);
 
                             // إدراج الصلاحيات إذا كانت موجودة
@@ -116,13 +112,7 @@ namespace TLIS_Service.Services
                             await _dbContext.SaveChangesAsync();
                             transaction.Commit();
                             return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
-                        }
-                        else
-                        {
-                            // التراجع عن المعاملة إذا لم يكن المستخدم صالحًا
-                            transaction.Rollback();
-                            return new Response<UserViewModel>(false, null, null, validationResponse.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
-                        }
+                       
                     }
                 }
             }
@@ -137,15 +127,14 @@ namespace TLIS_Service.Services
         private async Task<int> InsertUserAsync(OracleConnection connection, AddUserViewModel model)
         {
             var query = @"
-            INSERT INTO ""TLIuser"" 
-            (""FirstName"", ""MiddleName"", ""LastName"", ""Email"", ""MobileNumber"", ""UserName"", 
-             ""Password"", ""UserType"", ""Active"", 
-             ""Deleted"", ""ValidateAccount"")
-            VALUES 
-            (:FirstName, :MiddleName, :LastName, :Email, :MobileNumber, :UserName, 
-             :Password, :UserType, :Active, , :IsFirstLogin, 
-             :Deleted, :ValidateAccount)
-            RETURNING ""Id"" INTO :UserId";
+    INSERT INTO ""TLIuser"" 
+    (""FirstName"", ""MiddleName"", ""LastName"", ""Email"", ""MobileNumber"", ""UserName"", 
+     ""Password"", ""UserType"", ""Active"", ""Deleted"", ""ValidateAccount"", ""IsFirstLogin"")
+    VALUES 
+    (:FirstName, :MiddleName, :LastName, :Email, :MobileNumber, :UserName, 
+     :Password, :UserType, :Active, :Deleted, :ValidateAccount, :IsFirstLogin)
+    RETURNING ""Id"" INTO :UserId";
+
 
             using (var command = new OracleCommand(query, connection))
             {

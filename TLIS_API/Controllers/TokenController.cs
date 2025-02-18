@@ -28,7 +28,7 @@ using TLIS_API.Middleware;
 
 namespace TLIS_API.Controllers
 {
-    // [ServiceFilter(typeof(LogFilterAttribute))]
+     [ServiceFilter(typeof(LogFilterAttribute))]
     [Route("api/[controller]")]
     [ApiController]
     public class TokenController : ControllerBase
