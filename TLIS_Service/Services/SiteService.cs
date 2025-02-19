@@ -8763,12 +8763,23 @@ namespace TLIS_Service.Services
 
         public async Task ProcessFilesAsync(string directoryPath)
         {
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
             var files = Directory.GetFiles(directoryPath, "*.json");
 
             foreach (var file in files)
             {
                 try
                 {
+                    Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
                     string fileContent = File.ReadAllText(file);
                     var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
 
@@ -8782,6 +8793,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
+
 
 
         private async Task ProcessSiteDataAsync(SiteDataFromOutsiderApiViewModel item)
