@@ -8702,8 +8702,7 @@ namespace TLIS_Service.Services
 
         public async Task<string> GetSMIS_Site(string userName, string password, string viewName, string parameter, string rowContent)
         {
-            using (TransactionScope transaction = new TransactionScope())
-            {
+           
                 try
                 {
                     string cacheKey = $"SMIS_{viewName}_{parameter}";
@@ -8752,14 +8751,14 @@ namespace TLIS_Service.Services
                         File.WriteAllText(filePath, JsonConvert.SerializeObject(batch));
                     }
 
-                    transaction.Complete();
+                    //transaction.Complete();
                     return "تمت العملية بنجاح ✅";
                 }
                 catch (Exception ex)
                 {
                     return $"خطأ أثناء تنفيذ العملية ❌: {ex.Message}";
                 }
-            }
+            
         }
 
         public async Task ProcessFilesAsync(string directoryPath)
