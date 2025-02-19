@@ -8735,13 +8735,22 @@ namespace TLIS_Service.Services
                         return "لا توجد بيانات";
                     }
 
-                    // تنفيذ العمليات بشكل متوازي
-                    var tasks = allData.Select(item => ProcessSiteDataAsync(item));
-                    await Task.WhenAll(tasks);
+                    // الحصول على مسار سطح المكتب للمستخدم الحالي
+                    string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-                    // تحويل البيانات إلى JSON
-                    string finalResult = JsonConvert.SerializeObject(allData);
-                    _memoryCache.Set(cacheKey, finalResult, CacheExpiration);
+                    // تقسيم البيانات إلى دفعات (batches) كل دفعة تحتوي على 1000 موقع
+                    int batchSize = 1000;
+                    int totalBatches = (int)Math.Ceiling((double)allData.Count / batchSize);
+
+                    for (int i = 0; i < totalBatches; i++)
+                    {
+                        var batch = allData.Skip(i * batchSize).Take(batchSize).ToList();
+                        string fileName = $"Batch_{i + 1}.json";
+                        string filePath = Path.Combine(desktopPath, fileName);
+
+                        // حفظ الدفعة في ملف على سطح المكتب
+                        File.WriteAllText(filePath, JsonConvert.SerializeObject(batch));
+                    }
 
                     transaction.Complete();
                     return "تمت العملية بنجاح ✅";
@@ -8752,6 +8761,29 @@ namespace TLIS_Service.Services
                 }
             }
         }
+
+        public async Task ProcessFilesAsync(string directoryPath)
+        {
+            var files = Directory.GetFiles(directoryPath, "*.json");
+
+            foreach (var file in files)
+            {
+                try
+                {
+                    string fileContent = File.ReadAllText(file);
+                    var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                    // معالجة البيانات هنا
+                    var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                    await Task.WhenAll(tasks);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                }
+            }
+        }
+
 
         private async Task ProcessSiteDataAsync(SiteDataFromOutsiderApiViewModel item)
         {

@@ -327,7 +327,14 @@ namespace TLIS_API.Controllers
             var response = await _unitOfWorkService.SiteService.GetSMIS_Site(UserName, Password, ViewName, Paramater, RowContent);
             return Ok(response);
         }
-   
+        [HttpPost("ProcessFilesAsync")]
+        [ProducesResponseType(200, Type = typeof(string))]
+        public async Task<IActionResult> ProcessFilesAsync(string directoryPath)
+        {
+            var response =  _unitOfWorkService.SiteService.ProcessFilesAsync(directoryPath);
+            return Ok(response);
+        }
+
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetAllSiteStatus")]
         [ProducesResponseType(200, Type = typeof(List<object>))]
