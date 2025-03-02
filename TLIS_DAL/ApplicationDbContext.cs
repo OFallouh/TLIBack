@@ -241,7 +241,7 @@ namespace TLIS_DAL
         public virtual DbSet<MV_MWRFU_VIEW> MV_MWRFU_VIEW { get; set; }
         public virtual DbSet<TLISecurityLogs> TLISecurityLogs { get; set; }
         public DbSet<MV_TLILOGUSERSACTIONS> MV_TLILOGUSERSACTIONS { get; set; }
-        public DbSet<MV_TLIsite> MV_TLIsite { get; set; }
+        public DbSet<MV_TLISITE> MV_TLISITE { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -249,7 +249,7 @@ namespace TLIS_DAL
 
 
             // إذا كان MV_TLIsite ليس له مفتاح أساسي
-            builder.Entity<MV_TLIsite>(entity =>
+            builder.Entity<MV_TLISITE>(entity =>
             {
                 entity.HasNoKey();  // تحديد الكيان ككيان بدون مفتاح
             });

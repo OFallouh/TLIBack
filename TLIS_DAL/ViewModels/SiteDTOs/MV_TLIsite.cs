@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TLIS_DAL.ViewModels.SiteDTOs
 {
-    public class MV_TLIsite
+    public class MV_TLISITE
     {
         public string SiteCode { get; set; }
         public string SiteName { get; set; }

@@ -1139,7 +1139,7 @@ namespace TLIS_Service.Services
                 }
 
                 // استرجاع بيانات المواقع من Materialized View بدلاً من _MySites
-                var mvSites = _context.MV_TLIsite.AsNoTracking().ToList();
+                var mvSites = _context.MV_TLISITE.AsNoTracking().ToList();
 
                 // تحويل الكيان (MV_TLIsite) إلى ViewModel باستخدام AutoMapper
                 IEnumerable<SiteViewModelForGetAll> SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(mvSites);
