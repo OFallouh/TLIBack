@@ -14672,18 +14672,22 @@ namespace TLIS_Service.Services
                 }
 
                 // Map data to ViewModel
-                var result = await query.Select(q => new TLIlogUsersActionsViewModel
-                {
-                    Id = q.Id,
-                    Date = q.Date,
-                    UserName = q.UserName, // تم استبدال User.UserName ليتم جلبها مباشرة
-                    ControllerName = q.ControllerName,
-                    FunctionName = q.FunctionName,
-                    BodyParameters = q.BodyParameters,
-                    HeaderParameters = q.HeaderParameters,
-                    ResponseStatus = q.ResponseStatus,
-                    Result = q.Result
-                }).ToListAsync();
+                var result = await query
+                 .Select(q => new TLIlogUsersActionsViewModel
+                 {
+                     Id = q.Id,
+                     Date = q.Date,
+                     UserName = q.UserName,
+                     ControllerName = q.ControllerName,
+                     FunctionName = q.FunctionName,
+                     BodyParameters = q.BodyParameters,
+                     HeaderParameters = q.HeaderParameters,
+                     ResponseStatus = q.ResponseStatus,
+                     Result = q.Result
+                 })
+                 .AsNoTracking() // ✅ أضف هذا السطر لتجنب تتبع الكيانات في EF Core
+                 .ToListAsync();
+
 
                 return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
             }
