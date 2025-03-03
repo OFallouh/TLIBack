@@ -46,6 +46,7 @@ using System.Text.Json;
 using TLIS_DAL.ViewModels.SiteDTOs;
 using System.Linq.Expressions;
 using System.Globalization;
+using Newtonsoft.Json;
 namespace TLIS_Service.Services
 {
     public class UserService : IUserService
@@ -86,12 +87,7 @@ namespace TLIS_Service.Services
                         
                             var userId = await InsertUserAsync(connection, model);
 
-                            // إدراج الصلاحيات إذا كانت موجودة
-                            if (model.Permissions != null && model.Permissions.Count > 0)
-                            {
-                                await InsertPermissionsAsync(connection, userId, model.Permissions);
-                            }
-
+                          
                             // إدراج المجموعات إذا كانت موجودة
                             if (model.Groups != null && model.Groups.Count > 0)
                             {
@@ -786,10 +782,6 @@ namespace TLIS_Service.Services
                             _unitOfWork.UserPermissionssRepository.RemoveRangeItems(DeletePermissions);
                             await _unitOfWork.SaveChangesAsync();
 
-                            if (model.permissions != null)
-                            {
-                                await InsertPermissionsAsync(connection, model.Id, model.permissions);
-                            }
                             List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
                                 x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
                             List<int> ModelGroups = model.Groups.Select(x => x.Id).ToList();
@@ -822,10 +814,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.UserPermissionssRepository.RemoveRangeItems(DeletePermissions);
                             await _unitOfWork.SaveChangesAsync();
 
-                            if (model.permissions != null)
-                            {
-                                await InsertPermissionsAsync(connection, model.Id, model.permissions);
-                            }
+                           
                             await _unitOfWork.SaveChangesAsync();
                             List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
                                 x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
@@ -1321,8 +1310,6 @@ namespace TLIS_Service.Services
             }
         }
 
-
-
         public async Task<Response<IEnumerable<TLISercurityLogsDto>>> GetSecurityLogs(FilterRequest filterRequest)
         {
             try
@@ -1355,6 +1342,7 @@ namespace TLIS_Service.Services
                     ResponseStatus = q.ResponseStatus,
                     Message = q.Message
                 }).ToListAsync();
+            
 
                 return new Response<IEnumerable<TLISercurityLogsDto>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
             }
@@ -1364,6 +1352,75 @@ namespace TLIS_Service.Services
             }
         }
 
+        public async Task<Response<IEnumerable<TLISercurityLogsDto>>> GetSecurityLogsFile()
+        {
+            try
+            {
+                var query = _dbContext.TLISecurityLogs.Include(x => x.User).AsQueryable();
+
+                // Get total count before filtering
+                var totalCount = query.Count();
+
+          
+                // Map data to ViewModel
+                var result = await query.Select(q => new TLISercurityLogsDto
+                {
+                    Id = q.Id,
+                    Date = q.Date,
+                    UserName = q.User.UserName,
+                    ControllerName = q.ControllerName,
+                    FunctionName = q.FunctionName,
+                    UserType = q.User.UserType == 0 ? "InternalUser" : "ExternalUser", // Convert int to string
+                    ResponseStatus = q.ResponseStatus,
+                    Message = q.Message
+                }).ToListAsync();
+                await SaveSecurityLogsToFile(result);
+
+                // حذف السجلات من قاعدة البيانات
+                _dbContext.TLISecurityLogs.RemoveRange(query);
+                await _dbContext.SaveChangesAsync();
+
+                return new Response<IEnumerable<TLISercurityLogsDto>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
+            }
+            catch (Exception err)
+            {
+                return new Response<IEnumerable<TLISercurityLogsDto>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+        private async Task SaveSecurityLogsToFile(IEnumerable<TLISercurityLogsDto> logs)
+        {
+            if (!logs.Any()) return;
+
+            // تحديد مسار الحفظ على القرص C
+            string logDirectory = _configuration["SecurityLogDirectory"];
+
+            // التحقق من وجود المجلد وإنشاؤه إذا لم يكن موجودًا
+            if (!Directory.Exists(logDirectory))
+            {
+                Directory.CreateDirectory(logDirectory);
+            }
+
+            // تحديد اسم الملف بناءً على تاريخ اليوم
+            string logFileName = $"SercurityLogs_{DateTime.Now:yyyy-MM-dd}.json";
+            string logFilePath = Path.Combine(logDirectory, logFileName);
+
+            // تحقق مما إذا كان الملف موجودًا بالفعل
+            List<TLISercurityLogsDto> existingLogs = new List<TLISercurityLogsDto>();
+
+            if (File.Exists(logFilePath))
+            {
+                // إذا كان الملف موجودًا، اقرأ محتويات الملف الحالي وأضف السجلات الجديدة
+                var existingFileContent = await File.ReadAllTextAsync(logFilePath);
+                existingLogs = JsonConvert.DeserializeObject<List<TLISercurityLogsDto>>(existingFileContent) ?? new List<TLISercurityLogsDto>();
+            }
+
+            // إضافة السجلات الجديدة إلى السجلات الموجودة
+            existingLogs.AddRange(logs);
+
+            // تحويل البيانات إلى JSON وتخزينها في الملف
+            string jsonData = JsonConvert.SerializeObject(existingLogs, Newtonsoft.Json.Formatting.Indented);
+            await File.WriteAllTextAsync(logFilePath, jsonData);
+        }
         private IQueryable<T> ApplyFilter<T>(
          IQueryable<T> query,
          FilterRequest filterRequest)

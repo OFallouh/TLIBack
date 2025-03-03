@@ -29,7 +29,7 @@ namespace TLIS_DAL.ViewModels.UserDTOs
         public bool Deleted { get; set; } = false;
         public bool IsFirstLogin { get; set; }
         public bool ValidateAccount { get; set; } = true;
-        public List<string> Permissions { get; set; }
+        public string Permissions { get; set; }
         public List<GroupNamesViewModel> Groups { get; set; }
     }
 }

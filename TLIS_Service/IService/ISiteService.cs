@@ -62,6 +62,7 @@ namespace TLIS_Service.IService
         Response<List<KeyValuePair<string, int>>> GetSteelCivil(string SiteCode);
         Response<List<KeyValuePair<string, int>>> GetNonSteel(string SiteCode);
         void test();
+        Task<Response<IEnumerable<TLIlogUsersActionsViewModel>>> GetFilteredLogsBackGroundServices( );
         Response<LoadsViewModel> GetLoadsOnSite(LoadsOnSiteFilter BaseFilter, bool WithFilterData);
         Response<ReturnWithFilters<object>> GetMW_DishOnSiteWithEnableAtt(LoadsOnSiteFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int? CivilId, string CivilType);
         Response<ReturnWithFilters<object>> GetMW_BUOnSiteWithEnableAtt(LoadsOnSiteFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int? CivilId, string CivilType);
@@ -93,8 +94,8 @@ namespace TLIS_Service.IService
         Task<Response<IEnumerable<TLIlogUsersActionsViewModel>>> GetFilteredLogs(FilterRequest filterRequest);
         Response<string> ClearAllHistory(string connectionString, string dateFrom, string dateTo);
         Response<string> ClearLogHistory(string connectionString, string dateFrom = null, string dateTo = null);
-  
 
+        Task<Response<List<dynamic>>> GetHistoryFile();
 
     }
 }

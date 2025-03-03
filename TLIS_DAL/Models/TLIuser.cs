@@ -36,7 +36,6 @@ namespace TLIS_DAL.Models
         public string ConfirmationCode { get; set; }
         public bool ValidateAccount { get; set; } = true;
 
-        [Column(TypeName = "CLOB")]
         public string Permissions { get; set; }
         public IEnumerable<TLIuserPermission> userPermissions { get; set; }
         public IEnumerable<TLIuser_Permissions> userPermissionss { get; set; }

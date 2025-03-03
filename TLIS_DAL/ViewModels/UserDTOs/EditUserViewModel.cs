@@ -28,7 +28,7 @@ namespace TLIS_DAL.ViewModels.UserDTOs
         [Required]
         public int UserType { get; set; }
 
-        public List<string> permissions { get; set; }
+        public string Permissions { get; set; }
 
         //public DateTime ChangedPasswordDate { get; set; }
         public List<GroupNamesViewModel> Groups { get; set; }

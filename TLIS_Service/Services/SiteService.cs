@@ -86,6 +86,8 @@ using DocumentFormat.OpenXml.Drawing.Charts;
 using Oracle.ManagedDataAccess.Types;
 using System.Linq.Expressions;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 
 
@@ -9491,16 +9493,15 @@ namespace TLIS_Service.Services
         }
 
         // تعريف الفلاتر
-        
 
         public Response<List<dynamic>> GetHistory(string TabelName, string? BaseId, string SiteCode, int? UserId, int? ExternalSysId, string ConnectionString
-            , int first, int rows, int sortOrder, Dictionary<string, dynamic> filters, List<SortMeta> multiSortMeta)
+           , int first, int rows, int sortOrder, Dictionary<string, dynamic> filters, List<SortMeta> multiSortMeta)
         {
             using (var connection = new OracleConnection(ConnectionString))
             {
                 connection.Open();
 
-                List<dynamic> result = new List<dynamic>();          
+                List<dynamic> result = new List<dynamic>();
                 string sqlQuery = null;
                 List<string> filterConditions = new List<string>();
 
@@ -9510,9 +9511,9 @@ namespace TLIS_Service.Services
                     using (OracleCommand queryCommand5 = new OracleCommand(sqlQuery, connection))
                     {
                         queryCommand5.Parameters.Add(new OracleParameter("TabelName", TabelName));
-                   
+
                         queryCommand5.Parameters.Add(new OracleParameter("BaseId", BaseId));
-                    
+
 
                         using (OracleDataReader reader5 = queryCommand5.ExecuteReader())
                         {
@@ -9538,8 +9539,8 @@ namespace TLIS_Service.Services
                     {
                         queryCommand5.Parameters.Add(new OracleParameter("TabelName", TabelName));
                         queryCommand5.Parameters.Add(new OracleParameter("SiteCode", SiteCode));
-         
-                      
+
+
 
                         using (OracleDataReader reader5 = queryCommand5.ExecuteReader())
                         {
@@ -9563,7 +9564,7 @@ namespace TLIS_Service.Services
                     sqlQuery = @"select * from HISTORY_VIEW where USER_ID = :UserId";
                     using (OracleCommand queryCommand5 = new OracleCommand(sqlQuery, connection))
                     {
-                     
+
                         queryCommand5.Parameters.Add(new OracleParameter("UserId", UserId));
 
                         using (OracleDataReader reader5 = queryCommand5.ExecuteReader())
@@ -9588,9 +9589,9 @@ namespace TLIS_Service.Services
                     sqlQuery = @"select * from HISTORY_VIEW where SYS_ID = :ExternalSysId";
                     using (OracleCommand queryCommand5 = new OracleCommand(sqlQuery, connection))
                     {
-                        
+
                         queryCommand5.Parameters.Add(new OracleParameter("ExternalSysId", ExternalSysId));
-                    
+
 
                         using (OracleDataReader reader5 = queryCommand5.ExecuteReader())
                         {
@@ -9614,7 +9615,7 @@ namespace TLIS_Service.Services
                     sqlQuery = @"select * from HISTORY_VIEW where BASE_TABLE = :TabelName AND SITECODE = :SiteCode";
                     using (OracleCommand queryCommand5 = new OracleCommand(sqlQuery, connection))
                     {
-                     
+
                         queryCommand5.Parameters.Add(new OracleParameter("SiteCode", SiteCode));
                         queryCommand5.Parameters.Add(new OracleParameter("TabelName", TabelName));
 
@@ -9643,7 +9644,7 @@ namespace TLIS_Service.Services
                     {
 
                         queryCommand5.Parameters.Add(new OracleParameter("SiteCode", SiteCode));
-                    
+
 
 
                         using (OracleDataReader reader5 = queryCommand5.ExecuteReader())
@@ -9671,7 +9672,7 @@ namespace TLIS_Service.Services
                         queryCommand5.Parameters.Add(new OracleParameter("TabelName", TabelName));
                         queryCommand5.Parameters.Add(new OracleParameter("SiteCode", SiteCode));
                         queryCommand5.Parameters.Add(new OracleParameter("BaseId", BaseId));
-                       
+
 
                         using (OracleDataReader reader5 = queryCommand5.ExecuteReader())
                         {
@@ -9968,7 +9969,80 @@ namespace TLIS_Service.Services
 
             }
         }
+        public async Task<Response<List<dynamic>>> GetHistoryFile()
+        {
+            List<dynamic> result = new List<dynamic>();  // Initialize the result list
+            string sqlQuery = null;
+            string connectionString = _configuration.GetConnectionString("ActiveConnection");  // Get the connection string
 
+            using (var connection = new OracleConnection(connectionString))
+            {
+                await connection.OpenAsync();  // Open connection asynchronously
+
+                 sqlQuery = @"SELECT * FROM HISTORY_VIEW";
+
+                using (OracleCommand queryCommand5 = new OracleCommand(sqlQuery, connection))
+                {
+                 
+
+
+                    using (OracleDataReader reader5 = queryCommand5.ExecuteReader())
+                    {
+                        while (reader5.Read())
+                        {
+                            dynamic dynamicResult = new ExpandoObject();
+                            var properties = (IDictionary<string, object>)dynamicResult;
+
+                            for (int i = 0; i < reader5.FieldCount; i++)
+                            {
+                                properties[reader5.GetName(i)] = reader5[i];
+                            }
+
+                            result.Add(dynamicResult);
+                        }
+                    }
+                }
+
+                // Save the logs to a file
+                await SaveHistoryLogsToFile(result);
+
+                // Delete the records after saving them to the file
+               
+                string deleteQuery = @"DELETE FROM HISTORY_VIEW";
+                using (OracleCommand deleteCommand = new OracleCommand(deleteQuery, connection))
+                {
+
+                    // Execute the delete command asynchronously
+                    await deleteCommand.ExecuteNonQueryAsync();
+                }
+                
+
+                // Return the response
+                return new Response<List<dynamic>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+        }
+
+        private async Task SaveHistoryLogsToFile(IEnumerable<dynamic> logs)
+        {
+            if (!logs.Any()) return;
+
+            // قراءة المسار من appsettings.json
+            string logDirectory = _configuration["HistoryLogDirectory"];
+
+            // التحقق من وجود المجلد وإنشاؤه إذا لم يكن موجودًا
+            if (!Directory.Exists(logDirectory))
+            {
+                Directory.CreateDirectory(logDirectory);
+            }
+
+            // تحديد اسم الملف بناءً على تاريخ اليوم
+            string logFileName = $"HistoryLogs_{DateTime.Now:yyyy-MM-dd}.json";
+            string logFilePath = Path.Combine(logDirectory, logFileName);
+
+            // تحويل البيانات إلى JSON وتخزينها في الملف
+            string jsonData = JsonConvert.SerializeObject(logs, Newtonsoft.Json.Formatting.Indented);
+            await File.WriteAllTextAsync(logFilePath, jsonData);
+        }
 
 
         public Response<SiteInfo> GetSiteInfo(string SiteCode)
@@ -14696,7 +14770,80 @@ namespace TLIS_Service.Services
                 return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+        public async Task<Response<IEnumerable<TLIlogUsersActionsViewModel>>> GetFilteredLogsBackGroundServices()
+        {
+            try
+            {
+                var query = _context.MV_TLILOGUSERSACTIONSWITHUSERNAMES.AsQueryable();
 
+                // Get total count before filtering
+                var totalCount = query.Count();
+  
+                // Fetch data
+                var result = await query.Select(q => new TLIlogUsersActionsViewModel
+                {
+                    Id = q.Id,
+                    Date = q.Date,
+                    UserName = q.UserName,
+                    ControllerName = q.ControllerName,
+                    FunctionName = q.FunctionName,
+                    BodyParameters = q.BodyParameters,
+                    HeaderParameters = q.HeaderParameters,
+                    ResponseStatus = q.ResponseStatus,
+                    Result = q.Result
+                }).ToListAsync();
+
+                // حفظ السجلات في ملف
+                await SaveLogsToFile(result);
+
+                // حذف السجلات من قاعدة البيانات
+                _context.MV_TLILOGUSERSACTIONSWITHUSERNAMES.RemoveRange(query);
+                await _context.SaveChangesAsync();
+
+                return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
+            }
+            catch (Exception err)
+            {
+                return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+
+        // دالة لحفظ السجلات في ملف JSON
+        // دالة لحفظ السجلات في ملف JSON على C:\Logs
+        private async Task SaveLogsToFile(IEnumerable<TLIlogUsersActionsViewModel> logs)
+        {
+            if (!logs.Any()) return;
+
+            // تحديد مسار الحفظ على القرص C
+            string logDirectory = _configuration["LogDirectory"];
+
+            // التحقق من وجود المجلد وإنشاؤه إذا لم يكن موجودًا
+            if (!Directory.Exists(logDirectory))
+            {
+                Directory.CreateDirectory(logDirectory);
+            }
+
+            // تحديد اسم الملف بناءً على تاريخ اليوم
+            string logFileName = $"Logs_{DateTime.Now:yyyy-MM-dd}.json";
+            string logFilePath = Path.Combine(logDirectory, logFileName);
+
+            // تحقق مما إذا كان الملف موجودًا بالفعل
+            List<TLIlogUsersActionsViewModel> existingLogs = new List<TLIlogUsersActionsViewModel>();
+
+            if (File.Exists(logFilePath))
+            {
+                // إذا كان الملف موجودًا، اقرأ محتويات الملف الحالي وأضف السجلات الجديدة
+                var existingFileContent = await File.ReadAllTextAsync(logFilePath);
+                existingLogs = JsonConvert.DeserializeObject<List<TLIlogUsersActionsViewModel>>(existingFileContent) ?? new List<TLIlogUsersActionsViewModel>();
+            }
+
+            // إضافة السجلات الجديدة إلى السجلات الموجودة
+            existingLogs.AddRange(logs);
+
+            // تحويل البيانات إلى JSON وتخزينها في الملف
+            string jsonData = JsonConvert.SerializeObject(existingLogs, Newtonsoft.Json.Formatting.Indented);
+            await File.WriteAllTextAsync(logFilePath, jsonData);
+        }
         private IQueryable<T> ApplyFilter<T>(
          IQueryable<T> query,
          FilterRequest filterRequest)

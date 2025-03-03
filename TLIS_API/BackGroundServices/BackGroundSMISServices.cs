@@ -1,15 +1,9 @@
 ﻿using Microsoft.Extensions.Hosting;
-using System.Threading;
+using Microsoft.Extensions.DependencyInjection;
 using System;
-using AutoMapper;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
-using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using TLIS_Service.ServiceBase;
-using Microsoft.Extensions.DependencyInjection;
-
 
 namespace TLIS_API.BackGroundServices
 {
@@ -30,13 +24,25 @@ namespace TLIS_API.BackGroundServices
                 {
                     var unitOfWorkService = scope.ServiceProvider.GetRequiredService<IUnitOfWorkService>();
 
-                    await unitOfWorkService.SiteService.GetSMIS_Site(null, null, null, null, null);
+                    try
+                    {
+                        // تنفيذ دالة GetSMIS_Site كل 24 ساعة
+                        await unitOfWorkService.SiteService.GetSMIS_Site(null, null, null, null, null);
+
+                        // استدعاء دالة GetFilteredLogsBackGroundServices لحفظ وحذف الـ Logs
+                        await unitOfWorkService.SiteService.GetFilteredLogsBackGroundServices();
+                        await unitOfWorkService.SiteService.GetHistoryFile();
+                        await unitOfWorkService.UserService.GetSecurityLogsFile();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error in Background Task: {ex.Message}");
+                    }
                 }
 
-                // الانتظار لمدة 24 ساعة
+                // الانتظار لمدة 24 ساعة قبل التشغيل مرة أخرى
                 await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
             }
         }
     }
-
 }
