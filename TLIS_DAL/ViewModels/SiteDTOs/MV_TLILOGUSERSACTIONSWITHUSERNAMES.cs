@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TLIS_DAL.ViewModels.SiteDTOs
 {
-    public class MV_TLILOGUSERSACTIONS
+    public class MV_TLILOGUSERSACTIONSWITHUSERNAMES
     {
         public int Id { get; set; }
         public DateTime Date { get; set; }

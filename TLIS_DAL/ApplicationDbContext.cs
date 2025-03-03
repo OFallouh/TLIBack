@@ -240,7 +240,7 @@ namespace TLIS_DAL
         public virtual DbSet<INSTALLATION_PLACE> INSTALLATION_PLACE { get; set; }
         public virtual DbSet<MV_MWRFU_VIEW> MV_MWRFU_VIEW { get; set; }
         public virtual DbSet<TLISecurityLogs> TLISecurityLogs { get; set; }
-        public DbSet<MV_TLILOGUSERSACTIONS> MV_TLILOGUSERSACTIONS { get; set; }
+        public DbSet<MV_TLILOGUSERSACTIONSWITHUSERNAMES> MV_TLILOGUSERSACTIONSWITHUSERNAMES { get; set; }
         public DbSet<MV_TLISITE> MV_TLISITE { get; set; }
 
 

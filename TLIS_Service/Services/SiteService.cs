@@ -14654,7 +14654,7 @@ namespace TLIS_Service.Services
             try
             {
                 // استخدم Materialized View بدلاً من الجدول الأساسي
-                var query = _context.MV_TLILOGUSERSACTIONS.AsQueryable();
+                var query = _context.MV_TLILOGUSERSACTIONSWITHUSERNAMES.AsQueryable();
 
                 // Get total count before filtering
                 var totalCount = query.Count();
