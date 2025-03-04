@@ -310,6 +310,14 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
         [ServiceFilter(typeof(LogFilterAttribute))]
+        [HttpGet("GetOldPermissionsUserById/{Id}")]
+        [ProducesResponseType(200, Type = typeof(List<string>))]
+        public async Task<IActionResult> GetOldPermissionsUserById(int Id)
+        {
+            var response = await _unitOfWorkService.UserService.GetOldPermissionsUserById(Id);
+            return Ok(response);
+        }
+        [ServiceFilter(typeof(LogFilterAttribute))]
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("CheckPasswordExpiryDate/{Id}")]
         [ProducesResponseType(200, Type = typeof(bool))]

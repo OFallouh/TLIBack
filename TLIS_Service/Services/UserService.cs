@@ -686,7 +686,35 @@ namespace TLIS_Service.Services
                 return new Response<UserViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
             }
         }
+        public async Task<Response<List<string>>> GetOldPermissionsUserById(int Id)
+        {
+            try
+            {
 
+                var newPermissionsViewModelsUser = new List<string>();
+                UserViewModel User = _mapper.Map<UserViewModel>(_unitOfWork.UserRepository.GetWhereFirst(x => x.Id == Id && !x.Deleted));
+                List<PermissionsGroup> Group = new List<PermissionsGroup>();
+
+                if (User != null)
+                {
+                    User.WorkFlowMode = _configuration["WorkFlowMode"].ToString();
+                    List<string> UserPermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x =>
+                    x.UserId == Id && x.Active == true && x.Delete == false).Select(x => x.PageUrl).ToList();
+                   
+                    newPermissionsViewModelsUser.AddRange(UserPermissions);
+                    
+                }
+                else
+                {
+                    return new Response < List<string>> (false, null, null, "The Id Is Not Exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                }
+                return new Response<List<string>> (true, newPermissionsViewModelsUser, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
+            }
+            catch (Exception err)
+            {
+                return new Response<List<string>> (false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+            }
+        }
         //Function to get users by group name
         public Response<List<UserViewModel>> GetUsersByGroupName(string GroupName, string domain)
         {

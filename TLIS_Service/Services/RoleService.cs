@@ -246,6 +246,7 @@ namespace TLIS_Service.Services
                     var OldRole = _unitOfWork.RoleRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == editRole.Id);
                     if(OldRole==null)
                         return new Response<RoleViewModel>(true, null, null, "this role is not found", (int)Constants.ApiReturnCode.success);
+
                     TLIrole CheckRoleNameIfExist = _unitOfWork.RoleRepository
                    .GetWhereFirst(x => !x.Deleted && x.Name.ToLower() == editRole.Name.ToLower() && x.Id != editRole.Id);
 
@@ -297,6 +298,49 @@ namespace TLIS_Service.Services
             {
                 return new Response<IEnumerable<RoleViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
+        }
+
+
+        public Response<List<string>> GetOldPermissionRoleById(int Id)
+        {
+            try
+            {
+                 List<string> newPermissionsViewModels = new List<string>();
+                string newPermissionsViewModel = null;
+               
+                
+                var Roles = _unitOfWork.RoleRepository.GetWhere(x => x.Id== Id && !x.Deleted && x.Active);
+                if (Roles.Count() > 0)
+                {
+                    foreach (var item in Roles)
+                    {
+                        int RoleId = _unitOfWork.RoleRepository.GetWhereFirst(x => x.Name == item.Name).Id;
+                        List<TLIrole_Permissions> Permissions = _unitOfWork.RolePermissionsRepository.GetWhere(x => x.RoleId == item.Id).ToList();
+                        foreach (var itemPermissions in Permissions)
+                        {
+                            newPermissionsViewModel = itemPermissions.PageUrl;
+                            newPermissionsViewModels.Add(newPermissionsViewModel);
+
+                        }
+                  
+                    }
+
+
+                    return new Response<List<string>>(true, newPermissionsViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                }
+                else
+                {
+                    return new Response<List<string>>(true, null, null, "This Role Is Not Exist", (int)Helpers.Constants.ApiReturnCode.fail); ;
+                }
+                
+
+            }
+
+            catch (Exception err)
+            {
+                return new Response<List<string>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+
         }
         public async Task<Response<IEnumerable<RoleViewModel>>> GetRolesFor_WF()
         {

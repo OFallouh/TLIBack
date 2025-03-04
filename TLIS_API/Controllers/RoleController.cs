@@ -189,5 +189,12 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.RoleService.GetRoleByRoleId(RoleId);
             return Ok(response);
         }
+        [HttpGet("GetOldPermissionRoleById")]
+        [ProducesResponseType(200, Type = typeof(List<RoleViewModel>))]
+        public IActionResult GetOldPermissionRoleById(int RoleId)
+        {
+            var response = _unitOfWorkService.RoleService.GetOldPermissionRoleById(RoleId);
+            return Ok(response);
+        }
     }
 }
