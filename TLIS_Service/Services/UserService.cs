@@ -774,12 +774,7 @@ namespace TLIS_Service.Services
                             _unitOfWork.UserRepository.UpdateWithH(UserId, null, OldUserInfo, UserEntity, false);
                             await _unitOfWork.SaveChangesAsync();
 
-                            List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
-                              .GetWhere(x => x.UserId == model.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
-
-                            var DeletePermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x => x.UserId == model.Id);
-                            _unitOfWork.UserPermissionssRepository.RemoveRangeItems(DeletePermissions);
-                            await _unitOfWork.SaveChangesAsync();
+                   
 
                             List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
                                 x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
@@ -806,15 +801,17 @@ namespace TLIS_Service.Services
                         }
                         else if (model.UserType == 1)
                         {
-                            List<string> AllUserPermissionsInDB = _unitOfWork.UserPermissionssRepository
-                             .GetWhere(x => x.UserId == model.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
 
-                            var DeletePermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x => x.UserId == model.Id);
-                            _unitOfWork.UserPermissionssRepository.RemoveRangeItems(DeletePermissions);
+
+                            var OldUserInfo = _unitOfWork.UserRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == model.Id);
+                            if (OldUserInfo == null)
+                                return new Response<UserViewModel>(false, null, null, $"This User is not found", (int)Helpers.Constants.ApiReturnCode.fail);
+                            TLIuser UserEntity = _mapper.Map<TLIuser>(model);
+                            UserEntity.Active = OldUserInfo.Active;
+                            UserEntity.Deleted = false;
+                            _unitOfWork.UserRepository.UpdateWithH(UserId, null, OldUserInfo, UserEntity, false);
                             await _unitOfWork.SaveChangesAsync();
 
-                           
-                            await _unitOfWork.SaveChangesAsync();
                             List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
                                 x.userId == model.Id).Select(x => x.groupId).Distinct().ToList();
                             List<int> ModelGroups = model.Groups.Select(x => x.Id).ToList();
