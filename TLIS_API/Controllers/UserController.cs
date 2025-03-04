@@ -102,6 +102,45 @@ namespace TLIS_API.Controllers
                 return Ok(new Response<EditUserViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
             }
         }
+
+        [ServiceFilter(typeof(LogFilterAttribute))]
+        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        [HttpPost("UpdatePermissionsUser")]
+        [ProducesResponseType(200, Type = typeof(EditUserViewModel))]
+        public async Task<IActionResult> UpdatePermissionsUser(UpdatePermissionDto updatePermissionDto )
+        {
+            if (TryValidateModel(User, nameof(EditUserViewModel)))
+            {
+                var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
+                string authHeader = HttpContext.Request.Headers["Authorization"];
+
+                if (string.IsNullOrEmpty(authHeader) || !authHeader.ToLower().StartsWith("bearer "))
+                {
+                    return Unauthorized();
+                }
+
+                var token = authHeader.Substring("Bearer ".Length).Trim();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
+                var userId = Convert.ToInt32(userInfo);
+                var response = _unitOfWorkService.UserService.UpdatePermissionsUser(updatePermissionDto);
+                return Ok(response);
+            }
+            else
+            {
+                var ErrorMessages = from state in ModelState.Values
+                                    from error in state.Errors
+                                    select error.ErrorMessage;
+                return Ok(new Response<EditUserViewModel>(true, null, ErrorMessages.ToArray(), null, (int)Helpers.Constants.ApiReturnCode.Invalid));
+            }
+        }
         //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         //[HttpPost("ChangePassword")]
         //[ProducesResponseType(200, Type = typeof(ChangePasswordViewModel))]

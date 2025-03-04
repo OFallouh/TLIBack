@@ -8756,8 +8756,9 @@ namespace TLIS_Service.Services
             
         }
 
-        public async Task ProcessFilesAsync(string directoryPath)
+        public async Task ProcessFilesAsync()
         {
+            string directoryPath = _configuration["SMISFile"];
             // تأكد من أن المسار صحيح
             directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
             directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار

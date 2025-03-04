@@ -686,6 +686,26 @@ namespace TLIS_Service.Services
                 return new Response<UserViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
             }
         }
+        public  Response<UserViewModel> UpdatePermissionsUser(UpdatePermissionDto updatePermissionDto)
+        {
+            try
+            {
+                var User = _dbContext.TLIuser.FirstOrDefault(x => x.Id == updatePermissionDto.Id);
+                if (User == null)
+                    return new Response<UserViewModel>(false, null, null, "User not found.", (int)Helpers.Constants.ApiReturnCode.fail, 0);
+
+                User.Permissions = updatePermissionDto.Permissions;
+                _dbContext.TLIuser.Update(User);
+                _dbContext.SaveChanges();
+
+                return new Response<UserViewModel>(true,null, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
+
+            }
+            catch (Exception err)
+            {
+                return new Response<UserViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail, 0);
+            }
+        }
         public async Task<Response<List<string>>> GetOldPermissionsUserById(int Id)
         {
             try
