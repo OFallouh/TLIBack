@@ -71,7 +71,8 @@ namespace TLIS_Service.Services
                         {
                             Name = addRole.Name,
                             Deleted = false,
-                            Active = true
+                            Active = true,
+                            Permissions= addRole.Permissions
                         };
 
                         _unitOfWork.RoleRepository.AddWithH(UserId,null,role,false);
@@ -371,7 +372,7 @@ namespace TLIS_Service.Services
                             roleViewModel.Name = item.Name;
                             roleViewModel.Active = item.Active;
                             roleViewModel.Deleted = item.Deleted;
-                            roleViewModel.Permissions = newPermissionsViewModels;
+                            roleViewModel.Permissions = item.Permissions;
                             Response.Add(roleViewModel);
                         }
 
