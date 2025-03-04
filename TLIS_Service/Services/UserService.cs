@@ -653,8 +653,7 @@ namespace TLIS_Service.Services
                 if (User != null)
                 {
                     User.WorkFlowMode = _configuration["WorkFlowMode"].ToString();
-                    List<string> UserPermissions = _unitOfWork.UserPermissionssRepository.GetWhere(x =>
-                    x.UserId == Id && x.Active == true && x.Delete == false).Select(x => x.PageUrl).ToList();
+                 
                     List<int> GroupUserId = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == Id && x.Active && !x.Deleted).Select(x => x.groupId).ToList();
                     List<int?> ParentGroup = GetParentGroup(GroupUserId);
                     foreach (var item in ParentGroup)
@@ -674,8 +673,6 @@ namespace TLIS_Service.Services
                     }
                     User.Groups = await _unitOfWork.GroupUserRepository.GetAllAsQueryable().AsNoTracking()
                         .Where(x => x.userId == User.Id && x.Active && !x.Deleted).Select(g => new GroupNamesViewModel(g.groupId, g.group.Name)).ToListAsync();
-                    newPermissionsViewModelsUser.AddRange(UserPermissions);
-                    User.PermissionsUser = newPermissionsViewModelsUser;
                     User.PermissionsRole = Group;
                 }
                 else
