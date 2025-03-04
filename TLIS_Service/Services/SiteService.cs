@@ -8702,25 +8702,18 @@ namespace TLIS_Service.Services
         //    }
         //}
 
-        public async Task<string> GetSMIS_Site(string userName, string password, string viewName, string parameter, string rowContent)
+        public async Task<string> GetSMIS_Site()
         {
            
                 try
                 {
-                    string cacheKey = $"SMIS_{viewName}_{parameter}";
+                 
                     string apiUrl = _configuration["SMIS_API_URL"];
                     string connectionString = _configuration.GetConnectionString("ActiveConnection");
 
-                    // استخدام الـ Cache لتقليل الوصول المتكرر لـ API
-                    if (_memoryCache.TryGetValue(cacheKey, out string cachedData))
-                    {
-                        return cachedData;
-                    }
 
                     var httpClient = _httpClientFactory.CreateClient();
-                    string url = !string.IsNullOrEmpty(parameter)
-                        ? $"{apiUrl}{userName}/{password}/{viewName}/'{parameter}'"
-                        : $"{apiUrl}{userName}/{password}/{viewName}";
+                    string url = $"{apiUrl}";
 
                     var response = await httpClient.GetAsync(url);
                     if (!response.IsSuccessStatusCode)
@@ -8736,8 +8729,8 @@ namespace TLIS_Service.Services
                         return "لا توجد بيانات";
                     }
 
-                    // الحصول على مسار سطح المكتب للمستخدم الحالي
-                    string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                    string desktopPath = _configuration["SMISFile"];
 
                     // تقسيم البيانات إلى دفعات (batches) كل دفعة تحتوي على 1000 موقع
                     int batchSize = 500;
@@ -8788,6 +8781,10 @@ namespace TLIS_Service.Services
                     // معالجة البيانات هنا
                     var tasks = sites.Select(item => ProcessSiteDataAsync(item));
                     await Task.WhenAll(tasks);
+
+                    // حذف الملف بعد معالجته
+                    File.Delete(file);
+                    Console.WriteLine($"✅ تم حذف الملف: {file}");
                 }
                 catch (Exception ex)
                 {
@@ -8795,8 +8792,6 @@ namespace TLIS_Service.Services
                 }
             }
         }
-
-
 
         private async Task ProcessSiteDataAsync(SiteDataFromOutsiderApiViewModel item)
         {
@@ -8873,28 +8868,21 @@ namespace TLIS_Service.Services
 
         private async Task<int> GetSiteStatusIdAsync()
         {
-            // استخدام Cache لتخزين النتائج
-            string cacheKey = "SiteStatus_ON_AIR";
-            if (_memoryCache.TryGetValue(cacheKey, out int siteStatusId))
-            {
-                return siteStatusId;
-            }
 
             var siteStatus = await _context.TLIsiteStatus.FirstOrDefaultAsync(x => x.Name.ToLower() == "on air");
-            if (siteStatus == null)
+            if (siteStatus != null)
             {
-                var newStatus = new TLIsiteStatus { Name = "ON Air" };
-                _context.TLIsiteStatus.Add(newStatus);
-                await _context.SaveChangesAsync();
-                siteStatusId = newStatus.Id;
-                _memoryCache.Set(cacheKey, siteStatusId, TimeSpan.FromMinutes(10));
-            }
-            else
-            {
-                siteStatusId = siteStatus.Id;
+                return siteStatus.Id;
+              
+          
             }
 
-            return siteStatusId;
+            var newStatus = new TLIsiteStatus { Name = "ON Air" };
+            _context.TLIsiteStatus.Add(newStatus);
+            await _context.SaveChangesAsync();
+            return newStatus.Id;
+
+
         }
 
         private async Task<int> GetAreaIdAsync(string areaName)

@@ -27,7 +27,7 @@ namespace TLIS_API.BackGroundServices
                     try
                     {
                         // تنفيذ دالة GetSMIS_Site كل 24 ساعة
-                        await unitOfWorkService.SiteService.GetSMIS_Site(null, null, null, null, null);
+                        await unitOfWorkService.SiteService.GetSMIS_Site();
 
                         // استدعاء دالة GetFilteredLogsBackGroundServices لحفظ وحذف الـ Logs
                         await unitOfWorkService.SiteService.GetFilteredLogsBackGroundServices();

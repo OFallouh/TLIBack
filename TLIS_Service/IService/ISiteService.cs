@@ -73,7 +73,7 @@ namespace TLIS_Service.IService
         Response<ReturnWithFilters<object>> GetRadioRRUOnSiteWithEnableAtt(LoadsOnSiteFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int? CivilId, string CivilType);
         Response<ReturnWithFilters<object>> GetRadioOtherOnSiteWithEnableAtt(LoadsOnSiteFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int? CivilId, string CivilType);
         Response<ReturnWithFilters<object>> GetPowerOnSiteWithEnableAtt(LoadsOnSiteFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int? CivilId, string CivilType);
-        Task<string> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, string RowContent);
+        Task<string> GetSMIS_Site();
         Response<List<AreaViewModel>> GetAllArea();
         Response<List<RegionViewModel>> GetAllRegion();
         Response<SiteViewModel> DisplaySiteDetailsBySiteCode(string SiteCode);
