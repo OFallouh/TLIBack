@@ -43,6 +43,7 @@ using TLIS_DAL.ViewModels.LoadOtherDTOs;
 using TLIS_DAL.ViewModels.CivilWithLegsDTOs;
 using TLIS_DAL.ViewModels.MW_RFUDTOs;
 using TLIS_DAL.ViewModels.SiteDTOs;
+using TLIS_DAL.ViewModels.HistoryDetails;
 
 
 namespace TLIS_DAL
@@ -242,6 +243,7 @@ namespace TLIS_DAL
         public virtual DbSet<TLISecurityLogs> TLISecurityLogs { get; set; }
         public DbSet<MV_TLILOGUSERSACTIONSWITHUSERNAMES> MV_TLILOGUSERSACTIONSWITHUSERNAMES { get; set; }
         public DbSet<MV_TLISITE> MV_TLISITE { get; set; }
+        public DbSet<HISTORY_VIEW> HISTORY_VIEW { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

@@ -125,10 +125,10 @@ namespace TLIS_Service.Services
             var query = @"
     INSERT INTO ""TLIuser"" 
     (""FirstName"", ""MiddleName"", ""LastName"", ""Email"", ""MobileNumber"", ""UserName"", 
-     ""Password"", ""UserType"", ""Active"", ""Deleted"", ""ValidateAccount"", ""IsFirstLogin"")
+     ""Password"", ""UserType"", ""Active"", ""Deleted"", ""ValidateAccount"", ""IsFirstLogin"",""Permissions"")
     VALUES 
     (:FirstName, :MiddleName, :LastName, :Email, :MobileNumber, :UserName, 
-     :Password, :UserType, :Active, :Deleted, :ValidateAccount, :IsFirstLogin)
+     :Password, :UserType, :Active, :Deleted, :ValidateAccount, :IsFirstLogin, :Permissions)
     RETURNING ""Id"" INTO :UserId";
 
 
@@ -143,13 +143,12 @@ namespace TLIS_Service.Services
                 command.Parameters.Add(new OracleParameter("UserName", OracleDbType.Varchar2)).Value = model.UserName;
                 command.Parameters.Add(new OracleParameter("Password", OracleDbType.Varchar2)).Value = (object)model.Password ?? DBNull.Value;
                 command.Parameters.Add(new OracleParameter("UserType", OracleDbType.Int32)).Value = model.UserType;
-
-
+ 
                 command.Parameters.Add(new OracleParameter("Active", OracleDbType.Int32)).Value = 1;
                 command.Parameters.Add(new OracleParameter("Deleted", OracleDbType.Int32)).Value = 0;
                 command.Parameters.Add(new OracleParameter("ValidateAccount", OracleDbType.Int32)).Value = 1;
                 command.Parameters.Add(new OracleParameter("IsFirstLogin", OracleDbType.Int32)).Value = 1;
-
+                command.Parameters.Add(new OracleParameter("Permissions", OracleDbType.Varchar2)).Value = (object)model.Permissions ?? DBNull.Value;
 
                 var userIdParam = new OracleParameter("UserId", OracleDbType.Decimal)
                 {

@@ -19,6 +19,7 @@ namespace TLIS_DAL.Models
         public bool Active { get; set; }
         [Required]
         public bool Deleted { get; set; }
+        public string Permissions { get; set; }
         public IEnumerable<TLIrolePermission> rolePermission { get; set; }
         public IEnumerable<TLIrole_Permissions> rolePermissions { get; set; }
         public IEnumerable<TLIgroupRole> groupRole { get; set; }

@@ -95,7 +95,7 @@ namespace TLIS_Service.IService
         Response<string> ClearAllHistory(string connectionString, string dateFrom, string dateTo);
         Response<string> ClearLogHistory(string connectionString, string dateFrom = null, string dateTo = null);
 
-        Task<Response<List<dynamic>>> GetHistoryFile();
+        Task<Response<string>> GetHistoryFile();
 
     }
 }

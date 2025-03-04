@@ -77,12 +77,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.RoleRepository.AddWithH(UserId,null,role,false);
                         _unitOfWork.SaveChanges();
 
-                        if (addRole.permissions != null)
-                        {
-
-                          await InsertPermissionsAsync(connection, role.Id, addRole.permissions);
-
-                        }
+                       
 
                         transaction.Commit();
                         return new Response<RoleViewModel>(false, null, null, "This Role Is Not Found", (int)Helpers.Constants.ApiReturnCode.success);
@@ -273,10 +268,7 @@ namespace TLIS_Service.Services
                         _unitOfWork.RolePermissionsRepository.RemoveRangeItems(DeletePermissions);
                         await _unitOfWork.SaveChangesAsync();
 
-                        if (editRole.permissions != null)
-                        {
-                            await InsertPermissionsAsync(connection, editRole.Id, editRole.permissions);
-                        }
+                        
                         await _unitOfWork.SaveChangesAsync();
                         transaction.Commit();
                         return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
@@ -404,32 +396,12 @@ namespace TLIS_Service.Services
         {
             try
             {
-                List<RoleViewModel> Response = new List<RoleViewModel>();
-                RoleViewModel roleViewModel = new RoleViewModel();
-                List<string> newPermissionsViewModels = new List<string>();
-                string newPermissionsViewModel = null;
+        
              
                 var Roles = _unitOfWork.RoleRepository.GetWhere(x => x.Id==RoleId && !x.Deleted && x.Active);
                 if (Roles.Count() > 0)
                 {
-                    foreach (var item in Roles)
-                    {
-                        List<TLIrole_Permissions> Permissions = _unitOfWork.RolePermissionsRepository.GetWhere(x => x.RoleId == item.Id).ToList();
-                        foreach (var itemPermissions in Permissions)
-                        {
-                            newPermissionsViewModel = itemPermissions.PageUrl;
-                            newPermissionsViewModels.Add(newPermissionsViewModel);
-
-                        }
-                        roleViewModel.Id = item.Id;
-                        roleViewModel.Name = item.Name;
-                        roleViewModel.Active = item.Active;
-                        roleViewModel.Deleted = item.Deleted;
-                        roleViewModel.Permissions = newPermissionsViewModels;
-                        Response.Add(roleViewModel);
-                    }
-
-
+                    var Response=_mapper.Map<List<RoleViewModel>>(Roles);
                     return new Response<List<RoleViewModel>>(true, Response, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 else

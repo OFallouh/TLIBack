@@ -9969,58 +9969,38 @@ namespace TLIS_Service.Services
 
             }
         }
-        public async Task<Response<List<dynamic>>> GetHistoryFile()
+        public async Task<Response<string>> GetHistoryFile()
         {
-            List<dynamic> result = new List<dynamic>();  // Initialize the result list
-            string sqlQuery = null;
-            string connectionString = _configuration.GetConnectionString("ActiveConnection");  // Get the connection string
-
-            using (var connection = new OracleConnection(connectionString))
+            try
             {
-                await connection.OpenAsync();  // Open connection asynchronously
+                // استخراج السجلات من جدول HISTORY_VIEW بشكل غير متزامن
+                var result = await _context.HISTORY_VIEW.ToListAsync();
 
-                 sqlQuery = @"SELECT * FROM HISTORY_VIEW";
-
-                using (OracleCommand queryCommand5 = new OracleCommand(sqlQuery, connection))
-                {
-                 
-
-
-                    using (OracleDataReader reader5 = queryCommand5.ExecuteReader())
-                    {
-                        while (reader5.Read())
-                        {
-                            dynamic dynamicResult = new ExpandoObject();
-                            var properties = (IDictionary<string, object>)dynamicResult;
-
-                            for (int i = 0; i < reader5.FieldCount; i++)
-                            {
-                                properties[reader5.GetName(i)] = reader5[i];
-                            }
-
-                            result.Add(dynamicResult);
-                        }
-                    }
-                }
-
-                // Save the logs to a file
+                // حفظ السجلات في ملف
                 await SaveHistoryLogsToFile(result);
 
-                // Delete the records after saving them to the file
-               
-                string deleteQuery = @"DELETE FROM HISTORY_VIEW";
-                using (OracleCommand deleteCommand = new OracleCommand(deleteQuery, connection))
-                {
+                // حذف السجلات من جدول TLIhistoryDet و TLIhistory دفعة واحدة
+                var historyDetRecords = _context.TLIhistoryDet.AsQueryable();
+                var historyRecords = _context.TLIhistory.AsQueryable();
 
-                    // Execute the delete command asynchronously
-                    await deleteCommand.ExecuteNonQueryAsync();
-                }
-                
+                // حذف السجلات دفعة واحدة
+                _context.TLIhistoryDet.RemoveRange(historyDetRecords);
+                _context.TLIhistory.RemoveRange(historyRecords);
 
-                // Return the response
-                return new Response<List<dynamic>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                // حفظ التغييرات في قاعدة البيانات مرة واحدة
+                await _context.SaveChangesAsync();
+
+                // إرجاع الاستجابة بنجاح
+                return new Response<string>(true, "Success", null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception er)
+            {
+                // التعامل مع الأخطاء في حالة حدوثها
+                return new Response<string>(false, null, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+
+
 
         private async Task SaveHistoryLogsToFile(IEnumerable<dynamic> logs)
         {
@@ -14795,9 +14775,9 @@ namespace TLIS_Service.Services
 
                 // حفظ السجلات في ملف
                 await SaveLogsToFile(result);
-
+                var LogUsersActions = _context.TLIlogUsersActions.AsQueryable();
                 // حذف السجلات من قاعدة البيانات
-                _context.MV_TLILOGUSERSACTIONSWITHUSERNAMES.RemoveRange(query);
+                _context.TLIlogUsersActions.RemoveRange(LogUsersActions);
                 await _context.SaveChangesAsync();
 
                 return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
