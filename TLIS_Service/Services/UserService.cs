@@ -660,14 +660,16 @@ namespace TLIS_Service.Services
                     foreach (var item in ParentGroup)
                     {
                         List<int> RoleGroup = _unitOfWork.GroupRoleRepository.GetWhere(x => x.groupId == item && !x.Deleted && x.Active).Select(x => x.roleId).ToList();
-                        List<string> Rolepermissions = _unitOfWork.RolePermissionsRepository.GetWhere(x => RoleGroup.Any(y => y == x.RoleId) && !x.Delete && x.Active).Select(x => x.PageUrl).ToList();
+                    
+                        List<string> Roleper = _unitOfWork.RoleRepository.GetWhere(x => RoleGroup.Any(y => y == x.Id) && !x.Deleted && x.Active).Select(x => x.Permissions).ToList();
+              
                         TLIgroup ObjGroupName = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == item);
                         string GroupName = ObjGroupName?.Name;
                         Group.Add(new PermissionsGroup()
                         {
                             GroupId = item,
                             GroupName = GroupName,
-                            PermissionsOfGroup = Rolepermissions
+                            PermissionsOfGroup = Roleper
                         });
                     }
                     User.Groups = await _unitOfWork.GroupUserRepository.GetAllAsQueryable().AsNoTracking()
