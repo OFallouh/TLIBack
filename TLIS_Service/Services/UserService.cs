@@ -770,7 +770,7 @@ namespace TLIS_Service.Services
                             
                             UserEntity.Active = OldUserInfo.Active;
                             UserEntity.Deleted = false;
-                            _unitOfWork.UserRepository.UpdateWithH(UserId, null, null, null, false);
+                            _unitOfWork.UserRepository.Update(UserEntity);
                             await _unitOfWork.SaveChangesAsync();
 
                    
@@ -808,7 +808,7 @@ namespace TLIS_Service.Services
                             TLIuser UserEntity = _mapper.Map<TLIuser>(model);
                             UserEntity.Active = OldUserInfo.Active;
                             UserEntity.Deleted = false;
-                            _unitOfWork.UserRepository.UpdateWithH(UserId, null, null, null, false);
+                            _unitOfWork.UserRepository.Update(UserEntity);
                             await _unitOfWork.SaveChangesAsync();
 
                             List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>

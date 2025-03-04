@@ -260,7 +260,7 @@ namespace TLIS_Service.Services
                         RoleEntity.Name = editRole.Name;
                         RoleEntity.Permissions = editRole.Permissions;
 
-                        _unitOfWork.RoleRepository.UpdateWithH(UserId, null, OldRole, RoleEntity,false);
+                        _unitOfWork.RoleRepository.Update(RoleEntity);
                         await _unitOfWork.SaveChangesAsync();
 
 
