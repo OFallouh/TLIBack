@@ -258,19 +258,12 @@ namespace TLIS_Service.Services
                     if (RoleEntity != null)
                     {
                         RoleEntity.Name = editRole.Name;
+                        RoleEntity.Permissions = editRole.Permissions;
 
                         _unitOfWork.RoleRepository.UpdateWithH(UserId, null, OldRole, RoleEntity,false);
                         await _unitOfWork.SaveChangesAsync();
 
-                        List<string> AllRolePermissionsIn = _unitOfWork.RolePermissionsRepository
-                                  .GetWhere(x => x.RoleId == editRole.Id && x.Delete == false && x.Active == true).Select(x => x.PageUrl).ToList();
 
-                        var DeletePermissions = _unitOfWork.RolePermissionsRepository.GetWhere(x => x.RoleId == editRole.Id);
-                        _unitOfWork.RolePermissionsRepository.RemoveRangeItems(DeletePermissions);
-                        await _unitOfWork.SaveChangesAsync();
-
-                        
-                        await _unitOfWork.SaveChangesAsync();
                         transaction.Commit();
                         return new Response<RoleViewModel>(true, null, null, null, (int)Constants.ApiReturnCode.success);
                     }
