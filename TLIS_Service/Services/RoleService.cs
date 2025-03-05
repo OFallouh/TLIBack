@@ -281,41 +281,24 @@ namespace TLIS_Service.Services
         }
         //Function take 1 parameter
         //Function return all roles depened on filters
-        public async Task<Response<IEnumerable<RoleViewModel>>> GetRoles(List<FilterObjectList> filters, int pageNumber = 1, int pageSize = 5)
+        public async Task<Response<IEnumerable<RoleViewModel>>> GetRoles(List<FilterObjectList> filters)
         {
             try
             {
-                pageNumber = pageNumber == 0 ? 1 : pageNumber;
-                pageSize = pageSize == 0 ? 5 : pageSize;
-                IQueryable<TLIrole> query = _unitOfWork.RoleRepository.GetWhere(x => x.Deleted != true).AsQueryable();
+                List<RoleViewModel> RolesModel = new List<RoleViewModel>();
+                if (filters != null ? filters.Count() > 0 : false)
+                    RolesModel = _mapper.Map<List<RoleViewModel>>(_unitOfWork.RoleRepository.GetWhere(x => x.Deleted != true && x.Name.ToLower()
+                        .StartsWith(filters.FirstOrDefault().value.FirstOrDefault().ToString().ToLower())).OrderBy(x => x.Name).ToList());
+                else
+                    RolesModel = _mapper.Map<List<RoleViewModel>>(_unitOfWork.RoleRepository.GetWhere(x => x.Deleted != true).OrderBy(x => x.Name).ToList());
 
-
-                if (filters != null && filters.Count() > 0)
-                {
-                    string filterValue = filters.FirstOrDefault()?.value?.FirstOrDefault()?.ToString()?.ToLower();
-                    if (!string.IsNullOrEmpty(filterValue))
-                    {
-                        query = query.Where(x => x.Name.ToLower().StartsWith(filterValue));
-                    }
-                }
-
-                int totalCount = query.Count();
-
-                List<RoleViewModel> RolesModel = _mapper.Map<List<RoleViewModel>>(
-                    query.OrderBy(x => x.Name)
-                         .Skip((pageNumber - 1) * pageSize)
-                         .Take(pageSize)
-                         .ToList()
-                );
-
-                return new Response<IEnumerable<RoleViewModel>>(true, RolesModel, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
+                return new Response<IEnumerable<RoleViewModel>>(true, RolesModel, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
-                return new Response<IEnumerable<RoleViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<IEnumerable<RoleViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-
 
 
         public Response<List<string>> GetOldPermissionRoleById(int Id)

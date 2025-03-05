@@ -37,9 +37,9 @@ namespace TLIS_API.Controllers
         //[Authorize]
         [HttpPost("getAll")]
         [ProducesResponseType(200, Type = typeof(List<RoleViewModel>))]
-        public async Task<IActionResult> GetRoles([FromBody] List<FilterObjectList> filters, [FromQuery] int pageNumber, [FromQuery] int pageSize)
+        public async Task<IActionResult> GetRoles([FromBody] List<FilterObjectList> filters)
         {
-            var response = await _unitOfWorkService.RoleService.GetRoles(filters, pageNumber, pageSize);
+            var response = await _unitOfWorkService.RoleService.GetRoles(filters);
             return Ok(response);
         }
         [HttpGet("getAllFor_WF")]

@@ -32,6 +32,6 @@ namespace TLIS_DAL.ViewModels.GroupDTOs
         public int? UpperLevel3Id { get; set; }
         public string UpperLevel3Name { get; set; }
         public List<UserNameViewModel> Users { get; set; } = new List<UserNameViewModel>();
-        public List<RoleViewModel> Roles { get; set; } = new List<RoleViewModel>();
+        public List<RoleDto> Roles { get; set; } = new List<RoleDto>();
     }
 }

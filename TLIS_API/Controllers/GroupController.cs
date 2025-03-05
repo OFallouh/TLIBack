@@ -36,9 +36,9 @@ namespace TLIS_API.Controllers
         //[Authorize]
         [HttpPost("getAll")]
         [ProducesResponseType(200, Type = typeof(List<GroupViewModel>))]
-        public IActionResult GetAllGroups([FromBody]List<FilterObjectList> filters,[FromQuery] int pageNumber, [FromQuery] int pageSize)
+        public IActionResult GetAllGroups([FromBody]List<FilterObjectList> filters)
         {
-            var response = _unitOfWorkService.GroupService.GetAllGroups(filters, pageNumber, pageSize);
+            var response = _unitOfWorkService.GroupService.GetAllGroups(filters);
             return Ok(response);
         }
 
