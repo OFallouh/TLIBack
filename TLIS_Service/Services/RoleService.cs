@@ -285,6 +285,8 @@ namespace TLIS_Service.Services
         {
             try
             {
+                pageNumber = pageNumber == 0 ? 1 : pageNumber;
+                pageSize = pageSize == 0 ? 5 : pageSize;
                 IQueryable<TLIrole> query = _unitOfWork.RoleRepository.GetWhere(x => x.Deleted != true).AsQueryable();
 
 

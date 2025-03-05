@@ -605,6 +605,8 @@ namespace TLIS_Service.Services
         {
             try
             {
+                pageNumber = pageNumber == 0 ? 1 : pageNumber;
+                pageSize = pageSize == 0 ? 5 : pageSize;
                 List<AddGroupsViewModel> Groups = new List<AddGroupsViewModel>();
 
                 List<TLIgroup> GroupAll = _unitOfWork.GroupRepository.GetWhere(x => !x.Deleted && x.Active).ToList();
