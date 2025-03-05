@@ -32,7 +32,7 @@ namespace TLIS_Service.IService
     {
         Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite, bool ExternalSys, FilterRequest filterRequest = null);
         Task ProcessFilesAsync();
-
+        Task ProcessFilesAsyncTest(string directoryPath);
         Response<IEnumerable<SiteViewModelForGetAll>> GetSiteIntegration(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite);
         Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectLists> filters = null);
         Response<SiteInfo> GetSiteInfo(string SiteCode);

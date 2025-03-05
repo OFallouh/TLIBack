@@ -8793,7 +8793,42 @@ namespace TLIS_Service.Services
                 }
             }
         }
+        public async Task ProcessFilesAsyncTest(string directoryPath)
+        {
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
 
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            var files = Directory.GetFiles(directoryPath, "*.json");
+
+            foreach (var file in files)
+            {
+                try
+                {
+                    Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                    string fileContent = File.ReadAllText(file);
+                    var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                    // معالجة البيانات هنا
+                    var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                    await Task.WhenAll(tasks);
+
+                    // حذف الملف بعد معالجته
+                    File.Delete(file);
+                    Console.WriteLine($"✅ تم حذف الملف: {file}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                }
+            }
+        }
         private async Task ProcessSiteDataAsync(SiteDataFromOutsiderApiViewModel item)
         {
             try

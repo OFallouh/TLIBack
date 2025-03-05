@@ -319,7 +319,7 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.GetSiteStatusbyId(SiteStatusId);
             return Ok(response);
         }
-       // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        // [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         //[HttpPost("GetSMIS_Site")]
         //[ProducesResponseType(200, Type = typeof(string))]
         //public async Task<IActionResult> GetSMIS_Site(string UserName, string Password, string ViewName, string Paramater, [FromBody] string RowContent)
@@ -327,13 +327,13 @@ namespace TLIS_API.Controllers
         //    var response = await _unitOfWorkService.SiteService.GetSMIS_Site(UserName, Password, ViewName, Paramater, RowContent);
         //    return Ok(response);
         //}
-        //[HttpPost("ProcessFilesAsync")]
-        //[ProducesResponseType(200, Type = typeof(string))]
-        //public async Task<IActionResult> ProcessFilesAsync(string directoryPath)
-        //{
-        //    var response =  _unitOfWorkService.SiteService.ProcessFilesAsync(directoryPath);
-        //    return Ok(response);
-        //}
+        [HttpPost("ProcessFilesAsyncTest")]
+        [ProducesResponseType(200, Type = typeof(string))]
+        public async Task<IActionResult> ProcessFilesAsyncTest(string directoryPath)
+        {
+            var response = _unitOfWorkService.SiteService.ProcessFilesAsyncTest(directoryPath);
+            return Ok(response);
+        }
 
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetAllSiteStatus")]

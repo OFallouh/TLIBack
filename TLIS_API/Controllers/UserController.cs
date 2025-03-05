@@ -287,7 +287,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(LogFilterAttribute))]
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetAllExternalUsers")]
-        [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
+        [ProducesResponseType(200, Type = typeof(List<UserDto>))]
         public async Task<IActionResult> GetAllExternalUsers( [FromBody] FilterRequest filterRequest)
         {
             var response = await _unitOfWorkService.UserService.GetAllExternalUsers(filterRequest);
@@ -316,7 +316,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(LogFilterAttribute))]
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetAllInternalUsers")]
-        [ProducesResponseType(200, Type = typeof(List<UserViewModel>))]
+        [ProducesResponseType(200, Type = typeof(List<UserDto>))]
         public async Task<IActionResult> GetAllInternalUsers( [FromBody] FilterRequest filterRequest)
         {
             var response = await _unitOfWorkService.UserService.GetAllInternalUsers(filterRequest);

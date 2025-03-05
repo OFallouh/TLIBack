@@ -424,7 +424,7 @@ namespace TLIS_Service.Services
         }
 
         //Function to get all external users
-        public async Task<Response<List<UserViewModel>>> GetAllExternalUsers(FilterRequest filterRequest)
+        public async Task<Response<List<UserDto>>> GetAllExternalUsers(FilterRequest filterRequest)
         {
             try
             {
@@ -444,33 +444,16 @@ namespace TLIS_Service.Services
 
                 // تحويل البيانات إلى ViewModel
                 var externalUsers = query.OrderBy(x => x.UserName).ToList();
-                List<UserViewModel> usersViewModels = _mapper.Map<List<UserViewModel>>(externalUsers);
+                List<UserDto> usersViewModels = _mapper.Map<List<UserDto>>(externalUsers);
 
-                // إضافة صلاحيات وجروبات للمستخدمين
-                foreach (UserViewModel user in usersViewModels)
-                {
-                    List<int> permissionsIds = _unitOfWork.UserPermissionRepository.GetWhere(x => x.userId == user.Id)
-                        .Select(x => x.permissionId).Distinct().ToList();
+              
+                
 
-                    List<PermissionViewModel> permissions = _mapper.Map<List<PermissionViewModel>>(_unitOfWork.PermissionRepository.GetWhere(x =>
-                        permissionsIds.Contains(x.Id) && x.Active).ToList());
-
-                    // User.Permissions = Permissions;
-
-                    List<int> groupsIds = _unitOfWork.GroupUserRepository.GetWhere(x => x.userId == user.Id)
-                        .Select(x => x.groupId).Distinct().ToList();
-
-                    List<GroupNamesViewModel> groupsNames = _mapper.Map<List<GroupNamesViewModel>>(_unitOfWork.GroupRepository.GetWhere(x =>
-                        groupsIds.Contains(x.Id) && x.Active && !x.Deleted).ToList());
-
-                    user.Groups = groupsNames;
-                }
-
-                return new Response<List<UserViewModel>>(true, usersViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
+                return new Response<List<UserDto>>(true, usersViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
             }
             catch (Exception err)
             {
-                return new Response<List<UserViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<List<UserDto>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
 
@@ -549,7 +532,7 @@ namespace TLIS_Service.Services
             }
         }
         //Function to get all internal users
-        public async Task<Response<List<UserViewModel>>> GetAllInternalUsers(FilterRequest filterRequest)
+        public async Task<Response<List<UserDto>>> GetAllInternalUsers(FilterRequest filterRequest)
         {
             try
             {
@@ -568,34 +551,14 @@ namespace TLIS_Service.Services
 
                 // تحويل البيانات إلى ViewModel
                 var externalUsers = query.OrderBy(x => x.UserName).ToList();
-                List<UserViewModel> usersViewModels = _mapper.Map<List<UserViewModel>>(externalUsers);
+                List<UserDto> usersViewModels = _mapper.Map<List<UserDto>>(externalUsers);
 
-                foreach (UserViewModel User in usersViewModels)
-                {
-                    List<int> PermissionsIds = _unitOfWork.UserPermissionRepository.GetWhere(x =>
-                        x.userId == User.Id).Select(x => x.permissionId).Distinct().ToList();
-
-                    List<PermissionViewModel> Permissions = _mapper.Map<List<PermissionViewModel>>(_unitOfWork.PermissionRepository.GetWhere(x =>
-                        PermissionsIds.Contains(x.Id) && x.Active).ToList());
-
-                    // User.Permissions = Permissions;
-
-                    List<int> GroupsIds = _unitOfWork.GroupUserRepository.GetWhere(x =>
-                        x.userId == User.Id).Select(x => x.groupId).Distinct().ToList();
-
-                    List<GroupNamesViewModel> GroupsNames = _mapper.Map<List<GroupNamesViewModel>>(_unitOfWork.GroupRepository.GetWhere(x =>
-                        GroupsIds.Contains(x.Id) && x.Active && !x.Deleted).ToList());
-
-                    User.Groups = GroupsNames;
-                }
-
-        
-
-                return new Response<List<UserViewModel>>(true, usersViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
+               
+                return new Response<List<UserDto>>(true, usersViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
             }
             catch (Exception err)
             {
-                return new Response<List<UserViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<List<UserDto>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
 
