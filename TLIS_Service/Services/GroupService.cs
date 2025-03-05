@@ -601,7 +601,7 @@ namespace TLIS_Service.Services
         //}
         //Function take 1 parameter filters
         //Function return filtered groups and with every group list of group users and list of group roles
-        public Response<IEnumerable<AddGroupsViewModel>> GetAllGroups(List<FilterObjectList> filters)
+        public Response<IEnumerable<AddGroupsViewModel>> GetAllGroups(List<FilterObjectList> filters, int pageNumber = 1, int pageSize = 5)
         {
             try
             {
@@ -610,43 +610,41 @@ namespace TLIS_Service.Services
                 List<TLIgroup> GroupAll = _unitOfWork.GroupRepository.GetWhere(x => !x.Deleted && x.Active).ToList();
                 foreach (var item in GroupAll)
                 {
-                    int? L1 = null; int? L2 = null;  int? L3 = null; int? L2u = null; int? L3u = null;
-                    string L1Name = null;  string L2Name = null;  string L3Name = null; string ParentName = null; string ActorName = null;
+                    int? L1 = null, L2 = null, L3 = null;
+                    string L1Name = null, L2Name = null, L3Name = null, ParentName = null, ActorName = null;
+
                     if (item.UpperId != null)
                     {
-                         L1 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == item.UpperId).Id;
+                        L1 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == item.UpperId)?.Id;
                         if (L1 != null)
                         {
                             TLIgroup objL1 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L1 && x.Active && !x.Deleted);
                             L1Name = objL1?.Name;
-                          L2 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L1)?.UpperId;
-
+                            L2 = objL1?.UpperId;
                         }
                         if (L2 != null)
                         {
-                            TLIgroup objl2 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L2 && x.Active && !x.Deleted);
-                            L2Name = objl2?.Name;
-                          L3 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L2 && x.Active && !x.Deleted)?.UpperId;
-
+                            TLIgroup objL2 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L2 && x.Active && !x.Deleted);
+                            L2Name = objL2?.Name;
+                            L3 = objL2?.UpperId;
                         }
                         if (L3 != null)
                         {
-                            TLIgroup objl3 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L3 && x.Active && !x.Deleted);
-                            L3Name = objl3?.Name;
+                            TLIgroup objL3 = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == L3 && x.Active && !x.Deleted);
+                            L3Name = objL3?.Name;
                         }
-                        
                     }
+
                     if (item.ParentId != null)
                     {
-                        TLIgroup objparentname = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == item.ParentId && x.Active && !x.Deleted);
-                        ParentName = objparentname?.Name;
+                        ParentName = _unitOfWork.GroupRepository.GetWhereFirst(x => x.Id == item.ParentId && x.Active && !x.Deleted)?.Name;
                     }
+
                     if (item.ActorId != null)
                     {
-                        TLIactor ObjActorName = _unitOfWork.ActorRepository.GetWhereFirst(x => x.Id == item.ActorId);
-                        ActorName = ObjActorName?.Name;
-
+                        ActorName = _unitOfWork.ActorRepository.GetWhereFirst(x => x.Id == item.ActorId)?.Name;
                     }
+
                     Groups.Add(new AddGroupsViewModel()
                     {
                         Id = item.Id,
@@ -664,23 +662,21 @@ namespace TLIS_Service.Services
                         UpperLevel2Name = L2Name,
                         UpperLevel3Id = L3,
                         UpperLevel3Name = L3Name
-
                     });
                 }
 
-                if (filters != null ? filters.Count() > 0 : false)
+                if (filters != null && filters.Count > 0)
                 {
-
-
-                    Groups = Groups.Where(x => x.Name.ToLower().StartsWith(filters.FirstOrDefault().value.FirstOrDefault().ToString().ToLower())).ToList().OrderBy(x => x.Name).ToList();
-
-
+                    Groups = Groups.Where(x => x.Name.ToLower().StartsWith(filters.First().value.First().ToString().ToLower()))
+                                   .OrderBy(x => x.Name)
+                                   .ToList();
                 }
+
                 foreach (var Group in Groups)
                 {
                     List<UserNameViewModel> userNameViewModels = new List<UserNameViewModel>();
-                    List<TLIgroupUser> Users = _unitOfWork.GroupUserRepository.GetWhere
-                        (x => x.groupId == Group.Id && x.Active && !x.Deleted).ToList();
+                    List<TLIgroupUser> Users = _unitOfWork.GroupUserRepository.GetWhere(x => x.groupId == Group.Id && x.Active && !x.Deleted).ToList();
+
                     foreach (var item in Users)
                     {
                         int? UserType = _unitOfWork.UserRepository.GetWhereFirst(x => x.Id == item.userId)?.UserType;
@@ -689,24 +685,31 @@ namespace TLIS_Service.Services
                             Id = item.userId,
                             UserName = item.user.UserName,
                             UserType = UserType,
-                            Deleted=item.Deleted,
-                            Active=item.Active
-                            
+                            Deleted = item.Deleted,
+                            Active = item.Active
                         });
                     }
+
                     Group.Users = userNameViewModels;
                     Group.Roles = _unitOfWork.GroupRoleRepository.GetWhereAndSelect(x => x.groupId == Group.Id && x.Active && !x.Deleted,
                         x => new RoleViewModel { Id = x.roleId, Name = x.role.Name, Active = x.role.Active, Deleted = x.role.Deleted }).ToList();
                 }
 
-                return new Response<IEnumerable<AddGroupsViewModel>>(true, Groups.OrderBy(x=>x.Name), null, null, (int)Helpers.Constants.ApiReturnCode.success, Groups.Count());
+                // ✨ تطبيق الـ Pagination ✨
+                int totalRecords = Groups.Count();
+                int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+                List<AddGroupsViewModel> paginatedGroups = Groups.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+                return new Response<IEnumerable<AddGroupsViewModel>>(true, paginatedGroups.OrderBy(x => x.Name), null, null,
+                    (int)Helpers.Constants.ApiReturnCode.success, totalRecords);
             }
             catch (Exception err)
             {
-                return new Response<IEnumerable<AddGroupsViewModel>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                return new Response<IEnumerable<AddGroupsViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
-
         }
+
         //Function take 1 parameter GroupId
         //Function return the group and list of group roles and list of group roles
         public Response<GroupViewModel> GetById(int GroupId)

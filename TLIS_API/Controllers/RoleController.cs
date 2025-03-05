@@ -17,6 +17,7 @@ using TLIS_DAL.ViewModels.RolePermissionDTOs;
 using TLIS_Service.Helpers;
 using TLIS_Service.ServiceBase;
 using Microsoft.Extensions.Configuration;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace TLIS_API.Controllers
 {
@@ -36,9 +37,9 @@ namespace TLIS_API.Controllers
         //[Authorize]
         [HttpPost("getAll")]
         [ProducesResponseType(200, Type = typeof(List<RoleViewModel>))]
-        public async Task<IActionResult> GetRoles([FromBody] List<FilterObjectList> filters)
+        public async Task<IActionResult> GetRoles([FromBody] List<FilterObjectList> filters, [FromQuery] int pageNumber, [FromQuery] int pageSize)
         {
-            var response = await _unitOfWorkService.RoleService.GetRoles(filters);
+            var response = await _unitOfWorkService.RoleService.GetRoles(filters, pageNumber, pageSize);
             return Ok(response);
         }
         [HttpGet("getAllFor_WF")]

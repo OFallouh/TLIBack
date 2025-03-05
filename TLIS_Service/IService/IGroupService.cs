@@ -16,7 +16,7 @@ namespace TLIS_Service.IService
 {
     public interface IGroupService
     {
-        Response<IEnumerable<AddGroupsViewModel>> GetAllGroups(List<FilterObjectList> filters);
+        Response<IEnumerable<AddGroupsViewModel>> GetAllGroups(List<FilterObjectList> filters, int pageNumber = 1, int pageSize = 5);
        // Response<AddGroupViewModel> AddGroup(AddGroupViewModel model, string domain);
         bool ValidateGroupNameFromADAdd(string GroupName, string domain);
         bool ValidateGroupNameFromDatabaseAdd(string GroupName);

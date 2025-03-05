@@ -20,22 +20,13 @@ namespace TLIS_API.BackGroundServices
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                DateTime now = DateTime.Now;
-                DateTime nextRun = now.Date.AddDays(1).AddHours(0); // الساعة 12:00 منتصف الليل
-
-                TimeSpan waitTime = nextRun - now;
-
-                Console.WriteLine($"Next execution scheduled at: {nextRun}");
-
-                // الانتظار حتى منتصف الليل
-                await Task.Delay(waitTime, stoppingToken);
-
                 using (var scope = _services.CreateScope())
                 {
                     var unitOfWorkService = scope.ServiceProvider.GetRequiredService<IUnitOfWorkService>();
 
                     try
                     {
+                        // تنفيذ دالة GetSMIS_Site كل 24 ساعة
                         await unitOfWorkService.SiteService.GetSMIS_Site();
                         await unitOfWorkService.SiteService.ProcessFilesAsync();
                         await unitOfWorkService.SiteService.GetFilteredLogsBackGroundServices();
@@ -47,6 +38,9 @@ namespace TLIS_API.BackGroundServices
                         Console.WriteLine($"Error in Background Task: {ex.Message}");
                     }
                 }
+
+                // الانتظار لمدة 24 ساعة قبل التشغيل مرة أخرى
+                await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
             }
         }
     }

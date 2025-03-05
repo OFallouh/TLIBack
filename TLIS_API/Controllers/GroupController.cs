@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,9 +36,9 @@ namespace TLIS_API.Controllers
         //[Authorize]
         [HttpPost("getAll")]
         [ProducesResponseType(200, Type = typeof(List<GroupViewModel>))]
-        public IActionResult GetAllGroups([FromBody]List<FilterObjectList> filters)
+        public IActionResult GetAllGroups([FromBody]List<FilterObjectList> filters,[FromQuery] int pageNumber, [FromQuery] int pageSize)
         {
-            var response = _unitOfWorkService.GroupService.GetAllGroups(filters);
+            var response = _unitOfWorkService.GroupService.GetAllGroups(filters, pageNumber, pageSize);
             return Ok(response);
         }
 
