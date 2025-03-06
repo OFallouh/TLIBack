@@ -244,6 +244,7 @@ namespace TLIS_DAL
         public DbSet<MV_TLILOGUSERSACTIONSWITHUSERNAMES> MV_TLILOGUSERSACTIONSWITHUSERNAMES { get; set; }
         public DbSet<MV_TLISITE> MV_TLISITE { get; set; }
         public DbSet<HISTORY_VIEW> HISTORY_VIEW { get; set; }
+        public DbSet<SiteDetailsView> SiteDetailsView { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

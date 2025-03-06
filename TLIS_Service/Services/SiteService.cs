@@ -426,6 +426,8 @@ namespace TLIS_Service.Services
                 return new Response<SiteDetailsObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+
+
         public Response<List<AreaViewModel>> GetAllAreasForSiteOperation()
         {
             try
@@ -1432,7 +1434,6 @@ namespace TLIS_Service.Services
             }
         }
 
-
         public Response<IEnumerable<SiteViewModelForGetAll>> GetSiteIntegration(int? UserId, string UserName , bool? isRefresh, bool? GetItemsCountOnEachSite)
         {
             string[] ErrorMessagesWhenReturning = null;
@@ -1782,6 +1783,68 @@ namespace TLIS_Service.Services
             catch (Exception err)
             {
                 return new Response<IEnumerable<SiteViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+            }
+        }
+        public async Task<Response<string>> ExportSitesStatusToExcel()
+        {
+            try
+            {
+                // استعلام غير متزامن لتحسين الأداء
+                var allSiteStatus = await _context.SiteDetailsView.ToListAsync(); // تحسن الأداء مع البيانات الكبيرة
+
+                // تحديد اسم الملف
+                string fileName = "SiteDetails.xlsx";
+                string contentRootPath = _configuration["StoreFiles"]; // حدد مسار الملفات بناءً على إعداداتك
+                string downloadFolder = Path.Combine(contentRootPath, "SitesStatus");
+              
+                if (!Directory.Exists(downloadFolder))
+                {
+                    DirectoryInfo di = Directory.CreateDirectory(downloadFolder);
+
+                }
+                // المسار الكامل للملف
+                string fullPath = Path.Combine(downloadFolder, fileName);
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                using (var package = new ExcelPackage())
+                {
+                    // إضافة ورقة جديدة
+                    var worksheet = package.Workbook.Worksheets.Add("SitesStatus");
+
+                    // إضافة الأعمدة
+                    worksheet.Cells[1, 1].Value = "SiteCode";
+                    worksheet.Cells[1, 2].Value = "SiteName";
+                    worksheet.Cells[1, 3].Value = "PlanType";
+                    worksheet.Cells[1, 4].Value = "CollectDataStatus";
+                    worksheet.Cells[1, 5].Value = "MWMdStatus";
+                    worksheet.Cells[1, 6].Value = "RadioMdStatus";
+                    worksheet.Cells[1, 7].Value = "PowerMdStatus";
+
+                    // تعبئة البيانات بشكل مباشر
+                    int row = 2;
+                    foreach (var site in allSiteStatus)
+                    {
+                        worksheet.Cells[row, 1].Value = site.SiteCode;
+                        worksheet.Cells[row, 2].Value = site.SiteName;
+                        worksheet.Cells[row, 3].Value = site.PlanType;
+                        worksheet.Cells[row, 4].Value = site.CollectDataStatus;
+                        worksheet.Cells[row, 5].Value = site.MWMdStatus;
+                        worksheet.Cells[row, 6].Value = site.RadioMdStatus;
+                        worksheet.Cells[row, 7].Value = site.PowerMdStatus;
+                        row++;
+                    }
+
+                    // حفظ الملف إلى المسار المحدد
+                    FileInfo file = new FileInfo(fullPath);
+                    package.SaveAs(file);
+                }
+
+                // إرجاع المسار الكامل للملف كاستجابة
+                return new Response<string>(true, fullPath, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+            }
+            catch (Exception err)
+            {
+                // إذا حدث خطأ، إرجاع رسالة
+                return new Response<string>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
 
