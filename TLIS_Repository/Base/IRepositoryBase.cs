@@ -14,6 +14,7 @@ namespace TLIS_Repository.Base
 {
     public interface IRepositoryBase<TEntity, TModel, TKey>
     {
+        int UpdateWithHInstallationSiteStatus(int? UserId, int? SecRecordId, TEntity OldObject, TEntity NewObject, string SiteCode, int x);
         IQueryable<TEntity> GetAllIncludeMultipleWithCondition(ParameterPagination parameterPagination, List<FilterObjectList> filter, List<FilterObject> Conditions, out int count, params Expression<Func<TEntity, object>>[] includes);
         IQueryable<TEntity> GetAllIncludeMultiple(ParameterPagination parameterPagination, List<FilterObjectList> filter, out int count, params Expression<Func<TEntity, object>>[] includes);
         Task<IEnumerable<TEntity>> GetAllAsync(ParameterPagination parameterPagination = null, List<FilterObjectList> filter = null);

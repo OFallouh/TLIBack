@@ -9,7 +9,8 @@ namespace TLIS_DAL.Models
     public enum AttributeType
     {
         Dynamic = 0,
-        Static = 1
+        Static = 1,
+        x=3
     }
     public class TLIhistoryDetails
     {

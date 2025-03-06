@@ -290,7 +290,7 @@ namespace TLIS_Service.Services
                                     SiteSelected.PowerVStatusPowerMd = (int?)siteDetailsObject.PowerMd.PowerValidationStatus;
                                     SiteSelected.PowerVRemarkPowerMd = siteDetailsObject.PowerMd.PowerValidationRemark;
                                 }
-                                _unitOfWork.SiteRepository.UpdateWithHInstallationSite(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode);
+                                _unitOfWork.SiteRepository.UpdateWithHInstallationSiteStatus(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode,3);
                                 _unitOfWork.SaveChanges();
 
                             }
@@ -324,7 +324,7 @@ namespace TLIS_Service.Services
                             SiteSelected.pendingTypePowerMd = (int?)siteDetailsObject.PowerMd.PendingType;
                             SiteSelected.PowerVStatusPowerMd = (int?)siteDetailsObject.PowerMd.PowerValidationStatus;
                             SiteSelected.PowerVRemarkPowerMd = siteDetailsObject.PowerMd.PowerValidationRemark;
-                            _unitOfWork.SiteRepository.UpdateWithHInstallationSite(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode);
+                            _unitOfWork.SiteRepository.UpdateWithHInstallationSiteStatus(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode,3);
                             _unitOfWork.SaveChanges();
                         }
                       
