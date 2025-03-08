@@ -15549,7 +15549,7 @@ namespace TLIS_Service.Services
             }
         }
 
-        public string ViewTest(string connectionString, string dateFrom = null, string dateTo = null)
+        public string ViewTest()
         {
             var DynamicAtt = _context.TLIdynamicAtt.Include(x=>x.tablesNames).Where(x => x.tablesNames.TableName.ToLower() == "tlisolar");
             foreach (var item in DynamicAtt)
