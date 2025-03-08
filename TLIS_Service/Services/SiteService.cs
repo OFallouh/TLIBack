@@ -8878,7 +8878,7 @@ namespace TLIS_Service.Services
 
             if (file == null)
             {
-                Console.WriteLine("لم يتم العثور على الملف Batch_1 في المسار.");
+                Console.WriteLine("لم يتم العثور على الملف Batch_2 في المسار.");
                 return;
             }
 
@@ -8915,7 +8915,7 @@ namespace TLIS_Service.Services
             }
 
             // البحث عن الملف الذي اسمه بالضبط "Batch_1"
-            var file = Directory.GetFiles(directoryPath, "Batch_1*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+            var file = Directory.GetFiles(directoryPath, "Batch_3*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
 
             if (file == null)
             {
@@ -8960,7 +8960,7 @@ namespace TLIS_Service.Services
 
             if (file == null)
             {
-                Console.WriteLine("لم يتم العثور على الملف Batch_1 في المسار.");
+                Console.WriteLine("لم يتم العثور على الملف Batch_4 في المسار.");
                 return;
             }
 
@@ -9001,7 +9001,7 @@ namespace TLIS_Service.Services
 
             if (file == null)
             {
-                Console.WriteLine("لم يتم العثور على الملف Batch_1 في المسار.");
+                Console.WriteLine("لم يتم العثور على الملف Batch_5 في المسار.");
                 return;
             }
 
@@ -9042,7 +9042,7 @@ namespace TLIS_Service.Services
 
             if (file == null)
             {
-                Console.WriteLine("لم يتم العثور على الملف Batch_1 في المسار.");
+                Console.WriteLine("لم يتم العثور على الملف Batch_6 في المسار.");
                 return;
             }
 
@@ -9083,7 +9083,7 @@ namespace TLIS_Service.Services
 
             if (file == null)
             {
-                Console.WriteLine("لم يتم العثور على الملف Batch_1 في المسار.");
+                Console.WriteLine("لم يتم العثور على الملف Batch_7 في المسار.");
                 return;
             }
 
@@ -9124,7 +9124,7 @@ namespace TLIS_Service.Services
 
             if (file == null)
             {
-                Console.WriteLine("لم يتم العثور على الملف Batch_1 في المسار.");
+                Console.WriteLine("لم يتم العثور على الملف Batch_8 في المسار.");
                 return;
             }
 
@@ -9165,7 +9165,7 @@ namespace TLIS_Service.Services
 
             if (file == null)
             {
-                Console.WriteLine("لم يتم العثور على الملف Batch_1 في المسار.");
+                Console.WriteLine("لم يتم العثور على الملف Batch_9 في المسار.");
                 return;
             }
 
