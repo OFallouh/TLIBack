@@ -284,7 +284,7 @@ namespace TLIS_Service.Services
 
         //Function to add internal userpublic 
         //usually internal user type is 1
-        public async Task<Response<UserViewModel>> AddInternalUser(string UserName, List<String> Permissions, string domain, int UserId)
+        public async Task<Response<UserViewModel>> AddInternalUser(string UserName, String Permissions, string domain, int UserId)
         {
             try
             {
@@ -332,6 +332,7 @@ namespace TLIS_Service.Services
                                     user.Domain = null;
                                     user.AdGUID = principal.Guid.ToString();
                                     user.UserType = 1;
+                                    user.Permissions = Permissions;
                                     await _unitOfWork.UserRepository.AddAsyncWithH(UserId, null, user);
                                     await _unitOfWork.SaveChangesAsync();
 

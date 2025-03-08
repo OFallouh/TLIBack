@@ -19,7 +19,7 @@ namespace TLIS_Service.IService
     {
         bool GetSession(int UserId, string Ip);
         Response<UserViewModel> UpdatePermissionsUser(UpdatePermissionDto updatePermissionDto);
-        Task<Response<UserViewModel>> AddInternalUser(string UserName, List<string> Permissions, string domain, int UserId);
+        Task<Response<UserViewModel>> AddInternalUser(string UserName, string Permissions, string domain, int UserId);
         Task<Response<List<UserDto>>> GetAllInternalUsers(FilterRequest filterRequest);
         Task<Response<List<UserDto>>> GetAllExternalUsers( FilterRequest filterRequest);
         Response<List<UserViewModel>> GetUsersByGroupName(string GroupName, string domain);

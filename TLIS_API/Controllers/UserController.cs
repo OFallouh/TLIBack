@@ -39,7 +39,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("AddInternalUser")]
         [ProducesResponseType(200, Type = typeof(UserViewModel))]
-        public async Task<IActionResult> AddInternalUser(string UserName, [FromBody] List<string> Permissions)
+        public async Task<IActionResult> AddInternalUser(string UserName, [FromBody] string Permissions)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             string authHeader = HttpContext.Request.Headers["Authorization"];
