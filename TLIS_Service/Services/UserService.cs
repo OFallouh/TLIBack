@@ -473,14 +473,7 @@ namespace TLIS_Service.Services
                         orderedQuery = (IOrderedQueryable<T>)query;
                     }
                 }
-            }
-            // إذا لم يكن هناك MultiSortMeta ولكن يوجد SortOrder، يتم تطبيق الفرز بناءً عليه
-            else if (filterRequest.SortOrder.HasValue && !string.IsNullOrEmpty(filterRequest.Filters?.Keys?.FirstOrDefault()))
-            {
-                string sortField = filterRequest.Filters.Keys.FirstOrDefault();
-                bool ascending = filterRequest.SortOrder.Value == 1;
-                query = ApplyOrdering(query, sortField, ascending, true);
-            }
+            } 
             // في حالة عدم تحديد أي نوع من الفرز، يتم الترتيب حسب `UserName` افتراضياً
             else
             {
