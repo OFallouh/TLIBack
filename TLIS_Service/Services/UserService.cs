@@ -459,11 +459,11 @@ namespace TLIS_Service.Services
         // تطبيق الفرز بناءً على البيانات الموجودة في الفلتر
         private IQueryable<T> ApplySorting<T>(IQueryable<T> query, FilterRequest filterRequest)
         {
+            IOrderedQueryable<T> orderedQuery = null;
+
+            // إذا كان هناك MultiSortMeta، يتم تطبيق الفرز المتعدد
             if (filterRequest.MultiSortMeta != null && filterRequest.MultiSortMeta.Any())
             {
-                // تطبيق الفرز المتعدد
-                IOrderedQueryable<T> orderedQuery = null;
-
                 foreach (var sortMeta in filterRequest.MultiSortMeta)
                 {
                     if (!string.IsNullOrEmpty(sortMeta.Field))
@@ -474,21 +474,22 @@ namespace TLIS_Service.Services
                     }
                 }
             }
+            // إذا لم يكن هناك MultiSortMeta ولكن يوجد SortOrder، يتم تطبيق الفرز بناءً عليه
             else if (filterRequest.SortOrder.HasValue && !string.IsNullOrEmpty(filterRequest.Filters?.Keys?.FirstOrDefault()))
             {
-                // تطبيق فرز حسب `SortOrder`
                 string sortField = filterRequest.Filters.Keys.FirstOrDefault();
                 bool ascending = filterRequest.SortOrder.Value == 1;
                 query = ApplyOrdering(query, sortField, ascending, true);
             }
+            // في حالة عدم تحديد أي نوع من الفرز، يتم الترتيب حسب `UserName` افتراضياً
             else
             {
-                // فرز افتراضي حسب UserName
                 query = ApplyOrdering(query, "UserName", true, true);
             }
 
             return query;
         }
+
 
         // تطبيق الفرز على الحقول
         private IQueryable<T> ApplyOrdering<T>(IQueryable<T> query, string fieldName, bool ascending, bool isFirstOrder)
