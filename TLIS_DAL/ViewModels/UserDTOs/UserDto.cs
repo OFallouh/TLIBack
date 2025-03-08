@@ -16,15 +16,10 @@ namespace TLIS_DAL.ViewModels.UserDTOs
         public string MobileNumber { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
-        public string Domain { get; set; }
-        public string AdGUID { get; set; }
         public int UserType { get; set; }
         public bool Active { get; set; }
         public bool Deleted { get; set; }
         public bool IsFirstLogin { get; set; }
-        public string ConfirmationCode { get; set; }
-        public bool ValidateAccount { get; set; }
-        public string WorkFlowMode { get; set; }
-        public string Permissions { get; set; }
+
     }
 }

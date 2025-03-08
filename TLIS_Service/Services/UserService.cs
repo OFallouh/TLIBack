@@ -431,11 +431,13 @@ namespace TLIS_Service.Services
                 // تحضير الاستعلام
                 var query = _unitOfWork.UserRepository.GetWhere(x => !x.Deleted && x.UserType == 2).AsQueryable();
                 var totalCount = query.Count();
+
                 // تطبيق الفلاتر
                 query = ApplyFilterUser(query, filterRequest);
 
-                // حساب عدد المستخدمين قبل التصفية
- 
+                // تطبيق الفرز إذا كان موجودًا
+                query = ApplySorting(query, filterRequest);
+
                 // تطبيق pagination إذا كانت موجودة
                 if (filterRequest.First.HasValue && filterRequest.Rows.HasValue)
                 {
@@ -443,11 +445,8 @@ namespace TLIS_Service.Services
                 }
 
                 // تحويل البيانات إلى ViewModel
-                var externalUsers = query.OrderBy(x => x.UserName).ToList();
+                var externalUsers = query.ToList();
                 List<UserDto> usersViewModels = _mapper.Map<List<UserDto>>(externalUsers);
-
-              
-                
 
                 return new Response<List<UserDto>>(true, usersViewModels, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
             }
@@ -456,6 +455,59 @@ namespace TLIS_Service.Services
                 return new Response<List<UserDto>>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+
+        // تطبيق الفرز بناءً على البيانات الموجودة في الفلتر
+        private IQueryable<T> ApplySorting<T>(IQueryable<T> query, FilterRequest filterRequest)
+        {
+            if (filterRequest.MultiSortMeta != null && filterRequest.MultiSortMeta.Any())
+            {
+                // تطبيق الفرز المتعدد
+                IOrderedQueryable<T> orderedQuery = null;
+
+                foreach (var sortMeta in filterRequest.MultiSortMeta)
+                {
+                    if (!string.IsNullOrEmpty(sortMeta.Field))
+                    {
+                        bool ascending = sortMeta.Order == 1;
+                        query = ApplyOrdering(query, sortMeta.Field, ascending, orderedQuery == null);
+                        orderedQuery = (IOrderedQueryable<T>)query;
+                    }
+                }
+            }
+            else if (filterRequest.SortOrder.HasValue && !string.IsNullOrEmpty(filterRequest.Filters?.Keys?.FirstOrDefault()))
+            {
+                // تطبيق فرز حسب `SortOrder`
+                string sortField = filterRequest.Filters.Keys.FirstOrDefault();
+                bool ascending = filterRequest.SortOrder.Value == 1;
+                query = ApplyOrdering(query, sortField, ascending, true);
+            }
+            else
+            {
+                // فرز افتراضي حسب UserName
+                query = ApplyOrdering(query, "UserName", true, true);
+            }
+
+            return query;
+        }
+
+        // تطبيق الفرز على الحقول
+        private IQueryable<T> ApplyOrdering<T>(IQueryable<T> query, string fieldName, bool ascending, bool isFirstOrder)
+        {
+            var parameter = Expression.Parameter(typeof(T), "x");
+            var property = Expression.Property(parameter, fieldName);
+            var lambda = Expression.Lambda(property, parameter);
+
+            string methodName = isFirstOrder
+                ? (ascending ? "OrderBy" : "OrderByDescending")
+                : (ascending ? "ThenBy" : "ThenByDescending");
+
+            var method = typeof(Queryable).GetMethods()
+                .First(m => m.Name == methodName && m.GetParameters().Length == 2)
+                .MakeGenericMethod(typeof(T), property.Type);
+
+            return (IQueryable<T>)method.Invoke(null, new object[] { query, lambda });
+        }
+
 
         private IQueryable<T> ApplyFilterUser<T>(
          IQueryable<T> query,
@@ -542,6 +594,7 @@ namespace TLIS_Service.Services
                 // تطبيق الفلاتر
                 query = ApplyFilterUser(query, filterRequest);
 
+                query = ApplySorting(query, filterRequest);
 
                 // تطبيق pagination إذا كانت موجودة
                 if (filterRequest.First.HasValue && filterRequest.Rows.HasValue)

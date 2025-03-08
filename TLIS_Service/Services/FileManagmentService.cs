@@ -113,6 +113,10 @@ namespace TLIS_Service.Services
                     {
                         TableNameAtts.Remove(e);
                     }
+                    if (TableName == "TLIcivilWithoutLegLibrary" && e.ToLower() == "InstCivilwithoutLegsTypeId".ToLower())
+                    {
+                        TableNameAtts.Remove(e);
+                    }
                     if ((TableName != "TLIcivilWithLegLibrary" && TableName != "TLIcivilWithoutLegLibrary" && TableName != "TLIcivilNonSteelLibrary"
                         && TableName != "TLIcabinetPowerLibrary" && TableName != "TLIcabinetTelecomLibrary") &&
                             e.ToLower() == "spacelibrary".ToLower())
