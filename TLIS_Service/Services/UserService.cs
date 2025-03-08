@@ -336,11 +336,6 @@ namespace TLIS_Service.Services
                                     await _unitOfWork.UserRepository.AddAsyncWithH(UserId, null, user);
                                     await _unitOfWork.SaveChangesAsync();
 
-                                    if (Permissions != null)
-                                    {
-                                        await InsertPermissionsAsync(connection, user.Id, Permissions);
-                                    }
-
                                 }
                                 else
                                 {
