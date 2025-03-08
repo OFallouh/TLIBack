@@ -30,13 +30,21 @@ namespace TLIS_API.BackGroundServices
 
                         // تشغيل جميع المهام بالتوازي
                         var getSmisTask = unitOfWorkService.SiteService.GetSMIS_Site();
-                        var processFilesTask = unitOfWorkService.SiteService.ProcessFilesAsync();
+                        var processFilesTask1 = unitOfWorkService.SiteService.ProcessFilesAsync1();
+                        var processFilesTask2 = unitOfWorkService.SiteService.ProcessFilesAsync2();
+                        var processFilesTask3 = unitOfWorkService.SiteService.ProcessFilesAsync3();
+                        var processFilesTask4 = unitOfWorkService.SiteService.ProcessFilesAsync4();
+                        var processFilesTask5 = unitOfWorkService.SiteService.ProcessFilesAsync5();
+                        var processFilesTask6 = unitOfWorkService.SiteService.ProcessFilesAsync6();
+                        var processFilesTask7 = unitOfWorkService.SiteService.ProcessFilesAsync7();
+                        var processFilesTask8 = unitOfWorkService.SiteService.ProcessFilesAsync8();
+                        var processFilesTask9 = unitOfWorkService.SiteService.ProcessFilesAsync9();
                         var logsTask = unitOfWorkService.SiteService.GetFilteredLogsBackGroundServices();
                         var historyTask = unitOfWorkService.SiteService.GetHistoryFile();
                         var securityLogsTask = unitOfWorkService.UserService.GetSecurityLogsFile();
 
                         // انتظار انتهاء جميع المهام معًا
-                        await Task.WhenAll(getSmisTask, processFilesTask, logsTask, historyTask, securityLogsTask);
+                        await Task.WhenAll(getSmisTask, processFilesTask1, processFilesTask2, processFilesTask3, processFilesTask4, processFilesTask5, processFilesTask6, processFilesTask7, processFilesTask8, processFilesTask9, logsTask, historyTask, securityLogsTask);
 
                         Console.WriteLine("All background tasks completed successfully.");
                     }
