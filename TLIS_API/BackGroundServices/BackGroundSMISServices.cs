@@ -26,12 +26,19 @@ namespace TLIS_API.BackGroundServices
 
                     try
                     {
-                        // تنفيذ دالة GetSMIS_Site كل 24 ساعة
-                        await unitOfWorkService.SiteService.GetSMIS_Site();
-                        await unitOfWorkService.SiteService.ProcessFilesAsync();
-                        await unitOfWorkService.SiteService.GetFilteredLogsBackGroundServices();
-                        await unitOfWorkService.SiteService.GetHistoryFile();
-                        await unitOfWorkService.UserService.GetSecurityLogsFile();
+                        Console.WriteLine("Starting all background tasks...");
+
+                        // تشغيل جميع المهام بالتوازي
+                        var getSmisTask = unitOfWorkService.SiteService.GetSMIS_Site();
+                        var processFilesTask = unitOfWorkService.SiteService.ProcessFilesAsync();
+                        var logsTask = unitOfWorkService.SiteService.GetFilteredLogsBackGroundServices();
+                        var historyTask = unitOfWorkService.SiteService.GetHistoryFile();
+                        var securityLogsTask = unitOfWorkService.UserService.GetSecurityLogsFile();
+
+                        // انتظار انتهاء جميع المهام معًا
+                        await Task.WhenAll(getSmisTask, processFilesTask, logsTask, historyTask, securityLogsTask);
+
+                        Console.WriteLine("All background tasks completed successfully.");
                     }
                     catch (Exception ex)
                     {
@@ -39,9 +46,9 @@ namespace TLIS_API.BackGroundServices
                     }
                 }
 
-                // الانتظار لمدة 24 ساعة قبل التشغيل مرة أخرى
                 await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
             }
         }
+
     }
 }
