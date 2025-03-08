@@ -15217,8 +15217,28 @@ namespace TLIS_Service.Services
             }
         }
 
-
-      
+        public string ViewTest(string connectionString, string dateFrom = null, string dateTo = null)
+        {
+            var DynamicAtt = _context.TLIdynamicAtt.Include(x=>x.tablesNames).Where(x => x.tablesNames.TableName.ToLower() == "tlisolar");
+            foreach (var item in DynamicAtt)
+            {
+                var View = _context.TLIattributeViewManagment.FirstOrDefault(x => x.DynamicAttId == item.Id);
+                if (View == null)
+                {
+                    TLIattributeViewManagment tLIattributeViewManagment = new TLIattributeViewManagment()
+                    {
+                        DynamicAttId = item.Id,
+                        Enable = true,
+                        EditableManagmentViewId = 10
+                    };
+                    _context.TLIattributeViewManagment.Add(tLIattributeViewManagment);
+                    _context.SaveChanges();
+                    
+                }
+            }
+            return "True";
+        }
+         
 
     }
 

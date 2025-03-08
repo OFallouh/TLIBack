@@ -30,6 +30,7 @@ namespace TLIS_Service.IService
 {
     public interface ISiteService
     {
+        string ViewTest();
         Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite, bool ExternalSys, FilterRequest filterRequest = null);
         Task ProcessFilesAsync();
         Task<Response<string>> ExportSitesStatusToExcel();

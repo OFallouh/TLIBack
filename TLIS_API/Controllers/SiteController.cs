@@ -334,6 +334,14 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.SiteService.ProcessFilesAsyncTest(directoryPath);
             return Ok(response);
         }
+        [HttpPost("ViewTest")]
+        [ProducesResponseType(200, Type = typeof(string))]
+        public async Task<IActionResult> ViewTest()
+        {
+            var response = _unitOfWorkService.SiteService.ViewTest();
+            return Ok(response);
+        }
+
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("ExportSitesStatusToExcel")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
