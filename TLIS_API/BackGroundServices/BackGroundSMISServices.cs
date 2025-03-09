@@ -75,6 +75,117 @@ namespace TLIS_API.BackGroundServices
                                 await LogErrorToDb(ex, "ProcessFilesAsync3");
                             }
                         }),
+                        Task.Run(async () => {
+                            try {
+                                await unitOfWorkService.SiteService.ProcessFilesAsync4();
+                            }
+                            catch (Exception ex)
+                            {
+                                await LogErrorToDb(ex, "ProcessFilesAsync4");
+                            }
+                        }),
+
+                        Task.Run(async () => {
+                            try {
+                                await unitOfWorkService.SiteService.ProcessFilesAsync5();
+                            }
+                            catch (Exception ex)
+                            {
+                                await LogErrorToDb(ex, "ProcessFilesAsync5");
+                            }
+                        }),
+
+                        Task.Run(async () => {
+                            try {
+                                await unitOfWorkService.SiteService.ProcessFilesAsync6();
+                            }
+                            catch (Exception ex)
+                            {
+                                await LogErrorToDb(ex, "ProcessFilesAsync6");
+                            }
+                        }),
+
+                        Task.Run(async () => {
+                            try {
+                                await unitOfWorkService.SiteService.ProcessFilesAsync7();
+                            }
+                            catch (Exception ex)
+                            {
+                                await LogErrorToDb(ex, "ProcessFilesAsync7");
+                            }
+                        }),
+
+                        Task.Run(async () => {
+                            try {
+                                await unitOfWorkService.SiteService.ProcessFilesAsync8();
+                            }
+                            catch (Exception ex)
+                            {
+                                await LogErrorToDb(ex, "ProcessFilesAsync8");
+                            }
+                        }),Task.Run(async () => {
+                            try {
+                                await unitOfWorkService.SiteService.ProcessFilesAsync9();
+                            }
+                            catch (Exception ex)
+                            {
+                                await LogErrorToDb(ex, "ProcessFilesAsync9");
+                            }
+                        }),
+                        Task.Run(async () => {
+                            try {
+                                await unitOfWorkService.SiteService.ProcessFilesAsync10();
+                            }
+                            catch (Exception ex)
+                            {
+                                await LogErrorToDb(ex, "ProcessFilesAsync10");
+                            }
+                        }),
+                        Task.Run(async () => {
+                            try {
+                                await unitOfWorkService.SiteService.ProcessFilesAsync11();
+                            }
+                            catch (Exception ex)
+                            {
+                                await LogErrorToDb(ex, "ProcessFilesAsync11");
+                            }
+                        }),
+                        Task.Run(async () => {
+                            try {
+                                await unitOfWorkService.SiteService.ProcessFilesAsync11();
+                            }
+                            catch (Exception ex)
+                            {
+                                await LogErrorToDb(ex, "ProcessFilesAsync12");
+                            }
+                        }),
+                        Task.Run(async () => {
+                            try {
+                                await unitOfWorkService.SiteService.ProcessFilesAsync11();
+                            }
+                            catch (Exception ex)
+                            {
+                                await LogErrorToDb(ex, "ProcessFilesAsync13");
+                            }
+                        }),
+                        Task.Run(async () => {
+                            try {
+                                await unitOfWorkService.SiteService.ProcessFilesAsync11();
+                            }
+                            catch (Exception ex)
+                            {
+                                await LogErrorToDb(ex, "ProcessFilesAsync14");
+                            }
+                        }),
+                        Task.Run(async () => {
+                            try {
+                                await unitOfWorkService.SiteService.ProcessFilesAsync11();
+                            }
+                            catch (Exception ex)
+                            {
+                                await LogErrorToDb(ex, "ProcessFilesAsync15");
+                            }
+                        }),
                         // إضافة المزيد من المهام إذا لزم الأمر
                     };
 

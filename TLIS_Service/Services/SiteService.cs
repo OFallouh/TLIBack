@@ -9188,6 +9188,252 @@ namespace TLIS_Service.Services
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
             }
         }
+        public async Task ProcessFilesAsync10()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_10*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_10 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+            }
+        }
+        public async Task ProcessFilesAsync11()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_11*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_11 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+            }
+        }
+        public async Task ProcessFilesAsync12()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_11*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_11 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+            }
+        }
+        public async Task ProcessFilesAsync13()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_11*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_11 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+            }
+        }
+        public async Task ProcessFilesAsync14()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_11*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_11 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+            }
+        }
+        public async Task ProcessFilesAsync15()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_11*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_11 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+            }
+        }
         public async Task ProcessFilesAsyncTest(string directoryPath)
         {
             // تأكد من أن المسار صحيح
