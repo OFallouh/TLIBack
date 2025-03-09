@@ -3550,6 +3550,160 @@ namespace TLIS_Service.Services
                 }
             }
         }
+        //public Response<GetEnableAttribute> GetSolarWithEnableAtt(string? SiteCode, string ConnectionString)
+        //{
+        //    using (var connection = new OracleConnection(ConnectionString))
+        //    {
+        //        try
+        //        {
+        //            GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
+        //            connection.Open();
+        //            //string storedProcedureName = "create_dynamic_pivot_withleg ";
+        //            //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
+        //            //{
+        //            //    procedureCommand.CommandType = CommandType.StoredProcedure;
+        //            //    procedureCommand.ExecuteNonQuery();
+        //            //}
+        //            var attActivated = _dbContext.TLIattributeViewManagment
+        //                .Include(x => x.EditableManagmentView)
+        //                .Include(x => x.AttributeActivated)
+        //                .Include(x => x.DynamicAtt)
+        //                .Where(x => x.Enable && x.EditableManagmentView.View == "SolarInstallation" &&
+        //                ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+        //                .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+        //                .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
+        //                    .ThenBy(x => x.attribute == null)
+        //                    .ThenBy(x => x.attribute)
+        //                    .ToList();
+        //            getEnableAttribute.Type = attActivated;
+        //            List<string> propertyNamesStatic = new List<string>();
+        //            Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+        //            foreach (var key in attActivated)
+        //            {
+        //                if (key.attribute != null)
+        //                {
+        //                    string name = key.attribute;
+        //                    if (name != "Id" && name.EndsWith("Id"))
+        //                    {
+        //                        string fk = name.Remove(name.Length - 2);
+        //                        propertyNamesStatic.Add(fk);
+        //                    }
+        //                    else
+        //                    {
+        //                        propertyNamesStatic.Add(name);
+        //                    }
+
+
+        //                }
+        //                else
+        //                {
+        //                    string name = key.dynamic;
+        //                    string datatype = key.dataType;
+        //                    propertyNamesDynamic.Add(name, datatype);
+        //                }
+
+        //            }
+        //            propertyNamesStatic.Add("SITECODE");
+
+        //            if (SiteCode == null)
+        //            {
+        //                if (propertyNamesDynamic.Count == 0)
+        //                {
+        //                    var query = _dbContext.MV_SOLAR_VIEW.Where(x =>
+        //                    !x.Dismantle).AsEnumerable()
+        //                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+        //                    int count = query.Count();
+
+        //                    getEnableAttribute.Model = query;
+        //                    return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+        //                }
+        //                else
+        //                {
+        //                    var query = _dbContext.MV_SOLAR_VIEW.Where(x =>
+        //                      !x.Dismantle).AsEnumerable()
+        //                .GroupBy(x => new
+        //                {
+
+        //                    Id = x.Id,
+        //                    Name = x.Name,
+        //                    SITECODE = x.SITECODE,
+        //                    PVPanelBrandAndWattage = x.PVPanelBrandAndWattage,
+        //                    PVArrayAzimuth = x.PVArrayAzimuth,
+        //                    PVArrayAngel = x.PVArrayAngel,
+        //                    SpaceInstallation = x.SpaceInstallation,
+        //                    VisibleStatus = x.VisibleStatus,
+        //                    Prefix = x.Prefix,
+        //                    PowerLossRatio = x.PowerLossRatio,
+        //                    NumberOfSSU = x.NumberOfSSU,
+        //                    NumberOfLightingRod = x.NumberOfLightingRod,
+        //                    NumberOfInstallPVs = x.NumberOfInstallPVs,
+        //                    LocationDescription = x.LocationDescription,
+        //                    ExtenstionDimension = x.ExtenstionDimension,
+        //                    Extension = x.Extension,
+        //                    SOLARLIBRARY = x.SOLARLIBRARY,
+        //                    CABINET = x.CABINET,
+        //                    Dismantle = x.Dismantle,
+
+        //                }).OrderBy(x => x.Key.Name)
+        //                .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+        //                .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+        //                    int count = query.Count();
+        //                    getEnableAttribute.Model = query;
+        //                    return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+        //                }
+        //            }
+        //            if (propertyNamesDynamic.Count == 0)
+        //            {
+        //                var query = _dbContext.MV_SOLAR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+        //                && !x.Dismantle).AsEnumerable()
+        //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+        //                int count = query.Count();
+
+        //                getEnableAttribute.Model = query;
+        //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+        //            }
+        //            else
+        //            {
+        //                var query = _dbContext.MV_SOLAR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
+        //                 && !x.Dismantle).AsEnumerable()
+        //            .GroupBy(x => new
+        //            {
+        //                Id = x.Id,
+        //                Name = x.Name,
+        //                SITECODE = x.SITECODE,
+        //                PVPanelBrandAndWattage = x.PVPanelBrandAndWattage,
+        //                PVArrayAzimuth = x.PVArrayAzimuth,
+        //                PVArrayAngel = x.PVArrayAngel,
+        //                SpaceInstallation = x.SpaceInstallation,
+        //                VisibleStatus = x.VisibleStatus,
+        //                Prefix = x.Prefix,
+        //                PowerLossRatio = x.PowerLossRatio,
+        //                NumberOfSSU = x.NumberOfSSU,
+        //                NumberOfLightingRod = x.NumberOfLightingRod,
+        //                NumberOfInstallPVs = x.NumberOfInstallPVs,
+        //                LocationDescription = x.LocationDescription,
+        //                ExtenstionDimension = x.ExtenstionDimension,
+        //                Extension = x.Extension,
+        //                SOLARLIBRARY = x.SOLARLIBRARY,
+        //                CABINET = x.CABINET,
+        //                Dismantle = x.Dismantle,
+
+        //            }).OrderBy(x => x.Key.Name)
+        //            .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
+        //            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
+        //                int count = query.Count();
+        //                getEnableAttribute.Model = query;
+        //                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+        //            }
+
+        //        }
+        //        catch (Exception err)
+        //        {
+        //            return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+        //        }
+        //    }
+        //}
+
         public Response<GetEnableAttribute> GetSolarWithEnableAtt(string? SiteCode, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
@@ -3558,26 +3712,29 @@ namespace TLIS_Service.Services
                 {
                     GetEnableAttribute getEnableAttribute = new GetEnableAttribute();
                     connection.Open();
-                    //string storedProcedureName = "create_dynamic_pivot_withleg ";
-                    //using (OracleCommand procedureCommand = new OracleCommand(storedProcedureName, connection))
-                    //{
-                    //    procedureCommand.CommandType = CommandType.StoredProcedure;
-                    //    procedureCommand.ExecuteNonQuery();
-                    //}
+
                     var attActivated = _dbContext.TLIattributeViewManagment
                         .Include(x => x.EditableManagmentView)
                         .Include(x => x.AttributeActivated)
                         .Include(x => x.DynamicAtt)
-                        .Where(x => x.Enable && x.EditableManagmentView.View == "SolarInstallation" &&
-                        ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
-                        .Select(x => new { attribute = x.AttributeActivated.Key, dynamic = x.DynamicAtt.Key, dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString() })
+                        .Where(x => x.Enable && x.EditableManagmentView.View == "SolarInstallation"
+                            && ((x.AttributeActivatedId != null && x.AttributeActivated.enable) || (x.DynamicAttId != null && !x.DynamicAtt.disable)))
+                        .Select(x => new
+                        {
+                            attribute = x.AttributeActivated.Key,
+                            dynamic = x.DynamicAtt.Key,
+                            dataType = x.DynamicAtt != null ? x.DynamicAtt.DataType.Name.ToString() : x.AttributeActivated.DataType.ToString()
+                        })
                         .OrderByDescending(x => x.attribute.ToLower().StartsWith("name"))
-                            .ThenBy(x => x.attribute == null)
-                            .ThenBy(x => x.attribute)
-                            .ToList();
+                        .ThenBy(x => x.attribute == null)
+                        .ThenBy(x => x.attribute)
+                        .ToList();
+
                     getEnableAttribute.Type = attActivated;
+
                     List<string> propertyNamesStatic = new List<string>();
                     Dictionary<string, string> propertyNamesDynamic = new Dictionary<string, string>();
+
                     foreach (var key in attActivated)
                     {
                         if (key.attribute != null)
@@ -3592,8 +3749,6 @@ namespace TLIS_Service.Services
                             {
                                 propertyNamesStatic.Add(name);
                             }
-
-
                         }
                         else
                         {
@@ -3601,108 +3756,262 @@ namespace TLIS_Service.Services
                             string datatype = key.dataType;
                             propertyNamesDynamic.Add(name, datatype);
                         }
-
                     }
-                    propertyNamesStatic.Add("SITECODE");
-
                     if (SiteCode == null)
                     {
                         if (propertyNamesDynamic.Count == 0)
                         {
-                            var query = _dbContext.MV_SOLAR_VIEW.Where(x =>
-                            !x.Dismantle).AsEnumerable()
-                            .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                            // استخدام LINQ بدلاً من ADO.NET هنا
+                            var query = _dbContext.MV_SOLAR_VIEW.Where(x => !x.Dismantle).AsEnumerable()
+                          .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                             int count = query.Count();
 
+
                             getEnableAttribute.Model = query;
+
                             return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                         }
                         else
                         {
-                            var query = _dbContext.MV_SOLAR_VIEW.Where(x =>
-                              !x.Dismantle).AsEnumerable()
-                        .GroupBy(x => new
-                        {
+                            // 2. إنشاء استعلام SELECT من الفيو مع تصفية على الـ Deleted باستخدام OracleCommand
+                            string xx = "SELECT * FROM MV_SOLAR_VIEW WHERE \"Dismantle\" = 0";
 
-                            Id = x.Id,
-                            Name = x.Name,
-                            SITECODE = x.SITECODE,
-                            PVPanelBrandAndWattage = x.PVPanelBrandAndWattage,
-                            PVArrayAzimuth = x.PVArrayAzimuth,
-                            PVArrayAngel = x.PVArrayAngel,
-                            SpaceInstallation = x.SpaceInstallation,
-                            VisibleStatus = x.VisibleStatus,
-                            Prefix = x.Prefix,
-                            PowerLossRatio = x.PowerLossRatio,
-                            NumberOfSSU = x.NumberOfSSU,
-                            NumberOfLightingRod = x.NumberOfLightingRod,
-                            NumberOfInstallPVs = x.NumberOfInstallPVs,
-                            LocationDescription = x.LocationDescription,
-                            ExtenstionDimension = x.ExtenstionDimension,
-                            Extension = x.Extension,
-                            SOLARLIBRARY = x.SOLARLIBRARY,
-                            CABINET = x.CABINET,
-                            Dismantle = x.Dismantle,
+                            using (OracleCommand command = new OracleCommand(xx, connection))
+                            {
+                                using (OracleDataReader reader = command.ExecuteReader())
+                                {
+                                    var query = new List<dynamic>(); // تخزين البيانات هنا باستخدام dynamic
 
-                        }).OrderBy(x => x.Key.Name)
-                        .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
-                            int count = query.Count();
-                            getEnableAttribute.Model = query;
-                            return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+
+
+                                    while (reader.Read())
+                                    {
+                                        var item = new
+                                        {
+                                            Id = reader["Id"],
+                                            Name = reader["Name"],
+                                            SITECODE = reader["SITECODE"],
+                                            PVPanelBrandAndWattage = reader["PVPanelBrandAndWattage"],
+                                            PVArrayAzimuth = reader["PVArrayAzimuth"],
+                                            PVArrayAngel = reader["PVArrayAngel"],
+                                            SpaceInstallation = reader["SpaceInstallation"],
+                                            VisibleStatus = reader["VisibleStatus"],
+                                            Prefix = reader["Prefix"],
+                                            PowerLossRatio = reader["PowerLossRatio"],
+                                            NumberOfSSU = reader["NumberOfSSU"],
+                                            NumberOfLightingRod = reader["NumberOfLightingRod"],
+                                            NumberOfInstallPVs = reader["NumberOfInstallPVs"],
+                                            LocationDescription = reader["LocationDescription"],
+                                            ExtenstionDimension = reader["ExtenstionDimension"],
+                                            Extension = reader["Extension"],
+                                            SOLARLIBRARY = reader["SOLARLIBRARY"],
+                                            CABINET = reader["CABINET"],
+                                            Dismantle = reader["Dismantle"],
+                                        };
+
+                                        query.Add(item);
+                                    }
+
+                                    var dynamicQuery = query
+               // تجميع بناءً على الـ Id فقط
+               .GroupBy(x => new
+               {
+                   x.Id,
+                   x.Name,
+                   x.SITECODE,
+                   x.PVPanelBrandAndWattage,
+                   x.PVArrayAzimuth,
+                   x.PVArrayAngel,
+                   x.SpaceInstallation,
+                   x.VisibleStatus,
+                   x.Prefix,
+                   x.PowerLossRatio,
+                   x.NumberOfSSU,
+                   x.NumberOfLightingRod,
+                   x.NumberOfInstallPVs,
+                   x.LocationDescription,
+                   x.ExtenstionDimension,
+                   x.Extension,
+                   x.SOLARLIBRARY,
+                   x.CABINET,
+                   x.Dismantle
+               })
+               .Select(g => new
+               {
+                   key = new
+                   {
+
+                       Id = g.Key.Id,
+                       Name = g.Key.Name,
+                       SITECODE = g.Key.SITECODE,
+                       PVPanelBrandAndWattage = g.Key.PVPanelBrandAndWattage,
+                       PVArrayAzimuth = g.Key.PVArrayAngel,
+                       PVArrayAngel = g.Key.PVArrayAngel,
+                       SpaceInstallation = g.Key.SpaceInstallation,
+                       VisibleStatus = g.Key.VisibleStatus,
+                       Prefix = g.Key.Prefix,
+                       PowerLossRatio = g.Key.PowerLossRatio,
+                       NumberOfSSU = g.Key.NumberOfSSU,
+                       NumberOfLightingRod = g.Key.NumberOfLightingRod,
+                       NumberOfInstallPVs = g.Key.NumberOfInstallPVs,
+                       LocationDescription = g.Key.LocationDescription,
+                       ExtenstionDimension = g.Key.ExtenstionDimension,
+                       Extension = g.Key.Extension,
+                       SOLARLIBRARY = g.Key.SOLARLIBRARY,
+                       CABINET = g.Key.CABINET,
+                       Dismantl = g.Key.Dismantle,
+
+
+                   },
+                   // دمج القيم المتغيرة مثل INPUTVALUE
+                   value = g
+                        .Select(x => new { x.Key, x.INPUTVALUE })
+                        .GroupBy(x => x.Key)
+                        .ToDictionary(
+                            grp => string.Join(",", grp.Select(x => x.Key?.ToString() ?? "")),
+                            grp => string.Join(",", grp.Select(x => x.INPUTVALUE?.ToString() ?? ""))
+                        )
+               })
+                        .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
+                        .ToList();
+                                    int count = dynamicQuery.Count();
+
+                                    getEnableAttribute.Model = dynamicQuery;
+                                    return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                                }
+                            }
                         }
                     }
                     if (propertyNamesDynamic.Count == 0)
                     {
+                        // استخدام LINQ بدلاً من ADO.NET هنا
                         var query = _dbContext.MV_SOLAR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
-                        && !x.Dismantle).AsEnumerable()
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
+                       && !x.Dismantle).AsEnumerable()
+                      .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item, null, propertyNamesStatic, propertyNamesDynamic));
                         int count = query.Count();
 
+
                         getEnableAttribute.Model = query;
+
                         return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
                     }
                     else
                     {
-                        var query = _dbContext.MV_SOLAR_VIEW.Where(x => x.SITECODE.ToLower() == SiteCode.ToLower()
-                         && !x.Dismantle).AsEnumerable()
-                    .GroupBy(x => new
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        SITECODE = x.SITECODE,
-                        PVPanelBrandAndWattage = x.PVPanelBrandAndWattage,
-                        PVArrayAzimuth = x.PVArrayAzimuth,
-                        PVArrayAngel = x.PVArrayAngel,
-                        SpaceInstallation = x.SpaceInstallation,
-                        VisibleStatus = x.VisibleStatus,
-                        Prefix = x.Prefix,
-                        PowerLossRatio = x.PowerLossRatio,
-                        NumberOfSSU = x.NumberOfSSU,
-                        NumberOfLightingRod = x.NumberOfLightingRod,
-                        NumberOfInstallPVs = x.NumberOfInstallPVs,
-                        LocationDescription = x.LocationDescription,
-                        ExtenstionDimension = x.ExtenstionDimension,
-                        Extension = x.Extension,
-                        SOLARLIBRARY = x.SOLARLIBRARY,
-                        CABINET = x.CABINET,
-                        Dismantle = x.Dismantle,
+                        // 2. إنشاء استعلام SELECT من الفيو مع تصفية على الـ Deleted باستخدام OracleCommand
+                        string xx = "SELECT * FROM MV_SOLAR_VIEW WHERE \"Dismantle\" = 0 AND \"SITECODE\" = :siteCode";
+                      
+                        using (OracleCommand command = new OracleCommand(xx, connection))
+                        {
+                            using (OracleDataReader reader = command.ExecuteReader())
+                            {
+                                command.Parameters.Add(new OracleParameter("siteCode", SiteCode));
+                                var query = new List<dynamic>(); // تخزين البيانات هنا باستخدام dynamic
 
-                    }).OrderBy(x => x.Key.Name)
-                    .Select(x => new { key = x.Key, value = x.ToDictionary(z => z.Key, z => z.INPUTVALUE) })
-                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic));
-                        int count = query.Count();
-                        getEnableAttribute.Model = query;
-                        return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                                while (reader.Read())
+                                {
+                                    var item = new
+                                    {
+                                        Id = reader["Id"],
+                                        Name = reader["Name"],
+                                        SITECODE = reader["SITECODE"],
+                                        PVPanelBrandAndWattage = reader["PVPanelBrandAndWattage"],
+                                        PVArrayAzimuth = reader["PVArrayAzimuth"],
+                                        PVArrayAngel = reader["PVArrayAngel"],
+                                        SpaceInstallation = reader["SpaceInstallation"],
+                                        VisibleStatus = reader["VisibleStatus"],
+                                        Prefix = reader["Prefix"],
+                                        PowerLossRatio = reader["PowerLossRatio"],
+                                        NumberOfSSU = reader["NumberOfSSU"],
+                                        NumberOfLightingRod = reader["NumberOfLightingRod"],
+                                        NumberOfInstallPVs = reader["NumberOfInstallPVs"],
+                                        LocationDescription = reader["LocationDescription"],
+                                        ExtenstionDimension = reader["ExtenstionDimension"],
+                                        Extension = reader["Extension"],
+                                        SOLARLIBRARY = reader["SOLARLIBRARY"],
+                                        CABINET = reader["CABINET"],
+                                        Dismantle = reader["Dismantle"],
+                                    };
+
+                                    query.Add(item);
+                                }
+
+                                var dynamicQuery = query
+           // تجميع بناءً على الـ Id فقط
+           .GroupBy(x => new
+           {
+               x.Id,
+               x.Name,
+               x.SITECODE,
+               x.PVPanelBrandAndWattage,
+               x.PVArrayAzimuth,
+               x.PVArrayAngel,
+               x.SpaceInstallation,
+               x.VisibleStatus,
+               x.Prefix,
+               x.PowerLossRatio,
+               x.NumberOfSSU,
+               x.NumberOfLightingRod,
+               x.NumberOfInstallPVs,
+               x.LocationDescription,
+               x.ExtenstionDimension,
+               x.Extension,
+               x.SOLARLIBRARY,
+               x.CABINET,
+               x.Dismantle
+           })
+           .Select(g => new
+           {
+               key = new
+               {
+
+                   Id = g.Key.Id,
+                   Name = g.Key.Name,
+                   SITECODE = g.Key.SITECODE,
+                   PVPanelBrandAndWattage = g.Key.PVPanelBrandAndWattage,
+                   PVArrayAzimuth = g.Key.PVArrayAngel,
+                   PVArrayAngel = g.Key.PVArrayAngel,
+                   SpaceInstallation = g.Key.SpaceInstallation,
+                   VisibleStatus = g.Key.VisibleStatus,
+                   Prefix = g.Key.Prefix,
+                   PowerLossRatio = g.Key.PowerLossRatio,
+                   NumberOfSSU = g.Key.NumberOfSSU,
+                   NumberOfLightingRod = g.Key.NumberOfLightingRod,
+                   NumberOfInstallPVs = g.Key.NumberOfInstallPVs,
+                   LocationDescription = g.Key.LocationDescription,
+                   ExtenstionDimension = g.Key.ExtenstionDimension,
+                   Extension = g.Key.Extension,
+                   SOLARLIBRARY = g.Key.SOLARLIBRARY,
+                   CABINET = g.Key.CABINET,
+                   Dismantl = g.Key.Dismantle,
+
+
+               },
+               // دمج القيم المتغيرة مثل INPUTVALUE
+               value = g
+                    .Select(x => new { x.Key, x.INPUTVALUE })
+                    .GroupBy(x => x.Key)
+                    .ToDictionary(
+                        grp => string.Join(",", grp.Select(x => x.Key?.ToString() ?? "")),
+                        grp => string.Join(",", grp.Select(x => x.INPUTVALUE?.ToString() ?? ""))
+                    )
+           })
+                    .Select(item => _unitOfWork.CivilWithLegsRepository.BuildDynamicSelect(item.key, item.value, propertyNamesStatic, propertyNamesDynamic))
+                    .ToList();
+                                int count = dynamicQuery.Count();
+
+                                getEnableAttribute.Model = dynamicQuery;
+                                return new Response<GetEnableAttribute>(true, getEnableAttribute, null, "Success", (int)Helpers.Constants.ApiReturnCode.success, count);
+                            }
+                        }
                     }
-
                 }
                 catch (Exception err)
                 {
-                    return new Response<GetEnableAttribute>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                    return new Response<GetEnableAttribute>(true, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
                 }
             }
         }
+
         public Response<GetEnableAttribute> GetCabinetTelecomWithEnableAtt(string? SiteCode, string ConnectionString)
         {
             using (var connection = new OracleConnection(ConnectionString))
