@@ -3899,13 +3899,14 @@ namespace TLIS_Service.Services
                     {
                         // 2. إنشاء استعلام SELECT من الفيو مع تصفية على الـ Deleted باستخدام OracleCommand
                         string xx = "SELECT * FROM MV_SOLAR_VIEW WHERE \"Dismantle\" = 0 AND \"SITECODE\" = :siteCode";
-                      
                         using (OracleCommand command = new OracleCommand(xx, connection))
                         {
-                            using (OracleDataReader reader = command.ExecuteReader())
+                            // إضافة المعامل قبل تنفيذ الاستعلام
+                            command.Parameters.Add(new OracleParameter("siteCode", SiteCode));
+
+                            using (OracleDataReader reader = command.ExecuteReader()) // الآن سيعمل بشكل صحيح
                             {
-                                command.Parameters.Add(new OracleParameter("siteCode", SiteCode));
-                                var query = new List<dynamic>(); // تخزين البيانات هنا باستخدام dynamic
+                                var query = new List<dynamic>();
 
                                 while (reader.Read())
                                 {
@@ -3930,6 +3931,8 @@ namespace TLIS_Service.Services
                                         SOLARLIBRARY = reader["SOLARLIBRARY"],
                                         CABINET = reader["CABINET"],
                                         Dismantle = reader["Dismantle"],
+                                        Key = reader["Key"],
+                                        INPUTVALUE = reader["INPUTVALUE"],
                                     };
 
                                     query.Add(item);
@@ -3957,7 +3960,8 @@ namespace TLIS_Service.Services
                x.Extension,
                x.SOLARLIBRARY,
                x.CABINET,
-               x.Dismantle
+               x.Dismantle,
+               
            })
            .Select(g => new
            {
@@ -3982,7 +3986,7 @@ namespace TLIS_Service.Services
                    Extension = g.Key.Extension,
                    SOLARLIBRARY = g.Key.SOLARLIBRARY,
                    CABINET = g.Key.CABINET,
-                   Dismantl = g.Key.Dismantle,
+                   Dismantle = g.Key.Dismantle,
 
 
                },
