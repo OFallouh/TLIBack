@@ -284,7 +284,7 @@ namespace TLIS_Service.Services
 
         //Function to add internal userpublic 
         //usually internal user type is 1
-        public async Task<Response<UserViewModel>> AddInternalUser(string UserName, String Permissions, string domain, int UserId)
+        public async Task<Response<UserViewModel>> AddInternalUser(AddInternalUserDto addInternalUserDto, string domain, int UserId)
         {
             try
             {
@@ -308,7 +308,7 @@ namespace TLIS_Service.Services
                             if (context != null)
                             {
                                 GroupPrincipal group = GroupPrincipal.FindByIdentity(context, "TLI");
-                                principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, UserName);
+                                principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, addInternalUserDto.UserName);
                                 if (principal != null && principal.IsMemberOf(group))
                                 {
                                     if (principal.Name.Replace($" {principal.Surname}", "") == null || principal.Surname == null ||
@@ -324,22 +324,22 @@ namespace TLIS_Service.Services
                                     user.MobileNumber = principal.VoiceTelephoneNumber;
                                     user.UserName = principal.SamAccountName;
                                     user.IsFirstLogin=true;
-                                    var tliuser = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == UserName && !x.Deleted);
+                                    var tliuser = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == addInternalUserDto.UserName && !x.Deleted);
                                     if (tliuser != null)
                                     {
-                                        return new Response<UserViewModel>(false, null, null, $"This User {UserName} is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
+                                        return new Response<UserViewModel>(false, null, null, $"This User {addInternalUserDto.UserName} is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                     user.Domain = null;
                                     user.AdGUID = principal.Guid.ToString();
                                     user.UserType = 1;
-                                    user.Permissions = Permissions;
+                                    user.Permissions = addInternalUserDto.Permissions;
                                     await _unitOfWork.UserRepository.AddAsyncWithH(UserId, null, user);
                                     await _unitOfWork.SaveChangesAsync();
 
                                 }
                                 else
                                 {
-                                    return new Response<UserViewModel>(false, null, null, $"This User {UserName} is Not Exist in AD", (int)Helpers.Constants.ApiReturnCode.fail);
+                                    return new Response<UserViewModel>(false, null, null, $"This User {addInternalUserDto.UserName} is Not Exist in AD", (int)Helpers.Constants.ApiReturnCode.fail);
                                 }
                             }
                             transaction.Commit();

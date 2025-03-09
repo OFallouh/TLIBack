@@ -39,7 +39,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("AddInternalUser")]
         [ProducesResponseType(200, Type = typeof(UserViewModel))]
-        public async Task<IActionResult> AddInternalUser(string UserName, [FromBody] string Permissions)
+        public async Task<IActionResult> AddInternalUser( AddInternalUserDto addInternalUserDto)
         {
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
             string authHeader = HttpContext.Request.Headers["Authorization"];
@@ -61,7 +61,7 @@ namespace TLIS_API.Controllers
             string userInfo = jsonToken.Claims.First(c => c.Type == "sub").Value;
             var userId = Convert.ToInt32(userInfo);
             var domain = _configuration["Domain"];
-            var response = await _unitOfWorkService.UserService.AddInternalUser(UserName, Permissions, domain, userId);
+            var response = await _unitOfWorkService.UserService.AddInternalUser(addInternalUserDto, domain, userId);
             return Ok(response);
         }
         [ServiceFilter(typeof(LogFilterAttribute))]
