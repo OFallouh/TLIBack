@@ -1,19 +1,24 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using TLIS_Service.ServiceBase;
+using System.Collections.Generic;
 
 namespace TLIS_API.BackGroundServices
 {
     public class BackGroundSMISServices : BackgroundService
     {
         private readonly IServiceProvider _services;
+        private readonly ILogger<BackGroundSMISServices> _logger;
 
-        public BackGroundSMISServices(IServiceProvider services)
+        // حقن ILogger في الـ constructor
+        public BackGroundSMISServices(IServiceProvider services, ILogger<BackGroundSMISServices> logger)
         {
             _services = services;
+            _logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -28,29 +33,33 @@ namespace TLIS_API.BackGroundServices
                     {
                         Console.WriteLine("Starting all background tasks...");
 
-                        // تشغيل جميع المهام بالتوازي
-                        var getSmisTask = unitOfWorkService.SiteService.GetSMIS_Site();
-                        var processFilesTask1 = unitOfWorkService.SiteService.ProcessFilesAsync1();
-                        var processFilesTask2 = unitOfWorkService.SiteService.ProcessFilesAsync2();
-                        var processFilesTask3 = unitOfWorkService.SiteService.ProcessFilesAsync3();
-                        var processFilesTask4 = unitOfWorkService.SiteService.ProcessFilesAsync4();
-                        var processFilesTask5 = unitOfWorkService.SiteService.ProcessFilesAsync5();
-                        var processFilesTask6 = unitOfWorkService.SiteService.ProcessFilesAsync6();
-                        var processFilesTask7 = unitOfWorkService.SiteService.ProcessFilesAsync7();
-                        var processFilesTask8 = unitOfWorkService.SiteService.ProcessFilesAsync8();
-                        var processFilesTask9 = unitOfWorkService.SiteService.ProcessFilesAsync9();
-                        var logsTask = unitOfWorkService.SiteService.GetFilteredLogsBackGroundServices();
-                        var historyTask = unitOfWorkService.SiteService.GetHistoryFile();
-                        var securityLogsTask = unitOfWorkService.UserService.GetSecurityLogsFile();
+                        // إنشاء قائمة من المهام بحيث يتم تنفيذها بشكل منفصل
+                        var tasks = new List<Task>
+                {
+                    Task.Run(async () => { try { await unitOfWorkService.SiteService.GetSMIS_Site(); } catch (Exception ex) { _logger.LogError(ex, "Error in GetSMIS_Site"); } }),
+                    Task.Run(async () => { try { await unitOfWorkService.SiteService.ProcessFilesAsync1(); } catch (Exception ex) { _logger.LogError(ex, "Error in ProcessFilesAsync1"); } }),
+                    Task.Run(async () => { try { await unitOfWorkService.SiteService.ProcessFilesAsync2(); } catch (Exception ex) { _logger.LogError(ex, "Error in ProcessFilesAsync2"); } }),
+                    Task.Run(async () => { try { await unitOfWorkService.SiteService.ProcessFilesAsync3(); } catch (Exception ex) { _logger.LogError(ex, "Error in ProcessFilesAsync3"); } }),
+                    Task.Run(async () => { try { await unitOfWorkService.SiteService.ProcessFilesAsync4(); } catch (Exception ex) { _logger.LogError(ex, "Error in ProcessFilesAsync4"); } }),
+                    Task.Run(async () => { try { await unitOfWorkService.SiteService.ProcessFilesAsync5(); } catch (Exception ex) { _logger.LogError(ex, "Error in ProcessFilesAsync5"); } }),
+                    Task.Run(async () => { try { await unitOfWorkService.SiteService.ProcessFilesAsync6(); } catch (Exception ex) { _logger.LogError(ex, "Error in ProcessFilesAsync6"); } }),
+                    Task.Run(async () => { try { await unitOfWorkService.SiteService.ProcessFilesAsync7(); } catch (Exception ex) { _logger.LogError(ex, "Error in ProcessFilesAsync7"); } }),
+                    Task.Run(async () => { try { await unitOfWorkService.SiteService.ProcessFilesAsync8(); } catch (Exception ex) { _logger.LogError(ex, "Error in ProcessFilesAsync8"); } }),
+                    Task.Run(async () => { try { await unitOfWorkService.SiteService.ProcessFilesAsync9(); } catch (Exception ex) { _logger.LogError(ex, "Error in ProcessFilesAsync9"); } }),
+                    Task.Run(async () => { try { await unitOfWorkService.SiteService.GetFilteredLogsBackGroundServices(); } catch (Exception ex) { _logger.LogError(ex, "Error in GetFilteredLogsBackGroundServices"); } }),
+                    Task.Run(async () => { try { await unitOfWorkService.SiteService.GetHistoryFile(); } catch (Exception ex) { _logger.LogError(ex, "Error in GetHistoryFile"); } }),
+                    Task.Run(async () => { try { await unitOfWorkService.UserService.GetSecurityLogsFile(); } catch (Exception ex) { _logger.LogError(ex, "Error in GetSecurityLogsFile"); } })
+                };
 
                         // انتظار انتهاء جميع المهام معًا
-                        await Task.WhenAll(getSmisTask, processFilesTask1, processFilesTask2, processFilesTask3, processFilesTask4, processFilesTask5, processFilesTask6, processFilesTask7, processFilesTask8, processFilesTask9, logsTask, historyTask, securityLogsTask);
+                        await Task.WhenAll(tasks);
 
                         Console.WriteLine("All background tasks completed successfully.");
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($"Error in Background Task: {ex.Message}");
+                        _logger.LogError(ex, "Unexpected error in background tasks");
                     }
                 }
 
