@@ -152,7 +152,7 @@ namespace TLIS_API.BackGroundServices
                         }),
                         Task.Run(async () => {
                             try {
-                                await unitOfWorkService.SiteService.ProcessFilesAsync11();
+                                await unitOfWorkService.SiteService.ProcessFilesAsync12();
                             }
                             catch (Exception ex)
                             {
@@ -161,7 +161,7 @@ namespace TLIS_API.BackGroundServices
                         }),
                         Task.Run(async () => {
                             try {
-                                await unitOfWorkService.SiteService.ProcessFilesAsync11();
+                                await unitOfWorkService.SiteService.ProcessFilesAsync13();
                             }
                             catch (Exception ex)
                             {
@@ -170,7 +170,7 @@ namespace TLIS_API.BackGroundServices
                         }),
                         Task.Run(async () => {
                             try {
-                                await unitOfWorkService.SiteService.ProcessFilesAsync11();
+                                await unitOfWorkService.SiteService.ProcessFilesAsync14();
                             }
                             catch (Exception ex)
                             {
@@ -179,7 +179,7 @@ namespace TLIS_API.BackGroundServices
                         }),
                         Task.Run(async () => {
                             try {
-                                await unitOfWorkService.SiteService.ProcessFilesAsync11();
+                                await unitOfWorkService.SiteService.ProcessFilesAsync15();
                             }
                             catch (Exception ex)
                             {

@@ -8844,7 +8844,13 @@ namespace TLIS_Service.Services
             try
             {
                 Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
-                string fileContent = File.ReadAllText(file);
+
+                string fileContent;
+                using (var reader = new StreamReader(file))
+                {
+                    fileContent = await reader.ReadToEndAsync();
+                }
+
                 var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
 
                 // معالجة البيانات هنا
@@ -8859,6 +8865,7 @@ namespace TLIS_Service.Services
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
             }
+
         }
         public async Task ProcessFilesAsync2()
         {
