@@ -1797,37 +1797,33 @@ namespace TLIS_Service.Services
         {
             try
             {
-                // استعلام غير متزامن لتحسين الأداء
-                var allSiteStatus = await _context.SiteDetailsView.ToListAsync(); // تحسن الأداء مع البيانات الكبيرة
+                var allSiteStatus = await _context.SiteDetailsView.ToListAsync();
 
-                // تحديد اسم الملف
                 string fileName = "SiteDetails.xlsx";
-                string contentRootPath = _configuration["StoreFiles"]; // حدد مسار الملفات بناءً على إعداداتك
+                string contentRootPath = _configuration["StoreFiles"];
                 string downloadFolder = Path.Combine(contentRootPath, "SitesStatus");
-              
+
                 if (!Directory.Exists(downloadFolder))
                 {
-                    DirectoryInfo di = Directory.CreateDirectory(downloadFolder);
-
+                    Directory.CreateDirectory(downloadFolder);
                 }
-                // المسار الكامل للملف
+
                 string fullPath = Path.Combine(downloadFolder, fileName);
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 using (var package = new ExcelPackage())
                 {
-                    // إضافة ورقة جديدة
                     var worksheet = package.Workbook.Worksheets.Add("SitesStatus");
 
-                    // إضافة الأعمدة
-                    worksheet.Cells[1, 1].Value = "SiteCode";
-                    worksheet.Cells[1, 2].Value = "SiteName";
-                    worksheet.Cells[1, 3].Value = "PlanType";
-                    worksheet.Cells[1, 4].Value = "CollectDataStatus";
-                    worksheet.Cells[1, 5].Value = "MWMdStatus";
-                    worksheet.Cells[1, 6].Value = "RadioMdStatus";
-                    worksheet.Cells[1, 7].Value = "PowerMdStatus";
+                    // إضافة أسماء الأعمدة
+                    string[] headers = { "SiteCode", "SiteName", "PlanType", "CollectDataStatus", "MWMDStatus", "RadioMDStatus", "PowerMDStatus",
+                "CollectDataPendingType", "MWMDPendingType", "RadioMDPendingType", "PowerMDPendingType",
+                "MWValidationRemark", "RadioValidationRemark", "PowerValidationRemark", "userName" };
 
-                    // تعبئة البيانات بشكل مباشر
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        worksheet.Cells[1, i + 1].Value = headers[i];
+                    }
+
                     int row = 2;
                     foreach (var site in allSiteStatus)
                     {
@@ -1835,26 +1831,32 @@ namespace TLIS_Service.Services
                         worksheet.Cells[row, 2].Value = site.SiteName;
                         worksheet.Cells[row, 3].Value = site.PlanType;
                         worksheet.Cells[row, 4].Value = site.CollectDataStatus;
-                        worksheet.Cells[row, 5].Value = site.MWMdStatus;
-                        worksheet.Cells[row, 6].Value = site.RadioMdStatus;
-                        worksheet.Cells[row, 7].Value = site.PowerMdStatus;
+                        worksheet.Cells[row, 5].Value = site.MWMDStatus;
+                        worksheet.Cells[row, 6].Value = site.RadioMDStatus;
+                        worksheet.Cells[row, 7].Value = site.PowerMDStatus;
+                        worksheet.Cells[row, 8].Value = site.CollectDataPendingType;
+                        worksheet.Cells[row, 9].Value = site.MWMDPendingType;
+                        worksheet.Cells[row, 10].Value = site.RadioMDPendingType;
+                        worksheet.Cells[row, 11].Value = site.PowerMDPendingType;
+                        worksheet.Cells[row, 12].Value = site.MWValidationRemark;
+                        worksheet.Cells[row, 13].Value = site.RadioValidationRemark;
+                        worksheet.Cells[row, 14].Value = site.PowerValidationRemark;
+                        worksheet.Cells[row, 15].Value = site.userName;
                         row++;
                     }
 
-                    // حفظ الملف إلى المسار المحدد
                     FileInfo file = new FileInfo(fullPath);
                     package.SaveAs(file);
                 }
 
-                // إرجاع المسار الكامل للملف كاستجابة
                 return new Response<string>(true, fullPath, null, null, (int)Helpers.Constants.ApiReturnCode.success);
             }
             catch (Exception err)
             {
-                // إذا حدث خطأ، إرجاع رسالة
                 return new Response<string>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+
 
         public List<SiteViewModel> GetAllSitesWithoutPaginationForWorkFlow()
         {
