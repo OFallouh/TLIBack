@@ -329,7 +329,7 @@ namespace TLIS_Service.Services
                             SiteSelected.pendingTypePowerMd = (int?)siteDetailsObject.PowerMd.PendingType;
                             SiteSelected.PowerVStatusPowerMd = (int?)siteDetailsObject.PowerMd.PowerValidationStatus;
                             SiteSelected.PowerVRemarkPowerMd = siteDetailsObject.PowerMd.PowerValidationRemark;
-                            SiteSelected.UserName = siteDetailsObject.PowerMd.UserName;
+                            SiteSelected.UserName = UserName;
 
                             _unitOfWork.SiteRepository.UpdateWithHInstallationSiteStatus(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode,3);
                             _unitOfWork.SaveChanges();
