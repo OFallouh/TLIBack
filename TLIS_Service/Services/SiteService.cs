@@ -8851,11 +8851,11 @@ namespace TLIS_Service.Services
                     fileContent = await reader.ReadToEndAsync();
                 }
 
-                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+                //var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
 
-                // معالجة البيانات هنا
-                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
-                await Task.WhenAll(tasks);
+                //// معالجة البيانات هنا
+                //var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                //await Task.WhenAll(tasks);
 
                 // حذف الملف بعد معالجته
                 File.Delete(file);
@@ -9441,6 +9441,28 @@ namespace TLIS_Service.Services
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
             }
         }
+
+
+        public async Task<string> GetSMIS_SiteTest()
+        {
+            try
+            {
+                string desktopPath = _configuration["SMISFile"];
+                string fileName = $"Batch_{1}.json";
+                string filePath = Path.Combine(desktopPath, fileName);
+
+                // كتابة ملف JSON فارغ أو يحتوي على بيانات افتراضية
+                string jsonData = "{}"; // محتوى JSON افتراضي
+                await File.WriteAllTextAsync(filePath, jsonData);
+
+                return "تمت العملية بنجاح ✅";
+            }
+            catch (Exception ex)
+            {
+                return $"خطأ أثناء تنفيذ العملية ❌: {ex.Message}";
+            }
+        }
+
         public async Task ProcessFilesAsyncTest(string directoryPath)
         {
             // تأكد من أن المسار صحيح
