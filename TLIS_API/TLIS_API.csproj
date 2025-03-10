@@ -44,6 +44,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="BackGroundServices\NewFolder\" />
     <Folder Include="Helpers\CustomMedia\" />
     <Folder Include="Logs\" />
     <Folder Include="NewFolder\" />

@@ -8872,6 +8872,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync1", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
 
         }
@@ -8914,6 +8915,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync2", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
         public async Task ProcessFilesAsync3()
@@ -8955,6 +8957,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync3", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
         public async Task ProcessFilesAsync4()
@@ -8996,6 +8999,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync4", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
         public async Task ProcessFilesAsync5()
@@ -9037,6 +9041,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync5", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
         public async Task ProcessFilesAsync6()
@@ -9078,6 +9083,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync6", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
         public async Task ProcessFilesAsync7()
@@ -9119,6 +9125,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync7", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
         public async Task ProcessFilesAsync8()
@@ -9160,6 +9167,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync8", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
         public async Task ProcessFilesAsync9()
@@ -9201,6 +9209,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync9", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
         public async Task ProcessFilesAsync10()
@@ -9242,6 +9251,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync10", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
         public async Task ProcessFilesAsync11()
@@ -9283,6 +9293,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync11", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
         public async Task ProcessFilesAsync12()
@@ -9324,6 +9335,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync12", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
         public async Task ProcessFilesAsync13()
@@ -9365,6 +9377,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync13", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
         public async Task ProcessFilesAsync14()
@@ -9406,6 +9419,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync14", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
         public async Task ProcessFilesAsync15()
@@ -9447,6 +9461,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync15", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
 
@@ -9576,6 +9591,7 @@ namespace TLIS_Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ أثناء معالجة الموقع {item.Sitecode}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessSiteDataAsync", _context);  // تسجيل الخطأ في قاعدة البيانات
                 throw;
             }
         }
@@ -9646,7 +9662,31 @@ namespace TLIS_Service.Services
             await _context.SaveChangesAsync();
             return newLocation.Id;
         }
+        private async Task LogErrorToDb(Exception ex, string methodName, ApplicationDbContext context)
+        {
+            try
+            {
+                var errorRecord = new TLIimportSheet
+                {
+                    UniqueName = Guid.NewGuid().ToString(),
+                    SheetName = methodName,
+                    RefTable = "N/A",
+                    IsLib = false,
+                    ErrMsg = ex.Message,
+                    CreatedAt = DateTime.UtcNow,
+                    IsDeleted = false
+                };
 
+                context.TLIimportSheets.Add(errorRecord);
+                await context.SaveChangesAsync();
+
+                Console.WriteLine($"📝 تم تسجيل الخطأ في الجدول: {methodName} - {ex.Message}");
+            }
+            catch (Exception logEx)
+            {
+                Console.WriteLine($"⚠️ فشل تسجيل الخطأ في الجدول: {logEx.Message}");
+            }
+        }
 
 
 
