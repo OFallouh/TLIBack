@@ -32,7 +32,7 @@ namespace TLIS_API.BackGroundServices
                         Console.WriteLine("🔹 بدء تنفيذ جميع العمليات بالتسلسل...");
 
                         // تنفيذ العمليات واحدة تلو الأخرى مع تسجيل أي أخطاء في الجدول
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.GetSMIS_SiteTest(), "GetSMIS_SiteTest", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.GetSMIS_Site(), "GetSMIS_Site", _context);
                         await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync1(), "ProcessFilesAsync1", _context);
                         await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync2(), "ProcessFilesAsync2", _context);
                         await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync3(), "ProcessFilesAsync3", _context);
