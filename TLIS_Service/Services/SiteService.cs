@@ -242,6 +242,7 @@ namespace TLIS_Service.Services
                 {
                     var OldSiteSelected = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == siteDetailsObject.SiteCode.ToLower());
                     var SiteSelected = _context.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() == siteDetailsObject.SiteCode.ToLower());
+                    var UserName = _context.TLIuser.FirstOrDefault(x => x.Id == UserId).UserName;
                     if (SiteSelected != null)
                     {
                         if (siteDetailsObject.PlanType != null)
@@ -262,6 +263,7 @@ namespace TLIS_Service.Services
                                     SiteSelected.RadioVRemarkCollectData = siteDetailsObject.CollectData.RadioValidationRemark;
                                     SiteSelected.PowerVStatusCollectData = (int?)siteDetailsObject.CollectData.PowerValidationStatus;
                                     SiteSelected.PowerVRemarkCollectData = siteDetailsObject.CollectData.PowerValidationRemark;
+                                    SiteSelected.UserName = UserName;
                                 }
                                 else if (item == Enums.PlanType.MWMD)
                                 {
@@ -271,6 +273,7 @@ namespace TLIS_Service.Services
                                     SiteSelected.pendingTypeMWMd = (int?)siteDetailsObject.MWMd.PendingType;
                                     SiteSelected.MWValidationStatusMWMd = (int?)siteDetailsObject.MWMd.MwValidationStatus;
                                     SiteSelected.MWValidationRemarkMWMd = siteDetailsObject.MWMd.MwValidationRemark;
+                                    SiteSelected.UserName = UserName;
                                 }
                                 else if (item == Enums.PlanType.RadioMD)
                                 {
@@ -280,6 +283,7 @@ namespace TLIS_Service.Services
                                     SiteSelected.pendingTypeRadioMd = (int?)siteDetailsObject.RadioMd.PendingType;
                                     SiteSelected.RadioVStatusRadioMd = (int?)siteDetailsObject.RadioMd.RadioValidationStatus;
                                     SiteSelected.RadioVRemarkRadioMd = siteDetailsObject.RadioMd.RadioValidationRemark;
+                                    SiteSelected.UserName = UserName;
                                 }
                                 else if (item == Enums.PlanType.PowerMD)
                                 {
@@ -289,6 +293,7 @@ namespace TLIS_Service.Services
                                     SiteSelected.pendingTypePowerMd = (int?)siteDetailsObject.PowerMd.PendingType;
                                     SiteSelected.PowerVStatusPowerMd = (int?)siteDetailsObject.PowerMd.PowerValidationStatus;
                                     SiteSelected.PowerVRemarkPowerMd = siteDetailsObject.PowerMd.PowerValidationRemark;
+                                    SiteSelected.UserName = UserName;
                                 }
                                 _unitOfWork.SiteRepository.UpdateWithHInstallationSiteStatus(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode,3);
                                 _unitOfWork.SaveChanges();
@@ -324,6 +329,8 @@ namespace TLIS_Service.Services
                             SiteSelected.pendingTypePowerMd = (int?)siteDetailsObject.PowerMd.PendingType;
                             SiteSelected.PowerVStatusPowerMd = (int?)siteDetailsObject.PowerMd.PowerValidationStatus;
                             SiteSelected.PowerVRemarkPowerMd = siteDetailsObject.PowerMd.PowerValidationRemark;
+                            SiteSelected.UserName = siteDetailsObject.PowerMd.UserName;
+
                             _unitOfWork.SiteRepository.UpdateWithHInstallationSiteStatus(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode,3);
                             _unitOfWork.SaveChanges();
                         }
@@ -343,6 +350,7 @@ namespace TLIS_Service.Services
                 }
             }
         }
+
         public Response<SiteDetailsObject> GetSiteDetails(string siteCode)
         {
             try

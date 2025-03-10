@@ -65,6 +65,7 @@ namespace TLIS_DAL.Models
         public string DescriptionRadioMd { get; set; }
         public string DescriptionPowerMd { get; set; }
         public string DescriptionMWMd { get; set; }
+        public string UserName { get; set; }
         public IEnumerable<TLIcivilSiteDate> CivilSiteDate { get; set; }
         public IEnumerable<TLIotherInSite> OthersInSite { get; set; }
         public IEnumerable<TLIcivilSupportDistance> civilSupportDistances { get; set; }
