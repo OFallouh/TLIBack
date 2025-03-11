@@ -956,7 +956,8 @@ namespace TLIS_Service.Services
                             
                             UserEntity.Active = OldUserInfo.Active;
                             UserEntity.Deleted = false;
-                            _unitOfWork.UserRepository.Update(UserEntity);
+                            _unitOfWork.UserRepository.UpdateWithH(UserId, null, OldUserInfo, UserEntity, false);
+
                             await _unitOfWork.SaveChangesAsync();
 
                    
@@ -978,7 +979,7 @@ namespace TLIS_Service.Services
                                 TLIgroupUser GroupUser = new TLIgroupUser();
                                 GroupUser.userId = UserEntity.Id;
                                 GroupUser.groupId = GroupId;
-                                _unitOfWork.GroupUserRepository.Add(GroupUser);
+                                _unitOfWork.GroupUserRepository.AddWithH(UserId,null,GroupUser,false);
                             }
 
                             await _unitOfWork.SaveChangesAsync();
@@ -994,7 +995,7 @@ namespace TLIS_Service.Services
                             TLIuser UserEntity = _mapper.Map<TLIuser>(model);
                             UserEntity.Active = OldUserInfo.Active;
                             UserEntity.Deleted = false;
-                            _unitOfWork.UserRepository.Update(UserEntity);
+                            _unitOfWork.UserRepository.UpdateWithH(UserId, null, OldUserInfo, UserEntity, false);
                             await _unitOfWork.SaveChangesAsync();
 
                             List<int> UserGroups = _unitOfWork.GroupUserRepository.GetWhere(x =>
@@ -1014,7 +1015,7 @@ namespace TLIS_Service.Services
                                 TLIgroupUser GroupUser = new TLIgroupUser();
                                 GroupUser.userId = model.Id;
                                 GroupUser.groupId = GroupId;
-                                _unitOfWork.GroupUserRepository.Add(GroupUser);
+                                _unitOfWork.GroupUserRepository.AddWithH(UserId, null, GroupUser, false);
                             }
 
                             await _unitOfWork.SaveChangesAsync();
