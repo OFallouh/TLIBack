@@ -6473,7 +6473,7 @@ namespace TLIS_Service.Services
                        x.allLoadInst.radioAntenna.radioAntennaLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.radioAntenna).ToList();
                         var OldRadioAntennaLibrary = _unitOfWork.RadioAntennaLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         if (CivilLoad != null && CivilLoad.Count > 0)
-                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<AllItemAttributes>(false, null, null, "Can not Change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         var NewRadioAntennaEntity = _unitOfWork.RadioAntennaLibraryRepository.GetByID(Id);
                         NewRadioAntennaEntity.Active = !(NewRadioAntennaEntity.Active);
                         _unitOfWork.RadioAntennaLibraryRepository.UpdateWithH(UserId,null, OldRadioAntennaLibrary, NewRadioAntennaEntity,false);
@@ -6485,7 +6485,7 @@ namespace TLIS_Service.Services
                         x.allLoadInst.radioOther.radioOtherLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.radioOther).ToList();
                         var OldRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         if (CivilLoad != null && CivilLoad.Count > 0)
-                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<AllItemAttributes>(false, null, null, "Can not Change status  this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
                         TLIradioOtherLibrary NewRadioOtherLibrary = _unitOfWork.RadioOtherLibraryRepository.GetByID(Id);
                       
@@ -6499,7 +6499,7 @@ namespace TLIS_Service.Services
                          x.allLoadInst.radioRRU.radioRRULibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.radioRRU).ToList();
                         var OldRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);
                         if (CivilLoad != null && CivilLoad.Count > 0)
-                            return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<AllItemAttributes>(false, null, null, "Can not Change status  this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         TLIradioRRULibrary NewRadioRRULibrary = _unitOfWork.RadioRRULibraryRepository.GetByID(Id);
                  
                         NewRadioRRULibrary.Active = !(NewRadioRRULibrary.Active);

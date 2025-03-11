@@ -47,6 +47,10 @@ using TLIS_DAL.ViewModels.SiteDTOs;
 using System.Linq.Expressions;
 using System.Globalization;
 using Newtonsoft.Json;
+using DocumentFormat.OpenXml.Vml.Spreadsheet;
+using System.Reflection;
+using static TLIS_Repository.Helpers.Constants;
+using DocumentFormat.OpenXml.EMMA;
 namespace TLIS_Service.Services
 {
     public class UserService : IUserService
@@ -102,11 +106,44 @@ namespace TLIS_Service.Services
                                 TablesNameId = TabelNameUser,
                                 UserId = UserId
                             };
-
-
+                           
                             await _dbContext.TLIhistory.AddAsync(AddTablesHistory);
                             await _dbContext.SaveChangesAsync();
-                            transaction.Commit();
+
+                        List<PropertyInfo> Attributes = model.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType ?
+                          (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ?
+                              (x.PropertyType.GetGenericArguments()[0] == typeof(int) || x.PropertyType.GetGenericArguments()[0] == typeof(string) ||
+                               x.PropertyType.GetGenericArguments()[0] == typeof(double) || x.PropertyType.GetGenericArguments()[0] == typeof(float) ||
+                               x.PropertyType.GetGenericArguments()[0] == typeof(Single) || x.PropertyType.GetGenericArguments()[0] == typeof(bool) ||
+                               x.PropertyType.GetGenericArguments()[0] == typeof(DateTime)) : false) :
+                          (x.PropertyType == typeof(int) || x.PropertyType == typeof(double) || x.PropertyType == typeof(string) ||
+                           x.PropertyType == typeof(bool) || x.PropertyType == typeof(DateTime) || x.PropertyType == typeof(float) ||
+                           x.PropertyType == typeof(Single))).ToList();
+
+                        List<TLIhistoryDet> ListOfHistoryDetailsToAdd = new List<TLIhistoryDet>();
+
+                        foreach (PropertyInfo Attribute in Attributes)
+                        {
+                            object NewAttributeValue = Attribute.GetValue(model, null);
+
+                            TLIhistoryDet HistoryDetails = new TLIhistoryDet
+                            {
+                                TablesNameId = TabelNameUser,
+                                RecordId = userId.ToString(),
+                                HistoryId = AddTablesHistory.Id,
+                                AttributeName = Attribute.Name,
+                                NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
+                                AttributeType = AttributeType.Static
+                            };
+
+                            ListOfHistoryDetailsToAdd.Add(HistoryDetails);
+
+
+                        }
+
+                        _dbContext.TLIhistoryDet.AddRange(ListOfHistoryDetailsToAdd);
+                        _dbContext.SaveChanges();
+                        transaction.Commit();
                             return new Response<UserViewModel>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success, 0);
                        
                     }
@@ -165,7 +202,50 @@ namespace TLIS_Service.Services
             }
         }
 
+        private async Task<int> InsertInternalUserAsync(OracleConnection connection, TLIuser model)
+        {
+            var query = @"
+            INSERT INTO ""TLIuser"" 
+            (""FirstName"", ""MiddleName"", ""LastName"", ""Email"", ""MobileNumber"", ""UserName"", 
+             ""Password"", ""UserType"", ""Active"", ""Deleted"", ""ValidateAccount"", ""IsFirstLogin"",""Permissions"")
+            VALUES 
+            (:FirstName, :MiddleName, :LastName, :Email, :MobileNumber, :UserName, 
+             :Password, :UserType, :Active, :Deleted, :ValidateAccount, :IsFirstLogin, :Permissions)
+            RETURNING ""Id"" INTO :UserId";
 
+
+            using (var command = new OracleCommand(query, connection))
+            {
+
+                command.Parameters.Add(new OracleParameter("FirstName", OracleDbType.Varchar2)).Value = (object)model.FirstName ?? DBNull.Value;
+                command.Parameters.Add(new OracleParameter("MiddleName", OracleDbType.Varchar2)).Value = (object)model.MiddleName ?? DBNull.Value;
+                command.Parameters.Add(new OracleParameter("LastName", OracleDbType.Varchar2)).Value = (object)model.LastName ?? DBNull.Value;
+                command.Parameters.Add(new OracleParameter("Email", OracleDbType.Varchar2)).Value = (object)model.Email ?? DBNull.Value;
+                command.Parameters.Add(new OracleParameter("MobileNumber", OracleDbType.Varchar2)).Value = (object)model.MobileNumber ?? DBNull.Value;
+                command.Parameters.Add(new OracleParameter("UserName", OracleDbType.Varchar2)).Value = model.UserName;
+                command.Parameters.Add(new OracleParameter("Password", OracleDbType.Varchar2)).Value = (object)model.Password ?? DBNull.Value;
+                command.Parameters.Add(new OracleParameter("UserType", OracleDbType.Int32)).Value = model.UserType;
+
+                command.Parameters.Add(new OracleParameter("Active", OracleDbType.Int32)).Value = 1;
+                command.Parameters.Add(new OracleParameter("Deleted", OracleDbType.Int32)).Value = 0;
+                command.Parameters.Add(new OracleParameter("ValidateAccount", OracleDbType.Int32)).Value = 1;
+                command.Parameters.Add(new OracleParameter("IsFirstLogin", OracleDbType.Int32)).Value = 1;
+                command.Parameters.Add(new OracleParameter("Permissions", OracleDbType.Varchar2)).Value = (object)model.Permissions ?? DBNull.Value;
+
+                var userIdParam = new OracleParameter("UserId", OracleDbType.Decimal)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(userIdParam);
+
+                await command.ExecuteNonQueryAsync();
+
+
+                var userIdDecimal = (OracleDecimal)userIdParam.Value;
+                return userIdDecimal.ToInt32();
+
+            }
+        }
 
 
         private async Task InsertPermissionsAsync(OracleConnection connection, int userId, List<string> permissions)
@@ -316,26 +396,72 @@ namespace TLIS_Service.Services
                                     {
                                         return new Response<UserViewModel>(true, null, null, "This user information is insufficient in Active Directory", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
+
+
                                     TLIuser user = new TLIuser();
-                                    user.FirstName = principal.Name.Replace($" {principal.Surname}", "");
-                                    user.MiddleName = principal.MiddleName;
-                                    user.LastName = principal.Surname;
-                                    user.Email = principal.EmailAddress;
-                                    user.MobileNumber = principal.VoiceTelephoneNumber;
-                                    user.UserName = principal.SamAccountName;
-                                    user.IsFirstLogin=true;
+                                    user.FirstName = "";
+                                    user.MiddleName = "principal.MiddleName";
+                                    user.LastName = "principal.Surname";
+                                    user.Email =" principal.EmailAddress";
+                                    user.MobileNumber = "principal.VoiceTelephoneNumber";
+                                    user.UserName = addInternalUserDto.UserName;
+                                    user.IsFirstLogin = true;
                                     var tliuser = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == addInternalUserDto.UserName && !x.Deleted);
                                     if (tliuser != null)
                                     {
                                         return new Response<UserViewModel>(false, null, null, $"This User {addInternalUserDto.UserName} is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                     user.Domain = null;
-                                    user.AdGUID = principal.Guid.ToString();
+                                    user.AdGUID = "principal.Guid.ToString()";
                                     user.UserType = 1;
+                                    user.Password = " ";
                                     user.Permissions = addInternalUserDto.Permissions;
-                                    await _unitOfWork.UserRepository.AddAsyncWithH(UserId, null, user);
-                                    await _unitOfWork.SaveChangesAsync();
 
+                                    var TabelNameUser = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIuser").Id;
+                                    TLIhistory AddTablesHistory = new TLIhistory
+                                    {
+                                        HistoryTypeId = 1,
+                                        RecordId = UserId.ToString(),
+                                        TablesNameId = TabelNameUser,
+                                        UserId = UserId
+                                    };
+
+                                    await _dbContext.TLIhistory.AddAsync(AddTablesHistory);
+                                    await _dbContext.SaveChangesAsync();
+                                    var userId = await InsertInternalUserAsync(connection, user);
+                                    List<PropertyInfo> Attributes = user.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType ?
+                                      (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ?
+                                          (x.PropertyType.GetGenericArguments()[0] == typeof(int) || x.PropertyType.GetGenericArguments()[0] == typeof(string) ||
+                                           x.PropertyType.GetGenericArguments()[0] == typeof(double) || x.PropertyType.GetGenericArguments()[0] == typeof(float) ||
+                                           x.PropertyType.GetGenericArguments()[0] == typeof(Single) || x.PropertyType.GetGenericArguments()[0] == typeof(bool) ||
+                                           x.PropertyType.GetGenericArguments()[0] == typeof(DateTime)) : false) :
+                                      (x.PropertyType == typeof(int) || x.PropertyType == typeof(double) || x.PropertyType == typeof(string) ||
+                                       x.PropertyType == typeof(bool) || x.PropertyType == typeof(DateTime) || x.PropertyType == typeof(float) ||
+                                       x.PropertyType == typeof(Single))).ToList();
+
+                                    List<TLIhistoryDet> ListOfHistoryDetailsToAdd = new List<TLIhistoryDet>();
+
+                                    foreach (PropertyInfo Attribute in Attributes)
+                                    {
+                                        object NewAttributeValue = Attribute.GetValue(user, null);
+
+                                        TLIhistoryDet HistoryDetails = new TLIhistoryDet
+                                        {
+                                            TablesNameId = TabelNameUser,
+                                            RecordId = userId.ToString(),
+                                            HistoryId = AddTablesHistory.Id,
+                                            AttributeName = Attribute.Name,
+                                            NewValue = NewAttributeValue != null ? NewAttributeValue.ToString() : null,
+                                            AttributeType = AttributeType.Static
+                                        };
+
+                                        ListOfHistoryDetailsToAdd.Add(HistoryDetails);
+
+
+                                    }
+
+                                    _dbContext.TLIhistoryDet.AddRange(ListOfHistoryDetailsToAdd);
+                                    _dbContext.SaveChanges();
                                 }
                                 else
                                 {

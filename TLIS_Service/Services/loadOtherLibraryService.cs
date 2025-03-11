@@ -838,7 +838,7 @@ namespace TLIS_Service.Services
                        x.allLoadInst.loadOther.loadOtherLibraryId == Id, x => x.allLoadInst, x => x.allLoadInst.loadOther).ToList();
 
                     if (CivilLoad != null && CivilLoad.Count > 0)
-                        return new Response<AllItemAttributes>(false, null, null, "Can not delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<AllItemAttributes>(false, null, null, "Can not Change status  this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
 
 
                     var LoadOtherLibraryEntity = _unitOfWork.LoadOtherLibraryRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == Id);

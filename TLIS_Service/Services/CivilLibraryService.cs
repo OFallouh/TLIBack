@@ -5729,7 +5729,7 @@ namespace TLIS_Service.Services
                         == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithLegs, x => x.allCivilInst.civilWithLegs.CivilWithLegsLib).ToList();
                         var NewCivilWithLeg = _unitOfWork.CivilWithLegLibraryRepository.GetWhereFirst(x => x.Id == Id);
                         if (UsedCivil != null && UsedCivil.Count>0)
-                            return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<AllItemAttributes>(false, null, null, "Can not Delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         
                         else
                         {
@@ -5750,7 +5750,7 @@ namespace TLIS_Service.Services
                          == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilWithoutLeg, x => x.allCivilInst.civilWithoutLeg.CivilWithoutlegsLib).ToList();
                         var CivilWithoutlib = _unitOfWork.CivilWithoutLegLibraryRepository.GetWhereFirst(x => x.Id == Id);
                         if (UsedCivil != null && UsedCivil.Count > 0)
-                            return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<AllItemAttributes>(false, null, null, "Can not Delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         
                         else
                         {
@@ -5771,7 +5771,7 @@ namespace TLIS_Service.Services
                          == Id && !x.Dismantle, x => x.allCivilInst, x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilNonSteel.CivilNonsteelLibrary).ToList();
                         var CivilNonSteellib = _unitOfWork.CivilNonSteelLibraryRepository.GetWhereFirst(x => x.Id == Id);
                         if (UsedCivil != null && UsedCivil.Count > 0)
-                            return new Response<AllItemAttributes>(false, null, null, "Can not change status this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
+                            return new Response<AllItemAttributes>(false, null, null, "Can Delete this item because is used", (int)Helpers.Constants.ApiReturnCode.fail);
                         
                         else
                         {
