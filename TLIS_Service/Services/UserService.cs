@@ -124,6 +124,10 @@ namespace TLIS_Service.Services
 
                         foreach (PropertyInfo Attribute in Attributes)
                         {
+                            // استثناء الحقل Permissions
+                            if (Attribute.Name == "Permissions")
+                                continue; // تخطي هذا الحقل
+
                             object NewAttributeValue = Attribute.GetValue(model, null);
 
                             TLIhistoryDet HistoryDetails = new TLIhistoryDet
@@ -137,9 +141,8 @@ namespace TLIS_Service.Services
                             };
 
                             ListOfHistoryDetailsToAdd.Add(HistoryDetails);
-
-
                         }
+
 
                         _dbContext.TLIhistoryDet.AddRange(ListOfHistoryDetailsToAdd);
                         _dbContext.SaveChanges();
@@ -443,6 +446,9 @@ namespace TLIS_Service.Services
 
                                     foreach (PropertyInfo Attribute in Attributes)
                                     {
+                                        // استثناء الحقل Permissions
+                                        if (Attribute.Name == "Permissions")
+                                            continue; // تخطي هذا الحقل
                                         object NewAttributeValue = Attribute.GetValue(user, null);
 
                                         TLIhistoryDet HistoryDetails = new TLIhistoryDet
