@@ -1275,6 +1275,8 @@ namespace TLIS_Repository.Base
 
                 foreach (PropertyInfo Attribute in Attributes)
                 {
+                    if (Attribute.Name.Equals("permissions", StringComparison.OrdinalIgnoreCase))
+                        continue;
                     object OldAttributeValue = Attribute.GetValue(OldObject, null);
                     object NewAttributeValue = Attribute.GetValue(NewObject, null);
 
