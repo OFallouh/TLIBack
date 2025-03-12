@@ -55,6 +55,7 @@
     <Folder Include="Services\NewFolder10\" />
     <Folder Include="Services\NewFolder11\" />
     <Folder Include="Services\NewFolder12\" />
+    <Folder Include="Services\NewFolder13\" />
     <Folder Include="Services\NewFolder1\" />
     <Folder Include="Services\NewFolder2\" />
     <Folder Include="Services\NewFolder3\" />
