@@ -32,22 +32,22 @@ namespace TLIS_API.BackGroundServices
                         Console.WriteLine("🔹 بدء تنفيذ جميع العمليات بالتسلسل...");
 
                         // تنفيذ العمليات واحدة تلو الأخرى مع تسجيل أي أخطاء في الجدول
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.GetSMIS_Site(), "GetSMIS_Site", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync1(), "ProcessFilesAsync1", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync2(), "ProcessFilesAsync2", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync3(), "ProcessFilesAsync3", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync4(), "ProcessFilesAsync4", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync5(), "ProcessFilesAsync5", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.GetSMIS_Site(), "GetSMIS_Site", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync1(), "ProcessFilesAsync1", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync2(), "ProcessFilesAsync2", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync3(), "ProcessFilesAsync3", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync4(), "ProcessFilesAsync4", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync5(), "ProcessFilesAsync5", _context);
                         await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync6(), "ProcessFilesAsync6", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync7(), "ProcessFilesAsync7", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync8(), "ProcessFilesAsync8", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync9(), "ProcessFilesAsync9", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync10(), "ProcessFilesAsync10", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync11(), "ProcessFilesAsync11", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync12(), "ProcessFilesAsync12", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync13(), "ProcessFilesAsync13", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync14(), "ProcessFilesAsync14", _context);
-                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync15(), "ProcessFilesAsync15", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync7(), "ProcessFilesAsync7", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync8(), "ProcessFilesAsync8", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync9(), "ProcessFilesAsync9", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync10(), "ProcessFilesAsync10", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync11(), "ProcessFilesAsync11", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync12(), "ProcessFilesAsync12", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync13(), "ProcessFilesAsync13", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync14(), "ProcessFilesAsync14", _context);
+                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync15(), "ProcessFilesAsync15", _context);
 
                         Console.WriteLine("✅ جميع العمليات تم تنفيذها بنجاح.");
                     }

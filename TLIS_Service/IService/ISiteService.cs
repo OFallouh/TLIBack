@@ -47,9 +47,7 @@ namespace TLIS_Service.IService
         Task ProcessFilesAsync13();
         Task ProcessFilesAsync14();
         Task ProcessFilesAsync15();
-        Task<string> GetSMIS_SiteTest();
         Task<Response<string>> ExportSitesStatusToExcel();
-        Task ProcessFilesAsyncTest(string directoryPath);
         Response<IEnumerable<SiteViewModelForGetAll>> GetSiteIntegration(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite);
         Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectLists> filters = null);
         Response<SiteInfo> GetSiteInfo(string SiteCode);
