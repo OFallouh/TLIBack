@@ -9505,7 +9505,7 @@ namespace TLIS_Service.Services
                 }
 
                 // تقسيم البيانات إلى 4 أجزاء كل منها يحتوي على 25 عنصرًا
-                int batchSize = 25;
+                int batchSize = 5;
                 int totalParts = (int)Math.Ceiling((double)sites.Count / batchSize);
                 List<string> partFiles = new List<string>();
 
