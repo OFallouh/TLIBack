@@ -632,8 +632,8 @@ namespace TLIS_Service.Services
 
 
         private IQueryable<T> ApplyFilterUser<T>(
-         IQueryable<T> query,
-         FilterRequest filterRequest)
+    IQueryable<T> query,
+    FilterRequest filterRequest)
         {
             if (filterRequest == null || filterRequest.Filters == null || !filterRequest.Filters.Any())
                 return query;
@@ -644,40 +644,44 @@ namespace TLIS_Service.Services
                 var filterValue = filter.Value.Value;
                 var matchMode = filter.Value.MatchMode;
 
-                // التحقق إذا كانت القيمة من نوع JsonElement
+                // التحقق مما إذا كانت القيمة من نوع JsonElement
                 if (filterValue is JsonElement jsonElement)
                 {
-                    if (jsonElement.ValueKind == JsonValueKind.Null || string.IsNullOrEmpty(jsonElement.GetString()))
+                    switch (jsonElement.ValueKind)
                     {
-                        // إذا كانت القيمة null أو فارغة، يتم تجاهل هذا الفلتر
-                        continue;
+                        case JsonValueKind.String:
+                            filterValue = jsonElement.GetString();
+                            break;
+                        case JsonValueKind.Number:
+                            filterValue = jsonElement.GetInt32(); // أو jsonElement.GetDouble() حسب الحاجة
+                            break;
+                        case JsonValueKind.True:
+                        case JsonValueKind.False:
+                            filterValue = jsonElement.GetBoolean();
+                            break;
+                        default:
+                            continue; // تجاهل القيم غير المدعومة
                     }
-
-                    // تحويل JsonElement إلى القيمة الفعلية إذا كانت صالحة
-                    filterValue = jsonElement.GetString();
                 }
 
-                // التحقق من إذا كانت القيمة null أو فارغة بعد التحويل
-                if (filterValue == null || string.IsNullOrEmpty(filterValue.ToString()))
-                {
-                    // تجاهل الفلاتر التي تحتوي على قيم فارغة أو null
+                // التأكد من أن القيمة ليست null أو فارغة بعد التحويل
+                if (filterValue == null)
                     continue;
-                }
 
-                if (fieldName.ToLower() == "username" || fieldName.ToLower() == "email" )
+                if (fieldName.ToLower() == "username" || fieldName.ToLower() == "email")
                 {
-                    query = ApplyStringFilter(query, fieldName, filterValue, matchMode);
+                    query = ApplyStringFilter(query, fieldName, filterValue.ToString(), matchMode);
                 }
-                else if (fieldName.ToLower() == "active")
+                else if (fieldName.ToLower() == "active" && filterValue is bool boolValue)
                 {
-                    query = ApplyBoolFilter(query, fieldName, filterValue, matchMode);
+                    query = ApplyBoolFilter(query, fieldName, boolValue, matchMode);
                 }
-
             }
 
             return query;
         }
-     
+
+
 
 
         public Response<List<UserViewModel>> GetExternalUsersByName(string UserName, ParameterPagination parameterPagination)
