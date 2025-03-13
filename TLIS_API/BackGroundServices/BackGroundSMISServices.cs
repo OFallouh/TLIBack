@@ -32,22 +32,32 @@ namespace TLIS_API.BackGroundServices
                         Console.WriteLine("🔹 بدء تنفيذ جميع العمليات بالتسلسل...");
 
                         // تنفيذ العمليات واحدة تلو الأخرى مع تسجيل أي أخطاء في الجدول
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.GetSMIS_Site(), "GetSMIS_Site", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync1(), "ProcessFilesAsync1", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync2(), "ProcessFilesAsync2", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync3(), "ProcessFilesAsync3", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync4(), "ProcessFilesAsync4", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync5(), "ProcessFilesAsync5", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.GetSMIS_Site(), "GetSMIS_Site", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync1(), "ProcessFilesAsync1", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync2(), "ProcessFilesAsync2", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync3(), "ProcessFilesAsync3", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync4(), "ProcessFilesAsync4", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync5(), "ProcessFilesAsync5", _context);
                         await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync6(), "ProcessFilesAsync6", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync7(), "ProcessFilesAsync7", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync8(), "ProcessFilesAsync8", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync9(), "ProcessFilesAsync9", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync10(), "ProcessFilesAsync10", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync11(), "ProcessFilesAsync11", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync12(), "ProcessFilesAsync12", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync13(), "ProcessFilesAsync13", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync14(), "ProcessFilesAsync14", _context);
-                        //await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync15(), "ProcessFilesAsync15", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync7(), "ProcessFilesAsync7", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync8(), "ProcessFilesAsync8", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync9(), "ProcessFilesAsync9", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync10(), "ProcessFilesAsync10", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync11(), "ProcessFilesAsync11", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync12(), "ProcessFilesAsync12", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync13(), "ProcessFilesAsync13", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync14(), "ProcessFilesAsync14", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync15(), "ProcessFilesAsync15", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync16(), "ProcessFilesAsync16", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync17(), "ProcessFilesAsync17", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync18(), "ProcessFilesAsync18", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync19(), "ProcessFilesAsync19", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync20(), "ProcessFilesAsync20", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync21(), "ProcessFilesAsync21", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync22(), "ProcessFilesAsync22", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync23(), "ProcessFilesAsync23", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync24(), "ProcessFilesAsync24", _context);
+                        await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync25(), "ProcessFilesAsync25", _context);
 
                         Console.WriteLine("✅ جميع العمليات تم تنفيذها بنجاح.");
                     }

@@ -9046,48 +9046,48 @@ namespace TLIS_Service.Services
                 await LogErrorToDb(ex, "ProcessFilesAsync5", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
-        //public async Task ProcessFilesAsync6()
-        //{
-        //    string directoryPath = _configuration["SMISFile"];
-        //    // تأكد من أن المسار صحيح
-        //    directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
-        //    directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+        public async Task ProcessFilesAsync6()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
 
-        //    if (!Directory.Exists(directoryPath))
-        //    {
-        //        Console.WriteLine("المسار غير موجود.");
-        //        return;
-        //    }
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
 
-        //    // البحث عن الملف الذي اسمه بالضبط "Batch_1"
-        //    var file = Directory.GetFiles(directoryPath, "Batch_6*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_6*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
 
-        //    if (file == null)
-        //    {
-        //        Console.WriteLine("لم يتم العثور على الملف Batch_6 في المسار.");
-        //        return;
-        //    }
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_6 في المسار.");
+                return;
+            }
 
-        //    try
-        //    {
-        //        Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
-        //        string fileContent = File.ReadAllText(file);
-        //        var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
 
-        //        // معالجة البيانات هنا
-        //        var tasks = sites.Select(item => ProcessSiteDataAsync(item));
-        //        await Task.WhenAll(tasks);
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
 
-        //        // حذف الملف بعد معالجته
-        //        File.Delete(file);
-        //        Console.WriteLine($"✅ تم حذف الملف: {file}");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
-        //        await LogErrorToDb(ex, "ProcessFilesAsync6", _context);  // تسجيل الخطأ في قاعدة البيانات
-        //    }
-        //}
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync6", _context);  // تسجيل الخطأ في قاعدة البيانات
+            }
+        }
         public async Task ProcessFilesAsync7()
         {
             string directoryPath = _configuration["SMISFile"];
@@ -9312,11 +9312,11 @@ namespace TLIS_Service.Services
             }
 
             // البحث عن الملف الذي اسمه بالضبط "Batch_1"
-            var file = Directory.GetFiles(directoryPath, "Batch_11*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+            var file = Directory.GetFiles(directoryPath, "Batch_12*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
 
             if (file == null)
             {
-                Console.WriteLine("لم يتم العثور على الملف Batch_11 في المسار.");
+                Console.WriteLine("لم يتم العثور على الملف Batch_12 في المسار.");
                 return;
             }
 
@@ -9354,11 +9354,11 @@ namespace TLIS_Service.Services
             }
 
             // البحث عن الملف الذي اسمه بالضبط "Batch_1"
-            var file = Directory.GetFiles(directoryPath, "Batch_11*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+            var file = Directory.GetFiles(directoryPath, "Batch_13*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
 
             if (file == null)
             {
-                Console.WriteLine("لم يتم العثور على الملف Batch_11 في المسار.");
+                Console.WriteLine("لم يتم العثور على الملف Batch_13 في المسار.");
                 return;
             }
 
@@ -9396,11 +9396,11 @@ namespace TLIS_Service.Services
             }
 
             // البحث عن الملف الذي اسمه بالضبط "Batch_1"
-            var file = Directory.GetFiles(directoryPath, "Batch_11*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+            var file = Directory.GetFiles(directoryPath, "Batch_14*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
 
             if (file == null)
             {
-                Console.WriteLine("لم يتم العثور على الملف Batch_11 في المسار.");
+                Console.WriteLine("لم يتم العثور على الملف Batch_14 في المسار.");
                 return;
             }
 
@@ -9438,11 +9438,11 @@ namespace TLIS_Service.Services
             }
 
             // البحث عن الملف الذي اسمه بالضبط "Batch_1"
-            var file = Directory.GetFiles(directoryPath, "Batch_11*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+            var file = Directory.GetFiles(directoryPath, "Batch_15*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
 
             if (file == null)
             {
-                Console.WriteLine("لم يتم العثور على الملف Batch_11 في المسار.");
+                Console.WriteLine("لم يتم العثور على الملف Batch_15 في المسار.");
                 return;
             }
 
@@ -9466,14 +9466,12 @@ namespace TLIS_Service.Services
                 await LogErrorToDb(ex, "ProcessFilesAsync15", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
-
-        public async Task ProcessFilesAsync6()
+        public async Task ProcessFilesAsync16()
         {
             string directoryPath = _configuration["SMISFile"];
-
-            // تنظيف المسار
-            directoryPath = directoryPath.Trim();
-            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
 
             if (!Directory.Exists(directoryPath))
             {
@@ -9481,89 +9479,443 @@ namespace TLIS_Service.Services
                 return;
             }
 
-            // البحث عن الملف الأصلي
-            var file = Directory.GetFiles(directoryPath, "Batch_6_Part2*.json").FirstOrDefault();
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_16*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
 
             if (file == null)
             {
-                Console.WriteLine("لم يتم العثور على الملف Batch_6_Part2 في المسار.");
+                Console.WriteLine("لم يتم العثور على الملف Batch_16 في المسار.");
                 return;
             }
 
             try
             {
-                Console.WriteLine($"📂 مسار الملف: {file}");
-
-                // قراءة البيانات من الملف الأصلي
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
                 string fileContent = File.ReadAllText(file);
                 var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
 
-                if (sites == null || sites.Count == 0)
-                {
-                    Console.WriteLine("⚠️ الملف لا يحتوي على بيانات صالحة.");
-                    return;
-                }
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
 
-                // تقسيم البيانات إلى 4 أجزاء كل منها يحتوي على 25 عنصرًا
-                int batchSize = 5;
-                int totalParts = (int)Math.Ceiling((double)sites.Count / batchSize);
-                List<string> partFiles = new List<string>();
-
-                for (int i = 0; i < totalParts; i++)
-                {
-                    var partData = sites.Skip(i * batchSize).Take(batchSize).ToList();
-                    string newFileName = Path.Combine(directoryPath, $"Batch_6_Part2_{i + 1}.json");
-
-                    File.WriteAllText(newFileName, JsonConvert.SerializeObject(partData, Newtonsoft.Json.Formatting.Indented));
-
-                    Console.WriteLine($"✅ تم إنشاء الملف: {newFileName} (يحتوي على {partData.Count} عنصر)");
-                    partFiles.Add(newFileName);
-                }
-
-                // حذف الملف الأصلي بعد التقسيم
+                // حذف الملف بعد معالجته
                 File.Delete(file);
-                Console.WriteLine($"🗑️ تم حذف الملف الأصلي: {file}");
-
-                // تنفيذ كل ملف على حدة ثم حذفه بعد التنفيذ
-                foreach (var partFile in partFiles)
-                {
-                    Console.WriteLine($"🚀 بدء تنفيذ البيانات من الملف: {partFile}");
-
-                    // قراءة البيانات من الملف المجزأ
-                    string partContent = File.ReadAllText(partFile);
-                    var partSites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(partContent);
-
-                    // تنفيذ البيانات بشكل متسلسل
-                    foreach (var item in partSites)
-                    {
-                        await ProcessSiteDataAsync(item);
-                    }
-
-                    // حذف الملف بعد التنفيذ
-                    File.Delete(partFile);
-                    Console.WriteLine($"🗑️ تم حذف الملف بعد التنفيذ: {partFile}");
-                }
-
-                Console.WriteLine("✅ تمت معالجة جميع الملفات بنجاح!");
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ خطأ أثناء تنفيذ العملية: {ex.Message}");
-                await LogErrorToDb(ex, "ProcessFilesAsync6", _context);
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync15", _context);  // تسجيل الخطأ في قاعدة البيانات
             }
         }
+        public async Task ProcessFilesAsync17()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
 
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
 
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_17*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
 
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_17 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync15", _context);  // تسجيل الخطأ في قاعدة البيانات
+            }
+        }
+        public async Task ProcessFilesAsync18()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_18*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_18 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync15", _context);  // تسجيل الخطأ في قاعدة البيانات
+            }
+        }
+        public async Task ProcessFilesAsync19()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_19*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_19 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync15", _context);  // تسجيل الخطأ في قاعدة البيانات
+            }
+        }
+        public async Task ProcessFilesAsync20()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_20*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_20 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync15", _context);  // تسجيل الخطأ في قاعدة البيانات
+            }
+        }
+        public async Task ProcessFilesAsync21()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_21*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_21 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync15", _context);  // تسجيل الخطأ في قاعدة البيانات
+            }
+        }
+        public async Task ProcessFilesAsync22()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_22*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_22 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync15", _context);  // تسجيل الخطأ في قاعدة البيانات
+            }
+        }
+        public async Task ProcessFilesAsync23()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_23*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_23 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync15", _context);  // تسجيل الخطأ في قاعدة البيانات
+            }
+        }
+        public async Task ProcessFilesAsync24()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_24*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_24 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync15", _context);  // تسجيل الخطأ في قاعدة البيانات
+            }
+        }
+        public async Task ProcessFilesAsync25()
+        {
+            string directoryPath = _configuration["SMISFile"];
+            // تأكد من أن المسار صحيح
+            directoryPath = directoryPath.Trim();  // إزالة المسافات الزائدة
+            directoryPath = directoryPath.Normalize(NormalizationForm.FormC);  // تنظيف المسار
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Console.WriteLine("المسار غير موجود.");
+                return;
+            }
+
+            // البحث عن الملف الذي اسمه بالضبط "Batch_1"
+            var file = Directory.GetFiles(directoryPath, "Batch_25*.json").FirstOrDefault(); // العثور على أول ملف يبدأ بـ "Batch_1" ويحتوي على .json
+
+            if (file == null)
+            {
+                Console.WriteLine("لم يتم العثور على الملف Batch_25 في المسار.");
+                return;
+            }
+
+            try
+            {
+                Console.WriteLine($"مسار الملف: {file}");  // التأكد من المسار
+                string fileContent = File.ReadAllText(file);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
+
+                // حذف الملف بعد معالجته
+                File.Delete(file);
+                Console.WriteLine($"✅ تم حذف الملف: {file}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ أثناء قراءة الملف {file}: {ex.Message}");
+                await LogErrorToDb(ex, "ProcessFilesAsync15", _context);  // تسجيل الخطأ في قاعدة البيانات
+            }
+        }
         private async Task ProcessSiteDataAsync(SiteDataFromOutsiderApiViewModel item)
         {
             try
             {
                 // استخدم Cache لتخزين المعرفات
                 var siteStatusIdTask = GetSiteStatusIdAsync();
+                if (string.IsNullOrWhiteSpace(item.Area))
+                {
+                    await LogErrorToDb(new Exception($"❌ Processing failed: 'Area' is empty or missing."),
+                                       "ProcessSiteDataAsync", _context);
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(item.LocationType))
+                {
+                    await LogErrorToDb(new Exception($"❌ Processing failed: 'LocationType' is empty or missing."),
+                                       "ProcessSiteDataAsync", _context);
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(item.RegionCode))
+                {
+                    await LogErrorToDb(new Exception($"❌ Processing failed: 'RegionCode' is empty or missing."),
+                                       "ProcessSiteDataAsync", _context);
+                    return;
+                }
+
                 var areaIdTask = GetAreaIdAsync(item.Area);
                 var locationTypeIdTask = GetLocationTypeIdAsync(item.LocationType);
-                var regionCodeTask = item.RegionCode != null ? GetRegionCodeAsync(item.RegionCode) : Task.FromResult<string>(null);
+                var regionCodeTask =  GetRegionCodeAsync(item.RegionCode);
 
                 // الحصول على القيم بشكل متوازي
                 await Task.WhenAll(siteStatusIdTask, areaIdTask, locationTypeIdTask, regionCodeTask);
@@ -9576,11 +9928,42 @@ namespace TLIS_Service.Services
                 var existingSite = _unitOfWork.SiteRepository.GetWhereFirst(
                     x => x.SiteCode.Replace(" ", "").ToLower() == item.Sitecode.Replace(" ", "").ToLower()
                 );
-
+                
                 if (existingSite != null)
                 {
+                    var existingSiteName = _unitOfWork.SiteRepository.GetWhereFirst(
+                      x => x.SiteName.ToLower() == item.Sitename.ToLower() && x.SiteCode.Replace(" ", "").ToLower() 
+                      != existingSite.SiteCode.Replace(" ", "").ToLower()
+                    );
+                    if (existingSiteName != null)
+                    {
+                        await LogErrorToDb(new Exception($"Site Name {existingSiteName.SiteName} is already exists"), "ProcessSiteDataAsync", _context);
+                        existingSite.SiteName = existingSite.SiteName;
+                    }
+                    if (!float.TryParse(item.LocationHieght?.ToString(), out float locationHieghtValue))
+                    {
+                        await LogErrorToDb(new Exception($"❌ Error: The value '{item.LocationHieght}' for 'LocationHieght' is invalid."),
+                                           "ProcessSiteDataAsync", _context);
+                        existingSite.LocationHieght = existingSite.LocationHieght;
+                    }
+
+                    if (item.Latitude == null || !float.TryParse(item.Latitude.ToString(), out float latitudeValue))
+                    {
+                        await LogErrorToDb(new Exception($"❌ Error: The value '{item.Latitude}' for 'Latitude' is invalid."),
+                                           "ProcessSiteDataAsync", _context);
+                        existingSite.Latitude = existingSite.Latitude;  // الاحتفاظ بالقيمة الحالية أو تعيين قيمة افتراضية إذا لزم الأمر
+                    }
+
+                    if (item.Longitude == null || !float.TryParse(item.Longitude.ToString(), out float longitudeValue))
+                    {
+                        await LogErrorToDb(new Exception($"❌ Error: The value '{item.Longitude}' for 'Longitude' is invalid."),
+                                           "ProcessSiteDataAsync", _context);
+                        existingSite.Longitude = existingSite.Longitude;  // الاحتفاظ بالقيمة الحالية أو تعيين قيمة افتراضية إذا لزم الأمر
+                    }
+
+
                     existingSite.SiteCode = item.Sitecode;
-                    existingSite.SiteName = item.Sitename;
+                  
                     existingSite.LocationType = locationTypeId.ToString();
                     existingSite.Latitude = item.Latitude;
                     existingSite.Longitude = item.Longitude;
@@ -9597,6 +9980,35 @@ namespace TLIS_Service.Services
                 }
                 else
                 {
+                    var existingSiteName = _unitOfWork.SiteRepository.GetWhereFirst(
+                      x => x.SiteName.ToLower() == item.Sitename.ToLower()
+                    );
+                    if(existingSiteName != null)
+                    {
+                        await LogErrorToDb(new Exception($"Site Name {existingSiteName.SiteName} is already exists"), "ProcessSiteDataAsync", _context);
+                        return;
+                    }
+                    if (!float.TryParse(item.LocationHieght?.ToString(), out float locationHieghtValue))
+                    {
+                        await LogErrorToDb(new Exception($"❌ Error: The value '{item.LocationHieght}' for 'LocationHieght' is invalid."),
+                                           "ProcessSiteDataAsync", _context);
+                        return;
+                    }
+
+                    if (item.Latitude == null || !float.TryParse(item.Latitude.ToString(), out float latitudeValue))
+                    {
+                        await LogErrorToDb(new Exception($"❌ Error: The value '{item.Latitude}' for 'Latitude' is invalid."),
+                                           "ProcessSiteDataAsync", _context);
+                        return;
+                    }
+
+                    if (item.Longitude == null || !float.TryParse(item.Longitude.ToString(), out float longitudeValue))
+                    {
+                        await LogErrorToDb(new Exception($"❌ Error: The value '{item.Longitude}' for 'Longitude' is invalid."),
+                                           "ProcessSiteDataAsync", _context);
+                        return;
+                    }
+
                     var newSite = new TLIsite
                     {
                         SiteCode = item.Sitecode,
@@ -9631,26 +10043,31 @@ namespace TLIS_Service.Services
 
         private async Task<int> GetSiteStatusIdAsync()
         {
+            string targetStatus = "onair"; // إزالة الفراغات وجعلها صغيرة
 
-            var siteStatus = await _context.TLIsiteStatus.FirstOrDefaultAsync(x => x.Name.ToLower() == "on air");
+            var siteStatus = await _context.TLIsiteStatus
+                .FirstOrDefaultAsync(x => x.Name.Replace(" ", "").ToLower() == targetStatus);
+
             if (siteStatus != null)
             {
                 return siteStatus.Id;
-              
-          
             }
 
             var newStatus = new TLIsiteStatus { Name = "ON Air" };
             _context.TLIsiteStatus.Add(newStatus);
             await _context.SaveChangesAsync();
             return newStatus.Id;
-
-
         }
+
 
         private async Task<int> GetAreaIdAsync(string areaName)
         {
-            var area = await _context.TLIarea.FirstOrDefaultAsync(x => x.AreaName.ToLower() == areaName.ToLower());
+            
+            string normalizedAreaName = areaName.Replace(" ", "").ToLower();
+
+            var area = await _context.TLIarea
+                .FirstOrDefaultAsync(x => x.AreaName.Replace(" ", "").ToLower() == normalizedAreaName);
+
             if (area != null)
             {
                 return area.Id;
@@ -9662,9 +10079,16 @@ namespace TLIS_Service.Services
             return newArea.Id;
         }
 
+
         private async Task<string> GetRegionCodeAsync(string regionCode)
         {
-            var region = await _context.TLIregion.FirstOrDefaultAsync(x => x.RegionCode.ToLower() == regionCode.ToLower());
+          
+
+            string normalizedRegionCode = regionCode.Replace(" ", "").ToLower();
+
+            var region = await _context.TLIregion
+                .FirstOrDefaultAsync(x => x.RegionCode.Replace(" ", "").ToLower() == normalizedRegionCode);
+
             if (region != null)
             {
                 return region.RegionCode;
@@ -9676,9 +10100,15 @@ namespace TLIS_Service.Services
             return newRegion.RegionCode;
         }
 
+
         private async Task<int> GetLocationTypeIdAsync(string locationType)
         {
-            var location = await _context.TLIlocationType.FirstOrDefaultAsync(x => x.Name.ToLower() == locationType.ToLower());
+           
+            string normalizedLocationType = locationType.Replace(" ", "").ToLower();
+
+            var location = await _context.TLIlocationType
+                .FirstOrDefaultAsync(x => x.Name.Replace(" ", "").ToLower() == normalizedLocationType);
+
             if (location != null)
             {
                 return location.Id;
@@ -9695,6 +10125,7 @@ namespace TLIS_Service.Services
             await _context.SaveChangesAsync();
             return newLocation.Id;
         }
+
         private async Task LogErrorToDb(Exception ex, string methodName, ApplicationDbContext context)
         {
             try
