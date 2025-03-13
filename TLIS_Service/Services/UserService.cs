@@ -402,12 +402,12 @@ namespace TLIS_Service.Services
 
 
                                     TLIuser user = new TLIuser();
-                                    user.FirstName = "";
-                                    user.MiddleName = "principal.MiddleName";
-                                    user.LastName = "principal.Surname";
-                                    user.Email =" principal.EmailAddress";
-                                    user.MobileNumber = "principal.VoiceTelephoneNumber";
-                                    user.UserName = addInternalUserDto.UserName;
+                                    user.FirstName = principal.Name.Replace($" {principal.Surname}", "");
+                                    user.MiddleName = principal.MiddleName;
+                                    user.LastName = principal.Surname;
+                                    user.Email = principal.EmailAddress;
+                                    user.MobileNumber = principal.VoiceTelephoneNumber;
+                                    user.UserName = principal.SamAccountName;
                                     user.IsFirstLogin = true;
                                     var tliuser = _unitOfWork.UserRepository.GetWhereFirst(x => x.UserName == addInternalUserDto.UserName && !x.Deleted);
                                     if (tliuser != null)
@@ -415,10 +415,13 @@ namespace TLIS_Service.Services
                                         return new Response<UserViewModel>(false, null, null, $"This User {addInternalUserDto.UserName} is Already Exist", (int)Helpers.Constants.ApiReturnCode.fail);
                                     }
                                     user.Domain = null;
-                                    user.AdGUID = "principal.Guid.ToString()";
+                                    user.AdGUID = principal.Guid.ToString();
                                     user.UserType = 1;
-                                    user.Password = " ";
-                                    user.Permissions = addInternalUserDto.Permissions;
+                                    user.Permissions = addInternalUserDto.Permissions; ;
+
+                                    
+                                    var userId = await InsertInternalUserAsync(connection, user);
+
 
                                     var TabelNameUser = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == "TLIuser").Id;
                                     TLIhistory AddTablesHistory = new TLIhistory
@@ -431,7 +434,6 @@ namespace TLIS_Service.Services
 
                                     await _dbContext.TLIhistory.AddAsync(AddTablesHistory);
                                     await _dbContext.SaveChangesAsync();
-                                    var userId = await InsertInternalUserAsync(connection, user);
                                     List<PropertyInfo> Attributes = user.GetType().GetProperties().Where(x => x.PropertyType.IsGenericType ?
                                       (x.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) ?
                                           (x.PropertyType.GetGenericArguments()[0] == typeof(int) || x.PropertyType.GetGenericArguments()[0] == typeof(string) ||
