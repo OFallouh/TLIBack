@@ -632,8 +632,8 @@ namespace TLIS_Service.Services
 
 
         private IQueryable<T> ApplyFilterUser<T>(
-    IQueryable<T> query,
-    FilterRequest filterRequest)
+     IQueryable<T> query,
+     FilterRequest filterRequest)
         {
             if (filterRequest == null || filterRequest.Filters == null || !filterRequest.Filters.Any())
                 return query;
@@ -665,7 +665,7 @@ namespace TLIS_Service.Services
                 }
 
                 // التأكد من أن القيمة ليست null أو فارغة بعد التحويل
-                if (filterValue == null)
+                if (filterValue == null || string.IsNullOrEmpty(filterValue.ToString()))
                     continue;
 
                 if (fieldName.ToLower() == "username" || fieldName.ToLower() == "email")
@@ -680,8 +680,6 @@ namespace TLIS_Service.Services
 
             return query;
         }
-
-
 
 
         public Response<List<UserViewModel>> GetExternalUsersByName(string UserName, ParameterPagination parameterPagination)
@@ -1797,8 +1795,7 @@ namespace TLIS_Service.Services
             // إنشاء التعبير الشرطي بناءً على نوع المطابقة (matchMode)
             Expression body = matchMode switch
             {
-                FilterMatchMode.EQUALS => Expression.Equal(property, constant),
-                FilterMatchMode.NOT_EQUALS => Expression.NotEqual(property, constant),
+                FilterMatchMode.CONTAINS => Expression.Equal(property, constant),
                 _ => null
             };
 
