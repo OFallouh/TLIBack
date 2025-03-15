@@ -58,6 +58,9 @@ namespace TLIS_API.BackGroundServices
                         await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync23(), "ProcessFilesAsync23", _context);
                         await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync24(), "ProcessFilesAsync24", _context);
                         await ExecuteWithLogging(() => unitOfWorkService.SiteService.ProcessFilesAsync25(), "ProcessFilesAsync25", _context);
+                        await unitOfWorkService.SiteService.GetFilteredLogsBackGroundServices();
+                        await unitOfWorkService.SiteService.GetHistoryFile();
+                        await unitOfWorkService.UserService.GetSecurityLogsFile();
 
                         Console.WriteLine("✅ جميع العمليات تم تنفيذها بنجاح.");
                     }

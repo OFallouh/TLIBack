@@ -88,6 +88,7 @@ using System.Linq.Expressions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
+using System.Reflection.Metadata;
 
 
 
@@ -1003,7 +1004,7 @@ namespace TLIS_Service.Services
         //                }
         //            }
         //        }
-                
+
 
         //        int count = SitesViewModels.Count();
 
@@ -1137,43 +1138,66 @@ namespace TLIS_Service.Services
         //        return new Response<IEnumerable<SiteViewModelForGetAll>>(false, null, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.NeedUpdate);
         //    }
         //}
-        public Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite, bool ExternalSys, FilterRequest filterRequest = null)
+        public Response<IEnumerable<SiteViewModelForGetAll>> GetSites(int? userId, string userName, bool? isRefresh, bool? getItemsCountOnEachSite, bool externalSys, FilterRequest filterRequest = null)
         {
-            string[] ErrorMessagesWhenReturning = null;
+            string[] errorMessagesWhenReturning = null;
             try
             {
                 // استرجاع UserId إن كان null
-                if (UserId == null)
+                if (userId == null)
                 {
-                    UserId = _context.TLIexternalSys
+                    userId = _context.TLIexternalSys
                                .AsNoTracking()
-                               .FirstOrDefault(x => x.UserName.ToLower() == UserName.ToLower()).Id;
+                               .FirstOrDefault(x => x.UserName.ToLower() == userName.ToLower())?.Id;
                 }
 
                 // استرجاع بيانات المواقع من Materialized View بدلاً من _MySites
                 var mvSites = _context.MV_TLISITE.AsNoTracking().ToList();
 
                 // تحويل الكيان (MV_TLIsite) إلى ViewModel باستخدام AutoMapper
-                IEnumerable<SiteViewModelForGetAll> SitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(mvSites);
+                var sitesViewModels = _mapper.Map<IEnumerable<SiteViewModelForGetAll>>(mvSites);
 
-                // استرجاع باقي البيانات مثل الـ Locations والـ UsedSites وغيرها (كما هو في الكود الأصلي)
-                List<TLIlocationType> Locations = _context.TLIlocationType.AsNoTracking().ToList();
+                // استرجاع باقي البيانات مثل الـ Locations والـ UsedSites وغيرها
+                var locations = _context.TLIlocationType.AsNoTracking().ToList();
 
-                List<string> UsedSitesInLoads = _context.TLIcivilLoads.AsNoTracking()
+                var usedSitesInLoads = _context.TLIcivilLoads.AsNoTracking()
                     .Where(x => !string.IsNullOrEmpty(x.SiteCode) && !x.Dismantle)
                     .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
 
-                List<string> UsedSitesInCivils = _context.TLIcivilSiteDate.AsNoTracking()
+                var usedSitesInCivils = _context.TLIcivilSiteDate.AsNoTracking()
                     .Where(x => !string.IsNullOrEmpty(x.SiteCode) && !x.Dismantle)
                     .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
-                UsedSitesInCivils.AddRange(UsedSitesInLoads);
+                usedSitesInCivils.AddRange(usedSitesInLoads);
 
-                List<string> UsedSitesInOtherInventories = _context.TLIotherInSite.AsNoTracking()
+                var usedSitesInOtherInventories = _context.TLIotherInSite.AsNoTracking()
                     .Where(x => !string.IsNullOrEmpty(x.SiteCode) && !x.Dismantle)
                     .Select(x => x.SiteCode.ToLower()).Distinct().ToList();
-                UsedSitesInOtherInventories.AddRange(UsedSitesInCivils);
+                usedSitesInOtherInventories.AddRange(usedSitesInCivils);
 
-                List<string> AllUsedSites = UsedSitesInOtherInventories.Distinct().ToList();
+                var allUsedSites = usedSitesInOtherInventories.Distinct().ToList();
+                var listForOutputOnly = new List<SiteViewModelForGetAll>();
+                foreach (var site in sitesViewModels)
+                {
+                    listForOutputOnly.Add(new SiteViewModelForGetAll()
+                    {
+                        SiteCode = site.SiteCode,
+                        SiteName = site.SiteName,
+                        LocationType = site.LocationType,
+                        LocationHieght = site.LocationHieght,
+                        Latitude = site.Latitude,
+                        Longitude = site.Longitude,
+                        Status = site.Status,
+                        CityName = site.CityName,
+                        Area = site.Area,
+                        Region = site.Region,
+                        RentedSpace = site.RentedSpace,
+                        ReservedSpace = site.ReservedSpace,
+                        SiteVisiteDate = site.SiteVisiteDate,
+                        isUsed = allUsedSites.Any(x => x.ToLower() == site.SiteCode.ToLower()),
+                        ItemsOnSite = getItemsCountOnEachSite != null ?
+                            (getItemsCountOnEachSite.Value ? GetItemsOnSite(site.SiteCode).Data : null) : null
+                    });
+                }
 
                 // تطبيق الفلاتر إذا وُجدت
                 if (filterRequest != null && filterRequest.Filters != null && filterRequest.Filters.Count > 0)
@@ -1192,6 +1216,7 @@ namespace TLIS_Service.Services
                                 continue;
                             }
                         }
+
                         if (filterValue.TryGetProperty("MatchMode", out JsonElement matchModeElement))
                         {
                             string matchMode = matchModeElement.GetString();
@@ -1226,127 +1251,131 @@ namespace TLIS_Service.Services
                                     case "equals":
                                         if (stringValue != null)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower() == filterValueLower);
+                                            listForOutputOnly = listForOutputOnly.Where(x => property.GetValue(x)?.ToString().ToLower() == filterValueLower).ToList();
                                         }
                                         else if (boolValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => (bool?)property.GetValue(x) == boolValue.Value);
+                                            listForOutputOnly = listForOutputOnly.Where(x => (bool?)property.GetValue(x) == boolValue.Value).ToList();
                                         }
                                         else if (decimalValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue == decimalValue.Value);
+                                            listForOutputOnly = listForOutputOnly.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue == decimalValue.Value).ToList();
                                         }
                                         else if (dateTimeValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date == dateTimeValue.Value.Date);
+                                            listForOutputOnly = listForOutputOnly.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date == dateTimeValue.Value.Date).ToList();
                                         }
                                         break;
 
                                     case "notequals":
                                         if (stringValue != null)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower() != filterValueLower);
+                                            listForOutputOnly = listForOutputOnly.Where(x => property.GetValue(x)?.ToString().ToLower() != filterValueLower).ToList();
                                         }
                                         else if (boolValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => (bool?)property.GetValue(x) != boolValue.Value);
+                                            listForOutputOnly = listForOutputOnly.Where(x => (bool?)property.GetValue(x) != boolValue.Value).ToList();
                                         }
                                         else if (decimalValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue != decimalValue.Value);
+                                            listForOutputOnly = listForOutputOnly.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue != decimalValue.Value).ToList();
                                         }
                                         else if (dateTimeValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date != dateTimeValue.Value.Date);
+                                            listForOutputOnly = listForOutputOnly.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date != dateTimeValue.Value.Date).ToList();
                                         }
                                         break;
 
                                     case "startsWith":
                                         if (stringValue != null)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().StartsWith(filterValueLower ?? "") ?? false);
+                                            listForOutputOnly = listForOutputOnly.Where(x => property.GetValue(x)?.ToString().ToLower().StartsWith(filterValueLower ?? "") ?? false).ToList();
                                         }
                                         else if (boolValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => (bool?)property.GetValue(x) == boolValue.Value);
+                                            listForOutputOnly = listForOutputOnly.Where(x => (bool?)property.GetValue(x) == boolValue.Value).ToList();
                                         }
                                         break;
 
                                     case "contains":
                                         if (stringValue != null)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => property.GetValue(x)?.ToString().ToLower().Contains(filterValueLower ?? "") ?? false);
+                                            listForOutputOnly = listForOutputOnly.Where(x => property.GetValue(x)?.ToString().ToLower().Contains(filterValueLower ?? "") ?? false).ToList();
                                         }
                                         else if (boolValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => (bool?)property.GetValue(x) == boolValue.Value);
+                                            listForOutputOnly = listForOutputOnly.Where(x =>
+                                            {
+                                                var propertyValue = property.GetValue(x) as bool?;
+                                                return propertyValue.HasValue && propertyValue.Value == boolValue.Value;
+                                            }).ToList();
                                         }
                                         break;
 
                                     case "notcontains":
                                         if (stringValue != null)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => !(property.GetValue(x)?.ToString().ToLower().Contains(filterValueLower ?? "") ?? true));
+                                            listForOutputOnly = listForOutputOnly.Where(x => !(property.GetValue(x)?.ToString().ToLower().Contains(filterValueLower ?? "") ?? true)).ToList();
                                         }
                                         else if (boolValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => (bool?)property.GetValue(x) != boolValue.Value);
+                                            listForOutputOnly = listForOutputOnly.Where(x => (bool?)property.GetValue(x) != boolValue.Value).ToList();
                                         }
                                         break;
 
                                     case "lt":
                                         if (decimalValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue < decimalValue.Value);
+                                            listForOutputOnly = listForOutputOnly.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue < decimalValue.Value).ToList();
                                         }
                                         break;
 
                                     case "lte":
                                         if (decimalValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue <= decimalValue.Value);
+                                            listForOutputOnly = listForOutputOnly.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue <= decimalValue.Value).ToList();
                                         }
                                         break;
 
                                     case "gt":
                                         if (decimalValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue > decimalValue.Value);
+                                            listForOutputOnly = listForOutputOnly.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue > decimalValue.Value).ToList();
                                         }
                                         break;
 
                                     case "gte":
                                         if (decimalValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue >= decimalValue.Value);
+                                            listForOutputOnly = listForOutputOnly.Where(x => decimal.TryParse(property.GetValue(x)?.ToString(), out decimal propValue) && propValue >= decimalValue.Value).ToList();
                                         }
                                         break;
 
                                     case "is":
                                         if (dateTimeValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date == dateTimeValue.Value.Date);
+                                            listForOutputOnly = listForOutputOnly.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date == dateTimeValue.Value.Date).ToList();
                                         }
                                         break;
 
                                     case "isNot":
                                         if (dateTimeValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date != dateTimeValue.Value.Date);
+                                            listForOutputOnly = listForOutputOnly.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date != dateTimeValue.Value.Date).ToList();
                                         }
                                         break;
 
                                     case "before":
                                         if (dateTimeValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date < dateTimeValue.Value.Date);
+                                            listForOutputOnly = listForOutputOnly.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date < dateTimeValue.Value.Date).ToList();
                                         }
                                         break;
 
                                     case "after":
                                         if (dateTimeValue.HasValue)
                                         {
-                                            SitesViewModels = SitesViewModels.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date > dateTimeValue.Value.Date);
+                                            listForOutputOnly = listForOutputOnly.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date > dateTimeValue.Value.Date).ToList();
                                         }
                                         break;
 
@@ -1358,7 +1387,7 @@ namespace TLIS_Service.Services
                     }
                 }
 
-                int count = SitesViewModels.Count();
+                int count = listForOutputOnly.Count();
 
                 // تطبيق الفرز إذا وُجدت MultiSortMeta
                 if (filterRequest?.MultiSortMeta?.Count > 0)
@@ -1373,8 +1402,8 @@ namespace TLIS_Service.Services
                             if (orderedSites == null)
                             {
                                 orderedSites = sortMeta.Order == 1
-                                    ? SitesViewModels.OrderBy(x => property.GetValue(x))
-                                    : SitesViewModels.OrderByDescending(x => property.GetValue(x));
+                                    ? listForOutputOnly.OrderBy(x => property.GetValue(x))
+                                    : listForOutputOnly.OrderByDescending(x => property.GetValue(x));
                             }
                             else
                             {
@@ -1385,55 +1414,30 @@ namespace TLIS_Service.Services
                         }
                     }
                     if (orderedSites != null)
-                        SitesViewModels = orderedSites.ToList();
+                        listForOutputOnly = orderedSites.ToList();
                 }
 
                 // تطبيق الـ Pagination
                 int skipCount = filterRequest?.First ?? 0;
                 int takeCount = filterRequest?.Rows ?? int.MaxValue;
-                SitesViewModels = SitesViewModels.Skip(skipCount).Take(takeCount);
-
-                // بناء القائمة النهائية للنتائج مع تحديث isUsed وحقل ItemsOnSite
-                List<SiteViewModelForGetAll> ListForOutPutOnly = new List<SiteViewModelForGetAll>();
-                foreach (var site in SitesViewModels)
-                {
-                    ListForOutPutOnly.Add(new SiteViewModelForGetAll()
-                    {
-                        SiteCode = site.SiteCode,
-                        SiteName = site.SiteName,
-                        LocationType = site.LocationType,
-                        LocationHieght = site.LocationHieght,
-                        Latitude = site.Latitude,
-                        Longitude = site.Longitude,
-                        Status = site.Status, // أو قم بتعيين قيمة Status حسب الحاجة
-                        CityName = site.CityName,  // إذا كانت هناك بيانات CityName يمكنك جلبها من مكان آخر
-                        Area = site.Area,
-                        Region = site.Region,
-                        RentedSpace = site.RentedSpace,
-                        ReservedSpace = site.ReservedSpace,
-                        SiteVisiteDate = site.SiteVisiteDate,
-                        isUsed = AllUsedSites.Any(x => x.ToLower() == site.SiteCode.ToLower()),
-                        ItemsOnSite = GetItemsCountOnEachSite != null ?
-                            (GetItemsCountOnEachSite.Value ? GetItemsOnSite(site.SiteCode).Data : null) : null
-                    });
-                }
+                listForOutputOnly = listForOutputOnly.Skip(skipCount).Take(takeCount).ToList();
 
                 // تسجيل الـ History إذا كان ExternalSys==true
-                TLItablesNames TableNameEntity = _unitOfWork.TablesNamesRepository
+                var tableNameEntity = _unitOfWork.TablesNamesRepository
                     .GetWhereFirst(c => c.TableName == "TLIsite");
-                if (ExternalSys == true)
+                if (externalSys)
                 {
-                    TLIhistory tLIhistory = new TLIhistory()
+                    var tLIhistory = new TLIhistory()
                     {
-                        TablesNameId = TableNameEntity.Id,
-                        ExternalSysId = UserId,
+                        TablesNameId = tableNameEntity.Id,
+                        ExternalSysId = userId,
                         HistoryTypeId = 4,
                     };
                     _context.TLIhistory.Add(tLIhistory);
                     _context.SaveChanges();
                 }
 
-                return new Response<IEnumerable<SiteViewModelForGetAll>>(true, ListForOutPutOnly, ErrorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, count);
+                return new Response<IEnumerable<SiteViewModelForGetAll>>(true, listForOutputOnly, errorMessagesWhenReturning, null, (int)Helpers.Constants.ApiReturnCode.success, count);
             }
             catch (Exception er)
             {
