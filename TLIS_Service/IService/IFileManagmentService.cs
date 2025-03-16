@@ -14,11 +14,11 @@ namespace TLIS_Service.IService
         Response<string> GenerateExcelTemplacteByTableName(string TableName, string fileDirectory, int? CategoryId);
         Response<List<KeyValuePair<int, string>>> ImportFile(IFormFile file, string TableName, int? CategoryId, string ConnectionString, int UserId);
         Response<string> AttachFile(int UserId, IFormFile file , string SiteCode, string? RecordId, string TableName, string connection, string AttachFolder, string asset, bool ExternalSys);
-        Response<string> DeleteFile(string FileName, int RecordId, string TableName, string SiteCode,int UserId,bool ExternalSys);
+        Response<string> DeleteFile(string FileName, int? RecordId, string TableName, string SiteCode,int UserId,bool ExternalSys);
         Response<IEnumerable<AttachedFilesViewModel>> GetFilesByRecordIdAndTableName(int RecordId, string TableName, string SiteCode, int UserId, bool ExternalSys);
         Response<List<AttachedFilesViewModel>> GetAttachecdFiles(int RecordId, string TableName);
         Response<AttachedFilesViewModel> AttachedUnAttached(int Id);
-        Response<string> GetAttachedToDownload(string filename, int recordid, string tablename);
+        Response<string> GetAttachedToDownload(string filename, int? recordid, string tablename);
         Response<List<AttachedFilesViewModel>> GetAttachecdFilesBySite(string SiteCode, int UseId, bool ExternalSys);
        
     }

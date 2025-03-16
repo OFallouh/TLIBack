@@ -15184,7 +15184,7 @@ namespace TLIS_Service.Services
         }
         //Function take 3 parameters 
         //3 parameters helps me to get file from database
-        public Response<string> DeleteFile(string FileName, int RecordId, string TableName, string SiteCode,int UserId,bool ExternaSys)
+        public Response<string> DeleteFile(string FileName, int? RecordId, string TableName, string SiteCode,int UserId,bool ExternaSys)
         {
             try
             {
@@ -15429,7 +15429,7 @@ namespace TLIS_Service.Services
         }
 
 
-        public Response<string> GetAttachedToDownload(string filename, int recordid, string tablename)
+        public Response<string> GetAttachedToDownload(string filename, int? recordid, string tablename)
         {
             try
             {
@@ -15438,7 +15438,7 @@ namespace TLIS_Service.Services
 
                 var table = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName == tablename);
 
-                if (recordid >= 0)
+                if (recordid !=null)
                 {
                     var attached = _unitOfWork.AttachedFilesRepository.GetWhereFirst(x => x.RecordId == recordid && x.tablesNamesId == table.Id && x.Name == filename);
                     if (attached != null)

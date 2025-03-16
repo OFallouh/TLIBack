@@ -210,7 +210,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("DeleteFileInstallation")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult DeleteFile(string FileName, int RecordId, string TableName, string SiteCode)
+        public IActionResult DeleteFile(string FileName, int? RecordId, string TableName, string SiteCode)
         {
            
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
@@ -238,7 +238,7 @@ namespace TLIS_API.Controllers
         [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpGet("DeleteFileLibrary")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
-        public IActionResult DeleteFileLibrary(string FileName, int RecordId, string TableName, string SiteCode)
+        public IActionResult DeleteFileLibrary(string FileName, int? RecordId, string TableName, string SiteCode)
         {
            
             var ConnectionString = _configuration["ConnectionStrings:ActiveConnection"];
@@ -362,7 +362,7 @@ namespace TLIS_API.Controllers
         }
         [ServiceFilter(typeof(WorkFlowMiddleware))]
         [HttpGet("GetAttachFileInstallation")]
-        public async Task<IActionResult> GetAttachFile(string filename, int recordid, string tablename)
+        public async Task<IActionResult> GetAttachFile(string filename, int? recordid, string tablename)
         {
             var asset = _configuration["assets"];
             var response = _unitOfWorkService.FileManagmentService.GetAttachedToDownload(filename, recordid, tablename);

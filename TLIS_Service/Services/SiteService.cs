@@ -1267,7 +1267,7 @@ namespace TLIS_Service.Services
                                         }
                                         break;
 
-                                    case "notequals":
+                                    case "notEquals":
                                         if (stringValue != null)
                                         {
                                             listForOutputOnly = listForOutputOnly.Where(x => property.GetValue(x)?.ToString().ToLower() != filterValueLower).ToList();
@@ -1296,6 +1296,15 @@ namespace TLIS_Service.Services
                                             listForOutputOnly = listForOutputOnly.Where(x => (bool?)property.GetValue(x) == boolValue.Value).ToList();
                                         }
                                         break;
+                                    case "endsWith":
+                                        if (stringValue != null)
+                                        {
+                                            listForOutputOnly = listForOutputOnly.Where(x =>
+                                                property.GetValue(x)?.ToString().ToLower().EndsWith(filterValueLower ?? "") ?? false
+                                            ).ToList();
+                                        }
+                                        break;
+
 
                                     case "contains":
                                         if (stringValue != null)
@@ -1312,7 +1321,7 @@ namespace TLIS_Service.Services
                                         }
                                         break;
 
-                                    case "notcontains":
+                                    case "notContains":
                                         if (stringValue != null)
                                         {
                                             listForOutputOnly = listForOutputOnly.Where(x => !(property.GetValue(x)?.ToString().ToLower().Contains(filterValueLower ?? "") ?? true)).ToList();
@@ -1351,28 +1360,28 @@ namespace TLIS_Service.Services
                                         }
                                         break;
 
-                                    case "is":
+                                    case "dateIs":
                                         if (dateTimeValue.HasValue)
                                         {
                                             listForOutputOnly = listForOutputOnly.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date == dateTimeValue.Value.Date).ToList();
                                         }
                                         break;
 
-                                    case "isNot":
+                                    case "dateIsNot":
                                         if (dateTimeValue.HasValue)
                                         {
                                             listForOutputOnly = listForOutputOnly.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date != dateTimeValue.Value.Date).ToList();
                                         }
                                         break;
 
-                                    case "before":
+                                    case "dateBefore":
                                         if (dateTimeValue.HasValue)
                                         {
                                             listForOutputOnly = listForOutputOnly.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date < dateTimeValue.Value.Date).ToList();
                                         }
                                         break;
 
-                                    case "after":
+                                    case "dateAfter":
                                         if (dateTimeValue.HasValue)
                                         {
                                             listForOutputOnly = listForOutputOnly.Where(x => DateTime.TryParse(property.GetValue(x)?.ToString(), out DateTime propDate) && propDate.Date > dateTimeValue.Value.Date).ToList();
