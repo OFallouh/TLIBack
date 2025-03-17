@@ -8874,11 +8874,11 @@ namespace TLIS_Service.Services
                     fileContent = await reader.ReadToEndAsync();
                 }
 
-                //var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
+                var sites = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(fileContent);
 
-                //// معالجة البيانات هنا
-                //var tasks = sites.Select(item => ProcessSiteDataAsync(item));
-                //await Task.WhenAll(tasks);
+                // معالجة البيانات هنا
+                var tasks = sites.Select(item => ProcessSiteDataAsync(item));
+                await Task.WhenAll(tasks);
 
                 // حذف الملف بعد معالجته
                 File.Delete(file);
