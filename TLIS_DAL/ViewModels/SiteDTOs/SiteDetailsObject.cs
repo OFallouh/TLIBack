@@ -12,8 +12,8 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
     {
         public enum ValidationStatus
         {
-            [Description("Pending O&M")]
-            PendingOM = 1,
+            [Description("Pending Network Implementation")]
+            PendingNetworkImplementation = 1,
 
             [Description("Done")]
             Done = 2
@@ -46,7 +46,12 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
             DoneValidation = 4,
 
             [Description("Close")]
-            Close = 5
+            Close = 5,
+            /// <summary>
+            /// //////////////////////
+            /// </summary>
+            [Description("Done Network Iplementation")]
+            DoneNetworkImplementaione = 6
         }
 
         public enum CollectionDataPendingType
@@ -58,7 +63,11 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
             PendingOM = 2,
 
             [Description("Pending Validation")]
-            PendingValidation = 3
+            PendingValidation = 3,
+
+            /////////////////
+            [Description("Pending Network Implementation")]
+            PendingNetworkImplementation = 4
         }
 
         public enum RadioValidationStatus
@@ -85,7 +94,10 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
             DoneValidation = 3,
 
             [Description("Close")]
-            Close = 4
+            Close = 4,
+
+            [Description("Done Civil")]
+            DoneCivil = 5
         }
 
         public enum MWMDPendingType
@@ -94,7 +106,10 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
             PendingImplementation = 1,
 
             [Description("Pending Validation")]
-            PendingValidation = 2
+            PendingValidation = 2,
+
+            [Description("Pending Civil")]
+            PendingCivil = 3
         }
 
         public enum MWValidationStatus
@@ -162,18 +177,24 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
         public MWMd MWMd { get; set; }
         public RadioMd RadioMd { get; set; }
         public PowerMd PowerMd { get; set; }
-        
     }
+
     public class CollectData
     {
-        public Enums.CollectionDataPlanStatus? PlanStatus { get; set; }
-        public Enums.CollectionDataPendingType? PendingType { get; set; }
+        public List<Enums.CollectionDataPlanStatus>? PlanStatus { get; set; }
+        public List<Enums.CollectionDataPendingType>? PendingType { get; set; }
         public Enums.ValidationStatus? MwValidationStatus { get; set; }
         public string MwValidationRemark { get; set; }
         public Enums.RadioValidationStatus? RadioValidationStatus { get; set; }
         public string RadioValidationRemark { get; set; }
         public Enums.ValidationStatus? PowerValidationStatus { get; set; }
         public string PowerValidationRemark { get; set; }
+        public string CivilCollectDoneBy { get; set; }
+        public string OMCollectDoneBy { get; set; }
+        public string MWCollectPendingImplBy { get; set; }
+        public string PowerCollectPendingOMBy { get; set; }
+        public string RadioCollectPendingOMBy { get; set; }
+        public string RadioCollectPendingCivilBy { get; set; }
     }
 
     public class MWMd
@@ -184,6 +205,9 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
         public Enums.MWMDPendingType? PendingType { get; set; }
         public Enums.MWValidationStatus? MwValidationStatus { get; set; }
         public string MwValidationRemark { get; set; }
+        public string MWMDPendingImplBy { get; set; }
+        public string MWMdImplDoneBy { get; set; }
+        public string MWMdCivilDoneBy { get; set; }
     }
 
     public class RadioMd
@@ -194,6 +218,9 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
         public Enums.OtherMDPendingType? PendingType { get; set; }
         public Enums.OtherValidationStatus? RadioValidationStatus { get; set; }
         public string RadioValidationRemark { get; set; }
+        public string RadioMDPendingOMBy { get; set; }
+        public string RadioMDPendingCivilBy { get; set; }
+        public string RadioMdOMDoneBy { get; set; }
     }
 
     public class PowerMd
@@ -204,6 +231,8 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
         public Enums.OtherMDPendingType? PendingType { get; set; }
         public Enums.OtherValidationStatus? PowerValidationStatus { get; set; }
         public string PowerValidationRemark { get; set; }
+        public string PowerMdOMDoneBy { get; set; }
+        public string PowerMDPendingOMBy { get; set; }
     }
 }
     

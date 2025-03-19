@@ -244,6 +244,7 @@ namespace TLIS_Service.Services
                     var OldSiteSelected = _context.TLIsite.AsNoTracking().FirstOrDefault(x => x.SiteCode.ToLower() == siteDetailsObject.SiteCode.ToLower());
                     var SiteSelected = _context.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() == siteDetailsObject.SiteCode.ToLower());
                     var UserName = _context.TLIuser.FirstOrDefault(x => x.Id == UserId).UserName;
+
                     if (SiteSelected != null)
                     {
                         if (siteDetailsObject.PlanType != null)
@@ -251,20 +252,61 @@ namespace TLIS_Service.Services
                             var planTypeValues = siteDetailsObject.PlanType.Select(pt => ((int)pt).ToString());
                             SiteSelected.PlanType = string.Join(",", planTypeValues);
 
-
                             foreach (var item in siteDetailsObject.PlanType)
                             {
                                 if (item == Enums.PlanType.CollectData)
                                 {
-                                    SiteSelected.PlanStatusCollectData = (int?)siteDetailsObject.CollectData.PlanStatus;
-                                    SiteSelected.pendingTypeCollectData = (int?)siteDetailsObject.CollectData.PendingType;
+
+                                    // معالجة PlanStatus
+                                    if (siteDetailsObject.CollectData.PlanStatus != null && siteDetailsObject.CollectData.PlanStatus.Any())
+                                    {
+                                        var planStatusValues = siteDetailsObject.CollectData.PlanStatus.Select(ps => ((int)ps).ToString());
+                                        SiteSelected.PlanStatusCollectData = string.Join(",", planStatusValues);
+                                    }
+                                    else
+                                    {
+                                        SiteSelected.PlanStatusCollectData = null;
+                                    }
+
+                                    // معالجة PendingType
+                                    if (siteDetailsObject.CollectData.PendingType != null && siteDetailsObject.CollectData.PendingType.Any())
+                                    {
+                                        var pendingTypeValues = siteDetailsObject.CollectData.PendingType.Select(pt => ((int)pt).ToString());
+                                        SiteSelected.pendingTypeCollectData = string.Join(",", pendingTypeValues);
+                                    }
+                                    else
+                                    {
+                                        SiteSelected.pendingTypeCollectData = null;
+                                    }
                                     SiteSelected.MWValidationRemarkCollectData = siteDetailsObject.CollectData.MwValidationRemark;
                                     SiteSelected.MWValidationStatusCollectDate = (int?)siteDetailsObject.CollectData.MwValidationStatus;
                                     SiteSelected.RadioVStatusCollectData = (int?)siteDetailsObject.CollectData.RadioValidationStatus;
                                     SiteSelected.RadioVRemarkCollectData = siteDetailsObject.CollectData.RadioValidationRemark;
                                     SiteSelected.PowerVStatusCollectData = (int?)siteDetailsObject.CollectData.PowerValidationStatus;
                                     SiteSelected.PowerVRemarkCollectData = siteDetailsObject.CollectData.PowerValidationRemark;
-                                    SiteSelected.UserName = UserName;
+
+                                    // تحديث أعمدة المستخدمين
+                                    if (siteDetailsObject.CollectData.PlanStatus != null && siteDetailsObject.CollectData.PlanStatus.Contains(Enums.CollectionDataPlanStatus.DoneCivil))
+                                    {
+                                        SiteSelected.CivilCollectDoneBy = UserName;
+                                    }
+                                    if (siteDetailsObject.CollectData.PlanStatus != null && siteDetailsObject.CollectData.PlanStatus.Contains(Enums.CollectionDataPlanStatus.DoneOM))
+                                    {
+                                        SiteSelected.OMCollectDoneBy = UserName;
+                                    }
+                                    if (siteDetailsObject.CollectData.MwValidationStatus == Enums.ValidationStatus.PendingNetworkImplementation)
+                                    {
+                                        SiteSelected.MWCollectPendingImplBy = UserName;
+                                    }
+                                    if (siteDetailsObject.CollectData.RadioValidationStatus == Enums.RadioValidationStatus.PendingOM)
+                                    {
+                                        SiteSelected.RadioCollectPendingOMBy = UserName;
+                                    }
+                                    if (siteDetailsObject.CollectData.RadioValidationStatus == Enums.RadioValidationStatus.PendingCivil)
+                                    {
+                                        SiteSelected.RadioCollectPendingCivilBy = UserName;
+                                    }
+                                   
                                 }
                                 else if (item == Enums.PlanType.MWMD)
                                 {
@@ -274,7 +316,20 @@ namespace TLIS_Service.Services
                                     SiteSelected.pendingTypeMWMd = (int?)siteDetailsObject.MWMd.PendingType;
                                     SiteSelected.MWValidationStatusMWMd = (int?)siteDetailsObject.MWMd.MwValidationStatus;
                                     SiteSelected.MWValidationRemarkMWMd = siteDetailsObject.MWMd.MwValidationRemark;
-                                    SiteSelected.UserName = UserName;
+
+                                    // تحديث أعمدة المستخدمين
+                                    if (siteDetailsObject.MWMd.PlanStatus == Enums.MWMDPlanStatus.DoneImplementation)
+                                    {
+                                        SiteSelected.MWMdImplDoneBy = UserName;
+                                    }
+                                    if (siteDetailsObject.MWMd.PlanStatus == Enums.MWMDPlanStatus.DoneCivil)
+                                    {
+                                        SiteSelected.MWMdCivilDoneBy = UserName;
+                                    }
+                                    if (siteDetailsObject.MWMd.MwValidationStatus == Enums.MWValidationStatus.PendingImplementation)
+                                    {
+                                        SiteSelected.MWMDPendingImplBy = UserName;
+                                    }
                                 }
                                 else if (item == Enums.PlanType.RadioMD)
                                 {
@@ -284,7 +339,17 @@ namespace TLIS_Service.Services
                                     SiteSelected.pendingTypeRadioMd = (int?)siteDetailsObject.RadioMd.PendingType;
                                     SiteSelected.RadioVStatusRadioMd = (int?)siteDetailsObject.RadioMd.RadioValidationStatus;
                                     SiteSelected.RadioVRemarkRadioMd = siteDetailsObject.RadioMd.RadioValidationRemark;
-                                    SiteSelected.UserName = UserName;
+
+                                    // تحديث أعمدة المستخدمين
+                                    if (siteDetailsObject.RadioMd.PlanStatus == Enums.OtherMDPlanStatus.DoneOM)
+                                    {
+                                        SiteSelected.RadioMdOMDoneBy = UserName;
+                                    }
+                                    if (siteDetailsObject.RadioMd.RadioValidationStatus == Enums.OtherValidationStatus.PendingOM)
+                                    {
+                                        SiteSelected.RadioMDPendingOMBy = UserName;
+                                    }
+                                 
                                 }
                                 else if (item == Enums.PlanType.PowerMD)
                                 {
@@ -294,18 +359,47 @@ namespace TLIS_Service.Services
                                     SiteSelected.pendingTypePowerMd = (int?)siteDetailsObject.PowerMd.PendingType;
                                     SiteSelected.PowerVStatusPowerMd = (int?)siteDetailsObject.PowerMd.PowerValidationStatus;
                                     SiteSelected.PowerVRemarkPowerMd = siteDetailsObject.PowerMd.PowerValidationRemark;
-                                    SiteSelected.UserName = UserName;
-                                }
-                                _unitOfWork.SiteRepository.UpdateWithHInstallationSiteStatus(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode,3);
-                                _unitOfWork.SaveChanges();
 
+                                    // تحديث أعمدة المستخدمين
+                                    if (siteDetailsObject.PowerMd.PlanStatus == Enums.OtherMDPlanStatus.DoneOM)
+                                    {
+                                        SiteSelected.PowerMdOMDoneBy = UserName;
+                                    }
+                                    if (siteDetailsObject.PowerMd.PowerValidationStatus == Enums.OtherValidationStatus.PendingOM)
+                                    {
+                                        SiteSelected.PowerMDPendingOMBy = UserName;
+                                    }
+                                }
+                                _unitOfWork.SiteRepository.UpdateWithHInstallationSiteStatus(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode, 3);
+                                _unitOfWork.SaveChanges();
                             }
                         }
                         if (siteDetailsObject.PlanType == null)
                         {
-                            SiteSelected.PlanStatusCollectData = (int?)siteDetailsObject.CollectData.PlanStatus;
+                            // معالجة PlanStatus
+                            if (siteDetailsObject.CollectData.PlanStatus != null && siteDetailsObject.CollectData.PlanStatus.Any())
+                            {
+                                var planStatusValues = siteDetailsObject.CollectData.PlanStatus.Select(ps => ((int)ps).ToString());
+                                SiteSelected.PlanStatusCollectData = string.Join(",", planStatusValues);
+                            }
+                            else
+                            {
+                                SiteSelected.PlanStatusCollectData = null;
+                            }
+
                             SiteSelected.PlanType = null;
-                            SiteSelected.pendingTypeCollectData = (int?)siteDetailsObject.CollectData.PendingType;
+
+                            // معالجة PendingType
+                            if (siteDetailsObject.CollectData.PendingType != null && siteDetailsObject.CollectData.PendingType.Any())
+                            {
+                                var pendingTypeValues = siteDetailsObject.CollectData.PendingType.Select(pt => ((int)pt).ToString());
+                                SiteSelected.pendingTypeCollectData = string.Join(",", pendingTypeValues);
+                            }
+                            else
+                            {
+                                SiteSelected.pendingTypeCollectData = null;
+                            }
+
                             SiteSelected.MWValidationRemarkCollectData = siteDetailsObject.CollectData.MwValidationRemark;
                             SiteSelected.MWValidationStatusCollectDate = (int?)siteDetailsObject.CollectData.MwValidationStatus;
                             SiteSelected.RadioVStatusCollectData = (int?)siteDetailsObject.CollectData.RadioValidationStatus;
@@ -330,13 +424,10 @@ namespace TLIS_Service.Services
                             SiteSelected.pendingTypePowerMd = (int?)siteDetailsObject.PowerMd.PendingType;
                             SiteSelected.PowerVStatusPowerMd = (int?)siteDetailsObject.PowerMd.PowerValidationStatus;
                             SiteSelected.PowerVRemarkPowerMd = siteDetailsObject.PowerMd.PowerValidationRemark;
-                            SiteSelected.UserName = UserName;
 
-                            _unitOfWork.SiteRepository.UpdateWithHInstallationSiteStatus(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode,3);
+                            _unitOfWork.SiteRepository.UpdateWithHInstallationSiteStatus(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode, 3);
                             _unitOfWork.SaveChanges();
                         }
-                      
-                     
                     }
                     else
                     {
@@ -351,7 +442,6 @@ namespace TLIS_Service.Services
                 }
             }
         }
-
         public Response<SiteDetailsObject> GetSiteDetails(string siteCode)
         {
             try
@@ -363,23 +453,33 @@ namespace TLIS_Service.Services
 
                 var siteDetailsObject = new SiteDetailsObject
                 {
-                    SiteCode = siteSelected.SiteCode,
-                    PlanType = siteSelected.PlanType?.Split(',').Select(pt => (Enums.PlanType)Enum.Parse(typeof(Enums.PlanType), pt)).ToList() ?? new List<Enums.PlanType>(),
-                    CollectData = siteSelected.PlanStatusCollectData.HasValue || siteSelected.pendingTypeCollectData.HasValue ||
-                                  siteSelected.MWValidationStatusCollectDate.HasValue || !string.IsNullOrEmpty(siteSelected.MWValidationRemarkCollectData) ||
-                                  siteSelected.RadioVStatusCollectData.HasValue || !string.IsNullOrEmpty(siteSelected.RadioVRemarkCollectData) ||
-                                  siteSelected.PowerVStatusCollectData.HasValue || !string.IsNullOrEmpty(siteSelected.PowerVRemarkCollectData)
-                                  ? new CollectData
-                                  {
-                                      PlanStatus = siteSelected.PlanStatusCollectData.HasValue ? (Enums.CollectionDataPlanStatus?)siteSelected.PlanStatusCollectData : null,
-                                      PendingType = siteSelected.pendingTypeCollectData.HasValue ? (Enums.CollectionDataPendingType?)siteSelected.pendingTypeCollectData : null,
-                                      MwValidationStatus = siteSelected.MWValidationStatusCollectDate.HasValue ? (Enums.ValidationStatus?)siteSelected.MWValidationStatusCollectDate : null,
-                                      MwValidationRemark = siteSelected.MWValidationRemarkCollectData,
-                                      RadioValidationStatus = siteSelected.RadioVStatusCollectData.HasValue ? (Enums.RadioValidationStatus?)siteSelected.RadioVStatusCollectData : null,
-                                      RadioValidationRemark = siteSelected.RadioVRemarkCollectData,
-                                      PowerValidationStatus = siteSelected.PowerVStatusCollectData.HasValue ? (Enums.ValidationStatus?)siteSelected.PowerVStatusCollectData : null,
-                                      PowerValidationRemark = siteSelected.PowerVRemarkCollectData
-                                  } : null,
+                            SiteCode = siteSelected.SiteCode,
+                            PlanType = siteSelected.PlanType?.Split(',').Select(pt => (Enums.PlanType)Enum.Parse(typeof(Enums.PlanType), pt)).ToList() ?? new List<Enums.PlanType>(),
+                            CollectData = (!string.IsNullOrEmpty(siteSelected.PlanStatusCollectData) || !string.IsNullOrEmpty(siteSelected.pendingTypeCollectData) ||
+                            siteSelected.MWValidationStatusCollectDate.HasValue || !string.IsNullOrEmpty(siteSelected.MWValidationRemarkCollectData) ||
+                            siteSelected.RadioVStatusCollectData.HasValue || !string.IsNullOrEmpty(siteSelected.RadioVRemarkCollectData) ||
+                            siteSelected.PowerVStatusCollectData.HasValue || !string.IsNullOrEmpty(siteSelected.PowerVRemarkCollectData))
+                           ? new CollectData
+                           {
+                               PlanStatus = !string.IsNullOrEmpty(siteSelected.PlanStatusCollectData)
+                                           ? siteSelected.PlanStatusCollectData.Split(',').Select(pt => (Enums.CollectionDataPlanStatus)Enum.Parse(typeof(Enums.CollectionDataPlanStatus), pt)).ToList()
+                                           : null,
+                               PendingType = !string.IsNullOrEmpty(siteSelected.pendingTypeCollectData)
+                                            ? siteSelected.pendingTypeCollectData.Split(',').Select(pt => (Enums.CollectionDataPendingType)Enum.Parse(typeof(Enums.CollectionDataPendingType), pt)).ToList()
+                                            : null,
+                               MwValidationStatus = siteSelected.MWValidationStatusCollectDate.HasValue ? (Enums.ValidationStatus?)siteSelected.MWValidationStatusCollectDate : null,
+                               MwValidationRemark = siteSelected.MWValidationRemarkCollectData,
+                               RadioValidationStatus = siteSelected.RadioVStatusCollectData.HasValue ? (Enums.RadioValidationStatus?)siteSelected.RadioVStatusCollectData : null,
+                               RadioValidationRemark = siteSelected.RadioVRemarkCollectData,
+                               PowerValidationStatus = siteSelected.PowerVStatusCollectData.HasValue ? (Enums.ValidationStatus?)siteSelected.PowerVStatusCollectData : null,
+                               PowerValidationRemark = siteSelected.PowerVRemarkCollectData,
+                               CivilCollectDoneBy = siteSelected.CivilCollectDoneBy,
+                               OMCollectDoneBy = siteSelected.OMCollectDoneBy,
+                               MWCollectPendingImplBy = siteSelected.MWCollectPendingImplBy,
+                               RadioCollectPendingOMBy = siteSelected.RadioCollectPendingOMBy,
+                               RadioCollectPendingCivilBy = siteSelected.RadioCollectPendingCivilBy,
+                           }
+                           : null,
                     MWMd = siteSelected.MdTypeMWMd.HasValue || !string.IsNullOrEmpty(siteSelected.DescriptionMWMd) ||
                            siteSelected.PlanStatusMWMd.HasValue || siteSelected.pendingTypeMWMd.HasValue ||
                            siteSelected.MWValidationStatusMWMd.HasValue || !string.IsNullOrEmpty(siteSelected.MWValidationRemarkMWMd)
@@ -390,7 +490,10 @@ namespace TLIS_Service.Services
                                PlanStatus = siteSelected.PlanStatusMWMd.HasValue ? (Enums.MWMDPlanStatus?)siteSelected.PlanStatusMWMd : null,
                                PendingType = siteSelected.pendingTypeMWMd.HasValue ? (Enums.MWMDPendingType?)siteSelected.pendingTypeMWMd : null,
                                MwValidationStatus = siteSelected.MWValidationStatusMWMd.HasValue ? (Enums.MWValidationStatus?)siteSelected.MWValidationStatusMWMd : null,
-                               MwValidationRemark = siteSelected.MWValidationRemarkMWMd
+                               MwValidationRemark = siteSelected.MWValidationRemarkMWMd,
+                               MWMdImplDoneBy = siteSelected.MWMdImplDoneBy,
+                               MWMdCivilDoneBy = siteSelected.MWMdCivilDoneBy,
+                               MWMDPendingImplBy = siteSelected.MWMDPendingImplBy,
                            } : null,
                     RadioMd = siteSelected.MdTypeRadioMd.HasValue || !string.IsNullOrEmpty(siteSelected.DescriptionRadioMd) ||
                               siteSelected.PlanStatusRadioMd.HasValue || siteSelected.pendingTypeRadioMd.HasValue ||
@@ -402,7 +505,10 @@ namespace TLIS_Service.Services
                                   PlanStatus = siteSelected.PlanStatusRadioMd.HasValue ? (Enums.OtherMDPlanStatus?)siteSelected.PlanStatusRadioMd : null,
                                   PendingType = siteSelected.pendingTypeRadioMd.HasValue ? (Enums.OtherMDPendingType?)siteSelected.pendingTypeRadioMd : null,
                                   RadioValidationStatus = siteSelected.RadioVStatusRadioMd.HasValue ? (Enums.OtherValidationStatus?)siteSelected.RadioVStatusRadioMd : null,
-                                  RadioValidationRemark = siteSelected.RadioVRemarkRadioMd
+                                  RadioValidationRemark = siteSelected.RadioVRemarkRadioMd,
+                                  RadioMdOMDoneBy = siteSelected.RadioMdOMDoneBy,
+                                  RadioMDPendingOMBy = siteSelected.RadioMDPendingOMBy,
+                                  RadioMDPendingCivilBy = siteSelected.RadioMDPendingCivilBy,
                               } : null,
                     PowerMd = siteSelected.MdTypePowerMd.HasValue || !string.IsNullOrEmpty(siteSelected.DescriptionPowerMd) ||
                               siteSelected.PlanStatusPowerMd.HasValue || siteSelected.pendingTypePowerMd.HasValue ||
@@ -414,7 +520,9 @@ namespace TLIS_Service.Services
                                   PlanStatus = siteSelected.PlanStatusPowerMd.HasValue ? (Enums.OtherMDPlanStatus?)siteSelected.PlanStatusPowerMd : null,
                                   PendingType = siteSelected.pendingTypePowerMd.HasValue ? (Enums.OtherMDPendingType?)siteSelected.pendingTypePowerMd : null,
                                   PowerValidationStatus = siteSelected.PowerVStatusPowerMd.HasValue ? (Enums.OtherValidationStatus?)siteSelected.PowerVStatusPowerMd : null,
-                                  PowerValidationRemark = siteSelected.PowerVRemarkPowerMd
+                                  PowerValidationRemark = siteSelected.PowerVRemarkPowerMd,
+                                  PowerMdOMDoneBy = siteSelected.PowerMdOMDoneBy,
+                                  PowerMDPendingOMBy = siteSelected.PowerMDPendingOMBy,
                               } : null
                 };
 
@@ -435,6 +543,89 @@ namespace TLIS_Service.Services
                 return new Response<SiteDetailsObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+        //public Response<SiteDetailsObject> GetSiteDetails(string siteCode)
+        //{
+        //    try
+        //    {
+        //        var siteSelected = _context.TLIsite.FirstOrDefault(x => x.SiteCode.ToLower() == siteCode.ToLower());
+
+        //        if (siteSelected == null)
+        //            return new Response<SiteDetailsObject>(true, null, null, "This Site Is Not Found", (int)Helpers.Constants.ApiReturnCode.fail);
+
+        //        var siteDetailsObject = new SiteDetailsObject
+        //        {
+        //            SiteCode = siteSelected.SiteCode,
+        //            PlanType = siteSelected.PlanType?.Split(',').Select(pt => (Enums.PlanType)Enum.Parse(typeof(Enums.PlanType), pt)).ToList() ?? new List<Enums.PlanType>(),
+        //            CollectData = siteSelected.PlanStatusCollectData.HasValue || siteSelected.pendingTypeCollectData.HasValue ||
+        //                          siteSelected.MWValidationStatusCollectDate.HasValue || !string.IsNullOrEmpty(siteSelected.MWValidationRemarkCollectData) ||
+        //                          siteSelected.RadioVStatusCollectData.HasValue || !string.IsNullOrEmpty(siteSelected.RadioVRemarkCollectData) ||
+        //                          siteSelected.PowerVStatusCollectData.HasValue || !string.IsNullOrEmpty(siteSelected.PowerVRemarkCollectData)
+        //                          ? new CollectData
+        //                          {
+        //                              PlanStatus = siteSelected.PlanStatusCollectData.HasValue ? (Enums.CollectionDataPlanStatus?)siteSelected.PlanStatusCollectData : null,
+        //                              PendingType = siteSelected.pendingTypeCollectData.HasValue ? (Enums.CollectionDataPendingType?)siteSelected.pendingTypeCollectData : null,
+        //                              MwValidationStatus = siteSelected.MWValidationStatusCollectDate.HasValue ? (Enums.ValidationStatus?)siteSelected.MWValidationStatusCollectDate : null,
+        //                              MwValidationRemark = siteSelected.MWValidationRemarkCollectData,
+        //                              RadioValidationStatus = siteSelected.RadioVStatusCollectData.HasValue ? (Enums.RadioValidationStatus?)siteSelected.RadioVStatusCollectData : null,
+        //                              RadioValidationRemark = siteSelected.RadioVRemarkCollectData,
+        //                              PowerValidationStatus = siteSelected.PowerVStatusCollectData.HasValue ? (Enums.ValidationStatus?)siteSelected.PowerVStatusCollectData : null,
+        //                              PowerValidationRemark = siteSelected.PowerVRemarkCollectData
+        //                          } : null,
+        //            MWMd = siteSelected.MdTypeMWMd.HasValue || !string.IsNullOrEmpty(siteSelected.DescriptionMWMd) ||
+        //                   siteSelected.PlanStatusMWMd.HasValue || siteSelected.pendingTypeMWMd.HasValue ||
+        //                   siteSelected.MWValidationStatusMWMd.HasValue || !string.IsNullOrEmpty(siteSelected.MWValidationRemarkMWMd)
+        //                   ? new MWMd
+        //                   {
+        //                       MdType = siteSelected.MdTypeMWMd.HasValue ? (Enums.MDType?)siteSelected.MdTypeMWMd : null,
+        //                       Description = siteSelected.DescriptionMWMd,
+        //                       PlanStatus = siteSelected.PlanStatusMWMd.HasValue ? (Enums.MWMDPlanStatus?)siteSelected.PlanStatusMWMd : null,
+        //                       PendingType = siteSelected.pendingTypeMWMd.HasValue ? (Enums.MWMDPendingType?)siteSelected.pendingTypeMWMd : null,
+        //                       MwValidationStatus = siteSelected.MWValidationStatusMWMd.HasValue ? (Enums.MWValidationStatus?)siteSelected.MWValidationStatusMWMd : null,
+        //                       MwValidationRemark = siteSelected.MWValidationRemarkMWMd
+        //                   } : null,
+        //            RadioMd = siteSelected.MdTypeRadioMd.HasValue || !string.IsNullOrEmpty(siteSelected.DescriptionRadioMd) ||
+        //                      siteSelected.PlanStatusRadioMd.HasValue || siteSelected.pendingTypeRadioMd.HasValue ||
+        //                      siteSelected.RadioVStatusRadioMd.HasValue || !string.IsNullOrEmpty(siteSelected.RadioVRemarkRadioMd)
+        //                      ? new RadioMd
+        //                      {
+        //                          MdType = siteSelected.MdTypeRadioMd.HasValue ? (Enums.MDType?)siteSelected.MdTypeRadioMd : null,
+        //                          Description = siteSelected.DescriptionRadioMd,
+        //                          PlanStatus = siteSelected.PlanStatusRadioMd.HasValue ? (Enums.OtherMDPlanStatus?)siteSelected.PlanStatusRadioMd : null,
+        //                          PendingType = siteSelected.pendingTypeRadioMd.HasValue ? (Enums.OtherMDPendingType?)siteSelected.pendingTypeRadioMd : null,
+        //                          RadioValidationStatus = siteSelected.RadioVStatusRadioMd.HasValue ? (Enums.OtherValidationStatus?)siteSelected.RadioVStatusRadioMd : null,
+        //                          RadioValidationRemark = siteSelected.RadioVRemarkRadioMd
+        //                      } : null,
+        //            PowerMd = siteSelected.MdTypePowerMd.HasValue || !string.IsNullOrEmpty(siteSelected.DescriptionPowerMd) ||
+        //                      siteSelected.PlanStatusPowerMd.HasValue || siteSelected.pendingTypePowerMd.HasValue ||
+        //                      siteSelected.PowerVStatusPowerMd.HasValue || !string.IsNullOrEmpty(siteSelected.PowerVRemarkPowerMd)
+        //                      ? new PowerMd
+        //                      {
+        //                          MdType = siteSelected.MdTypePowerMd.HasValue ? (Enums.MDType?)siteSelected.MdTypePowerMd : null,
+        //                          Description = siteSelected.DescriptionPowerMd,
+        //                          PlanStatus = siteSelected.PlanStatusPowerMd.HasValue ? (Enums.OtherMDPlanStatus?)siteSelected.PlanStatusPowerMd : null,
+        //                          PendingType = siteSelected.pendingTypePowerMd.HasValue ? (Enums.OtherMDPendingType?)siteSelected.pendingTypePowerMd : null,
+        //                          PowerValidationStatus = siteSelected.PowerVStatusPowerMd.HasValue ? (Enums.OtherValidationStatus?)siteSelected.PowerVStatusPowerMd : null,
+        //                          PowerValidationRemark = siteSelected.PowerVRemarkPowerMd
+        //                      } : null
+        //        };
+
+        //        if (siteDetailsObject == null ||
+        //            (siteDetailsObject.PlanType?.Count == 0 &&
+        //             siteDetailsObject.CollectData == null &&
+        //             siteDetailsObject.MWMd == null &&
+        //             siteDetailsObject.RadioMd == null &&
+        //             siteDetailsObject.PowerMd == null))
+        //        {
+        //            return new Response<SiteDetailsObject>(true, null, null, "No relevant data found", (int)Helpers.Constants.ApiReturnCode.success);
+        //        }
+
+        //        return new Response<SiteDetailsObject>(true, siteDetailsObject, null, null, (int)Helpers.Constants.ApiReturnCode.success);
+        //    }
+        //    catch (Exception err)
+        //    {
+        //        return new Response<SiteDetailsObject>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+        //    }
+        //}
 
 
         public Response<List<AreaViewModel>> GetAllAreasForSiteOperation()

@@ -38,12 +38,12 @@ namespace TLIS_DAL.Models
         public int AreaId { get; set; }
         public TLIarea Area { get; set; }
 
-        public int? PlanStatusCollectData { get; set; }
+        public string? PlanStatusCollectData { get; set; }
         public int? PlanStatusMWMd { get; set; }
         public int? PlanStatusPowerMd { get; set; }
         public int? PlanStatusRadioMd { get; set; }
         public string PlanType { get; set; }
-        public int? pendingTypeCollectData { get; set; }
+        public string? pendingTypeCollectData { get; set; }
         public int? pendingTypeMWMd { get; set; }
         public int? pendingTypePowerMd { get; set; }
         public int? pendingTypeRadioMd { get; set; }
@@ -65,7 +65,28 @@ namespace TLIS_DAL.Models
         public string DescriptionRadioMd { get; set; }
         public string DescriptionPowerMd { get; set; }
         public string DescriptionMWMd { get; set; }
-        public string UserName { get; set; }
+
+        //=================
+        public string CivilCollectDoneBy { get; set; }
+        public string OMCollectDoneBy { get; set; }
+
+        public string MWCollectPendingImplBy { get; set; }
+        public string MWMDPendingImplBy { get; set; }
+
+        public string PowerMDPendingOMBy { get; set; }
+
+        public string RadioCollectPendingOMBy { get; set; }
+        public string RadioMDPendingOMBy { get; set; }
+        public string RadioCollectPendingCivilBy { get; set; }
+        public string RadioMDPendingCivilBy { get; set; }
+
+        public string MWMdImplDoneBy { get; set; }
+        public string MWMdCivilDoneBy { get; set; }
+
+        public string PowerMdOMDoneBy { get; set; }
+        public string RadioMdOMDoneBy { get; set; }
+
+        //======================
         public IEnumerable<TLIcivilSiteDate> CivilSiteDate { get; set; }
         public IEnumerable<TLIotherInSite> OthersInSite { get; set; }
         public IEnumerable<TLIcivilSupportDistance> civilSupportDistances { get; set; }
