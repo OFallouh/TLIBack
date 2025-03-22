@@ -342,44 +342,44 @@ namespace TLIS_API.Controllers
             return Ok(response);
         }
 
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
-        [HttpGet("ExportSitesStatusToExcel")]
-        [ProducesResponseType(200, Type = typeof(Nullable))]
-        public async Task<ActionResult> ExportSitesStatusToExcel()
-        {
-            try
-            {
-                // استدعاء الخدمة لتصدير البيانات وإنشاء الملف
-                var response = await _unitOfWorkService.SiteService.ExportSitesStatusToExcel(); // استخدام await للحصول على النتيجة
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[HttpGet("ExportSitesStatusToExcel")]
+        //[ProducesResponseType(200, Type = typeof(Nullable))]
+        //public async Task<ActionResult> ExportSitesStatusToExcel()
+        //{
+        //    try
+        //    {
+        //        // استدعاء الخدمة لتصدير البيانات وإنشاء الملف
+        //        var response = await _unitOfWorkService.SiteService.ExportSitesStatusToExcel(); // استخدام await للحصول على النتيجة
 
-                // التأكد من أن response تحتوي على المسار
-                if (string.IsNullOrEmpty(response.Data)) // استخدم Data بدلاً من Result
-                {
-                    return BadRequest("الملف غير موجود.");
-                }
+        //        // التأكد من أن response تحتوي على المسار
+        //        if (string.IsNullOrEmpty(response.Data)) // استخدم Data بدلاً من Result
+        //        {
+        //            return BadRequest("الملف غير موجود.");
+        //        }
 
-                // بناء المسار الكامل للملف
-                var fullPath = response.Data; // إذا كانت response.Data تحتوي على المسار الكامل
+        //        // بناء المسار الكامل للملف
+        //        var fullPath = response.Data; // إذا كانت response.Data تحتوي على المسار الكامل
 
-                // قراءة الملف كـ بايتات
-                var bytes = await System.IO.File.ReadAllBytesAsync(fullPath); // استخدام المسار الفعلي
+        //        // قراءة الملف كـ بايتات
+        //        var bytes = await System.IO.File.ReadAllBytesAsync(fullPath); // استخدام المسار الفعلي
 
-                // تحديد نوع المحتوى بناءً على امتداد الملف
-                var provider = new FileExtensionContentTypeProvider();
-                if (!provider.TryGetContentType(fullPath, out var contentType))
-                {
-                    contentType = "application/octet-stream"; // في حال لم يتم التعرف على النوع
-                }
+        //        // تحديد نوع المحتوى بناءً على امتداد الملف
+        //        var provider = new FileExtensionContentTypeProvider();
+        //        if (!provider.TryGetContentType(fullPath, out var contentType))
+        //        {
+        //            contentType = "application/octet-stream"; // في حال لم يتم التعرف على النوع
+        //        }
 
-                // إرجاع الملف للمستخدم
-                return File(bytes, contentType, Path.GetFileName(fullPath));
-            }
-            catch (Exception ex)
-            {
-                // في حال حدوث خطأ، إرجاع رسالة الخطأ
-                return BadRequest(ex.Message);
-            }
-        }
+        //        // إرجاع الملف للمستخدم
+        //        return File(bytes, contentType, Path.GetFileName(fullPath));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // في حال حدوث خطأ، إرجاع رسالة الخطأ
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
 
 

@@ -372,6 +372,7 @@ namespace TLIS_Service.Services
                                 }
                                 _unitOfWork.SiteRepository.UpdateWithHInstallationSiteStatus(UserId, null, OldSiteSelected, SiteSelected, siteDetailsObject.SiteCode, 3);
                                 _unitOfWork.SaveChanges();
+
                             }
                         }
                         if (siteDetailsObject.PlanType == null)
@@ -433,7 +434,10 @@ namespace TLIS_Service.Services
                     {
                         return new Response<SiteDetailsObject>(true, null, null, "This Site Is Not Found", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
+                  
+
                     transaction.Complete();
+                  
                     return new Response<SiteDetailsObject>(true, null, null, null, (int)Helpers.Constants.ApiReturnCode.success);
                 }
                 catch (Exception err)
@@ -2018,10 +2022,16 @@ namespace TLIS_Service.Services
                 {
                     var worksheet = package.Workbook.Worksheets.Add("SitesStatus");
 
-                    // إضافة أسماء الأعمدة
-                    string[] headers = { "SiteCode", "SiteName", "PlanType", "CollectDataStatus", "MWMDStatus", "RadioMDStatus", "PowerMDStatus",
+                    // إضافة أسماء الأعمدة بدون userName
+                    string[] headers = {
+                "SiteCode", "SiteName", "PlanType", "CollectDataStatus", "MWMDStatus", "RadioMDStatus", "PowerMDStatus",
                 "CollectDataPendingType", "MWMDPendingType", "RadioMDPendingType", "PowerMDPendingType",
-                "MWValidationRemark", "RadioValidationRemark", "PowerValidationRemark", "userName" };
+                "MWValidationRemark", "RadioValidationRemark", "PowerValidationRemark",
+                // New Columns
+                "CivilCollectDoneBy", "OMCollectDoneBy", "MWCollectPendingImplBy", "MWMDPendingImplBy",
+                "PowerMDPendingOMBy", "RadioCollectPendingOMBy", "RadioMDPendingOMBy", "RadioCollectPendingCivilBy",
+                "RadioMDPendingCivilBy", "MWMdImplDoneBy", "MWMdCivilDoneBy", "PowerMdOMDoneBy", "RadioMdOMDoneBy"
+            };
 
                     for (int i = 0; i < headers.Length; i++)
                     {
@@ -2045,7 +2055,22 @@ namespace TLIS_Service.Services
                         worksheet.Cells[row, 12].Value = site.MWValidationRemark;
                         worksheet.Cells[row, 13].Value = site.RadioValidationRemark;
                         worksheet.Cells[row, 14].Value = site.PowerValidationRemark;
-                        worksheet.Cells[row, 15].Value = site.userName;
+
+                        // New Columns
+                        worksheet.Cells[row, 15].Value = site.CivilCollectDoneBy;
+                        worksheet.Cells[row, 16].Value = site.OMCollectDoneBy;
+                        worksheet.Cells[row, 17].Value = site.MWCollectPendingImplBy;
+                        worksheet.Cells[row, 18].Value = site.MWMDPendingImplBy;
+                        worksheet.Cells[row, 19].Value = site.PowerMDPendingOMBy;
+                        worksheet.Cells[row, 20].Value = site.RadioCollectPendingOMBy;
+                        worksheet.Cells[row, 21].Value = site.RadioMDPendingOMBy;
+                        worksheet.Cells[row, 22].Value = site.RadioCollectPendingCivilBy;
+                        worksheet.Cells[row, 23].Value = site.RadioMDPendingCivilBy;
+                        worksheet.Cells[row, 24].Value = site.MWMdImplDoneBy;
+                        worksheet.Cells[row, 25].Value = site.MWMdCivilDoneBy;
+                        worksheet.Cells[row, 26].Value = site.PowerMdOMDoneBy;
+                        worksheet.Cells[row, 27].Value = site.RadioMdOMDoneBy;
+
                         row++;
                     }
 
@@ -2060,6 +2085,7 @@ namespace TLIS_Service.Services
                 return new Response<string>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
+
 
 
         public List<SiteViewModel> GetAllSitesWithoutPaginationForWorkFlow()

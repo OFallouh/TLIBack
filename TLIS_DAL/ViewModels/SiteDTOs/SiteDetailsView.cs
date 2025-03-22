@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TLIS_DAL.ViewModels.SiteDTOs
 {
-   
+
     public class SiteDetailsView
     {
         [Key]
@@ -27,6 +27,20 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
         public string MWValidationRemark { get; set; }
         public string RadioValidationRemark { get; set; }
         public string PowerValidationRemark { get; set; }
-        public string userName { get; set; }
+
+        // New Columns
+        public string CivilCollectDoneBy { get; set; }
+        public string OMCollectDoneBy { get; set; }
+        public string MWCollectPendingImplBy { get; set; }
+        public string MWMDPendingImplBy { get; set; }
+        public string PowerMDPendingOMBy { get; set; }
+        public string RadioCollectPendingOMBy { get; set; }
+        public string RadioMDPendingOMBy { get; set; }
+        public string RadioCollectPendingCivilBy { get; set; }
+        public string RadioMDPendingCivilBy { get; set; }
+        public string MWMdImplDoneBy { get; set; }
+        public string MWMdCivilDoneBy { get; set; }
+        public string PowerMdOMDoneBy { get; set; }
+        public string RadioMdOMDoneBy { get; set; }
     }
 }

@@ -50,7 +50,7 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
             /// <summary>
             /// //////////////////////
             /// </summary>
-            [Description("Done Network Iplementation")]
+            [Description("Done Network Implementation")]
             DoneNetworkImplementaione = 6
         }
 
