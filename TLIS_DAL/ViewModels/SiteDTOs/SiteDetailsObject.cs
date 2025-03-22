@@ -192,7 +192,6 @@ namespace TLIS_DAL.ViewModels.SiteDTOs
         public string CivilCollectDoneBy { get; set; }
         public string OMCollectDoneBy { get; set; }
         public string MWCollectPendingImplBy { get; set; }
-        public string PowerCollectPendingOMBy { get; set; }
         public string RadioCollectPendingOMBy { get; set; }
         public string RadioCollectPendingCivilBy { get; set; }
     }
