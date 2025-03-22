@@ -9036,7 +9036,7 @@ namespace TLIS_Service.Services
                     string desktopPath = _configuration["SMISFile"];
 
                     // تقسيم البيانات إلى دفعات (batches) كل دفعة تحتوي على 1000 موقع
-                    int batchSize = 500;
+                    int batchSize = 1000;
                     int totalBatches = (int)Math.Ceiling((double)allData.Count / batchSize);
 
                     for (int i = 0; i < totalBatches; i++)

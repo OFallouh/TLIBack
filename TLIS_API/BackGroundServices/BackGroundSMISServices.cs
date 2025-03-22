@@ -22,6 +22,21 @@ namespace TLIS_API.BackGroundServices
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                // حساب الوقت المتبقي حتى الساعة 12 منتصف الليل
+                var currentTime = DateTime.UtcNow;
+                var nextRunTime = DateTime.Today.AddDays(1); // الساعة 12 منتصف الليل ليوم غد
+                var timeToWait = nextRunTime - currentTime;
+
+                // تأكد من أنه الوقت التالي هو فعلاً في المستقبل
+                if (timeToWait.TotalMilliseconds < 0)
+                {
+                    nextRunTime = nextRunTime.AddDays(1); // إذا كانت الساعة الحالية بعد الساعة 12 منتصف الليل، اضبط التوقيت على اليوم التالي
+                    timeToWait = nextRunTime - currentTime;
+                }
+
+                // انتظر حتى الساعة 12 منتصف الليل
+                await Task.Delay(timeToWait, stoppingToken);
+
                 using (var scope = _services.CreateScope())
                 {
                     var unitOfWorkService = scope.ServiceProvider.GetRequiredService<IUnitOfWorkService>();
@@ -70,9 +85,6 @@ namespace TLIS_API.BackGroundServices
                         await LogErrorToDb(ex, "GeneralBackgroundTaskError", _context);
                     }
                 }
-
-                // انتظار 24 ساعة قبل التشغيل التالي
-                await Task.Delay(TimeSpan.FromHours(24), stoppingToken);
             }
         }
 
