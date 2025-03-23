@@ -4816,6 +4816,28 @@ namespace TLIS_Service.Services
 
                         if (RadioAntennaInst == null)
                             return new Response<GetForAddMWDishInstallationObject>(false, null, null, "RadioAntenna is not found", (int)ApiReturnCode.fail);
+
+
+                        var RelatedtoRadioAntenna = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(
+                        x => x.allLoadInst.radioAntenna.Id == RadioAntenna.Id &&
+                          !x.Dismantle &&
+                          (x.allLoadInst.radioRRU.radioAntennaId == RadioAntenna.Id),x=>x.allLoadInst,
+                           x=>x.allLoadInst.radioAntenna,x=>x.allLoadInst.radioRRU);
+
+
+                        bool isModified = EditRadioAntenna.installationConfig.InstallationPlaceId != RadioAntennaInst.allLoadInst.radioAntenna.installationPlaceId ||
+                           EditRadioAntenna.installationConfig.civilWithLegId != RadioAntennaInst.allCivilInst.civilWithLegsId ||
+                           EditRadioAntenna.installationConfig.civilWithoutLegId != RadioAntennaInst.allCivilInst.civilWithoutLegId ||
+                           EditRadioAntenna.installationConfig.civilNonSteelId != RadioAntennaInst.allCivilInst.civilNonSteelId ||
+                           EditRadioAntenna.installationConfig.sideArmId != RadioAntennaInst.sideArmId
+                           || EditRadioAntenna.installationConfig.legId != RadioAntennaInst.legId;
+
+
+                        if (RelatedtoRadioAntenna.Count > 0 && isModified)
+                            return new Response<GetForAddMWDishInstallationObject>(false, null, null,
+                                "This MWBU is used, so we cannot change the installation configuration", (int)ApiReturnCode.fail);
+
+
                         if (EditRadioAntenna.installationConfig.InstallationPlaceId == 1)
                         {
                             if (EditRadioAntenna.installationConfig.civilWithLegId != null)

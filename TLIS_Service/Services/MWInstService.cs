@@ -10116,6 +10116,7 @@ namespace TLIS_Service.Services
                     TableNameId = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == TablesNames.TLImwDish.ToString().ToLower()).Id;
                     TLImwDish mwDish = _mapper.Map<TLImwDish>(MWInstallationViewModel.installationAttributes);
 
+
                     var PolarityOnLocationId = _unitOfWork.PolarityOnLocationRepository.GetWhereFirst(x => x.Id == mwDish.PolarityOnLocationId);
                     if (PolarityOnLocationId == null)
                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "PolarityOnLocationId is not found", (int)Helpers.Constants.ApiReturnCode.fail);
@@ -10132,6 +10133,41 @@ namespace TLIS_Service.Services
 
                     if (MWDishInst == null)
                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWDish is not found", (int)ApiReturnCode.fail);
+
+
+                    var RelatedtoMWDish = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(
+                              x => x.allLoadInst.mwDish.Id == mwDish.Id &&
+                                   !x.Dismantle &&
+                                   (x.allLoadInst.mwODU.Mw_DishId == mwDish.Id ||
+                                    x.allLoadInst.mwBU.MainDishId == mwDish.Id ||
+                                    x.allLoadInst.mwBU.SdDishId == mwDish.Id),
+                              x => x.allLoadInst,
+                              x => x.allLoadInst.mwDish,
+                              x => x.allLoadInst.mwBU
+                          );
+
+
+
+                    bool isModified =
+                      MWInstallationViewModel.installationConfig.InstallationPlaceId != MWDishInst.allLoadInst.mwDish.InstallationPlaceId ||
+                      MWInstallationViewModel.installationConfig.civilWithLegId != MWDishInst.allCivilInst.civilWithLegsId ||
+                      MWInstallationViewModel.installationConfig.civilWithoutLegId != MWDishInst.allCivilInst.civilWithoutLegId ||
+                      MWInstallationViewModel.installationConfig.civilNonSteelId != MWDishInst.allCivilInst.civilNonSteelId ||
+                      MWInstallationViewModel.installationConfig.legId != MWDishInst.legId ||
+                      (MWInstallationViewModel.installationConfig.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 0 &&
+                          MWInstallationViewModel.installationConfig.sideArmId[0] != MWDishInst.sideArmId) ||
+                      (MWInstallationViewModel.installationConfig.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 &&
+                          MWInstallationViewModel.installationConfig.sideArmId[1] != MWDishInst.sideArm2Id) ||
+                      MWInstallationViewModel.installationConfig.MwDishLibraryId != MWDishInst.allLoadInst.mwDish.MwDishLibraryId;
+
+                    if (RelatedtoMWDish.Count > 0 && isModified)
+                    {
+                        return new Response<GetForAddMWDishInstallationObject>(
+                            false, null, null,
+                            "This MW Dish is used so we cannot change installation configuration",
+                            (int)ApiReturnCode.fail);
+                    }
+
 
                     if (MWInstallationViewModel.installationConfig.InstallationPlaceId == 1)
                     {
@@ -11011,7 +11047,6 @@ namespace TLIS_Service.Services
                         }
 
                     }
-
                     if (MWInstallationViewModel.installationConfig.InstallationPlaceId == 2)
                     {
 
@@ -13447,11 +13482,40 @@ namespace TLIS_Service.Services
                     TLImwBU mwBU = _mapper.Map<TLImwBU>(MWInstallationViewModel.installationAttributes);
                     TLIcivilLoads mwBUInst = _dbContext.TLIcivilLoads.AsNoTracking()
                         .Include(x => x.allLoadInst).Include(x => x.allLoadInst.mwBU).Include(x => x.allLoadInst.mwBU.MwBULibrary).Include(x => x.allCivilInst)
+                        .Include(x => x.allLoadInst.mwBU.MwPort)
                         .Include(x => x.allCivilInst.civilNonSteel).Include(x => x.allCivilInst.civilWithLegs).Include(x => x.allCivilInst.civilWithoutLeg)
                         .FirstOrDefault(x => x.allLoadInstId != null && x.allLoadInst.mwBUId == mwBU.Id && !x.Dismantle);
                     var Model = _dbContext.MV_MWBU_LIBRARY_VIEW.FirstOrDefault(x => x.Id == mwBUInst.allLoadInst.mwBU.MwBULibrary.Id).Model;
                     if (mwBUInst == null)
                         return new Response<GetForAddMWDishInstallationObject>(false, null, null, "MWBU is not found", (int)ApiReturnCode.fail);
+                    var oldportCascudedB = _unitOfWork.MW_PortRepository.GetWhereFirst(x => x.Id ==
+                                                       mwBUInst.allLoadInst.mwBU.PortCascadeId);
+                    var RelatedtoMWBU = _unitOfWork.CivilLoadsRepository.GetWhereAndInclude(
+                      x => x.allLoadInst.mwBU.Id == mwBU.Id &&
+                           !x.Dismantle &&
+                           (x.allLoadInst.mwRFU.MwPort.MwBUId== mwBU.Id),x=>x.allLoadInst,x=>x.allLoadInst.mwBU
+                           ,x=>x.allLoadInst.mwRFU,x=>x.allLoadInst.mwRFU.MwPort);
+
+
+                    bool isModified = MWInstallationViewModel.installationConfig.InstallationPlaceId != mwBUInst.allLoadInst.mwBU.InstallationPlaceId ||
+                       MWInstallationViewModel.installationConfig.civilWithLegId != mwBUInst.allCivilInst.civilWithLegsId ||
+                       MWInstallationViewModel.installationConfig.civilWithoutLegId != mwBUInst.allCivilInst.civilWithoutLegId ||
+                       MWInstallationViewModel.installationConfig.civilNonSteelId != mwBUInst.allCivilInst.civilNonSteelId ||
+                        (MWInstallationViewModel.installationConfig.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 0 &&
+                          MWInstallationViewModel.installationConfig.sideArmId[0] != mwBUInst.sideArmId) ||
+                      (MWInstallationViewModel.installationConfig.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 &&
+                          MWInstallationViewModel.installationConfig.sideArmId[1] != mwBUInst.sideArm2Id) ||
+                       MWInstallationViewModel.installationConfig.legId != mwBUInst.legId ||
+                       MWInstallationViewModel.installationConfig.sdDishId != mwBUInst.allLoadInst.mwBU.SdDishId ||
+                       MWInstallationViewModel.installationConfig.mainDishId != mwBUInst.allLoadInst.mwBU.MainDishId ||
+                       MWInstallationViewModel.installationConfig.CascededBuId != oldportCascudedB.MwBUId;
+
+
+                    if (RelatedtoMWBU.Count > 0 && isModified)
+                        return new Response<GetForAddMWDishInstallationObject>(false, null, null,
+                            "This MWBU is used, so we cannot change the installation configuration", (int)ApiReturnCode.fail);
+
+
 
                     if (MWInstallationViewModel.installationConfig.InstallationPlaceId == 1)
                     {
