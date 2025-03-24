@@ -262,7 +262,7 @@ namespace TLIS_Service.Services
 
                     if (CheckRoleNameIfExist != null)
                     {
-                        return new Response<RoleViewModel>(true, null, null, $"Role {editRole.Name} is already exists in database", (int)Constants.ApiReturnCode.fail);
+                        return new Response<RoleViewModel>(true, null, null, $"Role {editRole.Name} is already exists", (int)Constants.ApiReturnCode.fail);
                     }
 
                     TLIrole RoleEntity = _unitOfWork.RoleRepository.GetByID(editRole.Id);

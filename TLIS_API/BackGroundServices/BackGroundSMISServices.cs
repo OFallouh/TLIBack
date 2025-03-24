@@ -18,21 +18,21 @@ namespace TLIS_API.BackGroundServices
             _services = services;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+      protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
                 // حساب الوقت المتبقي حتى الساعة 12 منتصف الليل
                 var currentTime = DateTime.UtcNow;
-                var nextRunTime = DateTime.Today.AddDays(1); // الساعة 12 منتصف الليل ليوم غد
-                var timeToWait = nextRunTime - currentTime;
+                var nextRunTime = DateTime.UtcNow.Date.AddDays(1); // الساعة 12 منتصف الليل ليوم غد
 
-                // تأكد من أنه الوقت التالي هو فعلاً في المستقبل
-                if (timeToWait.TotalMilliseconds < 0)
+                // تأكد من أن الوقت التالي هو فعلاً في المستقبل
+                if (currentTime > nextRunTime)
                 {
-                    nextRunTime = nextRunTime.AddDays(1); // إذا كانت الساعة الحالية بعد الساعة 12 منتصف الليل، اضبط التوقيت على اليوم التالي
-                    timeToWait = nextRunTime - currentTime;
+                    nextRunTime = nextRunTime.AddDays(1);
                 }
+
+                var timeToWait = nextRunTime - currentTime;
 
                 // انتظر حتى الساعة 12 منتصف الليل
                 await Task.Delay(timeToWait, stoppingToken);
