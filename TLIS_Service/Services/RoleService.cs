@@ -49,7 +49,7 @@ namespace TLIS_Service.Services
         //Function take 1 parameter
         //check the name of the role if already exists the return error message
         //else add role and permissions to the role
-        public async Task<Response<RoleViewModel>> AddRole(AddRoleViewModel addRole,int UserId)
+        public async Task<Response<RoleViewModel>> AddRole(AddRoleViewModel addRole, int UserId)
         {
             try
             {
@@ -60,28 +60,37 @@ namespace TLIS_Service.Services
 
                     using (var transaction = connection.BeginTransaction())
                     {
-                        TLIrole CheckRoleNameIfAlreadyExist = _unitOfWork.RoleRepository.GetWhereFirst(x => !x.Deleted && x.Name.ToLower() == addRole.Name.ToLower());
+                        // Check if role already exists
+                        var checkRoleCommand = new OracleCommand("SELECT COUNT(*) FROM \"TLIrole\" WHERE LOWER(\"Name\") = :name AND \"Deleted\" = 0", connection);
+                        checkRoleCommand.Parameters.Add(new OracleParameter("name", OracleDbType.Varchar2) { Value = addRole.Name.ToLower() });
+                        checkRoleCommand.Transaction = transaction;  // Assign transaction to command
 
-                        if (CheckRoleNameIfAlreadyExist != null)
+                        var roleExists = Convert.ToInt32(await checkRoleCommand.ExecuteScalarAsync());
+
+                        if (roleExists > 0)
                         {
-                            return new Response<RoleViewModel>(true, null, null, $"Role {addRole.Name} is already exists in database", (int)Constants.ApiReturnCode.fail);
+                            return new Response<RoleViewModel>(true, null, null, $"Role {addRole.Name} already exists in the database", (int)Constants.ApiReturnCode.fail);
                         }
-                       
-                        TLIrole role = new TLIrole()
-                        {
-                            Name = addRole.Name,
-                            Deleted = false,
-                            Active = true,
-                            Permissions= addRole.Permissions
-                        };
 
-                        _unitOfWork.RoleRepository.AddWithH(UserId,null,role,false);
-                        _unitOfWork.SaveChanges();
+                        // Insert new role
+                        var insertRoleCommand = new OracleCommand("INSERT INTO \"TLIrole\" (\"Name\", \"Active\", \"Deleted\", \"Permissions\") VALUES (:name, :active, :deleted, :permissions) RETURNING \"Id\" INTO :id", connection);
+                        insertRoleCommand.Parameters.Add(new OracleParameter("name", OracleDbType.Varchar2) { Value = addRole.Name });
+                        insertRoleCommand.Parameters.Add(new OracleParameter("active", OracleDbType.Int32) { Value = 1 }); // Active = true
+                        insertRoleCommand.Parameters.Add(new OracleParameter("deleted", OracleDbType.Int32) { Value = 0 }); // Deleted = false
+                        insertRoleCommand.Parameters.Add(new OracleParameter("permissions", OracleDbType.Varchar2) { Value = addRole.Permissions });
 
-                       
+                        var idParameter = new OracleParameter("id", OracleDbType.Int32) { Direction = System.Data.ParameterDirection.Output };
+                        insertRoleCommand.Parameters.Add(idParameter);
+                        insertRoleCommand.Transaction = transaction;  // Assign transaction to command
 
+                        await insertRoleCommand.ExecuteNonQueryAsync();
+
+                        // Optionally, handle the role permissions and other related data as per your logic.
+
+                        // Commit transaction
                         transaction.Commit();
-                        return new Response<RoleViewModel>(false, null, null, "This Role Is Not Found", (int)Helpers.Constants.ApiReturnCode.success);
+
+                        return new Response<RoleViewModel>(false, null, null, "Role has been successfully created", (int)Helpers.Constants.ApiReturnCode.success);
                     }
                 }
             }
@@ -89,9 +98,10 @@ namespace TLIS_Service.Services
             {
                 return new Response<RoleViewModel>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
-           
-            
         }
+
+
+
         private async Task InsertPermissionsAsync(OracleConnection connection, int roleId, List<string> permissions)
         {
             var query = @"
