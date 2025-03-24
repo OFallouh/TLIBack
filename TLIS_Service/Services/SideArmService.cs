@@ -2828,16 +2828,19 @@ namespace TLIS_Service.Services
                               &&
                               (x.allLoadInstId != null && !x.Dismantle)
                         ).AsNoTracking().ToList();
+
+
                         bool isModified =
-                             SideArmViewModel.installationConfig.installationPlaceId != CivilLoads.sideArm.sideArmInstallationPlaceId ||
-                             SideArmViewModel.installationConfig.civilWithLegId != CivilLoads.allCivilInst.civilWithLegsId ||
-                             SideArmViewModel.installationConfig.civilWithoutLegId != CivilLoads.allCivilInst.civilWithoutLegId ||
-                             SideArmViewModel.installationConfig.civilNonSteelId != CivilLoads.allCivilInst.civilNonSteelId ||
-                             SideArmViewModel.installationConfig.sideArmTypeId != CivilLoads.sideArm.sideArmTypeId ||
-                             (SideArmViewModel.installationConfig.legId != null && SideArmViewModel.installationConfig.legId.Count > 0 &&
-                                 SideArmViewModel.installationConfig.legId[0] != CivilLoads.legId) ||
-                             (SideArmViewModel.installationConfig.legId != null && SideArmViewModel.installationConfig.legId.Count > 1 &&
-                                 SideArmViewModel.installationConfig.legId[1] != CivilLoads.Leg2Id);
+                          SideArmViewModel?.installationConfig?.installationPlaceId != CivilLoads?.sideArm?.sideArmInstallationPlaceId ||
+                          SideArmViewModel?.installationConfig?.civilWithLegId != CivilLoads?.allCivilInst?.civilWithLegsId ||
+                          SideArmViewModel?.installationConfig?.civilWithoutLegId != CivilLoads?.allCivilInst?.civilWithoutLegId ||
+                          SideArmViewModel?.installationConfig?.civilNonSteelId != CivilLoads?.allCivilInst?.civilNonSteelId ||
+                          SideArmViewModel?.installationConfig?.sideArmTypeId != CivilLoads?.sideArm?.sideArmTypeId ||
+                          (SideArmViewModel?.installationConfig?.legId != null && SideArmViewModel.installationConfig.legId.Count > 0 &&
+                              SideArmViewModel.installationConfig.legId[0] != CivilLoads?.legId) ||
+                          (SideArmViewModel?.installationConfig?.legId != null && SideArmViewModel.installationConfig.legId.Count > 1 &&
+                              SideArmViewModel.installationConfig.legId[1] != CivilLoads?.Leg2Id);
+
 
                         if (RelatedtoSideArm.Count > 0 && isModified)
                         {

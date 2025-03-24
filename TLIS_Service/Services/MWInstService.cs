@@ -10149,16 +10149,16 @@ namespace TLIS_Service.Services
 
 
                     bool isModified =
-                      MWInstallationViewModel.installationConfig.InstallationPlaceId != MWDishInst.allLoadInst.mwDish.InstallationPlaceId ||
-                      MWInstallationViewModel.installationConfig.civilWithLegId != MWDishInst.allCivilInst.civilWithLegsId ||
-                      MWInstallationViewModel.installationConfig.civilWithoutLegId != MWDishInst.allCivilInst.civilWithoutLegId ||
-                      MWInstallationViewModel.installationConfig.civilNonSteelId != MWDishInst.allCivilInst.civilNonSteelId ||
-                      MWInstallationViewModel.installationConfig.legId != MWDishInst.legId ||
-                      (MWInstallationViewModel.installationConfig.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 0 &&
-                          MWInstallationViewModel.installationConfig.sideArmId[0] != MWDishInst.sideArmId) ||
-                      (MWInstallationViewModel.installationConfig.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 &&
-                          MWInstallationViewModel.installationConfig.sideArmId[1] != MWDishInst.sideArm2Id) ||
-                      MWInstallationViewModel.installationConfig.MwDishLibraryId != MWDishInst.allLoadInst.mwDish.MwDishLibraryId;
+                       MWInstallationViewModel?.installationConfig?.InstallationPlaceId != MWDishInst?.allLoadInst?.mwDish?.InstallationPlaceId ||
+                       MWInstallationViewModel?.installationConfig?.civilWithLegId != MWDishInst?.allCivilInst?.civilWithLegsId ||
+                       MWInstallationViewModel?.installationConfig?.civilWithoutLegId != MWDishInst?.allCivilInst?.civilWithoutLegId ||
+                       MWInstallationViewModel?.installationConfig?.civilNonSteelId != MWDishInst?.allCivilInst?.civilNonSteelId ||
+                       MWInstallationViewModel?.installationConfig?.legId != MWDishInst?.legId ||
+                       (MWInstallationViewModel?.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 0 &&
+                           MWInstallationViewModel.installationConfig.sideArmId[0] != MWDishInst?.sideArmId) ||
+                       (MWInstallationViewModel?.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 &&
+                           MWInstallationViewModel.installationConfig.sideArmId[1] != MWDishInst?.sideArm2Id) ||
+                       MWInstallationViewModel?.installationConfig?.MwDishLibraryId != MWDishInst?.allLoadInst?.mwDish?.MwDishLibraryId;
 
                     if (RelatedtoMWDish.Count > 0 && isModified)
                     {
@@ -13497,18 +13497,19 @@ namespace TLIS_Service.Services
                            ,x=>x.allLoadInst.mwRFU,x=>x.allLoadInst.mwRFU.MwPort);
 
 
-                    bool isModified = MWInstallationViewModel.installationConfig.InstallationPlaceId != mwBUInst.allLoadInst.mwBU.InstallationPlaceId ||
-                       MWInstallationViewModel.installationConfig.civilWithLegId != mwBUInst.allCivilInst.civilWithLegsId ||
-                       MWInstallationViewModel.installationConfig.civilWithoutLegId != mwBUInst.allCivilInst.civilWithoutLegId ||
-                       MWInstallationViewModel.installationConfig.civilNonSteelId != mwBUInst.allCivilInst.civilNonSteelId ||
-                        (MWInstallationViewModel.installationConfig.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 0 &&
-                          MWInstallationViewModel.installationConfig.sideArmId[0] != mwBUInst.sideArmId) ||
-                      (MWInstallationViewModel.installationConfig.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 &&
-                          MWInstallationViewModel.installationConfig.sideArmId[1] != mwBUInst.sideArm2Id) ||
-                       MWInstallationViewModel.installationConfig.legId != mwBUInst.legId ||
-                       MWInstallationViewModel.installationConfig.sdDishId != mwBUInst.allLoadInst.mwBU.SdDishId ||
-                       MWInstallationViewModel.installationConfig.mainDishId != mwBUInst.allLoadInst.mwBU.MainDishId ||
-                       MWInstallationViewModel.installationConfig.CascededBuId != oldportCascudedB.MwBUId;
+                    bool isModified = MWInstallationViewModel?.installationConfig?.InstallationPlaceId != mwBUInst?.allLoadInst?.mwBU?.InstallationPlaceId ||
+                      MWInstallationViewModel?.installationConfig?.civilWithLegId != mwBUInst?.allCivilInst?.civilWithLegsId ||
+                      MWInstallationViewModel?.installationConfig?.civilWithoutLegId != mwBUInst?.allCivilInst?.civilWithoutLegId ||
+                      MWInstallationViewModel?.installationConfig?.civilNonSteelId != mwBUInst?.allCivilInst?.civilNonSteelId ||
+                      (MWInstallationViewModel?.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 0 &&
+                        MWInstallationViewModel.installationConfig.sideArmId[0] != mwBUInst?.sideArmId) ||
+                      (MWInstallationViewModel?.installationConfig?.sideArmId != null && MWInstallationViewModel.installationConfig.sideArmId.Count > 1 &&
+                        MWInstallationViewModel.installationConfig.sideArmId[1] != mwBUInst?.sideArm2Id) ||
+                      MWInstallationViewModel?.installationConfig?.legId != mwBUInst?.legId ||
+                      MWInstallationViewModel?.installationConfig?.sdDishId != mwBUInst?.allLoadInst?.mwBU?.SdDishId ||
+                      MWInstallationViewModel?.installationConfig?.mainDishId != mwBUInst?.allLoadInst?.mwBU?.MainDishId ||
+                      MWInstallationViewModel?.installationConfig?.CascededBuId != oldportCascudedB?.MwBUId;
+
 
 
                     if (RelatedtoMWBU.Count > 0 && isModified)
