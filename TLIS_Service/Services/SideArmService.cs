@@ -2821,31 +2821,31 @@ namespace TLIS_Service.Services
 
 
 
-                        //var RelatedtoSideArm = _unitOfWork.CivilLoadsRepository.GetWhere(
-                        //  x =>
-                        //      (x.sideArmId == SideArmViewModel.installationAttributes.Id
-                        //       || x.sideArm2Id == SideArmViewModel.installationAttributes.Id)
-                        //      &&
-                        //      (x.allLoadInstId != null && !x.Dismantle)
-                        //);
-                        //bool isModified =
-                        //     SideArmViewModel.installationConfig.installationPlaceId != CivilLoads.sideArm.sideArmInstallationPlaceId ||
-                        //     SideArmViewModel.installationConfig.civilWithLegId != CivilLoads.allCivilInst.civilWithLegsId ||
-                        //     SideArmViewModel.installationConfig.civilWithoutLegId != CivilLoads.allCivilInst.civilWithoutLegId ||
-                        //     SideArmViewModel.installationConfig.civilNonSteelId != CivilLoads.allCivilInst.civilNonSteelId ||
-                        //     SideArmViewModel.installationConfig.sideArmTypeId != CivilLoads.sideArm.sideArmTypeId ||
-                        //     (SideArmViewModel.installationConfig.legId != null && SideArmViewModel.installationConfig.legId.Count > 0 &&
-                        //         SideArmViewModel.installationConfig.legId[0] != CivilLoads.legId) ||
-                        //     (SideArmViewModel.installationConfig.legId != null && SideArmViewModel.installationConfig.legId.Count > 1 &&
-                        //         SideArmViewModel.installationConfig.legId[1] != CivilLoads.Leg2Id);
+                        var RelatedtoSideArm = _unitOfWork.CivilLoadsRepository.GetWhere(
+                          x =>
+                              (x.sideArmId == SideArmViewModel.installationAttributes.Id
+                               || x.sideArm2Id == SideArmViewModel.installationAttributes.Id)
+                              &&
+                              (x.allLoadInstId != null && !x.Dismantle)
+                        );
+                        bool isModified =
+                             SideArmViewModel.installationConfig.installationPlaceId != CivilLoads.sideArm.sideArmInstallationPlaceId ||
+                             SideArmViewModel.installationConfig.civilWithLegId != CivilLoads.allCivilInst.civilWithLegsId ||
+                             SideArmViewModel.installationConfig.civilWithoutLegId != CivilLoads.allCivilInst.civilWithoutLegId ||
+                             SideArmViewModel.installationConfig.civilNonSteelId != CivilLoads.allCivilInst.civilNonSteelId ||
+                             SideArmViewModel.installationConfig.sideArmTypeId != CivilLoads.sideArm.sideArmTypeId ||
+                             (SideArmViewModel.installationConfig.legId != null && SideArmViewModel.installationConfig.legId.Count > 0 &&
+                                 SideArmViewModel.installationConfig.legId[0] != CivilLoads.legId) ||
+                             (SideArmViewModel.installationConfig.legId != null && SideArmViewModel.installationConfig.legId.Count > 1 &&
+                                 SideArmViewModel.installationConfig.legId[1] != CivilLoads.Leg2Id);
 
-                        //if (RelatedtoSideArm.Count > 0 && isModified)
-                        //{
-                        //    return new Response<EditSidearmInstallationObject>(
-                        //        false, null, null,
-                        //        "This SideArm is used so we cannot change installation configuration",
-                        //        (int)ApiReturnCode.fail);
-                        //}
+                        if (RelatedtoSideArm.Count > 0 && isModified)
+                        {
+                            return new Response<EditSidearmInstallationObject>(
+                                false, null, null,
+                                "This SideArm is used so we cannot change installation configuration",
+                                (int)ApiReturnCode.fail);
+                        }
                         TLIsideArm SideArm = _mapper.Map<TLIsideArm>(SideArmViewModel.installationAttributes);
                         TLIsideArm SideArmInst = _unitOfWork.SideArmRepository.GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == SideArm.Id);
 
