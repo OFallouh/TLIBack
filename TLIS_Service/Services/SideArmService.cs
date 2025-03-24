@@ -2804,7 +2804,7 @@ namespace TLIS_Service.Services
                     TLIcivilLoads CivilLoads = _unitOfWork.CivilLoadsRepository.GetIncludeWhereFirst(x => x.sideArmId == SideArmViewModel.
                     installationAttributes.Id && x.allLoadInstId == null && !x.Dismantle, x => x.allCivilInst,
                     x => x.allCivilInst.civilNonSteel, x => x.allCivilInst.civilWithLegs
-                    , x => x.allCivilInst.civilWithoutLeg);
+                    , x => x.allCivilInst.civilWithoutLeg,x=>x.sideArm);
                     if (CivilLoads != null)
                     {
                         //var RelatedtoSideArm = _unitOfWork.CivilLoadsRepository.GetWhere(
@@ -2821,13 +2821,13 @@ namespace TLIS_Service.Services
 
 
 
-                        var RelatedtoSideArm = _unitOfWork.CivilLoadsRepository.GetWhere(
+                        var RelatedtoSideArm = _dbContext.TLIcivilLoads.Where(
                           x =>
                               (x.sideArmId == SideArmViewModel.installationAttributes.Id
                                || x.sideArm2Id == SideArmViewModel.installationAttributes.Id)
                               &&
                               (x.allLoadInstId != null && !x.Dismantle)
-                        );
+                        ).AsNoTracking().ToList();
                         bool isModified =
                              SideArmViewModel.installationConfig.installationPlaceId != CivilLoads.sideArm.sideArmInstallationPlaceId ||
                              SideArmViewModel.installationConfig.civilWithLegId != CivilLoads.allCivilInst.civilWithLegsId ||
@@ -3239,10 +3239,19 @@ namespace TLIS_Service.Services
 
                         //if (!string.IsNullOrEmpty(CheckDependencyValidation))
                         //    return new Response<AllItemAttributes>(true, null, null, CheckDependencyValidation, (int)ApiReturnCode.fail);
-                        SideArm.sideArmInstallationPlaceId = SideArmViewModel.installationConfig.installationPlaceId;
-                        SideArm.sideArmTypeId = SideArmViewModel.installationConfig.sideArmTypeId;
-                        SideArm.sideArmLibraryId = SideArmViewModel.civilType.sideArmLibraryId;
-                        var HistoryId = _unitOfWork.SideArmRepository.UpdateWithHInstallation(UserId, null, SideArmInst, SideArm, CivilLoads.SiteCode, ExternalSys);
+                        TLIsideArm SideArm1 = _unitOfWork.SideArmRepository.GetWhereFirst(x => x.Id == SideArmViewModel.installationAttributes.Id);
+                        if (SideArm1 == null)
+                        {
+                            return new Response<EditSidearmInstallationObject>(false, null, null, "This sidearm is not found", (int)ApiReturnCode.fail);
+                        }
+
+                        SideArm1.sideArmInstallationPlaceId = SideArmViewModel.installationConfig.installationPlaceId;
+                        SideArm1.sideArmTypeId = SideArmViewModel.installationConfig.sideArmTypeId;
+                        SideArm1.sideArmLibraryId = SideArmViewModel.civilType.sideArmLibraryId;
+
+                        _mapper.Map(SideArmViewModel.installationAttributes, SideArm1); //ربط الخصائص من نموذج العرض بالكيان الحالي.
+
+                        var HistoryId = _unitOfWork.SideArmRepository.UpdateWithHInstallation(UserId, null, SideArmInst, SideArm1, CivilLoads.SiteCode, ExternalSys);
                         _unitOfWork.SaveChanges();
 
                         if (SideArmViewModel.CivilLoads != null && (AllCivilInst != null || AllCivilInst != 0))
