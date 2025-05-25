@@ -27,6 +27,10 @@ namespace TLIS_DAL.Models
         public float HBA { get; set; }
         public float HieghFromLand { get; set; }
         public float EquivalentSpace { get; set; }
+
+        public TLIBatteryType BatterryType { get; set; }
+        public int? BatterryTypeId { get; set; }
+
         public IEnumerable<TLIsolar> Solars { get; set; }
         public IEnumerable<TLIallOtherInventoryInst> allOtherInventoryInsts { get; set; }
     }

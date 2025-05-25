@@ -72,7 +72,7 @@ namespace TLIS_Repository.Repositories
         }
         public async Task UpdateGroupRoles(List<RoleViewModel> roles, List<int> AllChildsIds, int ParentId)
         {
-            using (TransactionScope transaction = new TransactionScope(TransactionScopeOption.Required, TimeSpan.FromSeconds(60)))
+            using (TransactionScope transaction = new TransactionScope(TransactionScopeOption.Required, TimeSpan.FromSeconds(600)))
             {
                 try
                 {

@@ -57,7 +57,7 @@ namespace TLIS_Service.IService
         Task ProcessFilesAsync23();
         Task ProcessFilesAsync24();
         Task ProcessFilesAsync25();
-
+        Task GetSecurityLogsFile();
         Task<Response<string>> ExportSitesStatusToExcel();
         Response<IEnumerable<SiteViewModelForGetAll>> GetSiteIntegration(int? UserId, string UserName, bool? isRefresh, bool? GetItemsCountOnEachSite);
         Response<IEnumerable<SiteViewModel>> GetAllSites(string ConnectionString, ParameterPagination parameterPagination, List<FilterObjectLists> filters = null);
@@ -88,7 +88,6 @@ namespace TLIS_Service.IService
         Response<List<KeyValuePair<string, int>>> GetSteelCivil(string SiteCode);
         Response<List<KeyValuePair<string, int>>> GetNonSteel(string SiteCode);
         void test();
-        Task<Response<IEnumerable<TLIlogUsersActionsViewModel>>> GetFilteredLogsBackGroundServices( );
         Response<LoadsViewModel> GetLoadsOnSite(LoadsOnSiteFilter BaseFilter, bool WithFilterData);
         Response<ReturnWithFilters<object>> GetMW_DishOnSiteWithEnableAtt(LoadsOnSiteFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int? CivilId, string CivilType);
         Response<ReturnWithFilters<object>> GetMW_BUOnSiteWithEnableAtt(LoadsOnSiteFilter BaseFilter, bool WithFilterData, CombineFilters CombineFilters, ParameterPagination parameterPagination, int? CivilId, string CivilType);
@@ -121,7 +120,7 @@ namespace TLIS_Service.IService
         Response<string> ClearAllHistory(string connectionString, string dateFrom, string dateTo);
         Response<string> ClearLogHistory(string connectionString, string dateFrom = null, string dateTo = null);
 
-        Task<Response<string>> GetHistoryFile();
-
+        Task GetHistoryFile();
+        Task GetFilteredLogsBackGroundServices();
     }
 }

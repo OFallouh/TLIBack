@@ -202,6 +202,7 @@ namespace TLIS_Repository.Base
         IRegionRepository _RegionRepository;
         IUserPermissionssRepository _UserPermissionssRepository;
         IRolePermissionsRepository _RolePermissionsRepository;
+        IBatteryTypeRepository _BatteryTypeRepository;
         private readonly IConfiguration _configuration;
         IServiceProvider Services;
         public UnitOfWork(ApplicationDbContext context, IMapper mapper, IConfiguration configuration, IServiceProvider service)
@@ -260,6 +261,16 @@ namespace TLIS_Repository.Base
                     _BaseTypeRepository = new BaseTypeRepository(_context, _mapper);
 
                 return _BaseTypeRepository;
+            }
+        }
+        public IBatteryTypeRepository BatteryTypeRepository
+        {
+            get
+            {
+                if (_BatteryTypeRepository == null)
+                    _BatteryTypeRepository = new BatteryTypeRepository(_context, _mapper);
+
+                return _BatteryTypeRepository;
             }
         }
         public IEditableManagmentViewRepository EditableManagmentViewRepository

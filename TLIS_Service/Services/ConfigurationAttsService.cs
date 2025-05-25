@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.InkML;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
@@ -13505,9 +13506,25 @@ namespace TLIS_Service.Services
                         _unitOfWork.RenewableCabinetTypeRepository.AddWithHistory(UserId, tLIrenewableCabinetType);
                         _unitOfWork.SaveChanges();
                     }
+                    else if (ConfigrationTables.TLIBatterryType.ToString() == ListName)
+                    {
+                        var TabelNameTolist = _unitOfWork.TablesNamesRepository.GetWhereFirst(x => x.TableName.ToLower() == "tlibatterrytype");
+                        var BatterryTypeName = db.TLIBatterryType
+                           .Where(x => x.Name.ToLower() == NewName.ToLower()).ToList();
+                        if (BatterryTypeName.Count > 0)
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this BatterryTypeName is already exist ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        TLIBatteryType tLIBatterryType = new TLIBatteryType()
+                        {
+                            Name = NewName,
+                            Delete = false,
+                            Disable = false
+                        };
+                        _unitOfWork.BatteryTypeRepository.AddWithHistory(UserId,tLIBatterryType);
+                        _unitOfWork.SaveChanges();
+                    }
                     else
                     {
-                        return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called renewableCabinetType ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called renewableCabinetType and BatteryType", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else if (TabelName == "TLImwODULibrary")
@@ -13673,9 +13690,40 @@ namespace TLIS_Service.Services
                             return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not modify the renewableCabinetType name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
+                    else if (ConfigrationTables.TLIBatterryType.ToString() == ListName)
+                    {
+                        TLIBatteryType OldEntity = db.TLIBatterryType
+                              .AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
+                        if (OldEntity == null)
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this BatterryType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        var renewablecabinettypename = db.TLIBatterryType
+                             .Where(x => x.Name.ToLower() == NewName.ToLower() && x.Id != RecordId).ToList();
+                        if (renewablecabinettypename.Count > 0)
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"this BatterryTypename is already exist ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        var CheckrenewableCabinetTypeInCabinet = _unitOfWork.OtherInSiteRepository
+                            .GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinet.BatterryTypeId == RecordId
+                            && !x.Dismantle, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet);
+
+
+                        if (CheckrenewableCabinetTypeInCabinet == null)
+                        {
+
+                            TLIBatteryType NewEntity = db.TLIBatterryType
+                                .FirstOrDefault(x => x.Id == RecordId);
+
+                            NewEntity.Name = NewName;
+
+                            _unitOfWork.BatteryTypeRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new Response<ConfigurationAttsViewModel>(false, null, null, $"can not modify the BatteryType name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
                     else
                     {
-                        return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called renewableCabinetType ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<ConfigurationAttsViewModel>(false, null, null, "You cannot modify any item in any list except the list called renewableCabinetType and BatteryType ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else if (TabelName == "TLImwODULibrary")
@@ -13849,9 +13897,37 @@ namespace TLIS_Service.Services
                             return new Response<List<TableAffected>>(false, null, null, $"can not change status the renewableCabinetType name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
+                    if (ConfigrationTables.TLIBatterryType.ToString() == ListName)
+                    {
+                        TLIBatteryType OldEntity = _unitOfWork.BatteryTypeRepository
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
+                        if (OldEntity == null)
+                            return new Response<List<TableAffected>>(false, null, null, $"this BatterryType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        var CheckrenewableCabinetTypeInCabinet = _unitOfWork.OtherInSiteRepository
+                            .GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinet.BatterryTypeId == RecordId
+                            && !x.Dismantle, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet);
+
+
+                        if (CheckrenewableCabinetTypeInCabinet == null)
+                        {
+
+                            TLIBatteryType NewEntity = _unitOfWork.BatteryTypeRepository
+                                .GetWhereFirst(x => x.Id == RecordId);
+
+                            NewEntity.Disable = !(OldEntity.Disable);
+
+                            _unitOfWork.BatteryTypeRepository.UpdateWithH(UserId, null, OldEntity, NewEntity, false);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new Response<List<TableAffected>>(false, null, null, $"can not change status the BatteryType name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
                     else
                     {
-                        return new Response<List<TableAffected>>(false, null, null, "You cannot modify any item in any list except the list called renewableCabinetType ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<List<TableAffected>>(false, null, null, "You cannot modify any item in any list except the list called renewableCabinetType and BatteryType ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else if (TabelName == "TLImwODULibrary")
@@ -14021,9 +14097,37 @@ namespace TLIS_Service.Services
                             return new Response<List<TableAffected>>(false, null, null, $"can not delete the renewableCabinetType name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
                         }
                     }
+                    if (ConfigrationTables.TLIBatterryType.ToString() == ListName)
+                    {
+                        TLIBatteryType OldEntity = _unitOfWork.BatteryTypeRepository
+                              .GetAllAsQueryable().AsNoTracking().FirstOrDefault(x => x.Id == RecordId);
+                        if (OldEntity == null)
+                            return new Response<List<TableAffected>>(false, null, null, $"this BatteryType is not found ", (int)Helpers.Constants.ApiReturnCode.fail);
+
+                        var CheckrenewableCabinetTypeInCabinet = _unitOfWork.OtherInSiteRepository
+                            .GetIncludeWhereFirst(x => x.allOtherInventoryInst.cabinet.BatterryTypeId == RecordId
+                            && !x.Dismantle, x => x.allOtherInventoryInst, x => x.allOtherInventoryInst.cabinet);
+
+
+                        if (CheckrenewableCabinetTypeInCabinet == null)
+                        {
+
+                            TLIBatteryType NewEntity = _unitOfWork.BatteryTypeRepository
+                                .GetWhereFirst(x => x.Id == RecordId);
+
+                            NewEntity.Delete = true;
+
+                            _unitOfWork.BatteryTypeRepository.UpdateWithHistory(UserId, OldEntity, NewEntity);
+                            await _unitOfWork.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            return new Response<List<TableAffected>>(false, null, null, $"can not delete the BatteryType name {OldEntity.Name} because is used ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        }
+                    }
                     else
                     {
-                        return new Response<List<TableAffected>>(false, null, null, "You cannot modify any item in any list except the list called renewableCabinetType ", (int)Helpers.Constants.ApiReturnCode.fail);
+                        return new Response<List<TableAffected>>(false, null, null, "You cannot modify any item in any list except the list called renewableCabinetType and BatteryType ", (int)Helpers.Constants.ApiReturnCode.fail);
                     }
                 }
                 else if (TabelName == "TLImwODULibrary")

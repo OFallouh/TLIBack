@@ -5,6 +5,7 @@
     <ApplicationIcon />
     <StartupObject />
     <LangVersion>preview</LangVersion>
+    <ApplicationManifest>ViewModels\CabinetDTOs\BatterryTypeDto.cs</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="ViewModels\NewFolder\**" />

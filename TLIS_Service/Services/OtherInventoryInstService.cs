@@ -820,6 +820,8 @@ namespace TLIS_Service.Services
                     {
                         { "renewablecabinettype_name", () => _mapper.Map<List<RenewableCabinetTypeViewModel>>(_unitOfWork.RenewableCabinetTypeRepository.GetWhereAndInclude(x => !x.Deleted &&
                         !x.Disable).ToList())},
+                         { "batterrytype_name", () => _mapper.Map<List<BatterryTypeDto>>(_unitOfWork.BatteryTypeRepository.GetWhereAndInclude(x => !x.Delete &&
+                        !x.Disable).ToList())},
 
                     };
 
@@ -7486,6 +7488,10 @@ namespace TLIS_Service.Services
                             case "renewablecabinettype_name":
                                 FKitem.Value = _mapper.Map<RenewableCabinetTypeViewModel>(CabinetPowerInst.allOtherInventoryInst.cabinet.RenewableCabinetType);
                                 FKitem.Options = _mapper.Map<List<RenewableCabinetTypeViewModel>>(_unitOfWork.RenewableCabinetTypeRepository.GetWhere(x => !x.Deleted && !x.Disable).ToList());
+                                break;
+                            case "batterrytype_name":
+                                FKitem.Value = _mapper.Map<BatterryTypeDto>(CabinetPowerInst.allOtherInventoryInst.cabinet.BatterryType);
+                                FKitem.Options = _mapper.Map<List<BatterryTypeDto>>(_unitOfWork.BatteryTypeRepository.GetWhere(x => !x.Delete && !x.Disable).ToList());
                                 break;
 
                         }

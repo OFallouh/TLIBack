@@ -22916,125 +22916,361 @@ namespace TLIS_Service.Services
                 return (obj.Key + obj.DataTypeId.ToString()).GetHashCode();
             }
         }
+        //public Response<string> MigrationFiles(IFormFile File, string ConnectionString)
+        //{
+        //    List<KeyValuePair<int, string>> UnsavedRows = new List<KeyValuePair<int, string>>();
+        //    var FilePath = SaveFileAndGetFilePath(File);
+        //    try
+        //    {
+        //        FileInfo existingFile = new FileInfo(FilePath);
+        //        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        //        int TabelNameId = 0;
+        //        using (ExcelPackage package = new ExcelPackage(existingFile))
+        //        {
+        //            ExcelWorksheet TypeOfSupportInfoSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "MigrationFiles".ToLower());
+        //            int TypeOfSupportInfoRows = 0;
+        //            try
+        //            {
+        //                TypeOfSupportInfoRows = TypeOfSupportInfoSheet.Dimension.End.Row;
+        //            }
+        //            catch (NullReferenceException)
+        //            {
+        //                System.IO.File.Delete(FilePath);
+        //                return new Response<string>("Succeed");
+        //            }
+        //            int TypeOfSupportInfoColumns = TypeOfSupportInfoSheet.Dimension.End.Column;
+
+        //            DataTable TypeOfSupportInfoDataTable = new DataTable();
+
+        //            for (int i = 1; i <= TypeOfSupportInfoColumns; i++)
+        //            {
+        //                var ColName = TypeOfSupportInfoSheet.Cells[1, i].Value.ToString().Trim();
+        //                ColName = Regex.Replace(ColName, @"\s+", " ");
+        //                TypeOfSupportInfoDataTable.Columns.Add(ColName);
+        //            }
+        //            for (int i = 2; i <= TypeOfSupportInfoRows; i++)
+        //            {
+        //                DataRow TypeOfSupportInfoDataRow = TypeOfSupportInfoDataTable.NewRow();
+        //                for (int j = 1; j <= TypeOfSupportInfoColumns; j++)
+        //                {
+        //                    string ColName = TypeOfSupportInfoSheet.Cells[1, j].Value.ToString().Trim();
+        //                    ColName = Regex.Replace(ColName, @"\s+", " ");
+        //                    if (TypeOfSupportInfoSheet.Cells[i, j].Value != null)
+        //                    {
+        //                        string ValueAsString = TypeOfSupportInfoSheet.Cells[i, j].Value.ToString().Trim();
+        //                        ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
+        //                        object Value = ValueAsString;
+        //                        TypeOfSupportInfoDataRow[ColName] = Value;
+        //                    }
+        //                    else
+        //                        TypeOfSupportInfoDataRow[ColName] = TypeOfSupportInfoSheet.Cells[i, j].Value;
+        //                }
+        //                TypeOfSupportInfoDataTable.Rows.Add(TypeOfSupportInfoDataRow);
+        //            }
+
+        //            for (int j = 0; j <= TypeOfSupportInfoDataTable.Rows.Count - 1; j++)
+        //            {
+        //                using (TransactionScope AttachTransaction = new TransactionScope(TransactionScopeOption.Required,
+        //                  new System.TimeSpan(0, 15, 0)))
+        //                {
+        //                    try
+        //                    {
+        //                        string Site_Code = TypeOfSupportInfoDataTable.Rows[j]["Site_Code"].ToString();
+        //                        var split_Site_Code = Site_Code.Split('#');
+        //                        var SiteCode = split_Site_Code.Length > 1 ? split_Site_Code[1] : "";
+        //                        string Paths = TypeOfSupportInfoDataTable.Rows[j]["Path"].ToString();
+        //                        string FileName = TypeOfSupportInfoDataTable.Rows[j]["Name"].ToString();
+        //                        string FolderName = Site_Code;
+        //                        var FileDirectory = _Config["CSVFiles"];
+        //                        var FileDirect = Path.Combine(FileDirectory, SiteCode);
+        //                        string SourceFile = Path.Combine(FileDirectory, Paths);
+        //                        var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIsite");
+        //                        if (TabelNames != null)
+        //                        {
+        //                            TabelNameId = TabelNames.Id;
+        //                        }
+        //                        if (!Directory.Exists(FileDirect))
+        //                        {
+        //                            Directory.CreateDirectory(FileDirect);
+        //                        }
+        //                        string destinationFilePath = Path.Combine(FileDirect, FileName);
+        //                        string SourceFilePath = Path.Combine(SourceFile, FileName);
+        //                        if (Directory.Exists(SourceFilePath))
+        //                        {
+
+        //                            Directory.Move(SourceFilePath, destinationFilePath);
+        //                            System.IO.File.Delete(SourceFilePath);
+        //                        }
+
+        //                        List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
+        //                        string[] full = System.IO.Directory.GetFiles(FileDirect);
+        //                        foreach (var filePath in full)
+        //                        {
+        //                            FileInfo fileInfo = new FileInfo(filePath);
+
+        //                            string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath);
+        //                            string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper();
+
+        //                            long fileSizeBytes = fileInfo.Length;
+        //                            float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024);
+
+        //                            bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
+        //                            var connectiont = _Config["ConnectionStrings:ActiveConnection"];
+        //                            var connectionString = new OracleConnection(connectiont);
+        //                            var IsImage = IsImg == false ? 0 : 1;
+
+        //                            OracleCommand cmd = connectionString.CreateCommand();
+
+        //                            cmd.CommandText = "INSERT INTO \" \" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
+        //                             " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
+
+        //                            connectionString.Open();
+        //                            cmd.ExecuteNonQuery();
+        //                            connectionString.Close();
+
+        //                        }
+        //                    }
+        //                    catch (Exception err)
+        //                    {
+
+        //                        AttachTransaction.Dispose();
+
+        //                        TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+        //                        {
+        //                            CreatedAt = DateTime.Now,
+        //                            ErrMsg = err.Message,
+        //                            IsDeleted = false,
+        //                            IsLib = false,
+        //                            RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+        //                            SheetName = "SiteAttachFile",
+        //                            UniqueName = $"(SiteCode) : {TypeOfSupportInfoDataTable.Rows[j]["Site_Code"]}"
+        //                        };
+
+        //                        _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+        //                        _unitOfWork.SaveChanges();
+
+        //                        continue;
+        //                    }
+        //                    AttachTransaction.Complete();
+        //                }
+
+        //            }
+
+        //        }
+
+        //        return new Response<string>("Sucess");
+        //    }
+        //    catch (Exception err)
+        //    {
+        //        System.IO.File.Delete(FilePath);
+        //        return new Response<string>(err.Message);
+
+        //    }
+        //}
+
+        private string FindExactFileNameMatch(string directoryPath, string fileNameFromExcel)
+        {
+            if (string.IsNullOrWhiteSpace(fileNameFromExcel) || !Directory.Exists(directoryPath))
+                return null;
+
+            // إزالة جميع المسافات من اسم الملف المستخرج من الإكسل
+            string cleanedTarget = RemoveAllSpaces(fileNameFromExcel);
+
+            var allFiles = Directory.GetFiles(directoryPath);
+            foreach (var file in allFiles)
+            {
+                string actualFileName = Path.GetFileName(file);
+                string cleanedActualFileName = RemoveAllSpaces(actualFileName);
+
+                if (cleanedActualFileName.Equals(cleanedTarget, StringComparison.OrdinalIgnoreCase))
+                {
+                    return actualFileName; // رجّع الاسم الفعلي من المجلد
+                }
+            }
+
+            return null;
+        }
+
+        // دالة مساعدة لإزالة كل المسافات من النص
+        private string RemoveAllSpaces(string input)
+        {
+            return new string(input.Where(c => !char.IsWhiteSpace(c)).ToArray());
+        }
+
+
         public Response<string> MigrationFiles(IFormFile File, string ConnectionString)
         {
             List<KeyValuePair<int, string>> UnsavedRows = new List<KeyValuePair<int, string>>();
             var FilePath = SaveFileAndGetFilePath(File);
+
             try
             {
                 FileInfo existingFile = new FileInfo(FilePath);
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 int TabelNameId = 0;
+
                 using (ExcelPackage package = new ExcelPackage(existingFile))
                 {
-                    ExcelWorksheet TypeOfSupportInfoSheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "MigrationFiles".ToLower());
-                    int TypeOfSupportInfoRows = 0;
-                    try
-                    {
-                        TypeOfSupportInfoRows = TypeOfSupportInfoSheet.Dimension.End.Row;
-                    }
-                    catch (NullReferenceException)
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name.ToLower() == "MigrationFiles".ToLower());
+                    if (worksheet == null)
                     {
                         System.IO.File.Delete(FilePath);
                         return new Response<string>("Succeed");
                     }
-                    int TypeOfSupportInfoColumns = TypeOfSupportInfoSheet.Dimension.End.Column;
 
-                    DataTable TypeOfSupportInfoDataTable = new DataTable();
+                    int totalRows = worksheet.Dimension.End.Row;
+                    int totalColumns = worksheet.Dimension.End.Column;
 
-                    for (int i = 1; i <= TypeOfSupportInfoColumns; i++)
+                    DataTable dataTable = new DataTable();
+                    for (int i = 1; i <= totalColumns; i++)
                     {
-                        var ColName = TypeOfSupportInfoSheet.Cells[1, i].Value.ToString().Trim();
-                        ColName = Regex.Replace(ColName, @"\s+", " ");
-                        TypeOfSupportInfoDataTable.Columns.Add(ColName);
+                        var colName = worksheet.Cells[1, i].Value?.ToString().Trim();
+                        colName = Regex.Replace(colName ?? "", @"\s+", " ");
+                        dataTable.Columns.Add(colName);
                     }
-                    for (int i = 2; i <= TypeOfSupportInfoRows; i++)
+
+                    for (int i = 2; i <= totalRows; i++)
                     {
-                        DataRow TypeOfSupportInfoDataRow = TypeOfSupportInfoDataTable.NewRow();
-                        for (int j = 1; j <= TypeOfSupportInfoColumns; j++)
+                        DataRow row = dataTable.NewRow();
+                        for (int j = 1; j <= totalColumns; j++)
                         {
-                            string ColName = TypeOfSupportInfoSheet.Cells[1, j].Value.ToString().Trim();
-                            ColName = Regex.Replace(ColName, @"\s+", " ");
-                            if (TypeOfSupportInfoSheet.Cells[i, j].Value != null)
+                            string colName = worksheet.Cells[1, j].Value?.ToString().Trim();
+                            colName = Regex.Replace(colName ?? "", @"\s+", " ");
+                            if (worksheet.Cells[i, j].Value != null)
                             {
-                                string ValueAsString = TypeOfSupportInfoSheet.Cells[i, j].Value.ToString().Trim();
-                                ValueAsString = Regex.Replace(ValueAsString, @"\s+", " ");
-                                object Value = ValueAsString;
-                                TypeOfSupportInfoDataRow[ColName] = Value;
+                                string value = worksheet.Cells[i, j].Value.ToString().Trim();
+                                value = Regex.Replace(value, @"\s+", " ");
+                                row[colName] = value;
                             }
                             else
-                                TypeOfSupportInfoDataRow[ColName] = TypeOfSupportInfoSheet.Cells[i, j].Value;
+                            {
+                                row[colName] = DBNull.Value;
+                            }
                         }
-                        TypeOfSupportInfoDataTable.Rows.Add(TypeOfSupportInfoDataRow);
+                        dataTable.Rows.Add(row);
                     }
 
-                    for (int j = 0; j <= TypeOfSupportInfoDataTable.Rows.Count - 1; j++)
+                    var tableNameEntity = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIsite");
+                    if (tableNameEntity != null)
+                        TabelNameId = tableNameEntity.Id;
+
+                    for (int j = 0; j < dataTable.Rows.Count; j++)
                     {
-                        using (TransactionScope AttachTransaction = new TransactionScope(TransactionScopeOption.Required,
-                          new System.TimeSpan(0, 15, 0)))
+                        using (TransactionScope transaction = new TransactionScope(TransactionScopeOption.Required, new TimeSpan(0, 15, 0)))
                         {
                             try
                             {
-                                string Site_Code = TypeOfSupportInfoDataTable.Rows[j]["Site_Code"].ToString();
-                                var split_Site_Code = Site_Code.Split('#');
-                                var SiteCode = split_Site_Code.Length > 1 ? split_Site_Code[1] : "";
-                                string Paths = TypeOfSupportInfoDataTable.Rows[j]["Path"].ToString();
-                                string FileName = TypeOfSupportInfoDataTable.Rows[j]["Name"].ToString();
-                                string FolderName = Site_Code;
-                                var FileDirectory = _Config["CSVFiles"];
-                                var FileDirect = Path.Combine(FileDirectory, SiteCode);
-                                string SourceFile = Path.Combine(FileDirectory, Paths);
-                                var TabelNames = db.TLItablesNames.FirstOrDefault(x => x.TableName == "TLIsite");
-                                if (TabelNames != null)
-                                {
-                                    TabelNameId = TabelNames.Id;
-                                }
-                                if (!Directory.Exists(FileDirect))
-                                {
-                                    Directory.CreateDirectory(FileDirect);
-                                }
-                                string destinationFilePath = Path.Combine(FileDirect, FileName);
-                                string SourceFilePath = Path.Combine(SourceFile, FileName);
-                                if (Directory.Exists(SourceFilePath))
-                                {
+                                string siteCodeRaw = dataTable.Rows[j]["Site_Code"]?.ToString()?.Trim();
+                                bool siteCodeExists = false;
 
-                                    Directory.Move(SourceFilePath, destinationFilePath);
-                                    System.IO.File.Delete(SourceFilePath);
+                                if (!string.IsNullOrWhiteSpace(siteCodeRaw))
+                                {
+                                    var SitecodeExists = _unitOfWork.SiteRepository.GetWhereFirst(
+                                        x => x.SiteCode.ToLower().Trim() == siteCodeRaw.ToLower()
+                                    );
+                                    siteCodeExists = SitecodeExists != null;
                                 }
 
+                                string fileNameFromExcel = dataTable.Rows[j]["Name"]?.ToString()?.Trim();
+                                string description = dataTable.Rows[j]["Description"]?.ToString() ?? "";
+                                string description2 = dataTable.Rows[j]["Description2"]?.ToString() ?? "";
+                                string documentTypeName = dataTable.Rows[j]["Documents Type"]?.ToString();
+
+                                var sourceFileFolder = _Config["CSVFiles"];
+                                var destinationRootFolder = _Config["A"];
+                                var siteFolder = siteCodeExists ? siteCodeRaw : "FilesWithoutSiteCode";
+                                var destinationFolder = Path.Combine(destinationRootFolder, siteFolder);
+
+                                if (!Directory.Exists(destinationFolder))
+                                {
+                                    Directory.CreateDirectory(destinationFolder);
+                                }
+
+                                // ابحث عن الاسم الحقيقي للملف داخل المجلد
+                                string matchedFileName = FindExactFileNameMatch(sourceFileFolder, fileNameFromExcel);
+                                if (matchedFileName == null)
+                                {
+                                    // المسار الكامل للملف غير الموجود
+                                    string fullMissingFilePath = Path.Combine(sourceFileFolder, fileNameFromExcel);
+
+                                    TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
+                                    {
+                                        CreatedAt = DateTime.Now,
+                                        ErrMsg = fullMissingFilePath,  // خزّنا المسار الكامل هنا
+                                        IsDeleted = false,
+                                        IsLib = false,
+                                        RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                                        SheetName = "SiteAttachFile",
+                                        UniqueName = $"(SiteCode) : {siteCodeRaw}"
+                                    };
+
+                                    _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+                                    _unitOfWork.SaveChanges();
+                                }
+
+
+                                string sourceFilePath = Path.Combine(sourceFileFolder, matchedFileName);
+                                string destinationFilePath = Path.Combine(destinationFolder, matchedFileName);
+
+                               
+
+                                if (System.IO.File.Exists(sourceFilePath))
+                                {
+                                    System.IO.File.Move(sourceFilePath, destinationFilePath);
+                                }
+
+                                // حفظ نوع المستند
+                                string docTypeNameCleaned = documentTypeName?.Trim().ToLower();
+                                int documentTypeId = 0;
+                                if (!string.IsNullOrWhiteSpace(docTypeNameCleaned))
+                                {
+                                    var existingDocType = db.TLIdocumentType.FirstOrDefault(x => x.Name.ToLower().Trim() == docTypeNameCleaned);
+                                    if (existingDocType == null)
+                                    {
+                                        var newDocType = new TLIdocumentType { Name = documentTypeName?.Trim() };
+                                        db.TLIdocumentType.Add(newDocType);
+                                        db.SaveChanges();
+                                        documentTypeId = newDocType.Id;
+                                    }
+                                    else
+                                    {
+                                        documentTypeId = existingDocType.Id;
+                                    }
+                                }
+
+                                // أدرج الملف في قاعدة البيانات
+                                FileInfo fileInfo = new FileInfo(destinationFilePath);
+                                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(destinationFilePath);
+                                string fileExtension = fileInfo.Extension.TrimStart('.').ToUpper();
+                                long fileSizeBytes = fileInfo.Length;
+                                float fileSizeMB = (float)fileSizeBytes / (1024 * 1024);
                                 List<string> imgTypes = new List<string>() { "JPEG", "JPG", "PNG", "GIF", "TIFF", "PSD", "AI", "INDD", "RAW" };
-                                string[] full = System.IO.Directory.GetFiles(FileDirect);
-                                foreach (var filePath in full)
+                                bool isImage = imgTypes.Contains(fileExtension);
+
+                                using (var connection = new OracleConnection(_Config["ConnectionStrings:ActiveConnection"]))
                                 {
-                                    FileInfo fileInfo = new FileInfo(filePath);
+                                    OracleCommand cmd = connection.CreateCommand();
+                                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" " +
+                                                      "(\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\", \"IsImg\", \"documenttypeId\", \"fileSize\", \"SiteCode\", \"Description\", \"Description2\", \"UnAttached\") " +
+                                                      "VALUES (:Name, :Path, '0', :tablesNamesId, :IsImg, :documenttypeId, :fileSize, :SiteCode, :Description, :Description2, 0)";
 
-                                    string fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(filePath);
-                                    string fileExtensionFromInfo = fileInfo.Extension.TrimStart('.').ToUpper();
+                                    cmd.Parameters.Add(new OracleParameter("Name", fileNameWithoutExtension));
+                                    cmd.Parameters.Add(new OracleParameter("Path", destinationFilePath));
+                                    cmd.Parameters.Add(new OracleParameter("tablesNamesId", TabelNameId));
+                                    cmd.Parameters.Add(new OracleParameter("IsImg", isImage ? 1 : 0));
+                                    cmd.Parameters.Add(new OracleParameter("documenttypeId", documentTypeId));
+                                    cmd.Parameters.Add(new OracleParameter("fileSize", fileSizeMB));
+                                    cmd.Parameters.Add(new OracleParameter("SiteCode", siteCodeRaw ?? ""));
+                                    cmd.Parameters.Add(new OracleParameter("Description", description));
+                                    cmd.Parameters.Add(new OracleParameter("Description2", description2));
 
-                                    long fileSizeBytes = fileInfo.Length;
-                                    float fileSizePerMega = (float)fileSizeBytes / (1024 * 1024);
-
-                                    bool IsImg = imgTypes.Contains(fileExtensionFromInfo.ToUpper());
-                                    var connectiont = _Config["ConnectionStrings:ActiveConnection"];
-                                    var connectionString = new OracleConnection(connectiont);
-                                    var IsImage = IsImg == false ? 0 : 1;
-
-                                    OracleCommand cmd = connectionString.CreateCommand();
-
-                                    cmd.CommandText = "INSERT INTO \"TLIattachedFiles\" (\"Name\", \"Path\", \"RecordId\", \"tablesNamesId\",\"IsImg\",\"documenttypeId\",\"fileSize\",\"SiteCode\",\"Description\",\"Description2\",\"UnAttached\")" +
-                                     " VALUES ('" + fileNameWithoutExtension + "','" + filePath + "','0'," + TabelNameId + "," + IsImage + "," + 0 + "," + fileSizePerMega + ",'" + SiteCode + "','NA','NA',0)";
-
-                                    connectionString.Open();
+                                    connection.Open();
                                     cmd.ExecuteNonQuery();
-                                    connectionString.Close();
-
+                                    connection.Close();
                                 }
                             }
                             catch (Exception err)
                             {
-
-                                AttachTransaction.Dispose();
-
                                 TLIimportSheet NewImportSheetEntity = new TLIimportSheet()
                                 {
                                     CreatedAt = DateTime.Now,
@@ -23043,30 +23279,84 @@ namespace TLIS_Service.Services
                                     IsLib = false,
                                     RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
                                     SheetName = "SiteAttachFile",
-                                    UniqueName = $"(SiteCode) : {TypeOfSupportInfoDataTable.Rows[j]["Site_Code"]}"
+                                    UniqueName = $"(SiteCode) : {dataTable.Rows[j]["Site_Code"]}"
                                 };
 
                                 _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
                                 _unitOfWork.SaveChanges();
-
                                 continue;
                             }
-                            AttachTransaction.Complete();
+
+                            transaction.Complete();
                         }
-
                     }
-
                 }
 
-                return new Response<string>("Sucess");
+                return new Response<string>("Success");
             }
             catch (Exception err)
             {
                 System.IO.File.Delete(FilePath);
                 return new Response<string>(err.Message);
-
             }
         }
+
+        public Response<string> FixFileNamesWithExtension()
+        {
+            var files = _unitOfWork.AttachedFilesRepository.GetAllWithoutCount().ToList();
+
+            foreach (var file in files)
+            {
+                if (string.IsNullOrEmpty(file.Path))
+                {
+                    // نسجل ملف مفقود المسار
+                    LogMissingFilePath(file.SiteCode, "Path is null or empty");
+                    continue;
+                }
+
+                var extension = Path.GetExtension(file.Path);
+
+                if (string.IsNullOrEmpty(extension))
+                {
+                    // نسجل ملف مفقود اللاحقة
+                    LogMissingFilePath(file.SiteCode, $"Missing extension for file: {file.Path}");
+                    continue;
+                }
+
+                if (!file.Name.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
+                {
+                    file.Name += extension;
+                }
+            }
+
+            _unitOfWork.SaveChanges();
+
+            return new Response<string>
+            {
+                Succeeded = true,
+                Data = "File names updated successfully.",
+                Message = "Completed"
+            };
+        }
+
+        // دالة مساعدة لتسجيل المشاكل في TLIimportSheet
+        private void LogMissingFilePath(string siteCodeRaw, string fullMissingFilePath)
+        {
+            var NewImportSheetEntity = new TLIimportSheet
+            {
+                CreatedAt = DateTime.Now,
+                ErrMsg = fullMissingFilePath,
+                IsDeleted = false,
+                IsLib = false,
+                RefTable = Helpers.Constants.TablesNames.TLIgenerator.ToString(),
+                SheetName = "SiteAttachFile",
+                UniqueName = $"(SiteCode) : {siteCodeRaw}"
+            };
+
+            _unitOfWork.ImportSheetRepository.Add(NewImportSheetEntity);
+        }
+
+
         public Response<string> ImportGeneratorInstallation(IFormFile File, string ConnectionString)
         {
             List<TLIdataType> DataTypes = _unitOfWork.DataTypeRepository.GetAllWithoutCount().ToList();

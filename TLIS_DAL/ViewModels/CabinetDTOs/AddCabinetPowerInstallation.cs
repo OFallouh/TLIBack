@@ -31,6 +31,7 @@ namespace TLIS_DAL.ViewModels.CabinetDTOs
             public float SpaceInstallation { get; set; } = 0;
             public string? VisibleStatus { get; set; } = " ";
             public int? RenewableCabinetTypeId { get; set; }
+            public int? BatterryTypeId { get; set; }
             public float CenterHigh { get; set; } = 0;
             public float HBA { get; set; } = 0;
             public float HieghFromLand { get; set; } = 0;

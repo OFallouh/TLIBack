@@ -5562,7 +5562,7 @@ namespace TLIS_API.Controllers
             }
 
         }
-        [ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
+        //[ServiceFilter(typeof(MiddlewareLibraryAndUserManagment))]
         [HttpPost("GetCivilWithoutLegCapsuleBySiteWithEnableAtt")]
         [ProducesResponseType(200, Type = typeof(Response<GetEnableAttribute>))]
         public IActionResult GetCivilWithoutLegCapsuleBySiteWithEnableAtt([FromQuery] string? SiteCode)

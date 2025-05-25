@@ -154,7 +154,14 @@ namespace TLIS_API.Controllers
             var response = _unitOfWorkService.ImportSiteDataService.MigrationFiles(File, ConnectionString);
             return Ok(response);
         }
-
+        [HttpPost("Extension")]
+        [ProducesResponseType(200, Type = typeof(Nullable))]
+        public IActionResult Extension()
+        {
+     
+            var response = _unitOfWorkService.ImportSiteDataService.FixFileNamesWithExtension();
+            return Ok(response);
+        }
         [HttpPost("ImportGeneratorInstallation")]
         [ProducesResponseType(200, Type = typeof(Nullable))]
         public IActionResult ImportGeneratorInstallation()

@@ -89,6 +89,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Reflection.Metadata;
+using TLIS_DAL.ViewModels.UserDTOs;
 
 
 
@@ -9007,57 +9008,58 @@ namespace TLIS_Service.Services
 
         public async Task<string> GetSMIS_Site()
         {
-           
-                try
+
+            try
+            {
+
+                string apiUrl = _configuration["SMIS_API_URL"];
+                string connectionString = _configuration.GetConnectionString("ActiveConnection");
+
+
+                var httpClient = _httpClientFactory.CreateClient();
+                string url = $"{apiUrl}";
+
+                var response = await httpClient.GetAsync(url);
+                if (!response.IsSuccessStatusCode)
                 {
-                 
-                    string apiUrl = _configuration["SMIS_API_URL"];
-                    string connectionString = _configuration.GetConnectionString("ActiveConnection");
-
-
-                    var httpClient = _httpClientFactory.CreateClient();
-                    string url = $"{apiUrl}";
-
-                    var response = await httpClient.GetAsync(url);
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
-                    }
-
-                    string smisResponse = await response.Content.ReadAsStringAsync();
-                    var allData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
-
-                    if (allData == null || allData.Count == 0)
-                    {
-                        return "لا توجد بيانات";
-                    }
-
-
-                    string desktopPath = _configuration["SMISFile"];
-
-                    // تقسيم البيانات إلى دفعات (batches) كل دفعة تحتوي على 1000 موقع
-                    int batchSize = 1000;
-                    int totalBatches = (int)Math.Ceiling((double)allData.Count / batchSize);
-
-                    for (int i = 0; i < totalBatches; i++)
-                    {
-                        var batch = allData.Skip(i * batchSize).Take(batchSize).ToList();
-                        string fileName = $"Batch_{i + 1}.json";
-                        string filePath = Path.Combine(desktopPath, fileName);
-
-                        // حفظ الدفعة في ملف على سطح المكتب
-                        File.WriteAllText(filePath, JsonConvert.SerializeObject(batch));
-                    }
-
-                    //transaction.Complete();
-                    return "تمت العملية بنجاح ✅";
+                    return $"فشل في جلب البيانات من الـ API: {response.ReasonPhrase}";
                 }
-                catch (Exception ex)
+
+                string smisResponse = await response.Content.ReadAsStringAsync();
+                var allData = JsonConvert.DeserializeObject<List<SiteDataFromOutsiderApiViewModel>>(smisResponse);
+
+                if (allData == null || allData.Count == 0)
                 {
-                    return $"خطأ أثناء تنفيذ العملية ❌: {ex.Message}";
+                    return "لا توجد بيانات";
                 }
-            
+
+
+                string desktopPath = _configuration["SMISFile"];
+
+                // تقسيم البيانات إلى دفعات (batches) كل دفعة تحتوي على 1000 موقع
+                int batchSize = 500;
+                int totalBatches = (int)Math.Ceiling((double)allData.Count / batchSize);
+
+                for (int i = 0; i < totalBatches; i++)
+                {
+                    var batch = allData.Skip(i * batchSize).Take(batchSize).ToList();
+                    string fileName = $"Batch_{i + 1}.json";
+                    string filePath = Path.Combine(desktopPath, fileName);
+
+                    // حفظ الدفعة في ملف على سطح المكتب
+                    File.WriteAllText(filePath, JsonConvert.SerializeObject(batch));
+                }
+
+                //transaction.Complete();
+                return "تمت العملية بنجاح ✅";
+            }
+            catch (Exception ex)
+            {
+                return $"خطأ أثناء تنفيذ العملية ❌: {ex.Message}";
+            }
+
         }
+
 
         public async Task ProcessFilesAsync1()
         {
@@ -11405,7 +11407,7 @@ namespace TLIS_Service.Services
 
             }
         }
-        public async Task<Response<string>> GetHistoryFile()
+        public async Task GetHistoryFile()
         {
             try
             {
@@ -11415,24 +11417,57 @@ namespace TLIS_Service.Services
                 // حفظ السجلات في ملف
                 await SaveHistoryLogsToFile(result);
 
-                // حذف السجلات من جدول TLIhistoryDet و TLIhistory دفعة واحدة
-                var historyDetRecords = _context.TLIhistoryDet.AsQueryable();
-                var historyRecords = _context.TLIhistory.AsQueryable();
-
-                // حذف السجلات دفعة واحدة
-                _context.TLIhistoryDet.RemoveRange(historyDetRecords);
-                _context.TLIhistory.RemoveRange(historyRecords);
-
-                // حفظ التغييرات في قاعدة البيانات مرة واحدة
-                await _context.SaveChangesAsync();
-
-                // إرجاع الاستجابة بنجاح
-                return new Response<string>(true, "Success", null, null, (int)Helpers.Constants.ApiReturnCode.success);
+                // حذف السجلات من جدول TLIhistoryDet و TLIhistory باستخدام ADO.NET
+                await DeleteHistoryRecordsAdo();
             }
             catch (Exception er)
             {
-                // التعامل مع الأخطاء في حالة حدوثها
-                return new Response<string>(false, null, null, er.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+                await LogErrorToDb(er, "GetHistoryFile", _context);
+            }
+        }
+
+        public async Task DeleteHistoryRecordsAdo()
+        {
+            var connectionString = _configuration.GetConnectionString("ActiveConnection");
+
+            using (var connection = new OracleConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error opening Oracle connection: " + ex.Message);
+                    throw;
+                }
+
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        using (var cmd1 = connection.CreateCommand())
+                        {
+                            cmd1.CommandText = "DELETE FROM \"TLIhistoryDet\"";
+                            cmd1.Transaction = transaction;
+                            await cmd1.ExecuteNonQueryAsync();
+                        }
+
+                        using (var cmd2 = connection.CreateCommand())
+                        {
+                            cmd2.CommandText = "DELETE FROM \"TLIhistory\"";
+                            cmd2.Transaction = transaction;
+                            await cmd2.ExecuteNonQueryAsync();
+                        }
+
+                        await transaction.CommitAsync();
+                    }
+                    catch
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                }
             }
         }
 
@@ -11461,6 +11496,74 @@ namespace TLIS_Service.Services
         }
 
 
+        public async Task GetSecurityLogsFile()
+        {
+            try
+            {
+                var query = _context.TLISecurityLogs.Include(x => x.User).AsQueryable();
+
+                // Get total count before filtering
+                var totalCount = query.Count();
+
+
+                // Map data to ViewModel
+                var result = await query.Select(q => new TLISercurityLogsDto
+                {
+                    Id = q.Id,
+                    Date = q.Date,
+                    UserName = q.User.UserName,
+                    ControllerName = q.ControllerName,
+                    FunctionName = q.FunctionName,
+                    UserType = q.User.UserType == 0 ? "InternalUser" : "ExternalUser", // Convert int to string
+                    ResponseStatus = q.ResponseStatus,
+                    Message = q.Message
+                }).ToListAsync();
+                await SaveSecurityLogsToFile(result);
+
+                // حذف السجلات من قاعدة البيانات
+                _context.TLISecurityLogs.RemoveRange(query);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception err)
+            {
+                await LogErrorToDb(err, "GetSecurityLogsFile", _context);
+            }
+        }
+        private async Task SaveSecurityLogsToFile(IEnumerable<TLISercurityLogsDto> logs)
+        {
+            if (!logs.Any()) return;
+
+            // تحديد مسار الحفظ على القرص C
+            string logDirectory = _configuration["SecurityLogDirectory"];
+
+            // التحقق من وجود المجلد وإنشاؤه إذا لم يكن موجودًا
+            if (!Directory.Exists(logDirectory))
+            {
+                Directory.CreateDirectory(logDirectory);
+            }
+
+            // تحديد اسم الملف بناءً على تاريخ اليوم
+            string logFileName = $"SercurityLogs_{DateTime.Now:yyyy-MM-dd}.json";
+            string logFilePath = Path.Combine(logDirectory, logFileName);
+
+            // تحقق مما إذا كان الملف موجودًا بالفعل
+            List<TLISercurityLogsDto> existingLogs = new List<TLISercurityLogsDto>();
+
+            if (File.Exists(logFilePath))
+            {
+                // إذا كان الملف موجودًا، اقرأ محتويات الملف الحالي وأضف السجلات الجديدة
+                var existingFileContent = await File.ReadAllTextAsync(logFilePath);
+                existingLogs = JsonConvert.DeserializeObject<List<TLISercurityLogsDto>>(existingFileContent) ?? new List<TLISercurityLogsDto>();
+            }
+
+            // إضافة السجلات الجديدة إلى السجلات الموجودة
+            existingLogs.AddRange(logs);
+
+            // تحويل البيانات إلى JSON وتخزينها في الملف
+            string jsonData = JsonConvert.SerializeObject(existingLogs, Newtonsoft.Json.Formatting.Indented);
+            await File.WriteAllTextAsync(logFilePath, jsonData);
+        }
         public Response<SiteInfo> GetSiteInfo(string SiteCode)
         {
             var SiteInfo = _context.TLIsite.Include(x=>x.Area).Include(x=>x.Region).FirstOrDefault(x => x.SiteCode == SiteCode);
@@ -16186,7 +16289,7 @@ namespace TLIS_Service.Services
                 return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
             }
         }
-        public async Task<Response<IEnumerable<TLIlogUsersActionsViewModel>>> GetFilteredLogsBackGroundServices()
+        public async Task GetFilteredLogsBackGroundServices()
         {
             try
             {
@@ -16216,11 +16319,12 @@ namespace TLIS_Service.Services
                 _context.TLIlogUsersActions.RemoveRange(LogUsersActions);
                 await _context.SaveChangesAsync();
 
-                return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
+       
             }
             catch (Exception err)
             {
-                return new Response<IEnumerable<TLIlogUsersActionsViewModel>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
+         
+                await LogErrorToDb(err, "GetFilteredLogs", _context); 
             }
         }
 

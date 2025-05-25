@@ -9,6 +9,7 @@ namespace TLIS_Repository.Base
     public interface IUnitOfWork
     {
         ISubTypeRepository SubTypeRepository { get; }
+        IBatteryTypeRepository BatteryTypeRepository { get; }
         IimportSheetRepository ImportSheetRepository { get; }
         ICivilNonSteelTypeRepository CivilNonSteelTypeRepository { get; }
         IBaseTypeRepository BaseTypeRepository { get; }

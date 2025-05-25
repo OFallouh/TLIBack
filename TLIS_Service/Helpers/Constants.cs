@@ -2559,7 +2559,7 @@ namespace TLIS_Service.Helpers
             [Description("TLIrenewableCabinetType")]
             TLIcabinet,
 
-            [Description("TLIrenewableCabinetType")]
+            [Description("TLIrenewableCabinetType TLIBatterryType")]
             TLIcabinetPower,
 
             [Description("TLIrenewableCabinetType")]
@@ -2665,6 +2665,9 @@ namespace TLIS_Service.Helpers
 
             [Description("")]
             TLIinstallationPlace,
+
+            [Description("")]
+            TLIBatterryType,
 
             [Description("TLIcivilWithLegs")]
             BasePlateShape,

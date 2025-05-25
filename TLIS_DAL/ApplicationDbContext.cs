@@ -53,6 +53,7 @@ namespace TLIS_DAL
         public ApplicationDbContext(DbContextOptions options) : base(options)
         { }
         public virtual DbSet<TLIsession> TLIsession { get; set; }
+        public virtual DbSet<TLIBatteryType> TLIBatterryType { get; set; }
         public virtual DbSet<TLIarea> TLIarea { get; set; }
         public virtual DbSet<TLIasType> TLIasType { get; set; }
         public virtual DbSet<TLIattributeActivated> TLIattributeActivated { get; set; }
@@ -261,6 +262,12 @@ namespace TLIS_DAL
                 .HasOne(e => e.Region)
                 .WithMany(z => z.sites)
                 .HasForeignKey(c => c.RegionCode);
+
+
+            builder.Entity<TLIcabinet>()
+              .HasOne(e => e.BatterryType)
+              .WithMany(z => z.cabinets)
+              .HasForeignKey(c => c.BatterryTypeId);
 
             builder.Entity<TLIcivilLoads>()
                 .HasOne(e => e.site)
@@ -498,6 +505,11 @@ namespace TLIS_DAL
             {
                 cn.HasNoKey();
                 cn.ToView("MV_MWRFU_VIEW");
+            });
+            builder.Entity<HISTORY_VIEW>(cn =>
+            {
+                cn.HasNoKey();
+                cn.ToView("HISTORY_VIEW");
             });
             builder.Entity<TLIsession>();
 

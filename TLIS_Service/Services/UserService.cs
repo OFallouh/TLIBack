@@ -88,12 +88,17 @@ namespace TLIS_Service.Services
 
                     using (var transaction = connection.BeginTransaction())
                     {
-                        
-                            var userId = await InsertUserAsync(connection, model);
+                        var UserName = _dbContext.TLIuser.FirstOrDefault(x => x.UserName.ToLower() == model.UserName.ToLower());
+                        if (UserName != null)
+                        {
+                            return new Response<UserViewModel>(false, null, null, "This user name already exists",(int)Helpers.Constants.ApiReturnCode.success, 0);
+                        }
 
-                          
-                            // إدراج المجموعات إذا كانت موجودة
-                            if (model.Groups != null && model.Groups.Count > 0)
+                        var userId = await InsertUserAsync(connection, model);
+
+
+                        // إدراج المجموعات إذا كانت موجودة
+                        if (model.Groups != null && model.Groups.Count > 0)
                             {
                                 await InsertGroupsAsync(connection, userId, model.Groups);
                             }
@@ -207,19 +212,21 @@ namespace TLIS_Service.Services
 
         private async Task<int> InsertInternalUserAsync(OracleConnection connection, TLIuser model)
         {
-            var query = @"
-            INSERT INTO ""TLIuser"" 
-            (""FirstName"", ""MiddleName"", ""LastName"", ""Email"", ""MobileNumber"", ""UserName"", 
-             ""Password"", ""UserType"", ""Active"", ""Deleted"", ""ValidateAccount"", ""IsFirstLogin"",""Permissions"")
-            VALUES 
-            (:FirstName, :MiddleName, :LastName, :Email, :MobileNumber, :UserName, 
-             :Password, :UserType, :Active, :Deleted, :ValidateAccount, :IsFirstLogin, :Permissions)
-            RETURNING ""Id"" INTO :UserId";
+            // احصل على آخر Id + 1
+            var getIdCommand = new OracleCommand(@"SELECT NVL(MAX(""Id""), 0) + 1 FROM ""TLIuser""", connection);
+            var newId = Convert.ToInt32(await getIdCommand.ExecuteScalarAsync());
 
+            var query = @"
+                INSERT INTO ""TLIuser"" 
+                (""Id"", ""FirstName"", ""MiddleName"", ""LastName"", ""Email"", ""MobileNumber"", ""UserName"", 
+                 ""Password"", ""UserType"", ""Active"", ""Deleted"", ""ValidateAccount"", ""IsFirstLogin"", ""Permissions"")
+                VALUES 
+                (:Id, :FirstName, :MiddleName, :LastName, :Email, :MobileNumber, :UserName, 
+                 :Password, :UserType, :Active, :Deleted, :ValidateAccount, :IsFirstLogin, :Permissions)";
 
             using (var command = new OracleCommand(query, connection))
             {
-
+                command.Parameters.Add(new OracleParameter("Id", OracleDbType.Int32)).Value = newId;
                 command.Parameters.Add(new OracleParameter("FirstName", OracleDbType.Varchar2)).Value = (object)model.FirstName ?? DBNull.Value;
                 command.Parameters.Add(new OracleParameter("MiddleName", OracleDbType.Varchar2)).Value = (object)model.MiddleName ?? DBNull.Value;
                 command.Parameters.Add(new OracleParameter("LastName", OracleDbType.Varchar2)).Value = (object)model.LastName ?? DBNull.Value;
@@ -228,27 +235,18 @@ namespace TLIS_Service.Services
                 command.Parameters.Add(new OracleParameter("UserName", OracleDbType.Varchar2)).Value = model.UserName;
                 command.Parameters.Add(new OracleParameter("Password", OracleDbType.Varchar2)).Value = (object)model.Password ?? DBNull.Value;
                 command.Parameters.Add(new OracleParameter("UserType", OracleDbType.Int32)).Value = model.UserType;
-
                 command.Parameters.Add(new OracleParameter("Active", OracleDbType.Int32)).Value = 1;
                 command.Parameters.Add(new OracleParameter("Deleted", OracleDbType.Int32)).Value = 0;
                 command.Parameters.Add(new OracleParameter("ValidateAccount", OracleDbType.Int32)).Value = 1;
                 command.Parameters.Add(new OracleParameter("IsFirstLogin", OracleDbType.Int32)).Value = 1;
                 command.Parameters.Add(new OracleParameter("Permissions", OracleDbType.Varchar2)).Value = (object)model.Permissions ?? DBNull.Value;
 
-                var userIdParam = new OracleParameter("UserId", OracleDbType.Decimal)
-                {
-                    Direction = ParameterDirection.Output
-                };
-                command.Parameters.Add(userIdParam);
-
                 await command.ExecuteNonQueryAsync();
 
-
-                var userIdDecimal = (OracleDecimal)userIdParam.Value;
-                return userIdDecimal.ToInt32();
-
+                return newId;
             }
         }
+
 
 
         private async Task InsertPermissionsAsync(OracleConnection connection, int userId, List<string> permissions)
@@ -1538,75 +1536,6 @@ namespace TLIS_Service.Services
             }
         }
 
-        public async Task<Response<IEnumerable<TLISercurityLogsDto>>> GetSecurityLogsFile()
-        {
-            try
-            {
-                var query = _dbContext.TLISecurityLogs.Include(x => x.User).AsQueryable();
-
-                // Get total count before filtering
-                var totalCount = query.Count();
-
-          
-                // Map data to ViewModel
-                var result = await query.Select(q => new TLISercurityLogsDto
-                {
-                    Id = q.Id,
-                    Date = q.Date,
-                    UserName = q.User.UserName,
-                    ControllerName = q.ControllerName,
-                    FunctionName = q.FunctionName,
-                    UserType = q.User.UserType == 0 ? "InternalUser" : "ExternalUser", // Convert int to string
-                    ResponseStatus = q.ResponseStatus,
-                    Message = q.Message
-                }).ToListAsync();
-                await SaveSecurityLogsToFile(result);
-
-                // حذف السجلات من قاعدة البيانات
-                _dbContext.TLISecurityLogs.RemoveRange(query);
-                await _dbContext.SaveChangesAsync();
-
-                return new Response<IEnumerable<TLISercurityLogsDto>>(true, result, null, null, (int)Helpers.Constants.ApiReturnCode.success, totalCount);
-            }
-            catch (Exception err)
-            {
-                return new Response<IEnumerable<TLISercurityLogsDto>>(false, null, null, err.Message, (int)Helpers.Constants.ApiReturnCode.fail);
-            }
-        }
-        private async Task SaveSecurityLogsToFile(IEnumerable<TLISercurityLogsDto> logs)
-        {
-            if (!logs.Any()) return;
-
-            // تحديد مسار الحفظ على القرص C
-            string logDirectory = _configuration["SecurityLogDirectory"];
-
-            // التحقق من وجود المجلد وإنشاؤه إذا لم يكن موجودًا
-            if (!Directory.Exists(logDirectory))
-            {
-                Directory.CreateDirectory(logDirectory);
-            }
-
-            // تحديد اسم الملف بناءً على تاريخ اليوم
-            string logFileName = $"SercurityLogs_{DateTime.Now:yyyy-MM-dd}.json";
-            string logFilePath = Path.Combine(logDirectory, logFileName);
-
-            // تحقق مما إذا كان الملف موجودًا بالفعل
-            List<TLISercurityLogsDto> existingLogs = new List<TLISercurityLogsDto>();
-
-            if (File.Exists(logFilePath))
-            {
-                // إذا كان الملف موجودًا، اقرأ محتويات الملف الحالي وأضف السجلات الجديدة
-                var existingFileContent = await File.ReadAllTextAsync(logFilePath);
-                existingLogs = JsonConvert.DeserializeObject<List<TLISercurityLogsDto>>(existingFileContent) ?? new List<TLISercurityLogsDto>();
-            }
-
-            // إضافة السجلات الجديدة إلى السجلات الموجودة
-            existingLogs.AddRange(logs);
-
-            // تحويل البيانات إلى JSON وتخزينها في الملف
-            string jsonData = JsonConvert.SerializeObject(existingLogs, Newtonsoft.Json.Formatting.Indented);
-            await File.WriteAllTextAsync(logFilePath, jsonData);
-        }
         private IQueryable<T> ApplyFilter<T>(
          IQueryable<T> query,
          FilterRequest filterRequest)

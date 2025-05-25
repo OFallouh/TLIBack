@@ -34,6 +34,7 @@ namespace TLIS_DAL.ViewModels.CabinetDTOs
         public float HBA { get; set; } = 0;
         public float HieghFromLand { get; set; } = 0;
         public float EquivalentSpace { get; set; } = 0;
+        public int? BatterryTypeId { get; set; }
 
     }
 }

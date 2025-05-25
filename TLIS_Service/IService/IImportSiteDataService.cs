@@ -23,5 +23,6 @@ namespace TLIS_Service.IService
         Response<string> MigrationFiles(IFormFile File, string ConnectionString);
         Response<string> ImportGeneratorInstallation(IFormFile File, string ConnectionString);
          Response<string> ImportSolarInstallation(IFormFile File, string ConnectionString);
+        Response<string> FixFileNamesWithExtension();
     }
 }

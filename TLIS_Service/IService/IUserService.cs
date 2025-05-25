@@ -47,7 +47,6 @@ namespace TLIS_Service.IService
         Task<Response<IEnumerable<TLISercurityLogsDto>>> GetSecurityLogs(FilterRequest filterRequest);
         Response<string> AddAnAuthorizedAccessToSecurityLog(int userId, string Title, string Message);
         Response<string> ClearLogSecurity(string connectionString, string dateFrom = null, string dateTo = null);
-        Task<Response<IEnumerable<TLISercurityLogsDto>>> GetSecurityLogsFile( );
         Task<Response<List<string>>> GetOldPermissionsUserById(int Id);
     }
 }

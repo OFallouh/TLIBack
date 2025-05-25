@@ -218,6 +218,7 @@ namespace TLIS_DAL.ViewModels
             //CreateMap<ConditionType, ConditionTypeViewModel>().ReverseMap();
            // ---------------------------------------------------------------------------------------
 
+            CreateMap<BatterryTypeDto, TLIBatteryType>().ReverseMap();
             CreateMap<LocationTypeViewModel, TLIcivilSteelSupportCategory>().ReverseMap();
             CreateMap<RadioRRULibraryAttributes, TLIradioRRULibrary>().ReverseMap();
             CreateMap<EditRadioRRULibraryAttributes, TLIradioRRULibrary>().ReverseMap();

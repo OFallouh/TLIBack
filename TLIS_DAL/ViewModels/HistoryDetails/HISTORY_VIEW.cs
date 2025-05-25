@@ -8,25 +8,38 @@ namespace TLIS_DAL.ViewModels.HistoryDetails
 {
     public class HISTORY_VIEW
     {
-        public string Note { get; set; }
-        public string BASE_TABLE { get; set; }
-        public string SECONDARY_TABLE { get; set; }
-        public string UserName { get; set; }
-        public int? USER_ID { get; set; }  // يجب أن يكون Nullable
-        public string SysName { get; set; }
-        public int? SYS_ID { get; set; }  // يجب أن يكون Nullable
-        public DateTime? HistoryDate { get; set; }  // يجب أن يكون Nullable
-        public string Operation { get; set; }
-        public int? PreviousHistoryId { get; set; }  // يجب أن يكون Nullable
-        public string BASE_RECORD_ID { get; set; }  // يجب أن يكون string لأنه قد يحتوي على NULL
-        public string SITECODE { get; set; }
-        public string SECONDARY_RECORD_ID { get; set; }  // يجب أن يكون string لأنه قد يحتوي على NULL
-        public string OldValue { get; set; }
-        public string NewValue { get; set; }
-        public string AttributeName { get; set; }
-        public decimal? AttributeType { get; set; }  // يجب أن يكون Nullable
-        public int Id { get; set; }
+        public string? Note { get; set; }
+        public string? BASE_TABLE { get; set; }
+        public string? SECONDARY_TABLE { get; set; }
+        public string? UserName { get; set; }
+
+        // تم تعديل النوع إلى int؟ بدلاً من decimal؟
+        public int? USER_ID { get; set; }
+
+        public string? SysName { get; set; }
+
+        // تم تعديل النوع إلى int؟ بدلاً من decimal؟
+        public int? SYS_ID { get; set; }
+
+        public DateTime? HistoryDate { get; set; }
+        public string? Operation { get; set; }
+
+        // تم تعديل النوع إلى int؟ بدلاً من decimal؟
+        public int? PreviousHistoryId { get; set; }
+
+        public string? BASE_RECORD_ID { get; set; }
+        public string? SITECODE { get; set; }
+        public string? SECONDARY_RECORD_ID { get; set; }
+        public string? OldValue { get; set; }
+        public string? NewValue { get; set; }
+        public string? AttributeName { get; set; }
+
+        // تم تعديل النوع إلى int؟ بدلاً من decimal؟ لأن الفيو يقوم بإرجاع INT
+        public int? AttributeType { get; set; }
+
+        public int? Id { get; set; }
     }
+
 
 
 }
